@@ -1,0 +1,177 @@
+---
+title: "Jeux de Données et Données — Le Carburant de l'IA"
+description: "Découvrez ce qu'est réellement la donnée, comment l'IA l'utilise pour apprendre, pourquoi la qualité des données compte, et explorez des jeux de données réels."
+order: 1
+difficulty: "beginner"
+duration: 25
+icon: "📊"
+published: true
+---
+
+## Bienvenue au Niveau 2 ! 👋
+
+Dans AI Seeds, vous avez appris que l'IA apprend à partir d'exemples — comme un enfant qui apprend à reconnaître les animaux avec des imagiers. Mais d'où viennent ces exemples ?
+
+La réponse est la **donnée** — et c'est l'ingrédient le plus important de l'IA. De mauvaises données mènent à une mauvaise IA. D'excellentes données mènent à une excellente IA.
+
+<Illustration src="/images/lessons/datasets-and-data.svg" alt="Les données alimentent un modèle d'IA comme le carburant alimente un moteur" caption="Les données sont le carburant de tout système d'IA" />
+
+---
+
+## Qu'est-ce que la Donnée ? 🤔
+
+La donnée est simplement de l'**information enregistrée**. Chaque action numérique crée des données :
+
+- 📸 Prendre une photo → données image
+- 💬 Envoyer un message → données texte
+- 🎵 Écouter une chanson → données d'écoute
+- 🛒 Acheter en ligne → données de transaction
+- 📍 Ouvrir Google Maps → données de localisation
+
+En IA, nous collectons ces informations, les organisons et les utilisons pour enseigner aux machines.
+
+---
+
+## Données Structurées vs Non Structurées
+
+### 📋 Données Structurées
+Des données qui s'organisent en lignes et colonnes — comme un tableur.
+
+| Nom | Âge | Ville | Couleur Préférée |
+|-----|-----|-------|-----------------|
+| Aisha | 14 | Londres | Bleu |
+| Ravi | 16 | Hyderabad | Vert |
+| Emma | 15 | Amsterdam | Rouge |
+
+### 🖼️ Données Non Structurées
+Des données qui ne rentrent pas dans un tableau — images, vidéos, audio, e-mails, posts sur les réseaux sociaux.
+
+<FunFact>
+Plus de 80 % des données mondiales sont non structurées ! Les photos, vidéos et messages dépassent largement les tableurs. L'apprentissage profond moderne a été conçu spécifiquement pour traiter ces données désordonnées.
+</FunFact>
+
+---
+
+## Données d'Entraînement, de Validation et de Test
+
+Quand vous révisez un examen, vous ne lisez pas seulement le cours — vous faites aussi des exercices, puis passez l'examen. L'IA fait pareil avec trois découpages :
+
+### 📚 Données d'entraînement (le cours)
+La plus grande partie — 70 à 80 % de toutes les données. Le modèle les étudie pour apprendre des patterns.
+
+### 📝 Données de validation (les exercices)
+Environ 10 à 15 %. Utilisées *pendant* l'entraînement pour vérifier les progrès.
+
+### 🎓 Données de test (l'examen final)
+Les 10 à 15 % restants. Utilisées *après* l'entraînement. Le modèle n'a **jamais** vu ces données.
+
+```python
+from sklearn.model_selection import train_test_split
+
+# Découpage : 80 % entraînement, 20 % temporaire
+train_data, temp_data = train_test_split(all_data, test_size=0.2)
+
+# Découpage du set temporaire : moitié validation, moitié test
+val_data, test_data = train_test_split(temp_data, test_size=0.5)
+
+print(f"Entraînement : {len(train_data)}")
+print(f"Validation : {len(val_data)}")
+print(f"Test : {len(test_data)}")
+```
+
+<ThinkAboutIt>
+Pourquoi ne peut-on pas tester le modèle sur les données d'entraînement ? Parce que ce serait comme donner à un étudiant les questions exactes de l'examen à l'avance — il aurait un score parfait sans vraiment comprendre la matière.
+</ThinkAboutIt>
+
+---
+
+## Biais des Données — Pourquoi C'est Important ⚖️
+
+**L'IA n'est aussi juste que les données dont elle apprend.**
+
+Si vous entraînez un système de reconnaissance faciale principalement avec des photos de personnes à la peau claire, il fonctionnera mal sur les visages à la peau foncée.
+
+Exemples concrets de biais :
+
+- 🏥 **IA médicale** entraînée surtout sur des données masculines — diagnostics incorrects pour les femmes
+- 💼 **IA de recrutement** entraînée sur des CV historiques — pénalisation des candidates
+- 🚗 **Voitures autonomes** entraînées en Californie ensoleillée — difficultés sous la pluie et la neige
+
+<Callout>
+**Le biais n'est pas toujours évident.** Si votre jeu de données contient 90 % de texte en anglais, votre IA sera excellente en anglais mais médiocre en français, hindi ou néerlandais. Demandez toujours : « Qui manque dans ces données ? »
+</Callout>
+
+---
+
+## Jeux de Données Célèbres 🌍
+
+### ✍️ MNIST
+- **Quoi :** 70 000 images de chiffres manuscrits (0–9)
+- **Importance :** Le « Hello World » du machine learning
+
+### 🖼️ ImageNet
+- **Quoi :** Plus de 14 millions d'images étiquetées dans plus de 20 000 catégories
+- **Importance :** Le concours ImageNet (2010–2017) a accéléré la reconnaissance d'images
+
+### 🌐 Common Crawl
+- **Quoi :** Des pétaoctets de données web collectées depuis 2008
+- **Importance :** Alimente les grands modèles de langage comme GPT
+
+### 🗣️ LibriSpeech
+- **Quoi :** 1 000 heures de parole anglaise lue
+- **Importance :** Utilisé pour entraîner les systèmes de reconnaissance vocale
+
+<FunFact>
+Le jeu de données MNIST fait moins de 15 Mo — plus petit qu'une seule photo de smartphone ! Pourtant, il a lancé des milliers de carrières en IA.
+</FunFact>
+
+---
+
+## Pratique : Explorer un Jeu de Données 🔬
+
+Explorons le célèbre jeu de données Iris — 150 mesures de fleurs avec 4 caractéristiques.
+
+```python
+import pandas as pd
+from sklearn.datasets import load_iris
+
+# Charger le jeu de données
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['species'] = [iris.target_names[t] for t in iris.target]
+
+# Exploration basique
+print("Forme :", df.shape)
+print("\n5 premières lignes :")
+print(df.head())
+
+print("\nNombre par espèce :")
+print(df['species'].value_counts())
+
+print("\nStatistiques basiques :")
+print(df.describe())
+```
+
+Quand vous explorez un jeu de données, demandez-vous :
+1. **Combien d'échantillons ?** (lignes)
+2. **Combien de caractéristiques ?** (colonnes)
+3. **Les classes sont-elles équilibrées ?**
+4. **Y a-t-il des valeurs manquantes ?**
+5. **À quoi ressemblent les chiffres ?** (étendue, moyenne, dispersion)
+
+---
+
+## Résumé Rapide 🎯
+
+1. La **donnée** est de l'information enregistrée — photos, messages, clics
+2. **Données structurées** = tableaux ; **données non structurées** = images, texte, audio
+3. Les données sont découpées en **entraînement**, **validation** et **test**
+4. Le **biais des données** mène à une IA injuste — demandez qui manque
+5. Des jeux de données comme **MNIST**, **ImageNet** et **Common Crawl** alimentent l'IA actuelle
+6. **Explorez toujours** vos données avant de construire un modèle
+
+---
+
+## Prochaine Étape 🚀
+
+Vous savez maintenant ce qui alimente l'IA. Dans la prochaine leçon, nous explorerons les **algorithmes** — les recettes qui transforment les données en décisions intelligentes !

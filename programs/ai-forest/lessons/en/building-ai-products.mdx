@@ -1,0 +1,300 @@
+---
+title: "Building AI Products — From Prototype to Production"
+description: "Learn the complete AI product lifecycle — from choosing the right model and building prototypes to deploying, monitoring, and scaling AI-powered features in production."
+order: 1
+difficulty: "advanced"
+duration: 45
+icon: "🚀"
+published: true
+---
+
+## The AI Product Lifecycle 🏭
+
+You've learned how AI works — data, algorithms, neural networks, transformers, and tools. Now it's time to put it all together and **build something real**.
+
+Building an AI product is fundamentally different from building traditional software. Models degrade, data drifts, and what works in a notebook often fails in production. This lesson covers the full journey from idea to deployed product.
+
+<Illustration src="/images/lessons/building-ai-products.svg" alt="A pipeline flowing from idea through prototype, testing, deployment, and monitoring" caption="The AI product lifecycle is a continuous loop, not a straight line." />
+
+---
+
+## Phase 1: Problem Definition and Feasibility 🎯
+
+Before writing a single line of code, answer these questions:
+
+1. **Is AI actually needed?** Many problems are better solved with rules, heuristics, or simple statistics
+2. **Do you have the data?** AI is only as good as the data it learns from
+3. **What does success look like?** Define measurable metrics upfront
+4. **What are the risks?** False positives vs false negatives — which is worse?
+
+```
+Decision Framework: Should You Use AI?
+─────────────────────────────────────────
+✅ Use AI when:
+   • Pattern is too complex for hand-written rules
+   • You have sufficient labelled data (or can get it)
+   • The problem tolerates some level of error
+   • The value justifies the cost
+
+❌ Skip AI when:
+   • Simple rules or lookups solve the problem
+   • You need 100% accuracy (e.g., financial calculations)
+   • Data is scarce and hard to obtain
+   • A deterministic solution exists
+```
+
+<ThinkAboutIt>
+A major retailer spent millions building an AI recommendation engine, only to discover that a simple "customers also bought" lookup table performed nearly as well. Always start with the simplest solution that could work, then add AI complexity only when it demonstrably improves results.
+</ThinkAboutIt>
+
+---
+
+## Phase 2: Choosing the Right Model 🧩
+
+One of the most important decisions is selecting the right approach. Here's a practical decision guide:
+
+### When to use what
+
+**Traditional ML (scikit-learn, XGBoost)**
+- Tabular data (spreadsheets, databases)
+- Classification, regression, clustering
+- When you need interpretability
+- When data is limited (hundreds to thousands of rows)
+
+**Deep Learning (PyTorch, TensorFlow)**
+- Images, audio, video, text
+- When you have large datasets (tens of thousands+)
+- Complex pattern recognition
+- When accuracy matters more than interpretability
+
+**Large Language Models (GPT, Claude, Llama)**
+- Text generation, summarisation, Q&A
+- When you need general reasoning
+- Rapid prototyping with natural language
+- When fine-tuning or prompting can replace custom training
+
+**Pre-trained APIs (Vision, Speech, Translation)**
+- Standard tasks with well-known solutions
+- When you want to avoid training entirely
+- Quick integration into existing products
+
+```python
+# Decision pseudocode
+def choose_model(problem):
+    if problem.data_type == "tabular":
+        if problem.needs_interpretability:
+            return "XGBoost or Random Forest"
+        return "Gradient Boosting or Neural Network"
+
+    if problem.data_type in ["image", "audio", "video"]:
+        if problem.has_large_dataset:
+            return "Fine-tune a pre-trained model (ResNet, Whisper)"
+        return "Use a pre-trained API (Vision API, Speech API)"
+
+    if problem.data_type == "text":
+        if problem.task == "generation":
+            return "LLM (GPT, Claude, Llama)"
+        if problem.task == "classification":
+            return "Fine-tuned BERT or Sentence Transformers"
+
+    return "Start simple, iterate based on results"
+```
+
+---
+
+## Phase 3: Prototyping — Move Fast, Learn Faster ⚡
+
+The goal of prototyping is to **validate your approach**, not build a perfect system.
+
+Give yourself 3 days:
+- **Day 1**: Get data, explore it, establish a baseline
+- **Day 2**: Build the simplest model that could work
+- **Day 3**: Evaluate results, decide if the approach is viable
+
+<Callout>
+**The #1 mistake in AI product development** is spending too long in notebooks. Prototypes should validate the idea, then move to proper software engineering practices quickly. A model that works in a notebook but can't be deployed is worthless.
+</Callout>
+
+---
+
+## Phase 4: MLOps — Engineering for AI Systems 🔧
+
+MLOps (Machine Learning Operations) is DevOps for AI. It covers everything needed to run AI in production reliably.
+
+### The MLOps stack
+
+**1. Version everything**
+- Code (Git), Data (DVC, LakeFS), Models (MLflow, Weights & Biases), Configurations and hyperparameters
+
+**2. Automate pipelines**
+```
+CI/CD for ML:
+─────────────
+Code commit → Run tests → Train model → Evaluate
+                                           ↓
+                               Performance improved?
+                              ↙                ↘
+                           Yes                  No
+                            ↓                    ↓
+                    Deploy to staging       Alert team
+                            ↓
+                    Integration tests
+                            ↓
+                    Deploy to production
+```
+
+**3. Monitor relentlessly**
+- **Model metrics**: accuracy, latency, throughput
+- **Data drift**: is incoming data different from training data?
+- **Concept drift**: has the relationship between inputs and outputs changed?
+- **System health**: CPU, memory, GPU utilisation
+
+<FunFact>
+According to Google's research, only about 5% of a real-world ML system is the actual ML code. The remaining 95% is data collection, verification, feature engineering, configuration, serving infrastructure, and monitoring. This is sometimes called "the hidden technical debt of ML systems."
+</FunFact>
+
+---
+
+## Phase 5: Cost Optimisation 💰
+
+AI can be expensive. Smart architecture decisions save thousands.
+
+### LLM vs Traditional ML: a cost comparison
+
+```
+Task: Classify customer support tickets into 10 categories
+
+Option A — LLM API (GPT-4)
+  Cost per request: ~$0.01–$0.03
+  1 million tickets/month: $10,000–$30,000/month
+  Setup time: 1 day (prompt engineering)
+  Accuracy: ~90%
+
+Option B — Fine-tuned small model (BERT)
+  Cost per request: ~$0.0001 (self-hosted)
+  1 million tickets/month: ~$100/month + infrastructure
+  Setup time: 2 weeks (training + deployment)
+  Accuracy: ~92%
+
+Option C — Hybrid approach
+  Use the fine-tuned model for clear-cut cases (80%)
+  Route ambiguous cases to LLM (20%)
+  Cost: ~$2,000–$6,000/month
+  Accuracy: ~94%
+```
+
+### Cost optimisation strategies
+
+1. **Start with APIs, graduate to self-hosted**
+2. **Cache aggressively** — many AI requests have similar inputs
+3. **Use the smallest model that works**
+4. **Batch processing** — process items in bulk during off-peak hours
+
+---
+
+## Building an AI Feature: End-to-End Walkthrough 🛠️
+
+Let's build an AI-powered **smart search** for an e-commerce site.
+
+### Step 1: Define the feature
+Users type natural language queries ("comfortable running shoes under £100") and get relevant products — not just keyword matches.
+
+### Step 2: Choose the approach
+- **Embedding-based semantic search** using a pre-trained model
+- Products are converted to vectors; queries are matched by similarity
+
+### Step 3: Implementation sketch
+
+```python
+# Simplified semantic search pipeline
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+# 1. Load a pre-trained embedding model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# 2. Encode all products (done once, stored in a vector DB)
+products = [
+    "Nike Air Zoom running shoe, lightweight, £89",
+    "Leather formal Oxford shoes, black, £120",
+    "Adidas Ultraboost, cushioned running shoe, £95",
+]
+product_embeddings = model.encode(products)
+
+# 3. At query time, encode the user's search
+query = "comfortable running shoes under £100"
+query_embedding = model.encode(query)
+
+# 4. Find most similar products (cosine similarity)
+similarities = np.dot(product_embeddings, query_embedding)
+ranked_indices = np.argsort(similarities)[::-1]
+
+# 5. Return ranked results
+for i in ranked_indices:
+    print(f"Score: {similarities[i]:.3f} | {products[i]}")
+```
+
+### Step 4: Production considerations
+- Store embeddings in a **vector database** (Pinecone, Weaviate, pgvector)
+- Add **filters** (price range, category) as metadata
+- Implement **caching** for popular queries
+- Set up **A/B testing** against keyword search
+- Monitor **click-through rates** and **conversion rates**
+
+---
+
+## Case Studies: Lessons from the Field 📚
+
+### ✅ Success: GitHub Copilot
+- Focused on a specific use case (code completion), iterated based on user feedback
+- AI as an assistant (suggestions you accept/reject) is more forgiving than AI as a decision-maker
+
+### ❌ Failure: Amazon's AI Recruiting Tool
+- Trained on biased historical data, systematically downranked women
+- Biased training data produces biased models — always audit for fairness
+
+<Callout>
+**The pattern in failed AI products is remarkably consistent:** over-promising, under-investing in data quality, and skipping real-world validation. Successful ones have focused use cases, strong data foundations, and iterative improvement.</Callout>
+
+---
+
+## Ethics and Responsible Deployment 🛡️
+
+Before deploying any AI product, run through this checklist:
+
+1. **Fairness** — Does the model perform equally across demographic groups?
+2. **Transparency** — Can you explain why the model made a specific decision?
+3. **Privacy** — Is user data handled in compliance with regulations (GDPR, etc.)?
+4. **Safety** — What happens when the model is wrong? Are there fallback mechanisms?
+5. **Consent** — Do users know AI is being used, and can they opt out?
+6. **Feedback** — Can users report problems, and do you act on those reports?
+
+```
+Responsible AI Deployment Checklist
+────────────────────────────────────
+□ Bias audit completed across key demographics
+□ Model card documenting capabilities and limitations
+□ Human-in-the-loop for high-stakes decisions
+□ Monitoring for performance degradation
+□ Clear user communication about AI involvement
+□ Incident response plan for AI failures
+□ Regular re-evaluation schedule (quarterly minimum)
+```
+
+---
+
+## Quick Recap 🎯
+
+1. **Always validate AI is the right solution** — start simple, add complexity only when needed
+2. **Choose models based on data type, dataset size, and requirements** — not hype
+3. **Prototype fast** (3 days), but transition to production engineering quickly
+4. **MLOps is essential** — version everything, automate pipelines, monitor continuously
+5. **Optimise costs** with hybrid approaches, caching, and right-sized models
+6. **Learn from failures** — bias, overpromising, and poor data quality are the top killers
+7. **Deploy responsibly** — fairness, transparency, and safety are non-negotiable
+
+---
+
+## What's Next? 🌐
+
+You now know how to build and ship AI products. In the next lesson, we'll explore the **open-source AI ecosystem** — the tools, models, and communities that make AI accessible to everyone. You'll learn how to compose a full AI stack from open-source components and even contribute back to the community. 🌲

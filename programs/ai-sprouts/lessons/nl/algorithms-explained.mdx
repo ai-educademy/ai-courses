@@ -1,0 +1,227 @@
+---
+title: "Algoritmen Uitgelegd — De Recepten van AI"
+description: "Leer wat algoritmen zijn door alledaagse analogieën, en verken beslisbomen, K-nearest neighbors en lineaire regressie."
+order: 2
+difficulty: "beginner"
+duration: 30
+icon: "🧮"
+published: true
+---
+
+## Van Data naar Beslissingen 👋
+
+In de vorige les heb je geleerd dat data de brandstof van AI is. Maar brandstof alleen laat een auto niet rijden — je hebt een motor nodig. In AI heet die motor een **algoritme**.
+
+<Illustration src="/images/lessons/algorithms-explained.svg" alt="Data gaat erin, het algoritme verwerkt het, voorspellingen komen eruit" caption="Een algoritme zet ruwe data om in nuttige voorspellingen" />
+
+---
+
+## Wat is een Algoritme? 🤔
+
+Een algoritme is simpelweg een **reeks stapsgewijze instructies** om een probleem op te lossen.
+
+Je volgt al elke dag algoritmen:
+
+- 🍳 **Een kookrecept** — "Verhit de olie, voeg uien toe, roer 3 minuten..."
+- 🗺️ **Routebeschrijving naar school** — "Loop naar het noorden, sla linksaf bij het park..."
+- 🔢 **Staartdeling** — Een stapsgewijs proces dat je op school hebt geleerd
+
+<ThinkAboutIt>
+Denk aan hoe je elke ochtend beslist wat je aantrekt. Je checkt het weer, denkt na over je plannen, kijkt wat schoon is — dat is een algoritme! Je volgt een reeks stappen om een beslissing te nemen. AI-algoritmen doen hetzelfde, maar dan met data in plaats van onderbuikgevoel.
+</ThinkAboutIt>
+
+---
+
+## Algoritme 1: Beslisbomen 🌳
+
+Een beslisboom neemt beslissingen door een reeks **ja/nee-vragen** te stellen — net als het spel "20 vragen."
+
+### Hoe het werkt
+
+Stel je voor dat je beslist of je buiten gaat spelen:
+
+```
+Regent het?
+├── Ja → Binnen blijven 🏠
+└── Nee → Is het boven de 15°C?
+    ├── Ja → Buiten spelen! ⚽
+    └── Nee → Jas aan en buiten spelen 🧥
+```
+
+Elk **knooppunt** stelt een vraag, elke **tak** volgt een antwoord, elk **blad** geeft een definitieve beslissing.
+
+### Waarom beslisbomen geweldig zijn
+
+- ✅ **Makkelijk te begrijpen** — je kunt ze op papier tekenen
+- ✅ **Uitlegbaar** — je kunt precies traceren waarom een beslissing is genomen
+- ✅ **Werken met zowel getallen als categorieën**
+
+### Wanneer ze moeite hebben
+
+- ❌ Kunnen **overfitten** — trainingsdata memoriseren in plaats van algemene patronen leren
+- ❌ Eén boom kan **onnauwkeurig** zijn bij complexe problemen
+
+<FunFact>
+Random Forests combineren honderden beslisbomen en laten ze "stemmen" op het antwoord. Het is alsof je 500 mensen om de weg vraagt en de meerderheid volgt. Dit simpele idee verbetert de nauwkeurigheid drastisch!
+</FunFact>
+
+---
+
+## Algoritme 2: K-Nearest Neighbors (KNN) 🏘️
+
+KNN is het "vraag je buren"-algoritme. De logica is prachtig simpel: **dingen die vergelijkbaar zijn, liggen meestal dicht bij elkaar.**
+
+### De intuïtie
+
+Stel je verhuist naar een nieuwe stad en zoekt een goed restaurant. Wat doe je? Je vraagt je **naaste buren** om aanbevelingen! Als 3 van de 5 Italiaans aanraden, probeer je waarschijnlijk Italiaans.
+
+KNN werkt precies hetzelfde:
+
+1. Neem een nieuw, onbekend datapunt
+2. Vind de **K dichtstbijzijnde** datapunten in de trainingsdata
+3. Laat die buren **stemmen** op het antwoord
+4. Volg de meerderheid
+
+### K kiezen
+
+- **K te klein** (bijv. K=1) → Gevoelig voor ruis
+- **K te groot** (bijv. K=100) → Te algemeen
+- **Sweet spot** → K=3, 5 of 7 werkt meestal goed. Altijd een oneven getal!
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+
+# Maak en train een KNN-model met K=5
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Voorspel op nieuwe data
+prediction = knn.predict(X_test)
+print(f"Nauwkeurigheid: {knn.score(X_test, y_test):.2%}")
+```
+
+<Callout>
+**KNN is een "luie leerling"** — het leert niets tijdens het trainen! Het onthoudt alle data en doet het echte werk pas bij de voorspelling door afstanden te berekenen.
+</Callout>
+
+---
+
+## Algoritme 3: Lineaire Regressie 📈
+
+Lineaire regressie is de kunst van het **trekken van een lijn door datapunten**. Het wordt gebruikt als je een getal wilt voorspellen (geen categorie).
+
+### De intuïtie
+
+Hoe meer uur je studeert, hoe hoger je toetscijfer doorgaans is. Als je dit op een grafiek zet, zie je datapunten die omhoog gaan. Lineaire regressie trekt de **best passende lijn** door die punten.
+
+### De vergelijking
+
+```
+y = mx + b
+```
+
+- **y** = wat we voorspellen (toetscijfer)
+- **x** = invoer (uren gestudeerd)
+- **m** = helling (hoe steil de lijn is)
+- **b** = snijpunt (waar de lijn de y-as kruist)
+
+```python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Studie-uren en toetscijfers
+hours = np.array([1, 2, 3, 4, 5, 6, 7, 8]).reshape(-1, 1)
+scores = np.array([20, 35, 45, 55, 65, 75, 82, 90])
+
+# Model fitten
+model = LinearRegression()
+model.fit(hours, scores)
+
+# Voorspel het cijfer voor 5,5 uur studeren
+predicted = model.predict([[5.5]])
+print(f"Voorspeld cijfer voor 5,5 uur: {predicted[0]:.1f}")
+```
+
+### Wanneer het werkt — en wanneer niet
+
+- ✅ Geweldig als de relatie **ongeveer een rechte lijn** is
+- ✅ Snel, simpel en makkelijk te interpreteren
+- ❌ Slecht als de relatie **gebogen** of complex is
+- ❌ Gevoelig voor **uitschieters**
+
+---
+
+## Welk Algoritme Kiezen? 🧭
+
+| Vraag | Beslisboom | KNN | Lineaire Regressie |
+|-------|:---:|:---:|:---:|
+| Categorie voorspellen? | ✅ | ✅ | ❌ |
+| Getal voorspellen? | ✅ | ✅ | ✅ |
+| Beslissing uitleggen? | ✅✅ | ❌ | ✅ |
+| Zeer grote dataset? | ✅ | ❌ | ✅ |
+| Lineaire relatie? | ❌ | ❌ | ✅✅ |
+
+<ThinkAboutIt>
+Er is geen enkel "beste" algoritme. De juiste keuze hangt af van je data en je probleem. Een arts die ziektes diagnosticeert geeft misschien de voorkeur aan een beslisboom omdat het kan uitleggen *waarom* een diagnose is gesteld.
+</ThinkAboutIt>
+
+---
+
+## Interactief: Bouw een Film-Aanbeveler 🎬
+
+Laten we een simpele beslisboom bouwen voor filmaanbevelingen!
+
+```
+Wil je iets grappigs?
+├── Ja → Hou je van animatiefilms?
+│   ├── Ja → Kijk "Inside Out 2" 🎭
+│   └── Nee → Kijk "The Grand Budapest Hotel" 🏨
+└── Nee → Hou je van actie?
+    ├── Ja → Heb je voorkeur voor superhelden?
+    │   ├── Ja → Kijk "Spider-Man: Across the Spider-Verse" 🕷️
+    │   └── Nee → Kijk "Top Gun: Maverick" ✈️
+    └── Nee → Wil je een waargebeurd verhaal?
+        ├── Ja → Kijk "Hidden Figures" 🚀
+        └── Nee → Kijk "Interstellar" 🌌
+```
+
+```python
+def recommend_movie(funny, animated, action, superhero, true_story):
+    if funny:
+        if animated:
+            return "Inside Out 2 🎭"
+        else:
+            return "The Grand Budapest Hotel 🏨"
+    else:
+        if action:
+            if superhero:
+                return "Spider-Man: Across the Spider-Verse 🕷️"
+            else:
+                return "Top Gun: Maverick ✈️"
+        else:
+            if true_story:
+                return "Hidden Figures 🚀"
+            else:
+                return "Interstellar 🌌"
+
+print(recommend_movie(funny=False, animated=False,
+                      action=True, superhero=True,
+                      true_story=False))
+```
+
+---
+
+## Snelle Samenvatting 🎯
+
+1. Een **algoritme** is een stapsgewijze procedure om een probleem op te lossen
+2. **Beslisbomen** stellen ja/nee-vragen — uitlegbaar en visueel
+3. **KNN** classificeert door de K dichtstbijzijnde buren te laten stemmen
+4. **Lineaire regressie** trekt een lijn om getallen te voorspellen
+5. **Geen algoritme is universeel het beste** — kies op basis van je data en probleem
+6. Echte AI-systemen **combineren** vaak meerdere algoritmen
+
+---
+
+## Wat Komt Er Volgende? 🚀
+
+Je hebt nu drie klassieke algoritmen ontmoet. In de volgende les verkennen we **neurale netwerken** — de door het brein geïnspireerde algoritmen achter moderne AI-doorbraken! 🧠

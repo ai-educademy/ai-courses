@@ -1,0 +1,136 @@
+---
+title: "Two Pointers & Sliding Window — How AI Scans Data"
+description: "Master the two most powerful O(n) patterns in DSA. See how streaming ML systems and real-time analytics use these exact techniques."
+order: 1
+difficulty: "intermediate"
+duration: 20
+icon: "👆"
+published: true
+---
+
+# Two Pointers & Sliding Window
+
+These two patterns let you solve problems in **O(n)** that most people brute-force in O(n²). They share a core idea: *maintain a smart window into the data instead of re-scanning it.*
+
+---
+
+## Pattern 1: Two Pointers
+
+Place one pointer at each end of a **sorted** array. Move them inward based on a condition.
+
+<Illustration src="/images/lessons/craft/two-pointers.svg" alt="Two pointers L and R converging on a sorted array to find a target sum" caption="Two pointers converging: compare sum to target, move L right if too small, R left if too big." />
+
+### When to use it
+
+- **Sorted array** + looking for a pair/condition
+- Reducing O(n²) pair searches to O(n)
+- Partitioning (Dutch National Flag)
+
+### The algorithm
+
+```python
+def two_sum_sorted(arr, target):
+    left, right = 0, len(arr) - 1
+
+    while left < right:
+        current_sum = arr[left] + arr[right]
+        if current_sum == target:
+            return [left, right]
+        elif current_sum < target:
+            left += 1       # need bigger sum
+        else:
+            right -= 1      # need smaller sum
+
+    return [-1, -1]
+```
+
+<Callout type="info">
+**Key invariant:** Everything to the left of `L` is too small. Everything to the right of `R` is too big. The answer *must* be between them.
+</Callout>
+
+### Classic problems
+
+| Problem | Trick | Complexity |
+|---------|-------|------------|
+| Two Sum (sorted) | Converge on target | O(n) |
+| Container with Most Water | Move the shorter wall inward | O(n) |
+| 3Sum | Fix one, two-pointer the rest | O(n²) |
+| Remove Duplicates (sorted) | Slow/fast pointer | O(n) |
+
+---
+
+## Pattern 2: Sliding Window
+
+Maintain a **window** [left, right] that slides across the array. Expand right, shrink left — never re-scan the window.
+
+<Illustration src="/images/lessons/craft/sliding-window.svg" alt="A sliding window of size k moving across an array tracking the running sum" caption="Fixed-size window slides right: subtract the leaving element, add the entering element. O(n) total." />
+
+### Two variants
+
+**Fixed-size window (size k):**
+
+```python
+def max_sum_subarray(arr, k):
+    window_sum = sum(arr[:k])
+    max_sum = window_sum
+
+    for i in range(k, len(arr)):
+        window_sum += arr[i] - arr[i - k]  # slide: add new, remove old
+        max_sum = max(max_sum, window_sum)
+
+    return max_sum
+```
+
+**Variable-size window (expand/shrink):**
+
+```python
+def longest_substring_no_repeat(s):
+    seen = set()
+    left = max_len = 0
+
+    for right in range(len(s)):
+        while s[right] in seen:
+            seen.remove(s[left])
+            left += 1              # shrink window
+        seen.add(s[right])
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+```
+
+<ThinkAboutIt>
+Why does the variable window still run in O(n)? Each element is added to the set once and removed at most once — that's 2n operations total.
+</ThinkAboutIt>
+
+### Classic problems
+
+| Problem | Window Type | Key Insight |
+|---------|-------------|-------------|
+| Max sum subarray of size k | Fixed | Slide and track sum |
+| Longest substring without repeats | Variable | Expand right, shrink left on duplicate |
+| Minimum window substring | Variable | Shrink when all chars found |
+| Max consecutive ones (k flips) | Variable | Shrink when flips exceed k |
+
+---
+
+## AI Connection: Streaming Data Processing
+
+<FunFact>
+These aren't just interview patterns — they're how production ML systems work:
+
+- **Sliding window in ML:** Feature extraction over time-series data (e.g., "average CPU usage over last 5 minutes") uses the exact same fixed-window technique.
+- **Two pointers in search:** Merge operations in distributed sorting (MapReduce) use two-pointer merging on sorted partitions.
+- **Streaming analytics:** Apache Kafka and Flink process infinite data streams using sliding and tumbling windows — the same O(n) single-pass logic.
+- **Attention mechanisms:** Sliding window attention in transformers (e.g., Longformer) limits which tokens attend to each other using a fixed-size window.
+</FunFact>
+
+---
+
+## Quick Reference
+
+| Pattern | When | Time | Space |
+|---------|------|------|-------|
+| Two Pointers (converge) | Sorted array, find pair | O(n) | O(1) |
+| Two Pointers (fast/slow) | Linked list cycle, partitioning | O(n) | O(1) |
+| Fixed Sliding Window | Subarray of exact size k | O(n) | O(1) |
+| Variable Sliding Window | Longest/shortest subarray with condition | O(n) | O(k) |

@@ -1,0 +1,148 @@
+---
+title: "How Machines Learn"
+description: "Discover how AI learns from examples — explained through everyday situations like learning to cook or recognising friends."
+order: 2
+difficulty: "beginner"
+duration: 12
+icon: "🧠"
+published: true
+---
+
+## From Last Lesson...
+
+You learned that AI is software that **learns from experience**. But HOW does it learn? That's what this lesson is about.
+
+Don't worry — no maths, no code. Just clear explanations with everyday examples.
+
+<Illustration src="/images/lessons/how-machines-learn.svg" alt="How machines learn in 4 steps: collect data, train model, test it, use it" caption="The 4-step learning process — from raw data to working AI" />
+
+---
+
+## Learning by Example
+
+Imagine you're learning to cook. How would you do it?
+
+1. **Watch someone cook** several dishes (these are your _examples_)
+2. **Notice patterns** — "When they add salt, the food tastes better. When they add too much, it's ruined."
+3. **Try it yourself** — Maybe your first dish isn't great
+4. **Get feedback** — "Too salty!" So next time, you use less salt
+5. **Improve over time** — After many dishes, you become a good cook
+
+**This is exactly how AI learns.**
+
+The fancy term for this is **machine learning**, but really it's just: _show the computer lots of examples and let it figure out the pattern._
+
+---
+
+## Three Types of Learning
+
+Just like humans learn in different ways, machines do too:
+
+<Illustration src="/images/lessons/three-types-learning.svg" alt="Three types: Supervised (teacher), Unsupervised (exploring), Reinforcement (trial and error)" caption="Each type is suited to different problems — just like humans learn differently in different situations" />
+
+### 1. 📚 Supervised Learning — "Learning with a Teacher"
+
+This is like a teacher showing you flashcards:
+- Card shows a picture of a cat → Teacher says "CAT"
+- Card shows a picture of a dog → Teacher says "DOG"
+- After hundreds of cards, you can recognise new cats and dogs on your own
+
+**In AI terms:** You give the computer labelled examples (photo + correct answer), and it learns the pattern.
+
+**Real-world example:** Email spam filters. Someone labelled thousands of emails as "spam" or "not spam", and the AI learned what spam looks like.
+
+### 2. 🔍 Unsupervised Learning — "Learning by Exploring"
+
+This is like sorting your wardrobe without anyone telling you how:
+- You naturally group t-shirts together, jeans together, formal clothes together
+- Nobody told you the categories — you figured them out yourself
+
+**In AI terms:** The computer finds hidden patterns in data without being told what to look for.
+
+**Real-world example:** Customer grouping. A shop's AI might discover that some customers always buy organic food, while others always look for discounts — without being told these groups exist.
+
+### 3. 🎮 Reinforcement Learning — "Learning from Trial and Error"
+
+This is like learning to ride a bicycle:
+- You try, you fall, you adjust
+- Nobody gives you step-by-step instructions
+- You learn by **doing** and getting feedback (falling = bad, staying up = good!)
+
+**In AI terms:** The computer tries things, gets a score (reward or punishment), and learns to maximise the reward.
+
+**Real-world example:** Game-playing AI. AlphaGo learned to play the board game Go by playing millions of games against itself — and eventually beat the world champion.
+
+---
+
+## Let's Walk Through a Real Example
+
+Let's say we want to build an AI that recognises handwritten numbers (0-9).
+
+### Step 1: Collect Examples
+We gather thousands of handwritten numbers from different people:
+- Some write "7" with a line through it, others don't
+- Some write "1" as just a line, others add a base
+- "0" and "O" look similar but mean different things
+
+### Step 2: Label Them
+A human looks at each image and labels it: "This is a 3", "This is a 7", etc.
+
+### Step 3: Train the AI
+We show the AI all these labelled examples. It starts to notice patterns:
+- "Numbers with a curve at the top and bottom are probably 8"
+- "Numbers with one straight line are probably 1"
+- "Numbers with a loop are probably 0, 6, or 9"
+
+### Step 4: Test It
+We show the AI handwritten numbers it has **never seen before**. Can it guess correctly?
+
+If it gets 95% right — great! If not, we give it more examples and try again.
+
+<FunFact>
+This isn't just a teaching example — it's a real AI system! Your bank uses exactly this kind of AI to read the numbers on cheques. Post offices use it to read handwritten addresses on letters.
+</FunFact>
+
+---
+
+## What is "Training"?
+
+When we say we "train" an AI, we mean:
+
+1. Show it thousands (or millions) of examples
+2. It makes a prediction
+3. We tell it if it was right or wrong
+4. It adjusts slightly to be better next time
+5. Repeat steps 2-4 millions of times
+
+After enough rounds, the AI has "learned" the pattern.
+
+> Think of it like practicing free throws in basketball. Each throw, you adjust your aim slightly. After thousands of throws, you're quite accurate — not because you memorised each throw, but because you learned the pattern of what works.
+
+---
+
+## "Data" is the Key Ingredient
+
+You've probably heard people say _"Data is the new oil."_ Here's why:
+
+- **More data = better AI** (usually)
+- **Bad data = bad AI** (garbage in, garbage out)
+- **Biased data = biased AI** (if you only train on photos of golden retrievers, it won't recognise poodles)
+
+<ThinkAboutIt>
+If you trained an AI to recognise "food" but only showed it pictures of pizza, it would think that all food is pizza. This is why diverse, representative data matters — and it's one of the biggest challenges in AI today.
+</ThinkAboutIt>
+
+---
+
+## Quick Recap 🎯
+
+1. **Machine learning** = showing AI lots of examples and letting it find patterns
+2. **Three types:** Supervised (with a teacher), Unsupervised (exploring), Reinforcement (trial and error)
+3. **Training** = the process of showing examples, getting predictions, and correcting mistakes — millions of times
+4. **Data quality matters** — bad or biased data leads to bad or biased AI
+
+---
+
+## What's Next? 🚀
+
+Ready to try it yourself? In the next lesson, you'll **train your very first AI model** — right here in your browser. No installation needed!

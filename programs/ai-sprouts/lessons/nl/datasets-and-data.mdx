@@ -1,0 +1,177 @@
+---
+title: "Datasets en Data — De Brandstof van AI"
+description: "Ontdek wat data werkelijk is, hoe AI het gebruikt om te leren, waarom datakwaliteit belangrijk is, en verken echte datasets."
+order: 1
+difficulty: "beginner"
+duration: 25
+icon: "📊"
+published: true
+---
+
+## Welkom bij Niveau 2! 👋
+
+In AI Seeds heb je geleerd dat AI leert van voorbeelden — net als een kind dat dieren leert herkennen uit prentenboeken. Maar waar komen die voorbeelden vandaan?
+
+Het antwoord is **data** — en het is het allerbelangrijkste ingrediënt in AI. Slechte data leidt tot slechte AI. Geweldige data leidt tot geweldige AI.
+
+<Illustration src="/images/lessons/datasets-and-data.svg" alt="Data stroomt in een AI-model zoals brandstof in een motor" caption="Data is de brandstof die elk AI-systeem aandrijft" />
+
+---
+
+## Wat is Data? 🤔
+
+Data is simpelweg **vastgelegde informatie**. Elke digitale actie creëert data:
+
+- 📸 Een foto maken → beelddata
+- 💬 Een bericht sturen → tekstdata
+- 🎵 Een nummer afspelen → luistergeschiedenis
+- 🛒 Online iets kopen → transactiedata
+- 📍 Google Maps openen → locatiedata
+
+In AI verzamelen we deze informatie, organiseren we het en gebruiken we het om machines te leren.
+
+---
+
+## Gestructureerde vs Ongestructureerde Data
+
+### 📋 Gestructureerde Data
+Data die netjes in rijen en kolommen past — zoals een spreadsheet.
+
+| Naam | Leeftijd | Stad | Lievelingskleur |
+|------|----------|------|-----------------|
+| Aisha | 14 | Londen | Blauw |
+| Ravi | 16 | Hyderabad | Groen |
+| Emma | 15 | Amsterdam | Rood |
+
+### 🖼️ Ongestructureerde Data
+Data die niet in een tabel past — afbeeldingen, video's, audio, e-mails, social media posts.
+
+<FunFact>
+Meer dan 80% van alle data wereldwijd is ongestructureerd! Foto's, video's en berichten overtreffen spreadsheets ruimschoots. Modern deep learning is speciaal ontworpen om deze rommelige data te verwerken.
+</FunFact>
+
+---
+
+## Trainings-, Validatie- en Testdata
+
+Als je voor een examen studeert, lees je niet alleen het boek — je oefent ook met proefvragen en doet dan het echte examen. AI doet hetzelfde met drie datasplits:
+
+### 📚 Trainingsdata (het studieboek)
+Het grootste deel — 70 tot 80% van alle data. Het AI-model bestudeert dit om patronen te leren.
+
+### 📝 Validatiedata (oefenvragen)
+Ongeveer 10 tot 15%. Gebruikt *tijdens* het trainen om voortgang te controleren.
+
+### 🎓 Testdata (het eindexamen)
+De overige 10 tot 15%. Gebruikt *na* het trainen. Het model heeft deze data **nooit** eerder gezien.
+
+```python
+from sklearn.model_selection import train_test_split
+
+# Split: 80% training, 20% tijdelijk
+train_data, temp_data = train_test_split(all_data, test_size=0.2)
+
+# Split tijdelijke set: helft validatie, helft test
+val_data, test_data = train_test_split(temp_data, test_size=0.5)
+
+print(f"Training: {len(train_data)}")
+print(f"Validatie: {len(val_data)}")
+print(f"Test: {len(test_data)}")
+```
+
+<ThinkAboutIt>
+Waarom kunnen we het model niet gewoon testen op dezelfde data waarop het getraind is? Omdat het dan zou zijn alsof je een student de exacte examenvragen van tevoren geeft — perfecte score maar misschien geen echt begrip.
+</ThinkAboutIt>
+
+---
+
+## Databias — Waarom Het Belangrijk Is ⚖️
+
+**AI is slechts zo eerlijk als de data waarvan het leert.**
+
+Als je een gezichtsherkenningssysteem voornamelijk traint op foto's van mensen met een lichte huid, zal het slecht presteren op donkerdere gezichten.
+
+Voorbeelden van databias:
+
+- 🏥 **Medische AI** voornamelijk getraind op mannendata — verkeerde diagnoses bij vrouwen
+- 💼 **Wervings-AI** getraind op historische cv's — benadeling van vrouwelijke kandidaten
+- 🚗 **Zelfrijdende auto's** getraind in zonnig Californië — problemen met regen en sneeuw
+
+<Callout>
+**Bias is niet altijd zichtbaar.** Als je dataset 90% Engelse tekst bevat, zal je AI uitstekend zijn in Engels maar slecht in Hindi, Telugu of Nederlands. Vraag altijd: "Wie ontbreekt in deze data?"
+</Callout>
+
+---
+
+## Beroemde Datasets 🌍
+
+### ✍️ MNIST
+- **Wat:** 70.000 afbeeldingen van handgeschreven cijfers (0–9)
+- **Belang:** Het "Hello World" van machine learning
+
+### 🖼️ ImageNet
+- **Wat:** Meer dan 14 miljoen gelabelde afbeeldingen in meer dan 20.000 categorieën
+- **Belang:** De ImageNet-competitie (2010–2017) dreef enorme verbeteringen in beeldherkenning
+
+### 🌐 Common Crawl
+- **Wat:** Petabytes aan webpagina-data verzameld sinds 2008
+- **Belang:** Dit is wat grote taalmodellen zoals GPT aandrijft
+
+### 🗣️ LibriSpeech
+- **Wat:** 1.000 uur voorgelezen Engelstalige spraak
+- **Belang:** Gebruikt om spraakherkenningssystemen te trainen
+
+<FunFact>
+De hele MNIST-dataset is minder dan 15 MB — kleiner dan één smartphonefoto! Toch heeft het duizenden AI-carrières gelanceerd.
+</FunFact>
+
+---
+
+## Praktijk: Een Dataset Verkennen 🔬
+
+Laten we de beroemde Iris-dataset verkennen — 150 metingen van bloemen met 4 kenmerken.
+
+```python
+import pandas as pd
+from sklearn.datasets import load_iris
+
+# Dataset laden
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['species'] = [iris.target_names[t] for t in iris.target]
+
+# Basisverkenning
+print("Vorm:", df.shape)
+print("\nEerste 5 rijen:")
+print(df.head())
+
+print("\nAantal per soort:")
+print(df['species'].value_counts())
+
+print("\nBasisstatistieken:")
+print(df.describe())
+```
+
+Bij het verkennen van een dataset, vraag altijd:
+1. **Hoeveel samples?** (rijen)
+2. **Hoeveel kenmerken?** (kolommen)
+3. **Zijn de klassen gebalanceerd?**
+4. **Zijn er ontbrekende waarden?**
+5. **Hoe zien de getallen eruit?** (bereik, gemiddelde, spreiding)
+
+---
+
+## Snelle Samenvatting 🎯
+
+1. **Data** is vastgelegde informatie — foto's, berichten, klikken
+2. **Gestructureerde data** past in tabellen; **ongestructureerde data** (afbeeldingen, tekst, audio) niet
+3. Data wordt gesplitst in **training** (leren), **validatie** (afstemmen) en **test** (evalueren)
+4. **Databias** leidt tot oneerlijke AI — vraag altijd wie ontbreekt
+5. Datasets zoals **MNIST**, **ImageNet** en **Common Crawl** drijven huidige AI aan
+6. **Verken altijd** je data voordat je een model bouwt
+
+---
+
+## Wat Komt Er Volgende? 🚀
+
+Je weet nu wat AI aandrijft. In de volgende les verkennen we **algoritmen** — de stapsgewijze recepten die data omzetten in intelligente beslissingen!

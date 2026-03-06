@@ -1,0 +1,229 @@
+---
+title: "Les Algorithmes Expliqués — Les Recettes de l'IA"
+description: "Découvrez ce que sont les algorithmes à travers des analogies quotidiennes, puis explorez les arbres de décision, KNN et la régression linéaire."
+order: 2
+difficulty: "beginner"
+duration: 30
+icon: "🧮"
+published: true
+---
+
+## Des Données aux Décisions 👋
+
+Dans la leçon précédente, vous avez appris que les données sont le carburant de l'IA. Mais le carburant seul ne fait pas avancer une voiture — il faut un moteur. En IA, ce moteur s'appelle un **algorithme**.
+
+<Illustration src="/images/lessons/algorithms-explained.svg" alt="Les données entrent, l'algorithme les traite, les prédictions sortent" caption="Un algorithme transforme les données brutes en prédictions utiles" />
+
+---
+
+## Qu'est-ce qu'un Algorithme ? 🤔
+
+Un algorithme est simplement un **ensemble d'instructions étape par étape** pour résoudre un problème.
+
+Vous suivez déjà des algorithmes chaque jour :
+
+- 🍳 **Une recette de cuisine** — « Chauffer l'huile, ajouter les oignons, remuer 3 minutes... »
+- 🗺️ **Les directions vers l'école** — « Aller tout droit, tourner à gauche au parc... »
+- 🔢 **La division longue** — Un processus étape par étape appris en maths
+
+<ThinkAboutIt>
+Pensez à comment vous décidez quoi porter chaque matin. Vous vérifiez la météo, pensez à vos plans, regardez ce qui est propre — c'est un algorithme ! Vous suivez une série d'étapes pour prendre une décision. Les algorithmes d'IA font la même chose, avec des données au lieu de l'intuition.
+</ThinkAboutIt>
+
+---
+
+## Algorithme 1 : Les Arbres de Décision 🌳
+
+Un arbre de décision prend des décisions en posant des **questions oui/non** — comme le jeu des « 20 questions ».
+
+### Comment ça marche
+
+Imaginez que vous décidez si vous allez jouer dehors :
+
+```
+Il pleut ?
+├── Oui → Rester à l'intérieur 🏠
+└── Non → Il fait plus de 15°C ?
+    ├── Oui → Jouer dehors ! ⚽
+    └── Non → Mettre une veste et jouer dehors 🧥
+```
+
+Chaque **nœud** pose une question, chaque **branche** suit une réponse, chaque **feuille** donne une décision finale.
+
+### Pourquoi les arbres de décision sont géniaux
+
+- ✅ **Faciles à comprendre** — on peut les dessiner sur papier
+- ✅ **Explicables** — on peut tracer exactement pourquoi une décision a été prise
+- ✅ **Fonctionnent avec nombres et catégories**
+
+### Quand ils ont du mal
+
+- ❌ Peuvent **sur-apprendre** — mémoriser les données d'entraînement
+- ❌ Un seul arbre peut être **imprécis** sur des problèmes complexes
+
+<FunFact>
+Les Forêts Aléatoires combinent des centaines d'arbres de décision et les font « voter ». C'est comme demander son chemin à 500 personnes et suivre la majorité. Cette idée simple améliore considérablement la précision !
+</FunFact>
+
+---
+
+## Algorithme 2 : K Plus Proches Voisins (KNN) 🏘️
+
+KNN est l'algorithme « demande à tes voisins ». Sa logique est magnifiquement simple : **les choses similaires ont tendance à être proches.**
+
+### L'intuition
+
+Imaginez que vous déménagez dans une nouvelle ville et cherchez un bon restaurant. Que faites-vous ? Vous demandez à vos **plus proches voisins** ! Si 3 sur 5 recommandent la cuisine italienne, vous essaierez probablement l'italien.
+
+KNN fonctionne exactement pareil :
+
+1. Prendre un nouveau point de données inconnu
+2. Trouver les **K points les plus proches** dans les données d'entraînement
+3. Les laisser **voter** sur la réponse
+4. Suivre la majorité
+
+### Choisir K
+
+- **K trop petit** (ex : K=1) → Sensible au bruit
+- **K trop grand** (ex : K=100) → Trop général
+- **Juste milieu** → K=3, 5 ou 7 fonctionne bien. Toujours un nombre impair !
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+
+# Créer et entraîner un modèle KNN avec K=5
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Prédire sur de nouvelles données
+prediction = knn.predict(X_test)
+print(f"Précision : {knn.score(X_test, y_test):.2%}")
+```
+
+<Callout>
+**KNN est un « apprenant paresseux »** — il n'apprend rien pendant l'entraînement ! Il mémorise toutes les données et fait le vrai travail au moment de la prédiction en calculant les distances.
+</Callout>
+
+---
+
+## Algorithme 3 : La Régression Linéaire 📈
+
+La régression linéaire consiste à **tracer une ligne à travers des points de données**. Elle sert à prédire un nombre (pas une catégorie).
+
+### L'intuition
+
+Plus vous étudiez, plus votre note tend à augmenter. Si vous traciez cela sur un graphique, vous verriez les points suivre une tendance ascendante. La régression linéaire trace la **meilleure ligne** à travers ces points.
+
+### L'équation
+
+Chaque ligne peut se décrire par :
+
+```
+y = mx + b
+```
+
+- **y** = ce qu'on prédit (note au test)
+- **x** = entrée (heures d'étude)
+- **m** = pente (inclinaison de la ligne)
+- **b** = ordonnée à l'origine
+
+```python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Heures d'étude et notes
+hours = np.array([1, 2, 3, 4, 5, 6, 7, 8]).reshape(-1, 1)
+scores = np.array([20, 35, 45, 55, 65, 75, 82, 90])
+
+# Ajuster le modèle
+model = LinearRegression()
+model.fit(hours, scores)
+
+# Prédire la note pour 5,5 heures d'étude
+predicted = model.predict([[5.5]])
+print(f"Note prédite pour 5,5 heures : {predicted[0]:.1f}")
+```
+
+### Quand ça marche — et quand non
+
+- ✅ Super quand la relation est **à peu près linéaire**
+- ✅ Rapide, simple et facile à interpréter
+- ❌ Mauvais quand la relation est **courbe** ou complexe
+- ❌ Sensible aux **valeurs aberrantes**
+
+---
+
+## Quel Algorithme Choisir ? 🧭
+
+| Question | Arbre de Décision | KNN | Régression Linéaire |
+|----------|:---:|:---:|:---:|
+| Prédire une catégorie ? | ✅ | ✅ | ❌ |
+| Prédire un nombre ? | ✅ | ✅ | ✅ |
+| Besoin d'expliquer la décision ? | ✅✅ | ❌ | ✅ |
+| Grand jeu de données ? | ✅ | ❌ | ✅ |
+| Relation linéaire ? | ❌ | ❌ | ✅✅ |
+
+<ThinkAboutIt>
+Il n'y a pas de « meilleur » algorithme universel. Le bon choix dépend de vos données et de votre problème. Un médecin pourrait préférer un arbre de décision pour expliquer *pourquoi* il a posé un diagnostic. Une appli météo pourrait utiliser la régression linéaire car la relation est à peu près linéaire.
+</ThinkAboutIt>
+
+---
+
+## Interactif : Construire un Recommandeur de Films 🎬
+
+Construisons un arbre de décision simple pour recommander des films !
+
+```
+Voulez-vous quelque chose de drôle ?
+├── Oui → Aimez-vous les films d'animation ?
+│   ├── Oui → Regardez « Vice-Versa 2 » 🎭
+│   └── Non → Regardez « The Grand Budapest Hotel » 🏨
+└── Non → Aimez-vous l'action ?
+    ├── Oui → Préférez-vous les super-héros ?
+    │   ├── Oui → Regardez « Spider-Man: Across the Spider-Verse » 🕷️
+    │   └── Non → Regardez « Top Gun: Maverick » ✈️
+    └── Non → Voulez-vous une histoire vraie ?
+        ├── Oui → Regardez « Les Figures de l'Ombre » 🚀
+        └── Non → Regardez « Interstellar » 🌌
+```
+
+```python
+def recommend_movie(funny, animated, action, superhero, true_story):
+    if funny:
+        if animated:
+            return "Vice-Versa 2 🎭"
+        else:
+            return "The Grand Budapest Hotel 🏨"
+    else:
+        if action:
+            if superhero:
+                return "Spider-Man: Across the Spider-Verse 🕷️"
+            else:
+                return "Top Gun: Maverick ✈️"
+        else:
+            if true_story:
+                return "Les Figures de l'Ombre 🚀"
+            else:
+                return "Interstellar 🌌"
+
+print(recommend_movie(funny=False, animated=False,
+                      action=True, superhero=True,
+                      true_story=False))
+```
+
+---
+
+## Résumé Rapide 🎯
+
+1. Un **algorithme** est une procédure étape par étape pour résoudre un problème
+2. Les **arbres de décision** posent des questions oui/non — explicables et visuels
+3. **KNN** classifie en demandant aux K voisins les plus proches de voter
+4. La **régression linéaire** trace une ligne pour prédire des nombres
+5. **Aucun algorithme n'est universellement le meilleur** — choisissez selon vos données
+6. Les vrais systèmes d'IA **combinent** souvent plusieurs algorithmes
+
+---
+
+## Prochaine Étape 🚀
+
+Vous avez maintenant rencontré trois algorithmes classiques. Dans la prochaine leçon, nous explorerons les **réseaux de neurones** — les algorithmes inspirés du cerveau derrière les percées modernes de l'IA ! 🧠

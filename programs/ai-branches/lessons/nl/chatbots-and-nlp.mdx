@@ -1,0 +1,271 @@
+---
+title: "Chatbots en NLP — Machines leren taal begrijpen"
+description: "Ontdek hoe Natural Language Processing werkt — van tokenisatie tot transformers — en bouw een intuïtief begrip op van de technologie achter elke AI-chatbot."
+order: 2
+difficulty: "intermediate"
+duration: 35
+icon: "💬"
+published: true
+---
+
+## Praten met machines 🗣️
+
+Je praat elke dag met AI — het weer vragen aan Siri, chatten met een klantenservicebot of een vraag stellen aan ChatGPT. Maar heb je je ooit afgevraagd *hoe* een machine je woorden begrijpt?
+
+Het antwoord is **Natural Language Processing (NLP)** — de tak van AI die machines het vermogen geeft om menselijke taal te lezen, begrijpen en genereren. Laten we de lagen eens afpellen.
+
+<Illustration src="/images/lessons/chatbots-and-nlp.svg" alt="Een bericht reist van een gebruiker door NLP-lagen naar een chatbot-antwoord" caption="NLP transformeert ruwe tekst naar betekenis waarmee een machine kan werken" />
+
+---
+
+## Wat is NLP? 🤔
+
+Natural Language Processing bevindt zich op het snijvlak van **taalkunde**, **informatica** en **AI**. Het doel is bedrieglijk eenvoudig: computers taal laten begrijpen zoals mensen dat doen.
+
+Waarom is dat zo moeilijk? Omdat taal rommelig is:
+
+- "Ik zag haar eend" — dook ze weg, of zag je haar huisdier?
+- "Laten we eten, oma" vs. "Laten we oma eten" — interpunctie redt levens!
+- Sarcasme: "Oh geweldig, weer een maandag" betekent eigenlijk helemaal niet geweldig
+
+<FunFact>
+Er worden ongeveer 7.000 talen gesproken op aarde, elk met een unieke grammatica, uitdrukkingen en culturele nuances. Moderne NLP-modellen zoals GPT-4 kunnen meer dan 100 talen verwerken — maar duizenden worden nog niet ondersteund.
+</FunFact>
+
+---
+
+## De evolutie: van regels naar neurale netwerken 📜➡️🧠
+
+NLP heeft drie grote tijdperken doorgemaakt:
+
+### Tijdperk 1: Regelgebaseerd (1960–1990)
+- Programmeurs schreven handmatig expliciete grammaticaregels
+- "Als de gebruiker X zegt, antwoord dan met Y"
+- Fragiel — kon niets onverwachts aan
+
+### Tijdperk 2: Statistisch (1990–2010)
+- Modellen leerden patronen uit data met behulp van kansberekening
+- Voorbeeld: spamfilters die leerden welke woordcombinaties op spam wijzen
+- Beter, maar nog steeds beperkt in het begrijpen van context
+
+### Tijdperk 3: Neuraal / Deep Learning (2010–heden)
+- Neurale netwerken leren taalrepresentaties uit enorme tekstcorpora
+- **Transformers** (2017) revolutioneerden het vakgebied
+- Modellen zoals BERT, GPT en LLaMA kunnen opmerkelijk menselijk klinkende tekst begrijpen en genereren
+
+<Callout>
+Het paper uit 2017, "Attention Is All You Need", van Google-onderzoekers introduceerde de Transformer-architectuur. Het is de basis van vrijwel elke moderne taal-AI — van ChatGPT tot Google Translate tot GitHub Copilot.
+</Callout>
+
+---
+
+## Stap 1: Tokenisatie — Tekst in stukjes knippen ✂️
+
+Voordat een machine een zin kan begrijpen, moet hij deze opsplitsen in kleinere eenheden die **tokens** worden genoemd.
+
+```python
+# Simple word-level tokenisation
+sentence = "AI is transforming healthcare!"
+tokens = sentence.lower().split()
+print(tokens)
+# Output: ['ai', 'is', 'transforming', 'healthcare!']
+
+# Modern subword tokenisation (like GPT uses)
+# "unhappiness" → ["un", "happiness"]
+# "ChatGPT" → ["Chat", "G", "PT"]
+# This handles words the model has never seen before!
+```
+
+Moderne modellen gebruiken **subwoord-tokenisatie** — ze breken woorden op in betekenisvolle stukjes. Daarom kan een model woorden aan die het nooit eerder heeft gezien: het herkent de onderdelen.
+
+Zie het als Lego: ook al heb je een specifiek kasteel nooit gezien, je begrijpt de afzonderlijke blokjes.
+
+---
+
+## Stap 2: Embeddings — Woorden als getallen 🔢
+
+Machines begrijpen geen woorden — ze begrijpen getallen. **Embeddings** zetten elk token om in een lijst van getallen (een vector) die de betekenis vastlegt.
+
+```python
+# Conceptual example: word embeddings
+# Each word becomes a vector in high-dimensional space
+embeddings = {
+    "king":   [0.8, 0.2, -0.5, 0.9],
+    "queen":  [0.7, 0.3, -0.5, 0.8],
+    "man":    [0.9, 0.1, 0.4, 0.2],
+    "woman":  [0.8, 0.2, 0.4, 0.1],
+}
+
+# The magic: king - man + woman ≈ queen
+# Similar meanings → nearby vectors in this number space
+```
+
+De prachtige eigenschap van embeddings: **woorden met een vergelijkbare betekenis liggen dicht bij elkaar** in deze getallenruimte. "Blij" en "vrolijk" zouden buren zijn; "blij" en "aardbeving" zouden ver uit elkaar liggen.
+
+<ThinkAboutIt>
+Als embeddings betekenis vastleggen als getallen, wat gebeurt er dan wanneer een woord meerdere betekenissen heeft? "Bank" (rivierbank vs. geldinstelling) heeft verschillende vectoren nodig afhankelijk van de context. Dit is precies wat de volgende stap — attention — oplost.
+</ThinkAboutIt>
+
+---
+
+## Stap 3: Attention — Wat het belangrijkst is 👀
+
+Het **attention-mechanisme** is het geheime wapen van moderne NLP. Het stelt het model in staat om te bepalen welke woorden in een zin het meest relevant zijn voor elkaar.
+
+Neem de zin: *"De kat zat op de mat omdat **hij** moe was."*
+
+Waar verwijst "hij" naar? De kat, de mat, of het zitten? Jij weet dat het de kat is — en attention helpt het model om dat ook te achterhalen.
+
+### Hoe Attention werkt (intuïtie)
+
+Stel je voor dat je op een druk feest bent. Je kunt je "aandacht richten" op één gesprek terwijl je de rest wegfiltert. Attention in AI werkt op dezelfde manier:
+
+1. Bereken voor elk woord hoe relevant elk ander woord is
+2. Besteed meer "aandacht" aan relevante woorden, minder aan irrelevante
+3. Bouw een nieuwe representatie van elk woord op die de context bevat
+
+```python
+# Simplified attention intuition
+sentence = ["The", "cat", "sat", "because", "it", "was", "tired"]
+
+# When processing "it", attention scores might look like:
+attention_for_it = {
+    "The":     0.02,   # barely relevant
+    "cat":     0.65,   # highly relevant — "it" refers to "cat"
+    "sat":     0.10,   # somewhat relevant
+    "because": 0.03,   # barely relevant
+    "it":      0.05,   # self-reference
+    "was":     0.05,   # grammar link
+    "tired":   0.10,   # connected to "it"
+}
+# The model "attends" most to "cat" — correctly linking the pronoun
+```
+
+<FunFact>
+GPT-4 gebruikt ongeveer 120 lagen attention, die elk vanuit een andere invalshoek naar de tekst kijken — grammatica, betekenis, toon, feitelijke relaties. Het is alsof 120 experts dezelfde tekst lezen en aantekeningen uitwisselen.
+</FunFact>
+
+---
+
+## Hoe chatbots werken 🤖
+
+Een chatbot combineert NLP-componenten tot een conversatiesysteem. Dit is de kernarchitectuur:
+
+### Intentherkenning
+"Wat is het weer?" → Intent: **get_weather**
+
+### Entiteitextractie
+"Wat is het weer in **Londen** **morgen**?" → Entiteiten: stad=Londen, datum=morgen
+
+### Antwoordgeneratie
+Zoek het antwoord op en formuleer een reactie.
+
+```python
+# A simple rule-based chatbot skeleton
+def simple_chatbot(user_message):
+    """A basic chatbot using intent and entity extraction."""
+    message = user_message.lower()
+
+    # Intent recognition (simplified)
+    if any(word in message for word in ["weather", "temperature", "rain"]):
+        intent = "get_weather"
+    elif any(word in message for word in ["hello", "hi", "hey"]):
+        intent = "greeting"
+    elif any(word in message for word in ["bye", "goodbye", "see you"]):
+        intent = "farewell"
+    else:
+        intent = "unknown"
+
+    # Entity extraction (simplified)
+    cities = ["london", "paris", "tokyo", "hyderabad", "amsterdam"]
+    detected_city = next((c for c in cities if c in message), None)
+
+    # Response generation
+    responses = {
+        "greeting":    "Hello! How can I help you today? 😊",
+        "farewell":    "Goodbye! Have a great day! 👋",
+        "get_weather": f"Checking weather for {detected_city or 'your area'}... 🌤️",
+        "unknown":     "I'm not sure I understand. Could you rephrase? 🤔",
+    }
+
+    return responses[intent]
+
+# Try it out
+print(simple_chatbot("Hi there!"))
+print(simple_chatbot("What's the weather in Tokyo?"))
+print(simple_chatbot("Tell me a joke"))
+```
+
+---
+
+## Van ELIZA tot ChatGPT — Een tijdlijn 📅
+
+| Jaar | Systeem | Aanpak | Mogelijkheid |
+|------|---------|--------|--------------|
+| 1966 | **ELIZA** | Patroonherkenning | Imiteerde een therapeut met simpele tekstvervanging |
+| 1995 | **ALICE** | Regelgebaseerd (AIML) | Meer regels, maar nog steeds geen echt begrip |
+| 2011 | **Siri** | Statistische NLP | Spraakgestuurde assistent met webzoekopdrachten |
+| 2016 | **Alexa / Google Assistant** | Deep learning NLP | Beter in context en vervolgvragen |
+| 2018 | **BERT** (Google) | Transformer (bidirectioneel) | Begreep context in beide richtingen |
+| 2022 | **ChatGPT** (OpenAI) | Transformer (generatief) | Genereert vloeiende, contextuele gesprekken met meerdere beurten |
+| 2024 | **GPT-4, Claude, Gemini** | Multimodale transformers | Verwerkt tekst, afbeeldingen, code en redenering |
+
+<Callout>
+ELIZA (1966) liet sommige gebruikers geloven dat ze met een echte therapeut spraken — niet omdat het systeem slim was, maar omdat mensen van nature begrip projecteren op gesprekspartners. Dit heet het **ELIZA-effect**, en het geldt vandaag de dag nog steeds wanneer we overschatten wat chatbots werkelijk "begrijpen."
+</Callout>
+
+---
+
+## Beperkingen en hallucinaties ⚠️
+
+Moderne taalmodellen zijn indrukwekkend, maar ze hebben echte beperkingen:
+
+### Hallucinaties
+Modellen genereren soms zelfverzekerde maar **volstrekt onjuiste** informatie. Ze "weten" geen feiten — ze voorspellen het meest waarschijnlijke volgende woord.
+
+### Geen echt begrip
+Een taalmodel heeft de wereld nooit gezien, aangeraakt of ervaren. Het kent alleen taalpatronen uit tekst. Het kan een zonsondergang prachtig beschrijven zonder er ooit een te hebben "gezien."
+
+### Beperkingen van het contextvenster
+Modellen kunnen slechts een beperkte hoeveelheid tekst tegelijk verwerken. Zeer lange gesprekken kunnen ertoe leiden dat ze eerdere context "vergeten."
+
+### Versterking van vooroordelen
+Als trainingsdata vooroordelen bevat (stereotypen, desinformatie), reproduceert het model deze en versterkt ze soms zelfs.
+
+```python
+# Illustrating the hallucination concept
+def language_model_intuition(prompt):
+    """
+    A language model doesn't retrieve facts — it predicts probable words.
+    
+    Prompt: "The capital of France is ___"
+    The model has seen "Paris" follow this pattern thousands of times,
+    so it predicts "Paris" — not because it 'knows' geography,
+    but because it's the statistically likely next word.
+    
+    For rare or ambiguous prompts, it may confidently predict
+    something entirely wrong — that's a hallucination.
+    """
+    pass  # Real models use billions of parameters for this prediction
+```
+
+<ThinkAboutIt>
+Wanneer een chatbot zegt "Ik denk" of "Ik geloof," denkt of gelooft het dan werkelijk iets? Hoe verandert de wetenschap dat het simpelweg het volgende woord voorspelt de manier waarop je zijn antwoorden interpreteert? Zouden chatbots verplicht moeten worden om te vermelden dat ze AI zijn?
+</ThinkAboutIt>
+
+---
+
+## Korte samenvatting 🎯
+
+1. **NLP** is de tak van AI die machines helpt menselijke taal te begrijpen
+2. NLP evolueerde van **starre regels** naar **statistische modellen** naar **neurale transformers**
+3. **Tokenisatie** breekt tekst op in stukjes; **embeddings** zetten ze om in getallen; **attention** legt de context vast
+4. Chatbots gebruiken **intentherkenning** en **entiteitextractie** om te begrijpen en te antwoorden
+5. De reis van **ELIZA** (1966) tot **ChatGPT** (2022) beslaat bijna 60 jaar vooruitgang
+6. **Hallucinaties** en **vooroordelen** zijn echte beperkingen — controleer altijd door AI gegenereerde informatie
+
+---
+
+## Wat nu? 🚀
+
+Je begrijpt nu hoe machines taal verwerken. In de volgende les duiken we in **computer vision** — machines leren *zien*. Je leert hoe AI gezichten herkent, auto's bestuurt en de AR-filters op je telefoon aandrijft!

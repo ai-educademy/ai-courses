@@ -1,0 +1,271 @@
+---
+title: "Chatbots et NLP — Apprendre aux machines à comprendre le langage"
+description: "Découvrez le fonctionnement du traitement du langage naturel — de la tokenisation aux transformers — et construisez une compréhension intuitive de la technologie derrière chaque chatbot IA."
+order: 2
+difficulty: "intermediate"
+duration: 35
+icon: "💬"
+published: true
+---
+
+## Parler aux machines 🗣️
+
+Vous parlez à l'IA chaque jour — en demandant la météo à Siri, en discutant avec un bot de service client, ou en interrogeant ChatGPT. Mais vous êtes-vous déjà demandé *comment* une machine comprend vos mots ?
+
+La réponse est le **traitement du langage naturel (NLP)** — la branche de l'IA qui donne aux machines la capacité de lire, comprendre et générer le langage humain. Explorons cela couche par couche.
+
+<Illustration src="/images/lessons/chatbots-and-nlp.svg" alt="Un message traverse les couches NLP, de l'utilisateur jusqu'à la réponse du chatbot" caption="Le NLP transforme du texte brut en une signification exploitable par la machine" />
+
+---
+
+## Qu'est-ce que le NLP ? 🤔
+
+Le traitement du langage naturel se situe à l'intersection de la **linguistique**, de l'**informatique** et de l'**IA**. Son objectif est d'une simplicité trompeuse : faire comprendre le langage aux ordinateurs comme le font les humains.
+
+Pourquoi est-ce si difficile ? Parce que le langage est ambigu :
+
+- « J'ai vu sa mouche » — l'insecte ou le grain de beauté ?
+- « On mange, mamie » vs « On mange mamie » — la ponctuation sauve des vies !
+- L'ironie : « Super, encore un lundi » ne veut pas vraiment dire super
+
+<FunFact>
+On dénombre environ 7 000 langues parlées sur Terre, chacune avec sa grammaire, ses expressions idiomatiques et ses nuances culturelles. Les modèles NLP modernes comme GPT-4 gèrent plus de 100 langues — mais des milliers restent non prises en charge.
+</FunFact>
+
+---
+
+## L'évolution : des règles aux réseaux de neurones 📜➡️🧠
+
+Le NLP a traversé trois grandes ères :
+
+### Ère 1 : Approche par règles (1960–1990)
+- Les programmeurs écrivaient des règles de grammaire explicites à la main
+- « Si l'utilisateur dit X, répondre Y »
+- Fragile — incapable de gérer l'imprévu
+
+### Ère 2 : Approche statistique (1990–2010)
+- Les modèles apprenaient des schémas à partir de données en utilisant les probabilités
+- Exemple : les filtres anti-spam qui apprenaient quelles combinaisons de mots indiquent un spam
+- Mieux, mais toujours limité dans la compréhension du contexte
+
+### Ère 3 : Réseaux de neurones / Apprentissage profond (2010–aujourd'hui)
+- Les réseaux de neurones apprennent des représentations du langage à partir d'immenses corpus de texte
+- Les **Transformers** (2017) ont révolutionné le domaine
+- Des modèles comme BERT, GPT et LLaMA comprennent et génèrent un texte remarquablement humain
+
+<Callout>
+L'article de 2017 « Attention Is All You Need » des chercheurs de Google a introduit l'architecture Transformer. C'est le fondement de pratiquement toute IA linguistique moderne — de ChatGPT à Google Traduction en passant par GitHub Copilot.
+</Callout>
+
+---
+
+## Étape 1 : La tokenisation — découper le texte en morceaux ✂️
+
+Avant qu'une machine puisse comprendre une phrase, elle doit la décomposer en unités plus petites appelées **tokens**.
+
+```python
+# Simple word-level tokenisation
+sentence = "AI is transforming healthcare!"
+tokens = sentence.lower().split()
+print(tokens)
+# Output: ['ai', 'is', 'transforming', 'healthcare!']
+
+# Modern subword tokenisation (like GPT uses)
+# "unhappiness" → ["un", "happiness"]
+# "ChatGPT" → ["Chat", "G", "PT"]
+# This handles words the model has never seen before!
+```
+
+Les modèles modernes utilisent la **tokenisation en sous-mots** — ils découpent les mots en fragments porteurs de sens. C'est pourquoi un modèle peut traiter des mots qu'il n'a jamais rencontrés : il en reconnaît les sous-parties.
+
+Pensez aux Lego : même si vous n'avez jamais vu un château spécifique, vous comprenez les briques individuelles.
+
+---
+
+## Étape 2 : Les embeddings — les mots sous forme de nombres 🔢
+
+Les machines ne comprennent pas les mots — elles comprennent les nombres. Les **embeddings** convertissent chaque token en une liste de nombres (un vecteur) qui capture son sens.
+
+```python
+# Conceptual example: word embeddings
+# Each word becomes a vector in high-dimensional space
+embeddings = {
+    "king":   [0.8, 0.2, -0.5, 0.9],
+    "queen":  [0.7, 0.3, -0.5, 0.8],
+    "man":    [0.9, 0.1, 0.4, 0.2],
+    "woman":  [0.8, 0.2, 0.4, 0.1],
+}
+
+# The magic: king - man + woman ≈ queen
+# Similar meanings → nearby vectors in this number space
+```
+
+La propriété remarquable des embeddings : **les mots de sens similaire sont proches** dans cet espace numérique. « Heureux » et « joyeux » seraient voisins ; « heureux » et « tremblement de terre » seraient très éloignés.
+
+<ThinkAboutIt>
+Si les embeddings capturent le sens sous forme de nombres, que se passe-t-il lorsqu'un mot a plusieurs significations ? « Avocat » (le fruit ou le juriste) nécessite des vecteurs différents selon le contexte. C'est exactement ce que l'étape suivante — l'attention — résout.
+</ThinkAboutIt>
+
+---
+
+## Étape 3 : L'attention — ce qui compte le plus 👀
+
+Le **mécanisme d'attention** est l'ingrédient secret du NLP moderne. Il permet au modèle de déterminer quels mots d'une phrase sont les plus pertinents les uns par rapport aux autres.
+
+Considérez : *« Le chat était assis sur le tapis parce qu'**il** était fatigué. »*
+
+À quoi « il » fait-il référence ? Au chat, au tapis, ou à l'action de s'asseoir ? Vous savez que c'est le chat — et l'attention aide le modèle à le comprendre aussi.
+
+### Comment fonctionne l'attention (intuition)
+
+Imaginez que vous êtes dans une fête bruyante. Vous pouvez « prêter attention » à une conversation tout en filtrant les autres. L'attention en IA fonctionne de manière similaire :
+
+1. Pour chaque mot, calculer la pertinence de chaque autre mot
+2. Accorder plus d'« attention » aux mots pertinents, moins aux autres
+3. Construire une nouvelle représentation de chaque mot qui intègre son contexte
+
+```python
+# Simplified attention intuition
+sentence = ["The", "cat", "sat", "because", "it", "was", "tired"]
+
+# When processing "it", attention scores might look like:
+attention_for_it = {
+    "The":     0.02,   # barely relevant
+    "cat":     0.65,   # highly relevant — "it" refers to "cat"
+    "sat":     0.10,   # somewhat relevant
+    "because": 0.03,   # barely relevant
+    "it":      0.05,   # self-reference
+    "was":     0.05,   # grammar link
+    "tired":   0.10,   # connected to "it"
+}
+# The model "attends" most to "cat" — correctly linking the pronoun
+```
+
+<FunFact>
+GPT-4 utilise environ 120 couches d'attention, chacune analysant le texte sous un angle différent — grammaire, sens, ton, relations factuelles. C'est comme avoir 120 experts lisant le même texte et partageant leurs notes.
+</FunFact>
+
+---
+
+## Comment fonctionnent les chatbots 🤖
+
+Un chatbot combine les composants du NLP en un système conversationnel. Voici l'architecture de base :
+
+### Reconnaissance d'intention
+« Quel temps fait-il ? » → Intention : **get_weather**
+
+### Extraction d'entités
+« Quel temps fait-il à **Londres** **demain** ? » → Entités : ville=Londres, date=demain
+
+### Génération de réponse
+Rechercher la réponse et formuler une réponse.
+
+```python
+# A simple rule-based chatbot skeleton
+def simple_chatbot(user_message):
+    """A basic chatbot using intent and entity extraction."""
+    message = user_message.lower()
+
+    # Intent recognition (simplified)
+    if any(word in message for word in ["weather", "temperature", "rain"]):
+        intent = "get_weather"
+    elif any(word in message for word in ["hello", "hi", "hey"]):
+        intent = "greeting"
+    elif any(word in message for word in ["bye", "goodbye", "see you"]):
+        intent = "farewell"
+    else:
+        intent = "unknown"
+
+    # Entity extraction (simplified)
+    cities = ["london", "paris", "tokyo", "hyderabad", "amsterdam"]
+    detected_city = next((c for c in cities if c in message), None)
+
+    # Response generation
+    responses = {
+        "greeting":    "Hello! How can I help you today? 😊",
+        "farewell":    "Goodbye! Have a great day! 👋",
+        "get_weather": f"Checking weather for {detected_city or 'your area'}... 🌤️",
+        "unknown":     "I'm not sure I understand. Could you rephrase? 🤔",
+    }
+
+    return responses[intent]
+
+# Try it out
+print(simple_chatbot("Hi there!"))
+print(simple_chatbot("What's the weather in Tokyo?"))
+print(simple_chatbot("Tell me a joke"))
+```
+
+---
+
+## D'ELIZA à ChatGPT — une chronologie 📅
+
+| Année | Système | Approche | Capacité |
+|-------|---------|----------|----------|
+| 1966 | **ELIZA** | Correspondance de motifs | Imitait un thérapeute avec de simples substitutions de texte |
+| 1995 | **ALICE** | Règles (AIML) | Plus de règles, mais toujours aucune compréhension réelle |
+| 2011 | **Siri** | NLP statistique | Assistant vocal avec recherche web |
+| 2016 | **Alexa / Google Assistant** | NLP par apprentissage profond | Meilleure gestion du contexte et des questions de suivi |
+| 2018 | **BERT** (Google) | Transformer (bidirectionnel) | Comprenait le contexte dans les deux directions |
+| 2022 | **ChatGPT** (OpenAI) | Transformer (génératif) | Génère des conversations fluides et contextuelles sur plusieurs tours |
+| 2024 | **GPT-4, Claude, Gemini** | Transformers multimodaux | Traitent texte, images, code et raisonnement |
+
+<Callout>
+ELIZA (1966) a trompé certains utilisateurs en leur faisant croire qu'ils parlaient à un vrai thérapeute — non pas parce qu'elle était intelligente, mais parce que les humains projettent naturellement de la compréhension sur leurs interlocuteurs. C'est ce qu'on appelle l'**effet ELIZA**, et il s'applique encore aujourd'hui quand on surestime ce que les chatbots « comprennent » réellement.
+</Callout>
+
+---
+
+## Limites et hallucinations ⚠️
+
+Les modèles de langage modernes sont impressionnants, mais ils présentent de vraies limites :
+
+### Hallucinations
+Les modèles génèrent parfois des informations formulées avec assurance mais **totalement fausses**. Ils ne « savent » pas des faits — ils prédisent le mot suivant le plus probable.
+
+### Aucune compréhension véritable
+Un modèle de langage n'a jamais vu, touché ni expérimenté le monde. Il ne connaît que des schémas linguistiques issus de textes. Il peut décrire un coucher de soleil magnifiquement sans en avoir jamais « vu » un seul.
+
+### Limites de la fenêtre de contexte
+Les modèles ne peuvent considérer qu'une quantité fixe de texte à la fois. Les conversations très longues peuvent les amener à « oublier » le contexte antérieur.
+
+### Amplification des biais
+Si les données d'entraînement contiennent des biais (stéréotypes, désinformation), le modèle les reproduit et parfois les amplifie.
+
+```python
+# Illustrating the hallucination concept
+def language_model_intuition(prompt):
+    """
+    A language model doesn't retrieve facts — it predicts probable words.
+    
+    Prompt: "The capital of France is ___"
+    The model has seen "Paris" follow this pattern thousands of times,
+    so it predicts "Paris" — not because it 'knows' geography,
+    but because it's the statistically likely next word.
+    
+    For rare or ambiguous prompts, it may confidently predict
+    something entirely wrong — that's a hallucination.
+    """
+    pass  # Real models use billions of parameters for this prediction
+```
+
+<ThinkAboutIt>
+Quand un chatbot dit « Je pense » ou « Je crois », pense-t-il ou croit-il réellement quelque chose ? Sachant qu'il prédit simplement le mot suivant, comment cela change-t-il votre interprétation de ses réponses ? Les chatbots devraient-ils être obligés de révéler qu'ils sont des IA ?
+</ThinkAboutIt>
+
+---
+
+## Récapitulatif 🎯
+
+1. Le **NLP** est la branche de l'IA qui aide les machines à comprendre le langage humain
+2. Le NLP a évolué des **règles rigides** aux **modèles statistiques** puis aux **transformers neuronaux**
+3. La **tokenisation** découpe le texte en morceaux ; les **embeddings** les convertissent en nombres ; l'**attention** capture le contexte
+4. Les chatbots utilisent la **reconnaissance d'intention** et l'**extraction d'entités** pour comprendre et répondre
+5. Le chemin d'**ELIZA** (1966) à **ChatGPT** (2022) couvre près de 60 ans de progrès
+6. Les **hallucinations** et les **biais** sont de vraies limites — vérifiez toujours les informations générées par l'IA
+
+---
+
+## Et ensuite ? 🚀
+
+Vous comprenez maintenant comment les machines traitent le langage. Dans la prochaine leçon, nous aborderons la **vision par ordinateur** — apprendre aux machines à *voir*. Vous découvrirez comment l'IA reconnaît les visages, conduit des voitures et alimente les filtres de réalité augmentée sur votre téléphone !

@@ -1,0 +1,411 @@
+---
+title: "Design a Recommendation Engine — AI at Scale"
+description: "Design Netflix/Spotify-style recommendations. Understand collaborative filtering, content-based filtering, and real-time ML serving."
+order: 3
+difficulty: "advanced"
+duration: 30
+icon: "🎯"
+published: true
+---
+
+# Design a Recommendation Engine
+
+Recommendations drive 80% of what people watch on Netflix, 30% of Amazon's revenue, and the entire TikTok experience. This is where system design meets machine learning at scale.
+
+<Callout type="info">
+This is an **advanced** system design question. It tests ML knowledge, data pipeline design, and distributed systems — all in one. Interviewers love it because it has no single "right" answer.
+</Callout>
+
+---
+
+## Step 1: Requirements
+
+### Functional Requirements
+
+| Requirement | Detail |
+|---|---|
+| **Personalized recommendations** | Show items tailored to each user |
+| **Similar items** | "Because you watched X..." |
+| **Trending/Popular** | Non-personalized fallback for new users |
+| **Real-time updates** | Recommendations reflect recent actions |
+| **A/B testing** | Compare recommendation algorithms |
+
+### Non-Functional Requirements
+
+| Requirement | Target |
+|---|---|
+| **Latency** | < 100ms for recommendation fetch (p99) |
+| **Scale** | 200M+ users, 50K+ items |
+| **Freshness** | Recommendations update within minutes of user action |
+| **Availability** | 99.99% — recommendations must always appear |
+| **Throughput** | 50K+ recommendation requests per second |
+
+<ThinkAboutIt>
+What happens when the recommendation service is down? Do you show a blank page? Think about graceful degradation — popular items, cached recommendations, and category-based fallbacks. Netflix has a hierarchy of fallback strategies, each less personalized than the last.
+</ThinkAboutIt>
+
+---
+
+## Step 2: Types of Recommendation
+
+The three fundamental approaches — and why production systems use all three.
+
+<Illustration src="/images/lessons/craft/recommendation-types.svg" alt="Three-panel comparison of Collaborative Filtering (user similarity), Content-Based Filtering (item features), and Hybrid approach (ML-ranked combination) with pros, cons, and real-world usage" caption="Three approaches to recommendation — Collaborative finds patterns in user behavior, Content-Based matches item features, and Hybrid combines both through an ML ranker for the best results." />
+
+### Quick Comparison
+
+| Approach | Data Needed | Cold Start? | Diversity | Accuracy |
+|---|---|---|---|---|
+| **Collaborative** | User-item interactions | Yes (new users/items) | High | High |
+| **Content-Based** | Item metadata | Only for users | Low | Medium |
+| **Hybrid** | Both | Mitigated | High | Highest |
+
+### The Cold Start Problem
+
+| Scenario | Solution |
+|---|---|
+| **New user, no history** | Show trending/popular items, ask preferences onboarding |
+| **New item, no interactions** | Content-based features, promote in explore slots |
+| **New platform** | Use demographic data, import from other platforms |
+
+<FunFact>
+Spotify's "Discover Weekly" uses collaborative filtering on 600M+ playlists. When Spotify launched in a new country, they solved the cold-start problem by seeding recommendations from the global model — users in Japan got recommendations influenced by similar listeners worldwide.
+</FunFact>
+
+---
+
+## Step 3: User-Item Interaction Matrix
+
+The foundation of collaborative filtering is the **interaction matrix** — a massive, sparse table of user preferences.
+
+### The Matrix
+
+```
+              Item_1  Item_2  Item_3  Item_4  Item_5  ...  Item_50K
+User_1:       [  5      -      3       -       4     ...    -    ]
+User_2:       [  -      4      -       5       -     ...    2    ]
+User_3:       [  4      -      3       -       5     ...    -    ]
+User_4:       [  -      5      -       4       -     ...    3    ]
+...
+User_200M:    [  -      -      4       -       -     ...    5    ]
+
+Sparsity: ~99% empty (users only interact with tiny fraction of items)
+```
+
+### Matrix Factorization (How Netflix Does It)
+
+```python
+# Decompose the sparse matrix into two dense matrices
+# R (users x items) ≈ U (users x k) × V (k x items)
+# k = latent factors (typically 50-200)
+
+# User_1 embedding: [0.8, -0.2, 0.5, ...]  → "likes sci-fi, dislikes romance"
+# Item_3 embedding: [0.7, -0.3, 0.4, ...]  → "is sci-fi, not romance"
+# Predicted rating = dot_product(User_1, Item_3) = high score!
+
+import numpy as np
+
+def als_step(R, U, V, lambda_reg=0.1):
+    """Alternating Least Squares — one optimization step"""
+    # Fix V, solve for U
+    for i in range(R.shape[0]):
+        rated = R[i].nonzero()[0]
+        if len(rated) == 0:
+            continue
+        V_rated = V[rated]
+        R_rated = R[i, rated]
+        U[i] = np.linalg.solve(
+            V_rated.T @ V_rated + lambda_reg * np.eye(V.shape[1]),
+            V_rated.T @ R_rated
+        )
+    return U
+```
+
+<Callout type="info">
+Modern systems have moved beyond matrix factorization to **deep learning models** — two-tower architectures, transformers, and graph neural networks. But understanding matrix factorization is essential: it's the foundation that interviewers expect you to know.
+</Callout>
+
+---
+
+## Step 4: Full System Architecture
+
+This is the complete ML pipeline — from raw data to recommendations served at 50K RPS.
+
+<Illustration src="/images/lessons/craft/recommendation-arch.svg" alt="Full recommendation engine ML architecture showing data sources flowing through stream processing to feature store, with offline batch training path and online serving path including candidate generation, ML ranking, and re-ranking layers" caption="The two-path architecture: Batch (offline) for model training, Real-time (online) for serving. The Feature Store bridges both worlds, providing consistent features for training and inference." />
+
+### Architecture Components Deep Dive
+
+#### Offline Path (Batch Processing)
+
+| Component | Purpose | Technology | Cadence |
+|---|---|---|---|
+| **Data Lake** | Store all raw events | S3, GCS | Continuous |
+| **Feature Engineering** | Compute features from raw data | Spark, dbt | Hourly/Daily |
+| **Model Training** | Train recommendation models | PyTorch, TF on GPU | Daily |
+| **Model Registry** | Version and deploy models | MLflow, SageMaker | On-demand |
+
+#### Online Path (Real-Time Serving)
+
+| Component | Purpose | Technology | Latency |
+|---|---|---|---|
+| **Candidate Generation** | Narrow from millions to ~1000 | FAISS, Milvus (ANN) | < 20ms |
+| **Ranking Model** | Score and rank candidates | TF Serving, Triton | < 30ms |
+| **Re-Ranking** | Apply business rules, diversity | Custom logic | < 5ms |
+| **Response Cache** | Cache recent recommendations | Redis | < 2ms |
+
+### The Two-Stage Pipeline
+
+```
+50,000 items in catalog
+        |
+   [Candidate Generation] — fast, approximate (ANN search)
+        |
+    1,000 candidates
+        |
+   [ML Ranking Model] — precise scoring with full features
+        |
+      Top 100 scored
+        |
+   [Re-Ranking Layer] — diversity, freshness, business rules
+        |
+    Final 20 shown to user
+```
+
+<ThinkAboutIt>
+Why split into candidate generation + ranking instead of scoring all 50K items? Consider: if your ranking model takes 1ms per item, scoring 50K items = 50 seconds. Scoring 1K candidates = 1 second. The candidate generation step uses approximate nearest neighbor (ANN) search to cheaply filter down to a manageable set.
+</ThinkAboutIt>
+
+---
+
+## Step 5: Feature Store
+
+The Feature Store is the **most important infrastructure component** you'll discuss in ML system design interviews.
+
+### Why Feature Stores?
+
+| Problem Without | Solution With Feature Store |
+|---|---|
+| Training/serving skew | Same features used for both |
+| Duplicate feature code | Single source of truth |
+| Stale features | Automatic freshness tracking |
+| Slow feature computation | Pre-computed, cached |
+
+### Feature Examples
+
+```python
+# User features (computed daily, stored in Feature Store)
+user_features = {
+    "user_id": "u_12345",
+    "avg_session_duration_7d": 45.2,      # minutes
+    "genre_affinity": [0.8, 0.2, 0.5],    # [action, comedy, drama]
+    "active_hours": [18, 19, 20, 21],     # peak usage hours
+    "device_type": "mobile",
+    "account_age_days": 730,
+    "total_items_consumed": 342,
+}
+
+# Item features (updated on catalog change)
+item_features = {
+    "item_id": "movie_789",
+    "embedding": [0.12, -0.34, ...],       # 256-dim vector
+    "genre": ["sci-fi", "action"],
+    "release_year": 2024,
+    "avg_rating": 4.2,
+    "popularity_score_7d": 0.87,
+    "content_length_min": 142,
+}
+
+# Context features (computed real-time)
+context_features = {
+    "time_of_day": "evening",
+    "day_of_week": "saturday",
+    "device": "smart_tv",
+    "recent_interactions": ["movie_123", "movie_456"],
+}
+```
+
+---
+
+## Step 6: A/B Testing Framework
+
+You can't improve what you can't measure. A/B testing is essential for recommendation systems.
+
+### Experiment Setup
+
+```yaml
+experiment:
+  name: "two_tower_v2_vs_v1"
+  traffic_split:
+    control:   { model: "v1", weight: 90 }
+    treatment: { model: "v2", weight: 10 }
+  metrics:
+    primary:   "click_through_rate"
+    secondary: ["watch_time", "completion_rate", "diversity_score"]
+  guardrails:
+    - "unsubscribe_rate < 0.5%"
+    - "latency_p99 < 150ms"
+  duration: "14 days"
+  min_sample_size: 100000
+```
+
+### Key Metrics
+
+| Metric | What It Measures | Target |
+|---|---|---|
+| **CTR** | Click-through rate on recommendations | > 5% |
+| **Engagement** | Watch time / listen time | > 30 min/session |
+| **Diversity** | Variety in recommendations | Intra-list distance > 0.3 |
+| **Coverage** | % of catalog recommended | > 40% |
+| **Novelty** | How "new" items are to users | Balance with relevance |
+| **Serendipity** | Unexpected but liked items | Hard to measure, critical for UX |
+
+<Callout type="info">
+Netflix runs **250+ A/B tests simultaneously** on their recommendation system. Every visual element — from artwork to row ordering to the algorithm itself — is tested. They estimate that recommendations save them $1B/year in reduced churn.
+</Callout>
+
+---
+
+## Step 7: Real-Time vs Batch Recommendations
+
+### When to Use Each
+
+| Scenario | Approach | Why |
+|---|---|---|
+| **Homepage "For You"** | Batch + cache | Computed hourly, cached per user |
+| **"Because you just watched X"** | Real-time | Must reflect last action |
+| **Email digests** | Batch | Computed daily in bulk |
+| **"Trending now"** | Near real-time | Aggregate popularity every 5 min |
+| **Search results** | Real-time | Context-dependent, query-specific |
+
+### Real-Time Architecture
+
+```python
+async def get_recommendations(user_id: str, context: dict) -> list:
+    # 1. Check cache (< 2ms)
+    cached = await redis.get(f"recs:{user_id}")
+    if cached and not context.get("force_refresh"):
+        return json.loads(cached)
+
+    # 2. Fetch user features from Feature Store (< 5ms)
+    user_features = await feature_store.get_online(user_id)
+
+    # 3. Candidate generation via ANN search (< 20ms)
+    user_embedding = user_features["embedding"]
+    candidates = await faiss_index.search(user_embedding, k=1000)
+
+    # 4. Fetch item features for candidates (< 10ms, batch)
+    item_features = await feature_store.get_batch(candidates)
+
+    # 5. Score with ML model (< 30ms)
+    scores = await model_server.predict(user_features, item_features, context)
+
+    # 6. Re-rank: apply diversity + business rules (< 5ms)
+    results = re_rank(candidates, scores, diversity_weight=0.3)
+
+    # 7. Cache results (TTL: 5 min)
+    await redis.setex(f"recs:{user_id}", 300, json.dumps(results[:50]))
+
+    return results[:20]  # Return top 20
+    # Total latency: < 70ms
+```
+
+---
+
+## The AI Deep Dive: Modern Recommendation Models
+
+### Two-Tower Architecture (Industry Standard)
+
+```
+User Tower                    Item Tower
+    |                             |
+[User ID]                   [Item ID]
+[Demographics]              [Categories]
+[History]                   [Metadata]
+    |                             |
+[Dense Layers]              [Dense Layers]
+    |                             |
+[User Embedding]      [Item Embedding]
+    \                       /
+     \                     /
+      [Dot Product / Cosine]
+              |
+        [Relevance Score]
+```
+
+### Why Two Towers?
+
+1. **Item embeddings can be pre-computed** — compute once, serve millions of times
+2. **ANN index on item embeddings** — sub-millisecond candidate retrieval
+3. **User tower runs at request time** — captures real-time context
+4. **Independent scaling** — item index updates hourly, user features update per-request
+
+### Embedding-Based Retrieval at Scale
+
+```python
+# Pre-compute all item embeddings (offline, daily)
+item_embeddings = model.item_tower(all_items)  # Shape: [50000, 256]
+faiss_index = faiss.IndexFlatIP(256)            # Inner product index
+faiss_index.add(item_embeddings)                # Build ANN index
+
+# At serving time (online, per request)
+user_embedding = model.user_tower(user_features)  # Shape: [1, 256]
+distances, indices = faiss_index.search(user_embedding, k=1000)  # < 5ms
+candidates = [items[i] for i in indices[0]]
+```
+
+<FunFact>
+YouTube's recommendation system processes 800 million videos and serves 2 billion logged-in users. Their two-tower model generates candidate videos in under 10ms by searching a FAISS index of video embeddings. The ranking model then scores these candidates using over 1000 features including watch history, search history, demographics, and time of day.
+</FunFact>
+
+---
+
+## Handling Scale: 200M Users
+
+| Challenge | Solution |
+|---|---|
+| **User embeddings** | 200M x 256 dims x 4 bytes = 200GB — fits in distributed Redis |
+| **Item index** | 50K x 256 dims = 50MB — fits in single FAISS instance, replicated |
+| **Feature Store reads** | Batch feature fetches, local caching, read replicas |
+| **Model serving** | TF Serving / Triton on GPU, autoscaled pods |
+| **Training data** | Daily: ~10B events. Use sampling + feature hashing |
+| **Model updates** | Blue-green deployment via Model Registry |
+
+### Monitoring and Alerting
+
+```yaml
+alerts:
+  - name: "recommendation_latency_high"
+    condition: "p99_latency > 150ms for 5 minutes"
+    severity: critical
+
+  - name: "model_drift_detected"
+    condition: "ctr_7d_avg drops > 10% vs baseline"
+    severity: warning
+
+  - name: "feature_freshness_stale"
+    condition: "user_features_age > 2 hours"
+    severity: warning
+
+  - name: "candidate_coverage_low"
+    condition: "unique_items_recommended_24h < 20% of catalog"
+    severity: info
+```
+
+<ThinkAboutIt>
+You're designing recommendations for a news app. Unlike Netflix, content becomes irrelevant within hours. How would you modify this architecture? Think about: feature freshness requirements, model retraining frequency, the role of trending/recency signals, and how collaborative filtering works when items have a 24-hour lifespan.
+</ThinkAboutIt>
+
+---
+
+## Interview Checklist
+
+- [ ] Clarified requirements (personalized vs trending, latency, scale)
+- [ ] Explained recommendation types with trade-offs
+- [ ] Drew the full architecture (batch + real-time paths)
+- [ ] Described the two-stage pipeline (candidate gen + ranking)
+- [ ] Explained Feature Store and why it matters
+- [ ] Discussed cold start solutions
+- [ ] Covered A/B testing framework and key metrics
+- [ ] Addressed scale (users, items, QPS, storage)
+- [ ] Mentioned monitoring (drift detection, latency, coverage)
+- [ ] Discussed modern ML approaches (two-tower, embeddings, ANN)

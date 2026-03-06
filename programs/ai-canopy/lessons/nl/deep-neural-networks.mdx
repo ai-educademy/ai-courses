@@ -1,0 +1,137 @@
+---
+title: "Diepe Neurale Netwerken — Waarom Diepte Alles Verandert"
+description: "Ontdek hoe diepe netwerken ondiepe overtreffen, begrijp het verdwijnende gradiëntprobleem, verken architecturen zoals ResNet en Transformers, en leer hoe transfer learning je op de schouders van reuzen laat staan."
+order: 1
+difficulty: "intermediate"
+duration: 40
+icon: "🔬"
+published: true
+---
+
+## Van Ondiep naar Diep — Waarom Diepte Ertoe Doet 🏔️
+
+In AI Branches leerde je dat neurale netwerken lagen hebben. Een netwerk met één of twee verborgen lagen is **ondiep**. Voeg meer lagen toe — 10, 50, 100+ — en je hebt een **diep** neuraal netwerk. Dat ene woord, "diep", is wat de _deep_ in deep learning geeft.
+
+Elke laag leert een **ander abstractieniveau**:
+
+```
+Laag 1  →  Randen en eenvoudige texturen
+Laag 2  →  Hoeken en contouren
+Laag 3  →  Delen van objecten (ogen, wielen)
+Laag 4  →  Hele objecten (gezichten, auto's)
+Laag 5+ →  Scènes en context
+```
+
+<ThinkAboutIt>
+Stel je voor dat je een boek leest. Laag 1 herkent letters, Laag 2 herkent woorden, Laag 3 begrijpt zinnen, en Laag 4 begrijpt de volledige betekenis. Een ondiepe lezer vast op Laag 1 zou alleen letters zien — zonder ooit het verhaal te begrijpen.
+</ThinkAboutIt>
+
+---
+
+## Het Verdwijnende Gradiënt Probleem 🕳️
+
+Vroege onderzoekers probeerden veel lagen te stapelen, maar training bleef mislukken. De boosdoener: **verdwijnende gradiënten**. Foutsignalen worden door elke laag vermenigvuldigd met getallen tussen 0 en 1, tot het signaal bijna nul bereikt.
+
+### Hoe We Het Oplosten
+
+**1. ReLU Activatie** — Gradiënt is exact 1 voor positieve inputs, signalen passeren zonder te krimpen.
+
+**2. Skip-Verbindingen** — Het signaal kan lagen overslaan. Als een laag niets nuttigs toevoegt, stromen de data gewoon door.
+
+**3. Batch Normalisatie** — Normaliseert inputs van elke laag zodat waarden in een gezond bereik blijven.
+
+<FunFact>
+Vóór deze doorbraken waren netwerken dieper dan 10 lagen bijna onmogelijk te trainen. Daarna trainden onderzoekers succesvol netwerken met meer dan 1.000 lagen!
+</FunFact>
+
+---
+
+## Belangrijke Architecturen 🏛️
+
+### ResNet (2015)
+
+ResNet introduceerde skip-verbindingen en won ImageNet met een **152-laags** netwerk. Elk blok leert het **residu** — het verschil tussen wat je hebt en wat je wilt.
+
+### Transformers (2017)
+
+De Transformer-architectuur verving sequentiële verwerking door een **zelf-aandachtsmechanisme**. In plaats van tekst woord voor woord te lezen, kijkt het naar alle woorden tegelijk.
+
+```
+"De kat zat op de mat omdat hij moe was"
+
+Zelf-aandacht vraagt: waar verwijst "hij" naar?
+  "hij" ←→ "kat"  (hoge aandachtsscore: 0.82)
+  "hij" ←→ "mat"  (lage aandachtsscore: 0.11)
+```
+
+<Callout>
+Transformers zijn de architectuur achter GPT, Claude, Llama en vrijwel elk modern LLM. We gaan dieper in de volgende les.
+</Callout>
+
+---
+
+## Transfer Learning — Op de Schouders van Reuzen 🦕
+
+Een diep netwerk van nul trainen vereist miljoenen voorbeelden. **Transfer learning** laat je het meeste werk overslaan: neem een voorgetraind model en **fine-tune** het op jouw dataset.
+
+```
+Stap 1: Start met een voorgetraind model
+Stap 2: Bevries de vroege lagen (zij kennen al randen, vormen, texturen)
+Stap 3: Vervang de laatste laag door jouw taak
+Stap 4: Train alleen de laatste lagen op jouw data
+Stap 5: Klaar! Hoge nauwkeurigheid met een fractie van de data en tijd.
+```
+
+<ThinkAboutIt>
+Transfer learning is als een ervaren chef die overschakelt van Franse naar Japanse keuken. Hij hoeft niet opnieuw te leren hoe je een mes vasthoudt — die vaardigheden worden overgedragen.
+</ThinkAboutIt>
+
+---
+
+## GPU Training — Waarom Hardware Ertoe Doet ⚡
+
+Neurale netwerktraining is voornamelijk **matrixvermenigvuldiging**. CPU's verwerken deze één voor één. GPU's verwerken duizenden **tegelijkertijd**. Moderne AI-doorbraken zouden onmogelijk zijn zonder GPU's.
+
+---
+
+## Praktijk: Een Voorgetraind Model Fine-Tunen 🛠️
+
+```python
+model = load_pretrained_model("resnet50")
+
+for layer in model.layers:
+    layer.trainable = False
+
+model.final_layer = DenseLayer(input_size=2048, output_size=3)
+model.final_layer.trainable = True
+
+train_data = load_images("bloemen/train/", categories=["roos", "zonnebloem", "tulp"])
+val_data = load_images("bloemen/val/", categories=["roos", "zonnebloem", "tulp"])
+
+model.compile(optimizer="adam", loss="cross_entropy", learning_rate=0.001)
+model.fit(train_data, validation_data=val_data, epochs=5)
+
+accuracy = model.evaluate(val_data)
+print(f"Validatie nauwkeurigheid: {accuracy:.1%}")
+```
+
+<Callout>
+Merk op hoe weinig data we nodig hebben! Transfer learning maakt deep learning toegankelijk, zelfs zonder enorme datasets.
+</Callout>
+
+---
+
+## Samenvatting 🎯
+
+1. **Diepte** laat netwerken hiërarchische representaties bouwen
+2. **Verdwijnende gradiënten** werden opgelost door ReLU, skip-verbindingen en batch normalisatie
+3. **ResNet** maakte 100+ laagnetwerken mogelijk
+4. **Transformers** gebruiken zelf-aandacht — de architectuur achter moderne LLM's
+5. **Transfer learning** bespaart tijd en data
+6. **GPU's** maken deep learning praktisch door parallelle berekening
+
+---
+
+## Wat Volgt? 🚀
+
+In de volgende les duiken we in **Grote Taalmodellen** — de motoren achter ChatGPT, Claude en de AI-revolutie. 📝

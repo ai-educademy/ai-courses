@@ -1,0 +1,181 @@
+---
+title: "Construire des Produits IA — Du Prototype à la Production"
+description: "Apprenez le cycle de vie complet d'un produit IA — du choix du bon modèle et de la construction de prototypes au déploiement, à la surveillance et à la mise à l'échelle de fonctionnalités alimentées par l'IA."
+order: 1
+difficulty: "advanced"
+duration: 45
+icon: "🚀"
+published: true
+---
+
+## Le Cycle de Vie d'un Produit IA 🏭
+
+Vous avez appris comment fonctionne l'IA — données, algorithmes, réseaux de neurones, transformeurs et outils. Maintenant, il est temps de tout assembler et de **construire quelque chose de réel**.
+
+Construire un produit IA est fondamentalement différent de construire un logiciel traditionnel. Les modèles se dégradent, les données dérivent, et ce qui fonctionne dans un notebook échoue souvent en production. Cette leçon couvre le parcours complet de l'idée au produit déployé.
+
+<Illustration src="/images/lessons/building-ai-products.svg" alt="Un pipeline allant de l'idée au prototype, test, déploiement et surveillance" caption="Le cycle de vie d'un produit IA est une boucle continue, pas une ligne droite." />
+
+---
+
+## Phase 1 : Définition du Problème et Faisabilité 🎯
+
+Avant d'écrire une seule ligne de code, répondez à ces questions :
+
+1. **L'IA est-elle vraiment nécessaire ?** Beaucoup de problèmes sont mieux résolus avec des règles, des heuristiques ou des statistiques simples
+2. **Avez-vous les données ?** L'IA n'est aussi bonne que les données dont elle apprend
+3. **À quoi ressemble le succès ?** Définissez des métriques mesurables dès le départ
+4. **Quels sont les risques ?** Faux positifs vs faux négatifs — lequel est pire ?
+
+```
+Cadre de Décision : Devriez-vous Utiliser l'IA ?
+───────────────────────────────────────────────────
+✅ Utilisez l'IA quand :
+   • Le motif est trop complexe pour des règles écrites à la main
+   • Vous avez suffisamment de données étiquetées
+   • Le problème tolère un certain niveau d'erreur
+   • La valeur justifie le coût
+
+❌ Évitez l'IA quand :
+   • Des règles simples ou des recherches résolvent le problème
+   • Vous avez besoin de 100% de précision
+   • Les données sont rares et difficiles à obtenir
+   • Une solution déterministe existe
+```
+
+<ThinkAboutIt>
+Un grand détaillant a dépensé des millions pour construire un moteur de recommandation IA, pour découvrir qu'une simple table de consultation « les clients ont aussi acheté » fonctionnait presque aussi bien. Commencez toujours par la solution la plus simple qui pourrait fonctionner.
+</ThinkAboutIt>
+
+---
+
+## Phase 2 : Choisir le Bon Modèle 🧩
+
+**ML Traditionnel (scikit-learn, XGBoost)** — Données tabulaires, interprétabilité nécessaire, données limitées
+
+**Deep Learning (PyTorch, TensorFlow)** — Images, audio, vidéo, texte, grands jeux de données
+
+**Grands Modèles de Langage (GPT, Claude, Llama)** — Génération de texte, résumé, Q&R, prototypage rapide
+
+**APIs Pré-entraînées (Vision, Parole, Traduction)** — Tâches standard, intégration rapide
+
+```python
+# Pseudocode de décision
+def choisir_modele(probleme):
+    if probleme.type_donnees == "tabulaire":
+        return "XGBoost ou Forêt Aléatoire"
+    if probleme.type_donnees in ["image", "audio", "video"]:
+        return "Affiner un modèle pré-entraîné"
+    if probleme.type_donnees == "texte":
+        if probleme.tache == "generation":
+            return "LLM (GPT, Claude, Llama)"
+        return "BERT affiné ou Sentence Transformers"
+    return "Commencez simple, itérez"
+```
+
+---
+
+## Phase 3 : Prototypage — Allez Vite, Apprenez Plus Vite ⚡
+
+La règle des 3 jours :
+- **Jour 1** : Obtenir les données, les explorer, établir une référence
+- **Jour 2** : Construire le modèle le plus simple qui pourrait fonctionner
+- **Jour 3** : Évaluer les résultats, décider si l'approche est viable
+
+<Callout>
+**L'erreur n°1 dans le développement de produits IA** est de passer trop de temps dans les notebooks. Les prototypes devraient valider l'idée, puis passer rapidement aux pratiques d'ingénierie logicielle appropriées.
+</Callout>
+
+---
+
+## Phase 4 : MLOps — L'Ingénierie pour les Systèmes IA 🔧
+
+MLOps (Machine Learning Operations) est le DevOps pour l'IA. Il couvre tout ce qui est nécessaire pour faire fonctionner l'IA en production de manière fiable.
+
+### Pratiques clés du MLOps
+
+**1. Versionner tout** — Code (Git), Données (DVC), Modèles (MLflow)
+
+**2. Automatiser les pipelines**
+```
+CI/CD pour le ML :
+──────────────────
+Commit → Tests → Entraîner → Évaluer
+                                ↓
+                    Performance améliorée ?
+                   ↙                ↘
+                Oui                  Non
+                 ↓                    ↓
+         Déployer en staging    Alerter l'équipe
+```
+
+**3. Surveiller sans relâche** — Métriques du modèle, dérive des données, dérive de concept, santé du système
+
+<FunFact>
+Selon les recherches de Google, seulement environ 5% d'un système ML réel est le code ML proprement dit. Les 95% restants sont la collecte de données, la vérification, l'ingénierie des caractéristiques, la configuration et la surveillance.
+</FunFact>
+
+---
+
+## Phase 5 : Optimisation des Coûts 💰
+
+```
+Tâche : Classifier des tickets de support client
+
+Option A — API LLM (GPT-4)
+  1 million tickets/mois : 10 000–30 000 €/mois
+
+Option B — Petit modèle affiné (BERT)
+  1 million tickets/mois : ~100 €/mois + infrastructure
+
+Option C — Approche hybride
+  Modèle affiné pour les cas clairs (80%)
+  LLM pour les cas ambigus (20%)
+  Coût : ~2 000–6 000 €/mois
+```
+
+---
+
+## Études de Cas 📚
+
+### ✅ Succès : GitHub Copilot
+- L'IA comme assistant (suggestions que vous acceptez/rejetez) est plus tolérante que l'IA comme décideur
+
+### ❌ Échec : L'outil de recrutement IA d'Amazon
+- Entraîné sur des données historiques biaisées, discriminait systématiquement les femmes
+
+<Callout>
+**Le schéma des produits IA échoués est remarquablement constant** : promesses excessives, sous-investissement dans la qualité des données, et absence de validation en conditions réelles.
+</Callout>
+
+---
+
+## Éthique et Déploiement Responsable 🛡️
+
+```
+Liste de Contrôle pour un Déploiement IA Responsable
+──────────────────────────────────────────────────────
+□ Audit de biais complété sur les groupes démographiques clés
+□ Fiche modèle documentant les capacités et limitations
+□ Humain dans la boucle pour les décisions à enjeux élevés
+□ Surveillance de la dégradation des performances
+□ Communication claire aux utilisateurs sur l'implication de l'IA
+□ Plan de réponse aux incidents pour les défaillances IA
+```
+
+---
+
+## Récapitulatif Rapide 🎯
+
+1. **Validez toujours que l'IA est la bonne solution** — commencez simple
+2. **Choisissez les modèles en fonction du type de données et des exigences** — pas du battage médiatique
+3. **Prototypez rapidement** (3 jours), puis passez à l'ingénierie de production
+4. **Le MLOps est essentiel** — versionnez tout, automatisez, surveillez
+5. **Optimisez les coûts** avec des approches hybrides et du cache
+6. **Déployez de manière responsable** — équité, transparence et sécurité
+
+---
+
+## Et Ensuite ? 🌐
+
+Vous savez maintenant construire et livrer des produits IA. Dans la prochaine leçon, nous explorerons l'**écosystème IA open-source**. 🌲

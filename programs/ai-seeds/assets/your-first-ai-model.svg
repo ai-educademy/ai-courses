@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="ybg" x1="0" y1="0" x2="720" y2="400">
+      <stop offset="0%" stop-color="#fdf4ff"/>
+      <stop offset="100%" stop-color="#ede9fe"/>
+    </linearGradient>
+    <linearGradient id="ycard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#ybg)" rx="20"/>
+  <text x="360" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#7c3aed">Your First AI Model — Drawing Recogniser</text>
+  <!-- Canvas area -->
+  <g transform="translate(40,60)">
+    <rect width="280" height="280" rx="16" fill="white" stroke="#d8b4fe" stroke-width="2"/>
+    <text x="140" y="28" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#7c3aed">🎨 Drawing Canvas</text>
+    <!-- Grid lines -->
+    <g stroke="#f3e8ff" stroke-width="1">
+      <line x1="20" y1="50" x2="260" y2="50"/>
+      <line x1="20" y1="110" x2="260" y2="110"/>
+      <line x1="20" y1="170" x2="260" y2="170"/>
+      <line x1="20" y1="230" x2="260" y2="230"/>
+      <line x1="80" y1="40" x2="80" y2="270"/>
+      <line x1="140" y1="40" x2="140" y2="270"/>
+      <line x1="200" y1="40" x2="200" y2="270"/>
+    </g>
+    <!-- Drawn circle shape -->
+    <ellipse cx="140" cy="155" rx="60" ry="55" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 4">
+      <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" fill="freeze"/>
+    </ellipse>
+    <!-- Cursor -->
+    <circle cx="200" cy="155" r="5" fill="#7c3aed" opacity="0.6">
+      <animate attributeName="cx" values="200;80;140;200" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="155;155;100;155" dur="3s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <!-- Arrow -->
+  <g transform="translate(335,195)">
+    <rect x="-15" y="-20" width="60" height="40" rx="10" fill="url(#ycard)"/>
+    <text x="15" y="5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="white">AI →</text>
+  </g>
+  <!-- Result area -->
+  <g transform="translate(400,60)">
+    <rect width="280" height="280" rx="16" fill="white" stroke="#d8b4fe" stroke-width="2"/>
+    <text x="140" y="28" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#7c3aed">🤖 AI Prediction</text>
+    <!-- Prediction result -->
+    <g transform="translate(40,50)">
+      <rect width="200" height="60" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+      <text x="30" y="38" font-size="28">⭕</text>
+      <text x="70" y="32" font-family="system-ui,sans-serif" font-size="14" font-weight="600" fill="#166534">Circle</text>
+      <text x="70" y="48" font-family="system-ui,sans-serif" font-size="11" fill="#047857">Confidence: 94%</text>
+    </g>
+    <!-- Other options -->
+    <g transform="translate(40,125)">
+      <rect width="200" height="40" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="30" y="26" font-size="16">⬜</text>
+      <text x="60" y="26" font-family="system-ui,sans-serif" font-size="12" fill="#64748b">Square — 4%</text>
+      <rect x="130" y="15" width="60" height="10" rx="5" fill="#e2e8f0"/>
+      <rect x="130" y="15" width="4" height="10" rx="5" fill="#94a3b8"/>
+    </g>
+    <g transform="translate(40,175)">
+      <rect width="200" height="40" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="30" y="26" font-size="16">🔺</text>
+      <text x="60" y="26" font-family="system-ui,sans-serif" font-size="12" fill="#64748b">Triangle — 2%</text>
+      <rect x="130" y="15" width="60" height="10" rx="5" fill="#e2e8f0"/>
+      <rect x="130" y="15" width="2" height="10" rx="5" fill="#94a3b8"/>
+    </g>
+    <!-- Success badge -->
+    <g transform="translate(60,240)">
+      <rect width="160" height="30" rx="15" fill="url(#ycard)"/>
+      <text x="80" y="20" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="white">🎉 You built AI!</text>
+    </g>
+  </g>
+  <!-- Bottom tip -->
+  <text x="360" y="375" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#7c3aed" opacity="0.7">Draw shapes and watch AI recognise them in real-time!</text>
+</svg>

@@ -1,0 +1,134 @@
+---
+title: "Grote Taalmodellen — De Motoren Achter Moderne AI"
+description: "Begrijp wat LLM's zijn, hoe de Transformer-architectuur werkt, de trainingspijplijn van voortraining tot RLHF, en vergelijk grote modellen zoals GPT, Claude en Llama."
+order: 2
+difficulty: "intermediate"
+duration: 45
+icon: "📝"
+published: true
+---
+
+## Wat Is een LLM? 🤖
+
+Een **Groot Taalmodel** (LLM) is een neuraal netwerk getraind op enorme hoeveelheden tekst om menselijke taal te begrijpen en te genereren. In de kern doet een LLM één ding: **het volgende token voorspellen**.
+
+<ThinkAboutIt>
+Stel je voor dat je elk boek, artikel en website ooit geschreven hebt gelezen. Na al dat lezen zou je behoorlijk goed zijn in het voorspellen welk woord er volgt. Dat is wat een LLM doet, maar met wiskundige precisie.
+</ThinkAboutIt>
+
+---
+
+## De Transformer-Architectuur 🏗️
+
+Elk modern LLM is gebouwd op de **Transformer**-architectuur. De sleutelinnovatie: **zelf-aandacht** — in plaats van tekst woord voor woord te lezen, kijkt het naar alle woorden tegelijk.
+
+```
+"De bank bij de rivier was steil"
+
+Voor het woord "bank":
+  "bank" ←→ "rivier"  = 0.45  (hoog — verduidelijkt betekenis)
+  "bank" ←→ "steil"   = 0.30  (medium — ondersteunt "oever" betekenis)
+```
+
+Elke Transformer-laag volgt: **Zelf-Aandacht → Optellen + Normaliseren → Feed-Forward → Optellen + Normaliseren**. Stapel 50–100+ blokken en je hebt een modern LLM.
+
+---
+
+## De Trainingspijplijn 🔄
+
+### Fase 1: Voortraining (taal leren)
+Het model leest biljoenen tokens uit boeken, websites en code — leert grammatica, feiten en redeneerpatronen.
+
+### Fase 2: Fine-tuning (instructies leren volgen)
+Getraind op vraag-antwoord paren om instructies te leren volgen.
+
+### Fase 3: RLHF (menselijke voorkeuren leren)
+**Reinforcement Learning from Human Feedback** leert het model wat mensen als behulpzaam en veilig beschouwen.
+
+<Callout>
+RLHF maakt het verschil tussen een model dat tekst aanvult en een behulpzame assistent. Het is niet perfect — daarom blijft AI-veiligheidsonderzoek cruciaal.
+</Callout>
+
+---
+
+## Vergelijking van Grote Modellen 🏆
+
+```
+┌──────────────┬─────────────┬────────────────────────────────────┐
+│ Modelfamilie │ Maker       │ Kenmerken                          │
+├──────────────┼─────────────┼────────────────────────────────────┤
+│ GPT-4/4o     │ OpenAI      │ Sterk redeneren, multimodaal       │
+│ Claude       │ Anthropic   │ Veiligheidsgericht, lange context  │
+│ Llama        │ Meta        │ Open gewichten, lokaal uitvoerbaar │
+│ Gemini       │ Google      │ Multimodaal-natief                 │
+│ Mistral      │ Mistral AI  │ Efficiënt, Europees               │
+└──────────────┴─────────────┴────────────────────────────────────┘
+```
+
+---
+
+## Mogelijkheden en Beperkingen ⚖️
+
+LLM's genereren vloeiende tekst, vatten samen, vertalen en schrijven code. Maar ze worstelen met **hallucinaties**, **wiskunde**, **recentheid** en **echte redenering**.
+
+<ThinkAboutIt>
+LLM's zijn als briljante maar onbetrouwbare stagiairs. Ze kunnen geweldig werk opstellen, maar controleer altijd hun output. Vertrouw, maar verifieer.
+</ThinkAboutIt>
+
+---
+
+## Token-Economie en Contextvensters 📊
+
+LLM's lezen **tokens** (ongeveer ¾ van een woord). Het **contextvenster** is het maximum aantal tokens tegelijk. GPT-4o ondersteunt 128K tokens, Claude 200K.
+
+```python
+input_tokens = 1000
+output_tokens = 500
+prijs_per_1k = 0.01
+
+kosten = ((input_tokens + output_tokens) / 1000) * prijs_per_1k
+print(f"Kosten per verzoek: ${kosten:.4f}")
+```
+
+---
+
+## Praktijk: Een LLM API Gebruiken 🛠️
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "Je bent een wetenschapstutor voor tieners."},
+        {"role": "user", "content": "Leg fotosynthese eenvoudig uit."}
+    ],
+    temperature=0.7,
+    max_tokens=300
+)
+
+print(response.choices[0].message.content)
+```
+
+<Callout>
+Het `messages`-array is je gespreksgeschiedenis. Het model "onthoudt" niets — je stuurt elke keer de volledige context. Daarom zijn contextvensters belangrijk.
+</Callout>
+
+---
+
+## Samenvatting 🎯
+
+1. **LLM's** voorspellen het volgende token — schaal creëert intelligent gedrag
+2. **Transformers** gebruiken zelf-aandacht om context te begrijpen
+3. **Trainingspijplijn**: voortraining → fine-tuning → RLHF
+4. Elk **groot model** heeft verschillende sterktes
+5. LLM's zijn krachtig maar **niet perfect**
+6. **Tokens** zijn de valuta van LLM's
+
+---
+
+## Wat Volgt? 🚀
+
+In de volgende les beheersen we **prompt engineering**: de kunst om de beste resultaten uit LLM's te halen. ✨

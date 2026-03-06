@@ -1,0 +1,282 @@
+---
+title: "Full Mock Interview — 60-Minute Senior Engineer Simulation"
+description: "Experience a realistic senior engineer interview from start to finish. Practice coding, system design, and behavioural rounds with structured feedback."
+order: 2
+difficulty: "advanced"
+duration: 60
+icon: "🎯"
+published: true
+---
+
+# Full Mock Interview
+
+This lesson simulates a **60-minute senior engineer interview** — the kind you'd face at a top tech company. Work through each section as if you're in the room.
+
+---
+
+## Interview Structure
+
+| Time | Round | Focus |
+|------|-------|-------|
+| 0-5 min | **Introduction** | Your background, current role, why this company |
+| 5-25 min | **Coding Round** | DSA problem with follow-ups |
+| 25-50 min | **System Design** | Design a real system end-to-end |
+| 50-60 min | **Behavioural** | Leadership, conflict, failure stories |
+
+---
+
+## Round 1: Introduction (5 minutes)
+
+The interviewer asks: *"Tell me about yourself and what brings you here."*
+
+### What They're Evaluating
+
+- Can you communicate concisely? (2 minutes max)
+- Do you understand the role?
+- Are you genuinely interested?
+
+### Template
+
+```
+"I'm [Name], a [role] at [company] where I [one sentence about what you do].
+Over the past [N] years, I've focused on [2-3 key areas].
+Most recently, I [your biggest recent achievement — quantified].
+I'm excited about [this company] because [specific reason tied to their work]."
+```
+
+<Callout type="warning">
+Common mistake: Reciting your entire resume. The interviewer has your resume — they want the story behind it. Focus on your last 2-3 years and your strongest achievement.
+</Callout>
+
+---
+
+## Round 2: Coding (20 minutes)
+
+### The Problem
+
+> **LRU Cache with TTL**
+>
+> Design a data structure that supports `get(key)` and `put(key, value, ttl)` operations.
+> - `get(key)`: Return the value if the key exists and hasn't expired. Otherwise return -1.
+> - `put(key, value, ttl)`: Set or update the key-value pair with a time-to-live in seconds.
+> - When the cache exceeds capacity, evict the least recently used non-expired entry.
+
+### Step 1: Clarify (2 minutes)
+
+Before coding, ask:
+
+- "What's the expected capacity?" → *Say 10,000 entries*
+- "Is this single-threaded?" → *Yes, for now*
+- "What time precision — seconds or milliseconds?" → *Seconds is fine*
+- "Should expired entries be lazily cleaned or eagerly cleaned?" → *Lazy is acceptable*
+
+<ThinkAboutIt>
+Interviewers WANT you to ask questions. It shows you think about requirements before jumping to code. Aim for 2-3 clarifying questions.
+</ThinkAboutIt>
+
+### Step 2: Approach (3 minutes)
+
+Talk through your approach before writing code:
+
+```
+"I'll combine a hash map for O(1) lookup with a doubly-linked list 
+for O(1) LRU eviction — the classic LRU pattern from AI Sketch.
+
+The twist is TTL: each node stores an expiry timestamp. On get(), 
+I'll check if the entry has expired. On put(), I'll set 
+expiry = now + ttl.
+
+For eviction, I'll skip expired entries when walking from the 
+tail (least recently used)."
+```
+
+### Step 3: Code (10 minutes)
+
+```python
+class Node:
+    def __init__(self, key, value, expires_at):
+        self.key = key
+        self.value = value
+        self.expires_at = expires_at
+        self.prev = None
+        self.next = None
+
+class LRUCacheWithTTL:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.cache = {}  # key → Node
+        self.head = Node(0, 0, 0)  # dummy head (most recent)
+        self.tail = Node(0, 0, 0)  # dummy tail (least recent)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _now(self):
+        import time
+        return int(time.time())
+
+    def _remove(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def _add_to_front(self, node):
+        node.next = self.head.next
+        node.prev = self.head
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _is_expired(self, node):
+        return self._now() > node.expires_at
+
+    def get(self, key):
+        if key not in self.cache:
+            return -1
+        node = self.cache[key]
+        if self._is_expired(node):
+            self._remove(node)
+            del self.cache[key]
+            return -1
+        # Move to front (most recently used)
+        self._remove(node)
+        self._add_to_front(node)
+        return node.value
+
+    def put(self, key, value, ttl):
+        if key in self.cache:
+            self._remove(self.cache[key])
+            del self.cache[key]
+        node = Node(key, value, self._now() + ttl)
+        self.cache[key] = node
+        self._add_to_front(node)
+        # Evict if over capacity
+        while len(self.cache) > self.capacity:
+            lru = self.tail.prev
+            self._remove(lru)
+            del self.cache[lru.key]
+```
+
+### Step 4: Test (3 minutes)
+
+Walk through a test case verbally:
+
+```
+cache = LRUCacheWithTTL(2)
+cache.put("a", 1, ttl=10)    # cache: [a]
+cache.put("b", 2, ttl=5)     # cache: [b, a]
+cache.get("a")                # returns 1, cache: [a, b]
+cache.put("c", 3, ttl=10)    # evicts b (LRU), cache: [c, a]
+# After 6 seconds...
+cache.get("b")                # returns -1 (evicted)
+```
+
+### Step 5: Follow-Up Questions
+
+The interviewer will push further:
+
+1. *"How would you make this thread-safe?"*
+   → Read-write lock: multiple readers, exclusive writer. Or use `ConcurrentHashMap` + lock-free linked list.
+
+2. *"How would you add eager expiration cleanup?"*
+   → Background thread with a min-heap sorted by `expires_at`. Pop expired entries periodically.
+
+3. *"What's the time complexity?"*
+   → get: O(1), put: O(1) amortised. Space: O(capacity).
+
+---
+
+## Round 3: System Design (25 minutes)
+
+### The Problem
+
+> **Design a real-time collaborative document editor** (like Google Docs).
+> Support: simultaneous editing, cursor tracking, version history, offline mode.
+
+### Framework: Use the AI Craft Approach
+
+**Step 1 — Requirements (3 min):**
+- Functional: Real-time sync, conflict resolution, version history, sharing
+- Non-functional: under 100ms sync latency, 100K concurrent docs, 50 users/doc
+
+**Step 2 — High-Level Design (5 min):**
+```
+Client (Browser) ←→ WebSocket Gateway ←→ Collaboration Service
+                                               │
+                                     ┌─────────┼─────────┐
+                                     │         │         │
+                                  CRDT      Version    Auth
+                                  Engine    Store      Service
+                                     │         │
+                                  Document  Snapshot
+                                  Store     Store
+```
+
+**Step 3 — Deep Dive: Conflict Resolution (10 min):**
+
+Two approaches:
+- **OT (Operational Transformation):** Transform operations against concurrent operations. Used by Google Docs. Complex to implement correctly.
+- **CRDT (Conflict-free Replicated Data Types):** Mathematical guarantee of convergence. No central server needed. Used by Figma, Notion.
+
+Recommend CRDT for new systems — simpler correctness guarantees.
+
+**Step 4 — Trade-offs (5 min):**
+- OT vs CRDT: OT is battle-tested but complex; CRDT is simpler but uses more memory
+- WebSocket vs SSE: WebSocket for bidirectional; SSE for read-heavy
+- Snapshot frequency: More snapshots = faster load but more storage
+
+<Callout type="info">
+At the senior level, interviewers care MORE about your trade-off reasoning than the "correct" answer. Explicitly state: "I'm choosing X over Y because..."
+</Callout>
+
+---
+
+## Round 4: Behavioural (10 minutes)
+
+### Question 1: "Tell me about a time you disagreed with your team."
+
+Use the **STAR Framework** from AI Polish:
+
+| Part | Your Answer |
+|------|------------|
+| **Situation** | "We were deciding between microservices and a monolith for a new product..." |
+| **Task** | "I believed we should start monolith-first, but the team wanted microservices..." |
+| **Action** | "I prepared a comparison document with cost estimates and proposed a proof of concept..." |
+| **Result** | "We went monolith-first, launched 6 weeks earlier, and migrated to microservices in year 2..." |
+
+### Question 2: "Tell me about a failure."
+
+<ThinkAboutIt>
+The interviewer is testing self-awareness and growth mindset. Pick a REAL failure (not a humble-brag). Structure: What happened → Why it happened → What you learned → What you changed.
+</ThinkAboutIt>
+
+### Question 3: "Why should we hire you?"
+
+Don't list skills. Connect your unique combination to their specific needs:
+
+```
+"You're scaling [specific system]. I've done exactly that — 
+I took [system] from [X] to [Y] scale, solving [specific challenge] 
+along the way. I also bring [unique skill] that I notice your 
+team is building toward."
+```
+
+---
+
+## Self-Assessment Rubric
+
+After completing the mock, rate yourself:
+
+| Criteria | 🔴 Needs Work | 🟡 Good | 🟢 Excellent |
+|----------|---------------|---------|-------------|
+| **Communication** | Silent while coding | Occasional narration | Continuous clear narration |
+| **Clarification** | Jumped straight in | Asked 1-2 questions | Asked 3+ targeted questions |
+| **Coding** | Bugs, incomplete | Working with minor issues | Clean, tested, optimised |
+| **System Design** | Vague boxes | Solid architecture | Deep trade-off analysis |
+| **Behavioural** | Generic answers | STAR structure | Compelling, specific stories |
+
+---
+
+## What to Do Next
+
+1. **Record yourself** doing this mock (use your phone) — you'll spot habits you didn't know you had
+2. **Time yourself strictly** — if you go over in practice, you'll go over in the real interview
+3. **Practice with a friend** — have them ask follow-up questions you don't expect
+4. **Repeat weekly** — interview skills are perishable; consistent practice beats cramming

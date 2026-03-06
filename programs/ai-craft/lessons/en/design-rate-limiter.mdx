@@ -1,0 +1,295 @@
+---
+title: "Design a Rate Limiter — Protecting AI APIs"
+description: "Build a rate limiter from scratch. Understand token bucket, sliding window, and how AI APIs like OpenAI throttle requests."
+order: 2
+difficulty: "intermediate"
+duration: 25
+icon: "⚡"
+published: true
+---
+
+# Design a Rate Limiter
+
+Every API you use — OpenAI, Stripe, GitHub — has a rate limiter guarding it. Without rate limiting, a single bad actor (or a buggy script) can bring down an entire service.
+
+<Callout type="info">
+Rate limiting isn't just about saying "no" — it's about **fairness**. It ensures every user gets their share of a finite resource: compute, bandwidth, or AI inference time.
+</Callout>
+
+---
+
+## Why Rate Limiting Matters (Especially for AI)
+
+| Scenario | Without Rate Limiting | With Rate Limiting |
+|---|---|---|
+| **DDoS attack** | Service goes down | Attackers get 429, legitimate users unaffected |
+| **Runaway script** | 10K requests/sec burns through quota | Capped at allowed rate, fails gracefully |
+| **AI API abuse** | One user hogs all GPUs | Fair share across all users |
+| **Cost control** | $50K surprise cloud bill | Predictable, budgeted spend |
+| **Cascading failures** | Backend overload → total outage | Backpressure protects downstream services |
+
+### Real-World AI API Limits
+
+| Provider | Free Tier | Paid Tier | Unit |
+|---|---|---|---|
+| **OpenAI** | 3 RPM / 200 RPD | 10,000 RPM | Requests per minute |
+| **Claude** | 50 RPM | 4,000 RPM | Requests per minute |
+| **Gemini** | 15 RPM | 1,000 RPM | Requests per minute |
+| **Stability AI** | 10 req/10sec | 150 req/10sec | Per time window |
+
+<FunFact>
+OpenAI doesn't just rate limit by requests — they also limit by **tokens per minute (TPM)**. A single request using GPT-4 with a 128K context window consumes far more resources than a short GPT-3.5 call. This is why they have dual rate limits: RPM (requests) and TPM (tokens).
+</FunFact>
+
+---
+
+## Algorithm 1: Token Bucket
+
+The most widely used algorithm. Simple, memory-efficient, and allows controlled bursts.
+
+<Illustration src="/images/lessons/craft/token-bucket.svg" alt="Token bucket algorithm visualization showing a bucket filling with tokens at a steady rate, requests consuming tokens, with allow (200 OK) and reject (429 Too Many) paths" caption="Token Bucket — tokens refill at a steady rate. Each request consumes one token. When the bucket is empty, requests are rejected until tokens refill." />
+
+### How It Works
+
+```python
+import time
+
+class TokenBucket:
+    def __init__(self, capacity: int, refill_rate: float):
+        self.capacity = capacity          # max burst size
+        self.tokens = capacity            # current tokens
+        self.refill_rate = refill_rate    # tokens per second
+        self.last_refill = time.time()
+
+    def allow_request(self) -> bool:
+        self._refill()
+        if self.tokens >= 1:
+            self.tokens -= 1
+            return True  # 200 OK
+        return False     # 429 Too Many Requests
+
+    def _refill(self):
+        now = time.time()
+        elapsed = now - self.last_refill
+        new_tokens = elapsed * self.refill_rate
+        self.tokens = min(self.capacity, self.tokens + new_tokens)
+        self.last_refill = now
+
+# Usage: 10 burst, 5/sec sustained
+limiter = TokenBucket(capacity=10, refill_rate=5)
+```
+
+### Token Bucket Properties
+
+| Property | Value | Meaning |
+|---|---|---|
+| **Memory** | O(1) per user | Just 2 numbers: tokens + timestamp |
+| **Burst handling** | Allows short bursts | Up to `capacity` requests instantly |
+| **Sustained rate** | `refill_rate` req/sec | Long-term average throughput |
+| **Precision** | Approximate | Depends on refill granularity |
+
+<ThinkAboutIt>
+Why does the Token Bucket algorithm allow **bursts**? Think about real user behavior — you might load a page and fire 10 API calls simultaneously, then nothing for 2 seconds. A strict "5 per second" limit would reject 5 of those initial calls, even though your average rate is well within limits.
+</ThinkAboutIt>
+
+---
+
+## Algorithm 2: Sliding Window Counter
+
+More precise than fixed windows, less memory than sliding window log.
+
+### Fixed Window vs Sliding Window
+
+**Fixed Window Problem**: Boundary spike
+
+```
+Window 1 (0:00-1:00): ....xxxxxxxx  (8 requests in last 10 sec)
+Window 2 (1:00-2:00): xxxxxxxx....  (8 requests in first 10 sec)
+                             ^^^^^^^^^^^^^^^^
+                             16 requests in 20 seconds!
+                             (Limit was 10/minute — bypassed at boundary)
+```
+
+**Sliding Window Solution**: Weight by position in window
+
+```python
+class SlidingWindowCounter:
+    def __init__(self, limit: int, window_seconds: int):
+        self.limit = limit
+        self.window = window_seconds
+        self.previous_count = 0
+        self.current_count = 0
+        self.window_start = int(time.time())
+
+    def allow_request(self) -> bool:
+        now = int(time.time())
+        elapsed = now - self.window_start
+
+        if elapsed >= self.window:
+            self.previous_count = self.current_count
+            self.current_count = 0
+            self.window_start = now
+            elapsed = 0
+
+        # Weighted count: blend previous + current window
+        weight = 1 - (elapsed / self.window)
+        estimated_count = (self.previous_count * weight) + self.current_count
+
+        if estimated_count < self.limit:
+            self.current_count += 1
+            return True
+        return False
+```
+
+### Algorithm Comparison
+
+| Algorithm | Memory | Burst Control | Precision | Best For |
+|---|---|---|---|---|
+| **Token Bucket** | O(1) | Allows bursts | Approximate | API gateways, general use |
+| **Leaky Bucket** | O(1) | No bursts | Smooth | Network traffic shaping |
+| **Fixed Window** | O(1) | Poor at boundaries | Low | Simple rate counting |
+| **Sliding Window Log** | O(n) | Exact | Exact | Small-scale, audit logging |
+| **Sliding Window Counter** | O(1) | Good | High | Production rate limiting |
+
+<Callout type="info">
+**In interviews, recommend Token Bucket or Sliding Window Counter.** Token Bucket is used by AWS, Stripe, and Cloudflare. Sliding Window Counter is used by Redis-based implementations. Know both and explain trade-offs.
+</Callout>
+
+---
+
+## Distributed Rate Limiting Architecture
+
+Single-server rate limiting is easy. The real challenge is **distributed** rate limiting across multiple API servers.
+
+<Illustration src="/images/lessons/craft/rate-limiter-arch.svg" alt="Distributed rate limiter architecture showing Client to API Gateway to Rate Limiter middleware communicating with Redis cluster for shared state, with backend services and AI adaptive limiter" caption="Distributed rate limiting uses Redis as a shared state store. All API servers check the same counters, ensuring consistent limits regardless of which server handles the request." />
+
+### The Redis Lua Script (Atomic Rate Limiting)
+
+The critical insight: checking the count and incrementing must be **atomic**. Otherwise, race conditions allow limit bypasses.
+
+```lua
+-- Redis Lua script: atomic sliding window rate limit
+local key = KEYS[1]
+local limit = tonumber(ARGV[1])
+local window = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
+
+-- Remove expired entries
+redis.call('ZREMRANGEBYSCORE', key, 0, now - window * 1000)
+
+-- Count requests in current window
+local count = redis.call('ZCARD', key)
+
+if count < limit then
+    -- Allow: add this request
+    redis.call('ZADD', key, now, now .. '-' .. math.random(1000000))
+    redis.call('EXPIRE', key, window)
+    return 1  -- allowed
+else
+    return 0  -- rejected
+end
+```
+
+### Rate Limiting at Different Layers
+
+| Layer | What It Limits | Example |
+|---|---|---|
+| **CDN/Edge** | IP-based, geographic | Cloudflare: 1000 req/min per IP |
+| **API Gateway** | API key, route-based | Kong: 100 req/sec per API key |
+| **Application** | User-based, resource-specific | App: 50 AI generations/day per user |
+| **Database** | Connection pool, query rate | PgBouncer: max 100 connections |
+
+<ThinkAboutIt>
+If you have 10 API servers, each with a local rate limiter set to 100 req/sec, a user could potentially make 1000 req/sec (100 on each server). How does shared state in Redis solve this? What happens if Redis goes down — do you fail open (allow all) or fail closed (block all)?
+</ThinkAboutIt>
+
+---
+
+## Rate Limit Response Headers
+
+Every well-designed API returns rate limit info in response headers:
+
+```http
+HTTP/1.1 200 OK
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 955
+X-RateLimit-Reset: 1672531200
+X-RateLimit-Policy: "1000;w=3600"
+
+--- OR when limited: ---
+
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1672531200
+Content-Type: application/json
+
+{"error": "rate_limit_exceeded", "message": "Try again in 30 seconds"}
+```
+
+<Callout type="info">
+Always include `Retry-After` in 429 responses. Good clients use it for exponential backoff. Without it, clients retry immediately — making the overload worse.
+</Callout>
+
+---
+
+## The AI Angle: Adaptive Rate Limiting with ML
+
+Traditional rate limiters use static rules. Modern systems use ML to **adapt limits in real-time**.
+
+### 1. Bot vs Human Classification
+
+```python
+# Features for bot detection
+features = {
+    "request_interval_stddev": 0.002,   # Bots: very consistent timing
+    "user_agent_entropy": 1.2,          # Bots: low entropy UA strings
+    "mouse_movement_score": 0.0,        # Bots: no mouse events
+    "js_fingerprint_valid": False,      # Bots: often no JS execution
+    "geo_request_pattern": "datacenter", # Bots: originate from cloud IPs
+    "session_depth": 1,                  # Bots: single-page visits
+}
+# Model: Gradient Boosted Trees (XGBoost)
+# Output: probability of being a bot → adjust rate limit dynamically
+```
+
+### 2. Dynamic Threshold Tuning
+
+Instead of fixed limits, ML models adjust thresholds based on:
+
+- **Current system load**: Lower limits when CPUs are at 80%+
+- **Time of day**: Higher limits during off-peak hours
+- **User behavior**: Trusted users get higher limits
+- **Request type**: Expensive operations (AI inference) get stricter limits
+
+### 3. Anomaly Detection
+
+```
+Normal pattern: User makes 10-20 req/min, steady throughout the day
+Anomaly:        User suddenly makes 500 req/min at 3 AM
+Action:         Auto-throttle + alert security team
+```
+
+<FunFact>
+Cloudflare's Bot Management uses ML models that analyze over 30 signals per request — including TLS fingerprinting, HTTP/2 frame ordering, and JavaScript execution patterns. They classify 40% of internet traffic as automated bots.
+</FunFact>
+
+---
+
+## Implementation Checklist
+
+| Concern | Decision |
+|---|---|
+| **Algorithm** | Token Bucket (burst-friendly) or Sliding Window Counter (precise) |
+| **Storage** | Redis (distributed) or local memory (single server) |
+| **Granularity** | Per user? Per IP? Per API key? Per endpoint? |
+| **Fail mode** | Fail open (allow) or fail closed (reject)? |
+| **Headers** | Include `X-RateLimit-*` and `Retry-After` |
+| **Monitoring** | Track 429 rate, false positives, latency added |
+| **Client SDK** | Provide retry logic with exponential backoff |
+| **Multi-tier** | Edge (CDN) + Gateway + Application layer |
+
+<ThinkAboutIt>
+Design a rate limiter for an AI code completion API (like GitHub Copilot). Users type code and get suggestions in real-time. How would you handle the bursty nature of typing? Would you rate limit per keystroke, per completion request, or per accepted suggestion? What about token-based limits for the underlying LLM?
+</ThinkAboutIt>

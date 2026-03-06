@@ -1,0 +1,184 @@
+---
+title: "Prompt Engineering Meesterschap — De Kunst van Praten met AI"
+description: "Beheers de technieken die beginners van experts scheiden — van zero-shot en few-shot prompting tot chain-of-thought redenering, RAG, gestructureerde output en geavanceerde strategieën."
+order: 3
+difficulty: "advanced"
+duration: 40
+icon: "✨"
+published: true
+---
+
+## Waarom Prompts Ertoe Doen — Rommel Erin, Rommel Eruit 🗑️
+
+Je hebt geleerd hoe LLM's werken. Nu komt de vaardigheid die er het meest toe doet: **prompt engineering** — instructies opstellen die de gewenste resultaten opleveren.
+
+```
+❌ Slecht:  "Vertel me over klimaat"
+   → Vaag essay van 2.000 woorden
+
+✅ Goed:   "Leg drie hoofdoorzaken van klimaatverandering uit
+            in opsommingstekens, geschikt voor een 14-jarige.
+            Maximaal 100 woorden."
+   → Gerichte, bruikbare antwoord
+```
+
+<ThinkAboutIt>
+Een LLM is als een briljante expert die instructies zeer letterlijk neemt. Hoe specifieker je bent, hoe beter het resultaat.
+</ThinkAboutIt>
+
+---
+
+## Basistechnieken: Zero-Shot, Few-Shot, Chain-of-Thought 🎯
+
+### Zero-Shot
+Geef het model een taak **zonder voorbeelden**. Werkt goed voor eenvoudige taken.
+
+### Few-Shot
+Geef **een paar voorbeelden** vóór je verzoek:
+
+```
+"Classificeer deze reviews:
+Review: 'Geweldig product!'          → POSITIEF
+Review: 'Kapot na twee dagen.'       → NEGATIEF
+Review: 'Het is oké, werkt prima.'   → NEUTRAAL
+
+Review: 'Het design is strak maar de software crasht vaak.'
+Sentiment: "
+
+Antwoord: "NEGATIEF"
+```
+
+### Chain-of-Thought (CoT)
+Vraag het model om **stap voor stap te denken** voor complexe problemen:
+
+```
+"Een trein rijdt 120 km in 2 uur, versnelt dan met 50%.
+Hoever rijdt hij in de volgende 3 uur?
+Laten we stap voor stap denken."
+
+→ Stap 1: Snelheid = 60 km/u
+→ Stap 2: 50% sneller = 90 km/u
+→ Stap 3: Afstand = 90 × 3 = 270 km ✓
+```
+
+---
+
+## Systeemprompts en Rollenspel 🎭
+
+Een **systeemprompt** stelt het gedrag en de beperkingen van het model in:
+
+```python
+messages = [
+    {
+        "role": "system",
+        "content": """Je bent een senior Python code reviewer.
+        Regels:
+        - Commentaar alleen op bugs, beveiliging en prestaties
+        - Negeer stijl en opmaak
+        - Beoordeel ernst: LAAG / MIDDEL / HOOG / KRITIEK"""
+    },
+    {
+        "role": "user",
+        "content": "Review deze code:\n\ndef login(user, pwd):\n    query = f'SELECT * FROM users WHERE name=\"{user}\"'\n    return db.execute(query)"
+    }
+]
+```
+
+Effectieve structuur: **ROL → TAAK → BEPERKINGEN → FORMAAT → VOORBEELDEN**
+
+<Callout>
+Systeemprompts zijn je krachtigste hulpmiddel voor consistent AI-gedrag. Een goede systeemprompt kan een generiek model in een gespecialiseerde expert veranderen.
+</Callout>
+
+---
+
+## RAG: Retrieval Augmented Generation 📚
+
+**RAG** geeft het model toegang tot jouw data: **Indexeer** → **Haal op** → **Verrijk** → **Genereer**.
+
+```python
+def answer_with_rag(question, document_store):
+    relevant_chunks = document_store.search(question, top_k=3)
+    context = "\n\n".join(chunk.text for chunk in relevant_chunks)
+
+    prompt = f"""Beantwoord ALLEEN op basis van de context.
+
+Context:
+{context}
+
+Vraag: {question}
+Antwoord:"""
+
+    return llm.generate(prompt)
+```
+
+<ThinkAboutIt>
+RAG is als een open-boek examen. De student (LLM) redeneert nog steeds, maar kan feiten opzoeken — wat antwoorden veel betrouwbaarder maakt.
+</ThinkAboutIt>
+
+---
+
+## Gestructureerde Output en Geavanceerde Technieken 🔧
+
+```python
+response = client.chat.completions.create(
+    model="gpt-4o",
+    response_format={"type": "json_object"},
+    messages=[
+        {"role": "system", "content": "Extraheer productinfo als JSON: naam, prijs, categorie"},
+        {"role": "user", "content": "De Sony WH-1000XM5 kost €349 in Elektronica."}
+    ]
+)
+```
+
+**Geavanceerd**: **Zelf-consistentie** (stemmen tussen meerdere antwoorden) en **Gedachtenboom** (meerdere redeneertakken verkennen) verhogen de nauwkeurigheid.
+
+---
+
+## Praktijk: Een Promptbibliotheek Bouwen 🛠️
+
+```python
+PROMPT_LIBRARY = {
+    "samenvatten": """Vat de volgende tekst samen in {length} punten.
+Tekst: {text}""",
+
+    "uitleggen": """Leg {concept} uit aan een {audience}.
+Gebruik alledaagse analogieën.
+Maximaal {word_limit} woorden.""",
+
+    "extraheren": """Extraheer de volgende velden als JSON:
+Velden: {fields}
+Tekst: {text}""",
+}
+
+def build_prompt(template_name, **kwargs):
+    return PROMPT_LIBRARY[template_name].format(**kwargs)
+
+prompt = build_prompt(
+    "uitleggen",
+    concept="kwantumcomputing",
+    audience="nieuwsgierige 15-jarige",
+    word_limit=150
+)
+```
+
+<Callout>
+Een promptbibliotheek is een levend document — verbeter je sjablonen op basis van resultaten. Versiebeheer ze als code en deel de beste met je team.
+</Callout>
+
+---
+
+## Samenvatting 🎯
+
+1. **Promptkwaliteit** bepaalt outputkwaliteit
+2. **Zero-shot** voor eenvoudige taken; **few-shot** voegt voorbeelden toe; **CoT** voor complex redeneren
+3. **Systeemprompts** definiëren het gedrag van het model
+4. **RAG** verankert antwoorden in jouw eigen data
+5. **Gestructureerde output** maakt LLM's productieklaar
+6. Bouw een **promptbibliotheek** — herbruikbare, geteste sjablonen
+
+---
+
+## Wat Volgt? 🚀
+
+Je beheerst nu de drie pijlers: **diepe architecturen**, **taalmodellen** en **prompt engineering**. Binnenkort: **AI-systeemontwerp**. 🏕️

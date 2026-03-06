@@ -1,0 +1,184 @@
+---
+title: "Stacks & Queues — How AI Processes Sequences"
+description: "Master stack and queue patterns including monotonic stacks. See how parsers, undo systems, and sequence models use these structures."
+order: 3
+difficulty: "intermediate"
+duration: 20
+icon: "📚"
+published: true
+---
+
+# Stacks & Queues — How AI Processes Sequences
+
+Stacks and queues are the simplest data structures with the deepest impact. Every recursive call, every BFS, every undo operation — they all rely on these two.
+
+---
+
+## Stack vs Queue: Visual Comparison
+
+<Illustration src="/images/lessons/craft/stacks-queues.svg" alt="Side-by-side comparison of stack (LIFO, vertical) and queue (FIFO, horizontal) with push/pop and enqueue/dequeue arrows" caption="Stack: last in, first out (like a stack of plates). Queue: first in, first out (like a line at a shop)." />
+
+### Stack — LIFO (Last In, First Out)
+
+```python
+stack = []
+stack.append(1)    # push
+stack.append(2)
+stack.append(3)
+top = stack[-1]    # peek -> 3
+val = stack.pop()  # pop -> 3
+```
+
+### Queue — FIFO (First In, First Out)
+
+```python
+from collections import deque
+
+queue = deque()
+queue.append(1)      # enqueue
+queue.append(2)
+queue.append(3)
+front = queue[0]     # peek -> 1
+val = queue.popleft() # dequeue -> 1
+```
+
+<Callout type="info">
+**Never use `list.pop(0)` for queues in Python** — it's O(n) because it shifts all elements. Use `collections.deque` which gives O(1) popleft.
+</Callout>
+
+---
+
+## Classic Stack Patterns
+
+### Valid Parentheses
+
+```python
+def is_valid(s):
+    stack = []
+    pairs = {')': '(', ']': '[', '}': '{'}
+
+    for char in s:
+        if char in pairs:
+            if not stack or stack[-1] != pairs[char]:
+                return False
+            stack.pop()
+        else:
+            stack.append(char)
+
+    return len(stack) == 0
+```
+
+### Key stack problems
+
+| Problem | Pattern | Key Insight |
+|---------|---------|-------------|
+| Valid parentheses | Match open/close | Stack stores openers |
+| Min stack | Auxiliary stack | Track min at each level |
+| Evaluate RPN | Operand stack | Pop two, compute, push result |
+| Daily temperatures | Monotonic stack | Next warmer day = next greater |
+| Largest rectangle in histogram | Monotonic stack | Maintain increasing heights |
+
+---
+
+## The Monotonic Stack Pattern
+
+The most powerful stack pattern in interviews. Maintain a stack where elements are always in **increasing or decreasing order**.
+
+<Illustration src="/images/lessons/craft/monotonic-stack.svg" alt="Step-by-step walkthrough of building a decreasing monotonic stack for the next greater element problem" caption="Monotonic decreasing stack: when a new element is larger than the top, pop and record it as the next greater element. Each element is pushed and popped at most once = O(n)." />
+
+### Next Greater Element
+
+```python
+def next_greater_element(arr):
+    n = len(arr)
+    result = [-1] * n
+    stack = []  # stores indices
+
+    for i in range(n):
+        # Pop all elements smaller than current
+        while stack and arr[stack[-1]] < arr[i]:
+            idx = stack.pop()
+            result[idx] = arr[i]   # arr[i] is the next greater
+        stack.append(i)
+
+    return result
+
+# Example: [2, 1, 5, 3, 4] -> [5, 5, -1, 4, -1]
+```
+
+<ThinkAboutIt>
+Why is this O(n) and not O(n^2)? Each element enters the stack exactly once and leaves at most once. That's at most 2n operations, regardless of the while loop inside the for loop.
+</ThinkAboutIt>
+
+### Monotonic stack variants
+
+| Variant | Stack Order | Finds |
+|---------|-------------|-------|
+| Decreasing stack | Top is smallest | Next **greater** element |
+| Increasing stack | Top is largest | Next **smaller** element |
+| From right to left | Process backwards | **Previous** greater/smaller |
+
+---
+
+## Queue Patterns
+
+### BFS with Queue
+
+Already covered in the Trees & Graphs lesson — BFS is the canonical queue algorithm.
+
+### Sliding Window Maximum (Monotonic Deque)
+
+The deque variant of monotonic stacks — maintain a decreasing deque of *useful* indices:
+
+```python
+from collections import deque
+
+def max_sliding_window(nums, k):
+    dq = deque()  # stores indices, values are decreasing
+    result = []
+
+    for i in range(len(nums)):
+        # Remove elements outside window
+        while dq and dq[0] < i - k + 1:
+            dq.popleft()
+
+        # Maintain decreasing order
+        while dq and nums[dq[-1]] <= nums[i]:
+            dq.pop()
+
+        dq.append(i)
+
+        if i >= k - 1:
+            result.append(nums[dq[0]])  # front is always the max
+
+    return result
+```
+
+<Callout type="info">
+**Monotonic deque** combines the sliding window and monotonic stack patterns. It's the most advanced queue pattern you'll see in interviews — and it runs in O(n).
+</Callout>
+
+---
+
+## AI Connection: Stacks & Queues in AI Systems
+
+<FunFact>
+These simple structures power complex AI systems:
+
+- **Call Stack in Recursion:** Every recursive neural network (Tree-LSTM, recursive parsing) relies on the call stack to process nested structures.
+- **Parser Stacks:** Compilers and NLP parsers use stacks for shift-reduce parsing — pushing tokens and reducing them into grammar rules.
+- **Undo/Redo in Editors:** AI-powered code editors (Copilot, Cursor) use dual stacks — one for undo, one for redo — to track edit history.
+- **Task Queues in ML Pipelines:** Training job schedulers (Kubernetes, Celery) use priority queues to manage GPU allocation and batch processing order.
+- **Attention as Queue Processing:** In autoregressive transformers, the KV-cache processes tokens in FIFO order, maintaining a sliding context window.
+</FunFact>
+
+---
+
+## Quick Reference
+
+| Data Structure | Access Pattern | Operations | Time | Use Case |
+|----------------|---------------|------------|------|----------|
+| Stack | LIFO | push, pop, peek | O(1) | Parentheses, DFS, undo |
+| Queue | FIFO | enqueue, dequeue, peek | O(1) | BFS, scheduling, streaming |
+| Monotonic Stack | Decreasing/Increasing | push, pop (conditional) | O(n) amortised | Next greater/smaller element |
+| Monotonic Deque | Decreasing window | push, pop both ends | O(n) amortised | Sliding window maximum |

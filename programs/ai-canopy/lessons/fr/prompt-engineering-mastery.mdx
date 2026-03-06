@@ -1,0 +1,190 @@
+---
+title: "Maîtrise de l'Ingénierie des Prompts — L'Art de Parler à l'IA"
+description: "Maîtrisez les techniques qui séparent les novices des experts — du prompting zero-shot et few-shot au raisonnement en chaîne de pensée, RAG, sorties structurées et stratégies avancées."
+order: 3
+difficulty: "advanced"
+duration: 40
+icon: "✨"
+published: true
+---
+
+## Pourquoi les Prompts Comptent — Déchets en Entrée, Déchets en Sortie 🗑️
+
+Vous avez appris comment fonctionnent les LLM. Maintenant vient la compétence la plus importante en pratique : l'**ingénierie des prompts** — formuler des instructions qui obtiennent les résultats souhaités.
+
+```
+❌ Mauvais prompt :  "Parle-moi du climat"
+   → Essai vague de 2 000 mots
+
+✅ Bon prompt :  "Explique trois causes clés du changement climatique
+                  en points, adapté pour un adolescent de 14 ans.
+                  Limite à 100 mots."
+   → Réponse ciblée et utile
+```
+
+<ThinkAboutIt>
+Un LLM est comme un expert brillant qui prend les instructions très littéralement. Si vous dites « écris quelque chose sur les chiens », vous obtiendrez un essai aléatoire. Si vous dites « écris une comparaison de 200 mots entre Golden Retrievers et Labradors pour un site d'adoption », vous obtiendrez exactement ce qu'il faut.
+</ThinkAboutIt>
+
+---
+
+## Techniques de Base : Zero-Shot, Few-Shot, Chaîne de Pensée 🎯
+
+### Prompting Zero-Shot
+
+Donnez au modèle une tâche **sans exemples**. Repose entièrement sur l'entraînement du modèle.
+
+### Prompting Few-Shot
+
+Fournissez **quelques exemples** avant votre demande. Le modèle apprend le pattern :
+
+```
+"Classifie ces avis :
+Avis : 'J'adore ce produit !'     → POSITIF
+Avis : 'Cassé après deux jours.'  → NÉGATIF
+Avis : 'Ça va, rien de spécial.'  → NEUTRE
+
+Avis : 'Le design est élégant mais le logiciel plante souvent.'
+Sentiment : "
+
+Réponse : "NÉGATIF"
+```
+
+### Chaîne de Pensée (CoT)
+
+Demandez au modèle de **réfléchir étape par étape** :
+
+```
+"Un train parcourt 120 km en 2 heures, puis accélère de 50%.
+Quelle distance parcourt-il dans les 3 heures suivantes ?
+Réfléchissons étape par étape."
+
+→ Étape 1 : Vitesse = 120 / 2 = 60 km/h
+→ Étape 2 : Augmentation de 50% = 60 × 1.5 = 90 km/h
+→ Étape 3 : Distance en 3h = 90 × 3 = 270 km ✓
+```
+
+---
+
+## Prompts Système et Jeu de Rôle 🎭
+
+Un **prompt système** définit le comportement et les contraintes du modèle :
+
+```python
+messages = [
+    {
+        "role": "system",
+        "content": """Vous êtes un réviseur de code Python senior.
+        Règles :
+        - Ne commentez que les bugs, problèmes de sécurité et performance
+        - Ignorez le style et le formatage
+        - Classez la sévérité : BAS / MOYEN / HAUT / CRITIQUE"""
+    },
+    {
+        "role": "user",
+        "content": "Révisez ce code :\n\ndef login(user, pwd):\n    query = f'SELECT * FROM users WHERE name=\"{user}\"'\n    return db.execute(query)"
+    }
+]
+```
+
+Structure efficace : **RÔLE → TÂCHE → CONTRAINTES → FORMAT → EXEMPLES**
+
+<Callout>
+Les prompts système sont votre outil le plus puissant pour un comportement IA cohérent et fiable. Un excellent prompt système peut transformer un modèle généraliste en expert spécialisé.
+</Callout>
+
+---
+
+## RAG : Génération Augmentée par Récupération 📚
+
+Les LLM ont une date limite de connaissances et peuvent halluciner. Le **RAG** corrige les deux en donnant au modèle accès à vos propres données : **Indexer** → **Récupérer** → **Augmenter** → **Générer**.
+
+```python
+def answer_with_rag(question, document_store):
+    relevant_chunks = document_store.search(question, top_k=3)
+    context = "\n\n".join(chunk.text for chunk in relevant_chunks)
+
+    prompt = f"""Répondez UNIQUEMENT basé sur le contexte fourni.
+
+Contexte :
+{context}
+
+Question : {question}
+Réponse :"""
+
+    return llm.generate(prompt)
+```
+
+<ThinkAboutIt>
+Le RAG, c'est comme donner un examen à livre ouvert au lieu de demander de tout mémoriser. L'étudiant (LLM) raisonne toujours, mais peut vérifier les faits.
+</ThinkAboutIt>
+
+---
+
+## Sorties Structurées et Techniques Avancées 🔧
+
+Pour les applications de production, utilisez le **mode JSON** ou l'**appel de fonctions** :
+
+```python
+response = client.chat.completions.create(
+    model="gpt-4o",
+    response_format={"type": "json_object"},
+    messages=[
+        {"role": "system", "content": "Extraire les infos produit en JSON : nom, prix, catégorie"},
+        {"role": "user", "content": "Le casque Sony WH-1000XM5 coûte 349€ en Électronique."}
+    ]
+)
+```
+
+**Techniques avancées** : l'**auto-cohérence** (voter entre plusieurs réponses) et l'**arbre de pensée** (explorer plusieurs branches de raisonnement) poussent la précision encore plus loin.
+
+---
+
+## Pratique : Construire une Bibliothèque de Prompts 🛠️
+
+```python
+PROMPT_LIBRARY = {
+    "résumer": """Résumez le texte suivant en {length} points.
+Texte : {text}""",
+
+    "expliquer": """Expliquez {concept} à un {audience}.
+Utilisez des analogies du quotidien.
+Limite : {word_limit} mots.""",
+
+    "extraire": """Extrayez les champs suivants en JSON :
+Champs : {fields}
+Texte : {text}""",
+}
+
+def build_prompt(template_name, **kwargs):
+    template = PROMPT_LIBRARY[template_name]
+    return template.format(**kwargs)
+
+prompt = build_prompt(
+    "expliquer",
+    concept="l'informatique quantique",
+    audience="adolescent curieux de 15 ans",
+    word_limit=150
+)
+```
+
+<Callout>
+Une bibliothèque de prompts est un document vivant — itérez et améliorez vos modèles. Versionnez-les comme du code et partagez les meilleurs avec votre équipe.
+</Callout>
+
+---
+
+## Récapitulatif 🎯
+
+1. La **qualité du prompt** détermine la qualité de la sortie
+2. **Zero-shot** pour les tâches simples ; **few-shot** ajoute des exemples ; **chaîne de pensée** pour le raisonnement complexe
+3. Les **prompts système** définissent le rôle et les règles du modèle
+4. Le **RAG** ancre les réponses dans vos propres données
+5. Les **sorties structurées** rendent les LLM prêts pour la production
+6. Construisez une **bibliothèque de prompts** — des modèles réutilisables et testés
+
+---
+
+## Et Ensuite ? 🚀
+
+Vous maîtrisez maintenant les trois piliers de la pratique IA moderne : **architectures profondes**, **modèles de langage** et **ingénierie des prompts**. Prochainement : la **conception de systèmes IA**. 🏕️

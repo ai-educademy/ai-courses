@@ -1,0 +1,272 @@
+---
+title: "Introductie tot Neurale Netwerken — Hoe AI Denkt in Lagen"
+description: "Verken hoe kunstmatige neurale netwerken werken — van biologische neuronen tot lagen, activatiefuncties, forward propagation en backpropagation."
+order: 3
+difficulty: "intermediate"
+duration: 35
+icon: "🧠"
+published: true
+---
+
+## Het Door het Brein Geïnspireerde Algoritme 👋
+
+In de vorige les heb je beslisbomen, KNN en lineaire regressie leren kennen. Ze zijn krachtig — maar ze worstelen met echt complexe taken zoals gezichtsherkenning of taalverwerking.
+
+Daarvoor hebben we **neurale netwerken** nodig — algoritmen die losjes geïnspireerd zijn op hoe je brein werkt.
+
+<Illustration src="/images/lessons/neural-networks-intro.svg" alt="Een biologisch neuron transformeert in een kunstmatig neuron" caption="Neurale netwerken lenen ideeën van de biologie — maar het zijn geen echte breinen!" />
+
+---
+
+## Van Neuronen naar Kunstmatige Neuronen 🔬
+
+Je brein heeft ongeveer 86 miljard neuronen. Elk neuron:
+1. **Ontvangt** signalen van andere neuronen
+2. **Verwerkt** die signalen (telt ze op)
+3. **Beslist** of het moet vuren (een signaal doorsturen)
+
+Een kunstmatig neuron doet hetzelfde, maar met getallen:
+1. **Ontvangt** getallen als invoer
+2. **Vermenigvuldigt** elke invoer met een gewicht
+3. **Telt** ze allemaal op
+4. **Beslist** of het activeert via een activatiefunctie
+
+```
+Invoer          Gewichten       Som         Activatie       Uitvoer
+──────          ────────        ───         ─────────       ──────
+x₁ = 0.5  ──→  w₁ = 0.8  ─┐
+                             ├──→ 1.25 ──→ f(1.25) ──→  0.78
+x₂ = 0.3  ──→  w₂ = 1.5  ─┘
+
+Som = (0.5 × 0.8) + (0.3 × 1.5) = 0.40 + 0.85 = 1.25
+```
+
+<ThinkAboutIt>
+Denk aan gewichten als volumeknoppen op een mengpaneel. Elke invoer is een ander instrument. De gewichten bepalen hoe hard elk instrument klinkt. Het neuron mengt ze samen, en de activatiefunctie beslist of het gecombineerde geluid hard genoeg is om door te gaan.
+</ThinkAboutIt>
+
+---
+
+## Lagen: Hoe Neuronen Zich Organiseren 🏗️
+
+Eén neuron kan niet veel — net als één hersencel niet kan denken. De kracht komt van het organiseren in **lagen**.
+
+**1. Invoerlaag** — De ogen en oren 👀
+- Ontvangt ruwe data
+- Eén neuron per invoerkenmerk
+
+**2. Verborgen laag/lagen** — Het denkende brein 🧠
+- Hier vindt het daadwerkelijke leren plaats
+- Elk neuron vindt een patroon in de data
+- Meer verborgen lagen = complexere patronen
+
+**3. Uitvoerlaag** — Het antwoord 💡
+- Produceert de uiteindelijke voorspelling
+- Voor classificatie: één neuron per categorie
+- Voor regressie: één neuron met een getal
+
+```
+INVOERLAAG        VERBORGEN LAAG 1   VERBORGEN LAAG 2    UITVOERLAAG
+(3 kenmerken)     (4 neuronen)       (4 neuronen)        (2 klassen)
+
+  [x₁] ──────→   [h₁] ──────→     [h₅] ──────→        [Kat: 0.92]
+  [x₂] ──────→   [h₂] ──────→     [h₆] ──────→        [Hond: 0.08]
+  [x₃] ──────→   [h₃] ──────→     [h₇]
+                  [h₄] ──────→     [h₈]
+```
+
+<FunFact>
+De term "deep learning" betekent simpelweg een neuraal netwerk met veel verborgen lagen — meer dan 2. GPT-4 heeft meer dan 100 lagen! Meer lagen laten het netwerk steeds abstractere patronen leren: randen → vormen → objecten → scènes.
+</FunFact>
+
+---
+
+## Activatiefuncties — De Beslissers 💧
+
+Na het optellen moet een neuron beslissen: moet ik activeren of niet?
+
+### De waterstroom-analogie 🚿
+
+Stel je een waterpijp met een klep voor:
+- Water stroomt erin (de gewogen som van invoer)
+- De klep bepaalt wat eruit komt (de activatiefunctie)
+
+### Veelgebruikte activatiefuncties
+
+**ReLU** — De simpele poort
+- Positieve invoer → laat door
+- Negatieve invoer → blokkeer (uitvoer nul)
+
+```python
+def relu(x):
+    return max(0, x)
+
+print(relu(3.5))   # 3.5 (positief → gaat door)
+print(relu(-2.0))  # 0.0 (negatief → geblokkeerd)
+```
+
+**Sigmoid** — De zachte samenpresser
+- Perst elke invoer samen tussen 0 en 1
+- Perfect voor kansen: "Er is 0,87 kans dat dit een kat is"
+
+```python
+import math
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+print(sigmoid(5.0))    # 0.993 (zeer zeker "ja")
+print(sigmoid(0.0))    # 0.500 (helemaal onzeker)
+print(sigmoid(-5.0))   # 0.007 (zeer zeker "nee")
+```
+
+**Softmax** — De stemmenteller
+- Gebruikt in de uitvoerlaag voor classificatie
+- Zet meerdere waarden om in kansen die optellen tot 1
+
+```
+Ruwe uitvoer:    [2.0, 1.0, 0.5]
+Na softmax:      [0.59, 0.24, 0.17]  → Kat (59%), Hond (24%), Vogel (17%)
+```
+
+<Callout>
+**Waarom activatiefuncties?** Zonder hen zou een neuraal netwerk — ongeacht het aantal lagen — slechts lineaire regressie zijn. Activatiefuncties introduceren niet-lineariteit, waardoor het netwerk curves en complexe patronen kan leren.
+</Callout>
+
+---
+
+## Forward Propagation — Data Stroomt Erdoorheen 🌊
+
+Denk aan een estafetteloop:
+
+1. De **invoerlaag** ontvangt de data en stuurt het naar de eerste verborgen laag
+2. Elk neuron **vermenigvuldigt**, **telt op** en **activeert**
+3. De resultaten gaan naar de volgende laag
+4. Dit gaat door tot de **uitvoerlaag**
+5. De uitvoerlaag geeft de uiteindelijke voorspelling
+
+### Een concreet voorbeeld
+
+Laten we classificeren of een vrucht een appel of sinaasappel is:
+
+```
+Invoer: gewicht = 150g, kleur = 0.8 (oranje-achtig)
+
+Stap 1 — Invoerlaag stuurt waarden door:
+  x₁ = 150 (gewicht), x₂ = 0.8 (kleur)
+
+Stap 2 — Verborgen neuron 1:
+  som = (150 × 0.01) + (0.8 × 2.0) + bias(0.1) = 3.2
+  uitvoer = ReLU(3.2) = 3.2
+
+Stap 3 — Verborgen neuron 2:
+  som = (150 × -0.005) + (0.8 × 1.5) + bias(0.3) = 0.75
+  uitvoer = ReLU(0.75) = 0.75
+
+Stap 4 — Uitvoerlaag:
+  appel_score     = (3.2 × -0.5) + (0.75 × 0.8) = -1.0
+  sinaasappel_score = (3.2 × 0.7) + (0.75 × 0.3) = 2.465
+
+Stap 5 — Softmax:
+  Appel:       18%
+  Sinaasappel: 82%  ← Voorspelling: Sinaasappel! 🍊
+```
+
+---
+
+## Backpropagation — Leren van Fouten 🔄
+
+Forward propagation geeft een voorspelling. Maar wat als het fout is? Daar komt **backpropagation** — het proces waarmee een neuraal netwerk leert.
+
+### De darts-analogie 🎯
+
+1. **Gooi een pijltje** (forward propagation — maak een voorspelling)
+2. **Iemand vertelt hoe ver je ernaast zat** (bereken de fout)
+3. **Pas je aim aan** (update de gewichten)
+4. **Gooi opnieuw** — nu zit je dichterbij!
+5. **Herhaal** duizenden keren
+
+```
+Forward propagation:  Data → Netwerk → Voorspelling
+                                          ↓
+Vergelijken:          Voorspelling vs Werkelijk antwoord = Fout
+                                          ↓
+Backpropagation:      Fout stroomt TERUG door het netwerk
+                                          ↓
+Updaten:              Gewichten aanpassen om de fout te verkleinen
+                                          ↓
+Herhalen:             Dit duizenden keren doen!
+```
+
+<ThinkAboutIt>
+Stel je een fabriek voor die defecte producten maakt. Om het probleem op te lossen, traceer je terug vanaf het eindproduct door elk station: "Was de verpakking fout? De verf? Het ruwe materiaal?" Elk station past zijn proces aan. Dat is backpropagation.
+</ThinkAboutIt>
+
+---
+
+## Interactief: Data Door een Netwerk Traceren 🔍
+
+Laten we data door een klein netwerk traceren dat spam-e-mails classificeert.
+
+**Kenmerken:**
+- x₁ = aantal uitroeptekens (5)
+- x₂ = bevat het woord "gratis" (1 = ja)
+
+```python
+import math
+
+# Invoer
+x1, x2 = 5, 1
+
+# Verborgen neuron 1
+z1 = (x1 * 0.6) + (x2 * 0.9) + 0.1    # = 4.0
+h1 = max(0, z1)                          # ReLU → 4.0
+
+# Verborgen neuron 2
+z2 = (x1 * 0.3) + (x2 * 0.4) + 0.2    # = 2.1
+h2 = max(0, z2)                          # ReLU → 2.1
+
+# Uitvoerneuron
+z_out = (h1 * 0.7) + (h2 * 0.5) - 0.5  # = 3.35
+output = 1 / (1 + math.exp(-z_out))      # Sigmoid → 0.966
+
+print(f"Verborgen laag: h1={h1}, h2={h2}")
+print(f"Ruwe uitvoer: {z_out:.2f}")
+print(f"Spam-kans: {output:.1%}")          # 96,6% → SPAM! 🚫
+```
+
+---
+
+## Het Grote Plaatje 🗺️
+
+```
+Data (Les 1) → Algoritme (Les 2) → Neuraal Netwerk (Les 3)
+    📊              🧮                    🧠
+```
+
+Neurale netwerken drijven aan:
+- 🗣️ **ChatGPT** — taal begrijpen en genereren
+- 🎨 **DALL-E / Midjourney** — afbeeldingen maken van tekst
+- 🚗 **Zelfrijdende auto's** — de weg zien en begrijpen
+- 🔬 **AlphaFold** — eiwitstructuren voorspellen
+
+<FunFact>
+Het basisidee van neurale netwerken werd voorgesteld in 1943 — meer dan 80 jaar geleden! Maar ze werden pas praktisch in de jaren 2010, toen we genoeg data en snelle computers (GPU's) hadden om grote netwerken te trainen.
+</FunFact>
+
+---
+
+## Snelle Samenvatting 🎯
+
+1. **Kunstmatige neuronen** ontvangen invoer, vermenigvuldigen met gewichten, tellen op en passen activatie toe
+2. Neurale netwerken hebben **drie laagtypen**: invoer, verborgen en uitvoer
+3. **Activatiefuncties** voegen niet-lineariteit toe — zonder hen kan het netwerk alleen rechte lijnen leren
+4. **Forward propagation** duwt data door het netwerk voor een voorspelling
+5. **Backpropagation** stuurt fouten terug om gewichten aan te passen en te verbeteren
+6. Neurale netwerken drijven moderne AI aan — van chatbots tot zelfrijdende auto's
+
+---
+
+## Wat Komt Er Volgende? 🚀
+
+Gefeliciteerd — je begrijpt nu de drie pijlers van AI: **data**, **algoritmen** en **neurale netwerken**! In komende lessen verkennen we AI-tools en verantwoorde AI 🌱

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#FAFAFE"/>
+  <text x="400" y="32" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="700" fill="#1E1B4B">Base62 Encoding — URL Shortening Flow</text>
+
+  <!-- Step 1: Long URL -->
+  <rect x="30" y="60" width="740" height="55" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="50" y="80" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#5B21B6">STEP 1: Input</text>
+  <text x="50" y="100" font-family="'Courier New',monospace" font-size="12" fill="#7C3AED">https://www.example.com/very/long/path/to/article?id=12345&amp;ref=social</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="115" x2="400" y2="145" stroke="#8B5CF6" stroke-width="2" marker-end="url(#aDown)"/>
+
+  <!-- Step 2: Hash -->
+  <rect x="120" y="148" width="560" height="68" rx="10" fill="#F0FDFA" stroke="#14B8A6" stroke-width="2"/>
+  <text x="140" y="170" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#0F766E">STEP 2: Generate Unique ID</text>
+  <text x="140" y="188" font-family="Inter,system-ui,sans-serif" font-size="10" fill="#0D9488">Option A: Auto-increment counter (simple, predictable)</text>
+  <text x="140" y="204" font-family="Inter,system-ui,sans-serif" font-size="10" fill="#0D9488">Option B: MD5/SHA256 hash, take first 7 chars (collision risk)</text>
+
+  <!-- Counter box -->
+  <rect x="530" y="156" width="130" height="48" rx="6" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="595" y="174" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#047857">Counter ID</text>
+  <text x="595" y="194" text-anchor="middle" font-family="'Courier New',monospace" font-size="14" font-weight="700" fill="#059669">2,009,215,674</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="216" x2="400" y2="246" stroke="#8B5CF6" stroke-width="2" marker-end="url(#aDown)"/>
+
+  <!-- Step 3: Base62 conversion -->
+  <rect x="60" y="248" width="680" height="100" rx="10" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="80" y="270" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#C2410C">STEP 3: Base62 Conversion</text>
+
+  <!-- Base62 charset -->
+  <rect x="80" y="280" width="640" height="24" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="400" y="296" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#B45309">0-9 (10) + a-z (26) + A-Z (26) = 62 characters: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</text>
+
+  <!-- Math -->
+  <text x="80" y="325" font-family="'Courier New',monospace" font-size="11" fill="#EA580C">2009215674 % 62 = 28 -&gt; 's'</text>
+  <text x="300" y="325" font-family="'Courier New',monospace" font-size="11" fill="#EA580C">32406704 % 62 = 16 -&gt; 'g'</text>
+  <text x="510" y="325" font-family="'Courier New',monospace" font-size="11" fill="#EA580C">522689 % 62 = 51 -&gt; 'P'</text>
+  <text x="80" y="342" font-family="'Courier New',monospace" font-size="11" fill="#EA580C">8430 % 62 = 58 -&gt; 'W'</text>
+  <text x="300" y="342" font-family="'Courier New',monospace" font-size="11" fill="#EA580C">135 % 62 = 11 -&gt; 'b'</text>
+  <text x="510" y="342" font-family="'Courier New',monospace" font-size="11" fill="#EA580C">2 % 62 = 2 -&gt; '2'</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="348" x2="400" y2="375" stroke="#8B5CF6" stroke-width="2" marker-end="url(#aDown)"/>
+
+  <!-- Step 4: Result -->
+  <rect x="200" y="378" width="400" height="55" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2.5"/>
+  <text x="400" y="398" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#5B21B6">STEP 4: Short URL Result</text>
+  <text x="400" y="420" text-anchor="middle" font-family="'Courier New',monospace" font-size="16" font-weight="700" fill="#7C3AED">tiny.url/2bWPgs</text>
+
+  <!-- Capacity note -->
+  <rect x="80" y="452" width="640" height="36" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="400" y="468" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" fill="#6B7280">6-char Base62 = 62^6 = 56.8 billion unique URLs | 7-char = 3.5 trillion URLs</text>
+  <text x="400" y="482" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#9CA3AF">At 100M URLs/month, 6 chars last ~47 years. Plenty of capacity!</text>
+
+  <defs>
+    <marker id="aDown" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto"><path d="M0,0 L4,6 L8,0 Z" fill="#8B5CF6"/></marker>
+  </defs>
+</svg>

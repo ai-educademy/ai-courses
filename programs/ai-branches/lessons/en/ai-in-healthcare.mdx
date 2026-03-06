@@ -1,0 +1,186 @@
+---
+title: "AI in Healthcare — Saving Lives with Data"
+description: "Explore how artificial intelligence is transforming medicine — from reading X-rays to discovering new drugs — and the ethical questions we must answer along the way."
+order: 1
+difficulty: "intermediate"
+duration: 30
+icon: "🏥"
+published: true
+---
+
+## Welcome to AI Branches! 🌳
+
+In AI Seeds you learned *what* AI is. In AI Sprouts you discovered *how* it learns — data, algorithms, and neural networks. Now it's time to see AI **in action** in the real world.
+
+We begin with one of the most impactful fields: **healthcare**. AI is already helping doctors detect diseases earlier, develop medicines faster, and deliver more personalised care. Let's explore how — and why we need to be careful.
+
+<Illustration src="/images/lessons/ai-in-healthcare.svg" alt="An AI model analysing a chest X-ray alongside a doctor" caption="AI assists doctors — it doesn't replace them" />
+
+---
+
+## How AI Reads Medical Images 🩻
+
+When a radiologist examines an X-ray, they look for patterns — a shadow on a lung, an unusual mass, a hairline fracture. AI does the same, but at machine speed.
+
+### The Process
+
+1. **Collect images** — thousands of labelled X-rays, MRIs, or CT scans
+2. **Train a model** — a Convolutional Neural Network (CNN) learns to spot patterns
+3. **Predict** — the model highlights regions of concern and assigns a confidence score
+4. **Doctor reviews** — the human makes the final diagnosis
+
+Think of it like a spell-checker for medical images. It underlines suspicious areas so the doctor can focus their attention.
+
+```python
+# Simplified: loading a chest X-ray and predicting with a pre-trained model
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+model = load_model("chest_xray_model.h5")
+
+img = image.load_img("patient_xray.png", target_size=(224, 224))
+img_array = np.expand_dims(image.img_to_array(img) / 255.0, axis=0)
+
+prediction = model.predict(img_array)
+confidence = prediction[0][0]
+
+if confidence > 0.5:
+    print(f"Potential anomaly detected (confidence: {confidence:.1%})")
+else:
+    print(f"No anomaly detected (confidence: {1 - confidence:.1%})")
+```
+
+<FunFact>
+In a 2020 study published in *Nature*, an AI system developed by Google Health outperformed six radiologists at detecting breast cancer in mammograms. It reduced false positives by 5.7% and false negatives by 9.4%.
+</FunFact>
+
+---
+
+## Drug Discovery — From 10 Years to Months 💊
+
+Developing a new drug traditionally takes **10–15 years** and costs over **$2 billion**. AI is dramatically shortening this timeline.
+
+### Where AI Helps
+
+| Stage | Traditional | With AI |
+|-------|------------|---------|
+| Target identification | Years of lab research | AI scans millions of proteins in days |
+| Molecule screening | Test thousands in the lab | AI simulates millions virtually |
+| Clinical trial design | Manual patient matching | AI finds ideal candidates from records |
+| Side-effect prediction | Discovered during trials | AI flags risks before trials begin |
+
+### Case Study: DeepMind's AlphaFold 🧬
+
+Proteins are the building blocks of life, and their 3D shape determines their function. Scientists spent 50 years trying to predict protein structures — a problem known as the "protein folding problem."
+
+In 2020, DeepMind's **AlphaFold** solved it. The AI predicted the 3D structure of nearly every known protein — over 200 million structures — with remarkable accuracy.
+
+<Callout>
+AlphaFold's database is free and open. Researchers worldwide are using it to understand diseases, design better crops, and develop new materials. One AI model accelerated decades of biology research.
+</Callout>
+
+---
+
+## Predictive Diagnostics — Catching Disease Early 🔍
+
+What if AI could detect a disease *before* you show symptoms? That's the promise of predictive diagnostics.
+
+### How It Works
+
+- **Electronic Health Records (EHRs):** AI analyses your medical history, lab results, and lifestyle data
+- **Pattern matching:** It compares your profile against millions of other patients
+- **Risk scoring:** It flags you as high-risk for specific conditions
+
+### Real Examples
+
+- 🫀 **Heart attacks:** AI models can predict cardiac events up to 5 years in advance by analysing ECG patterns invisible to the human eye
+- 🧠 **Alzheimer's:** AI detects subtle changes in brain scans years before cognitive decline begins
+- 👁️ **Diabetic retinopathy:** Google's AI screens retinal images to catch diabetes-related blindness early
+
+### Case Study: PathAI 🔬
+
+PathAI uses machine learning to help pathologists analyse tissue samples (biopsies) more accurately. Their AI:
+
+- Identifies cancerous cells with higher consistency than manual review
+- Reduces diagnostic errors by highlighting edge cases
+- Helps in drug development by quantifying treatment effects on tissue
+
+<ThinkAboutIt>
+If an AI system predicts that you have a 70% chance of developing diabetes in 10 years, should your insurance company be allowed to see that prediction? Who should control your health data — you, your doctor, or the AI company?
+</ThinkAboutIt>
+
+---
+
+## The Ethics of Health AI ⚖️
+
+AI in healthcare raises serious ethical questions that we must confront honestly.
+
+### Bias in Medical AI
+
+- **Training data gaps:** If a skin cancer detection AI is trained mostly on lighter skin tones, it may miss melanomas on darker skin — a potentially fatal error
+- **Gender bias:** Historically, medical research focused on male subjects. AI trained on this data may under-diagnose conditions in women
+- **Geographic bias:** Most health AI is trained on data from wealthy countries, limiting effectiveness elsewhere
+
+### Privacy Concerns
+
+- Medical data is among the most sensitive information a person has
+- AI systems require vast amounts of patient data to train
+- Anonymisation is harder than you think — combining age, postcode, and diagnosis can re-identify individuals
+
+### Accountability
+
+- If an AI misdiagnoses a patient, who is responsible — the doctor, the hospital, or the AI company?
+- Current regulations are still catching up with the technology
+
+```python
+# Example: checking dataset diversity before training
+def audit_dataset(patient_data):
+    """Check if the training data represents all populations fairly."""
+    demographics = patient_data["ethnicity"].value_counts(normalize=True)
+
+    print("Dataset Demographics:")
+    for group, proportion in demographics.items():
+        status = "✅" if proportion >= 0.1 else "⚠️ Under-represented"
+        print(f"  {group}: {proportion:.1%} {status}")
+
+    if demographics.min() < 0.05:
+        print("\n🚨 Warning: Severe under-representation detected.")
+        print("   Model may perform poorly for minority groups.")
+```
+
+<Callout>
+The EU's AI Act classifies medical AI as "high-risk," meaning it must meet strict requirements for transparency, human oversight, and data quality before being deployed. This is a template other regions are following.
+</Callout>
+
+---
+
+## AI as Assistant, Not Replacement 🤝
+
+A common fear is that AI will replace doctors. The reality is more nuanced:
+
+- **AI excels at:** pattern recognition in large datasets, consistency at scale, never getting tired
+- **Doctors excel at:** empathy, complex reasoning, understanding context, communicating with patients
+
+The best outcomes happen when AI and doctors **work together**. AI handles the data-heavy analysis; the doctor applies judgement, experience, and compassion.
+
+<FunFact>
+Studies show that neither AI alone nor doctors alone achieve the best results. The combination of AI + doctor outperforms both. Radiologists using AI assistance are up to 11% more accurate than either working solo.
+</FunFact>
+
+---
+
+## Quick Recap 🎯
+
+1. **Medical imaging AI** helps detect diseases in X-rays, MRIs, and CT scans by learning from thousands of labelled images
+2. **Drug discovery** is being accelerated from years to months — AlphaFold solved the 50-year protein folding problem
+3. **Predictive diagnostics** can flag health risks before symptoms appear by analysing patient records at scale
+4. **PathAI** demonstrates how AI assists pathologists in analysing biopsies more accurately
+5. **Bias, privacy, and accountability** are critical ethical challenges that must be addressed
+6. AI is a **tool that assists doctors** — the best results come from human-AI collaboration
+
+---
+
+## What's Next? 🚀
+
+Healthcare shows us AI's potential to save lives — but it also highlights the importance of responsible development. In the next lesson, we'll explore **chatbots and NLP** — the technology behind every AI assistant you've ever spoken to. Get ready to understand how machines process human language!

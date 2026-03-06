@@ -1,0 +1,178 @@
+---
+title: "AI-Era Leadership — Navigate the New Normal"
+description: "Prepare for leadership questions in the age of AI. Ethics, build-vs-buy, team upskilling, and responsible AI."
+order: 3
+difficulty: "intermediate"
+duration: 20
+icon: "🧭"
+published: true
+---
+
+# AI-Era Leadership — Navigate the New Normal
+
+Interviewers increasingly ask how you **lead teams through AI transformation**. This isn't about coding ML models — it's about judgment, ethics, and strategy.
+
+## Common AI-Era Behavioral Questions
+
+These are the questions you should prepare STAR stories for:
+
+1. **"How would you decide whether to build an AI solution in-house or buy one?"**
+2. **"Tell me about a time you had to consider ethics in a technical decision."**
+3. **"How do you upskill a team that has no AI/ML experience?"**
+4. **"Describe a time you evaluated a new technology and decided NOT to adopt it."**
+5. **"How do you balance innovation with reliability?"**
+6. **"Tell me about leading a team through significant technical change."**
+
+<Callout type="info">
+You don't need to have led a massive AI project. Even small decisions — choosing an AI API, evaluating a copilot tool, or setting guidelines for AI-generated code — demonstrate AI leadership thinking.
+</Callout>
+
+## Build vs Buy: The AI Decision Framework
+
+This is the most common strategic question in AI-era interviews. Use this decision tree.
+
+<Illustration src="/images/lessons/craft/build-vs-buy.svg" alt="Build vs Buy decision tree for AI solutions, flowing through questions about core competency, data sensitivity, team capability, and time pressure" caption="Navigate the build-vs-buy decision with structured questions — interviewers want to see your reasoning process" />
+
+### Key Decision Factors
+
+| Factor | Lean Build | Lean Buy |
+|--------|-----------|----------|
+| **Core to product** | AI IS the product differentiator | AI supports a non-core feature |
+| **Data sensitivity** | Highly proprietary or regulated data | Public or non-sensitive data |
+| **Team capability** | Strong ML engineering team | No in-house ML expertise |
+| **Timeline** | Can invest 6-12 months | Need results in weeks |
+| **Customisation** | Unique model requirements | Standard use case (e.g., NLP, OCR) |
+| **Cost model** | High volume = cheaper to own | Low volume = cheaper to rent |
+
+### How to Answer in an Interview
+
+> **"Tell me about an AI build-vs-buy decision you've made."**
+>
+> **S:** "Our loyalty platform needed real-time personalisation for 2M daily users."
+>
+> **T:** "I led the technical evaluation to determine whether we should build a custom ML pipeline or use a third-party recommendation API."
+>
+> **A:** "I structured the evaluation around four criteria: data sensitivity (our customer data couldn't leave our cloud), customisation needs (we needed domain-specific features), team readiness (we had 2 data engineers but no ML specialists), and timeline (6-month launch target). I ran a 2-week proof-of-concept with both approaches."
+>
+> **R:** "We chose a hybrid approach — a managed ML platform for model training with custom feature engineering and serving layer. This cut build time by 60% while keeping data in our infrastructure. Conversion improved 18% in the first quarter."
+
+<ThinkAboutIt>
+Notice how the answer above uses a structured framework (four criteria) rather than gut feel. That's what interviewers want to see — systematic decision-making.
+</ThinkAboutIt>
+
+## AI Ethics: The Framework Every Leader Needs
+
+When interviewers ask about ethics, they're testing whether you think beyond code.
+
+<Illustration src="/images/lessons/craft/ai-ethics-framework.svg" alt="Responsible AI framework with five pillars: Fairness, Transparency, Privacy, Accountability, Safety" caption="The five pillars of Responsible AI — prepare at least one story that touches on each pillar" />
+
+### The Five Pillars in Practice
+
+**1. Fairness**
+- Audit training data for demographic bias
+- Test model performance across user segments
+- Establish fairness metrics alongside accuracy metrics
+
+**2. Transparency**
+- Can you explain WHY the model made a decision?
+- Do users know they're interacting with AI?
+- Is model documentation (model cards) maintained?
+
+**3. Privacy**
+- Data minimisation — only collect what you need
+- Anonymisation and pseudonymisation techniques
+- Compliance with GDPR, CCPA, and sector-specific regulations
+
+**4. Accountability**
+- Clear ownership of AI systems and their outcomes
+- Audit trails for model decisions
+- Governance board for high-risk AI applications
+
+**5. Safety**
+- Failure mode analysis — what happens when the model is wrong?
+- Human-in-the-loop for high-stakes decisions
+- Rollback plans and circuit breakers
+
+<FunFact>
+The EU AI Act (2024) classifies AI systems by risk level. High-risk systems (hiring, credit scoring, healthcare) require transparency documentation and human oversight. Mentioning regulatory awareness in interviews signals senior-level thinking.
+</FunFact>
+
+## Leading AI Adoption in Your Team
+
+### The 3-Phase Approach
+
+**Phase 1: Awareness (Month 1-2)**
+- Run lunch-and-learn sessions on AI basics
+- Share curated reading lists and courses
+- Identify AI champions within the team
+- Low-stakes experimentation — let people play with tools
+
+**Phase 2: Integration (Month 3-6)**
+- Introduce AI-assisted development tools (Copilot, code review)
+- Start a pilot project with clear success metrics
+- Pair AI-experienced and AI-new team members
+- Establish guidelines for AI-generated code review
+
+**Phase 3: Ownership (Month 6+)**
+- Team members propose AI-powered improvements
+- AI considerations become part of design reviews
+- Shared knowledge base of AI patterns and anti-patterns
+- Regular retrospectives on AI tool effectiveness
+
+### Team Upskilling Strategy
+
+| Role | Focus Area | Resources |
+|------|-----------|-----------|
+| **Engineers** | AI-assisted coding, prompt engineering, ML basics | Hands-on workshops, pair programming |
+| **Tech Leads** | AI architecture patterns, evaluation frameworks | Design review participation, case studies |
+| **Product Owners** | AI use case identification, ROI assessment | Business case templates, stakeholder presentations |
+| **QA/Test** | AI testing strategies, bias detection, edge cases | Testing frameworks, adversarial testing |
+
+<Callout type="info">
+When interviewers ask "How do you upskill a team?", they want to hear a phased approach with measurable checkpoints — not "I'd send them on a course." Show you understand that adoption is a change management challenge, not just a training one.
+</Callout>
+
+## Sample Interview Scenarios
+
+### Scenario 1: The AI Ethics Dilemma
+
+> **"Your ML model for loan approvals shows higher rejection rates for certain postcodes. What do you do?"**
+>
+> - **Acknowledge** the issue immediately — this is proxy discrimination
+> - **Investigate** whether postcode correlates with protected characteristics
+> - **Analyse** whether postcode is a legitimate feature for the model
+> - **Act** — remove or de-weight the feature, retrain, and audit
+> - **Prevent** — implement ongoing fairness monitoring
+
+### Scenario 2: The Build vs Buy Pressure
+
+> **"Leadership wants to ship an AI feature in 6 weeks. Your team has no ML experience. What's your approach?"**
+>
+> - **Don't say "it can't be done"** — reframe the constraints
+> - **Propose a buy/hybrid approach** — managed API + custom integration
+> - **Define MVP scope** — what's the smallest valuable AI feature?
+> - **Plan for iteration** — ship fast, learn, build more in-house over time
+> - **Identify risks** — vendor lock-in, data privacy, model quality
+
+### Scenario 3: The Resistant Team
+
+> **"Your senior engineers push back on using AI tools, saying it produces low-quality code. How do you handle it?"**
+>
+> - **Listen first** — understand their specific concerns (quality, security, skill atrophy)
+> - **Validate with data** — run a controlled experiment comparing AI-assisted vs manual
+> - **Set guardrails** — AI-generated code must pass same review standards
+> - **Lead by example** — use the tools yourself and share real results
+> - **Don't mandate** — let adoption grow from demonstrated value
+
+<ThinkAboutIt>
+The best answers to leadership scenarios show empathy first, data second, and action third. "I'd listen to understand their concerns, then propose a time-boxed experiment to test our assumptions" is stronger than "I'd tell them to get on board."
+</ThinkAboutIt>
+
+## Practice Checklist
+
+- [ ] I have a STAR story for at least one build-vs-buy decision
+- [ ] I can name and explain all five pillars of Responsible AI
+- [ ] I have a phased approach for team AI adoption ready to articulate
+- [ ] I've prepared for at least 2 AI ethics scenario questions
+- [ ] I can discuss AI regulation (EU AI Act, GDPR) at a high level
+- [ ] I frame AI leadership as change management, not just technical skill

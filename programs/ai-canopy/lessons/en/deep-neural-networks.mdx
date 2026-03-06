@@ -1,0 +1,206 @@
+---
+title: "Deep Neural Networks — Why Depth Changes Everything"
+description: "Discover how deep networks surpass shallow ones, understand vanishing gradients, explore landmark architectures like ResNet and Transformers, and learn how transfer learning lets you stand on giants' shoulders."
+order: 1
+difficulty: "intermediate"
+duration: 40
+icon: "🔬"
+published: true
+---
+
+## From Shallow to Deep — Why Depth Matters 🏔️
+
+In AI Branches you learned that neural networks have layers. A network with one or two hidden layers is called **shallow**. Add more layers — 10, 50, 100+ — and you have a **deep** neural network. That single word, "deep", is what puts the _deep_ in deep learning.
+
+But why does depth matter? Because each layer learns a **different level of abstraction**:
+
+```
+Layer 1  →  Edges and simple textures
+Layer 2  →  Corners and contours
+Layer 3  →  Parts of objects (eyes, wheels)
+Layer 4  →  Whole objects (faces, cars)
+Layer 5+ →  Scenes and context
+```
+
+<ThinkAboutIt>
+Imagine reading a book. Layer 1 recognises letters, Layer 2 recognises words, Layer 3 understands sentences, and Layer 4 grasps the full meaning. A shallow reader stuck at Layer 1 would only ever see letters — never understanding the story.
+</ThinkAboutIt>
+
+Shallow networks can approximate many functions in theory, but in practice they need an impractically wide layer. Deep networks achieve the same (and better) results with far fewer total parameters by **composing** simple features into complex ones.
+
+---
+
+## The Vanishing Gradient Problem 🕳️
+
+Early researchers tried stacking many layers, but training kept failing. The culprit: **vanishing gradients**.
+
+During backpropagation, error signals are multiplied through each layer. With activation functions like sigmoid, those multiplications involve numbers between 0 and 1. Multiply enough small numbers together and the signal shrinks to nearly zero:
+
+```
+Error signal:  0.25 × 0.25 × 0.25 × 0.25 = 0.0039
+```
+
+By the time the signal reaches the first layers, it's so tiny the weights barely update. The network's early layers **stop learning**.
+
+### How We Fixed It
+
+**1. ReLU Activation** — Instead of sigmoid, use ReLU (Rectified Linear Unit). For positive inputs the gradient is exactly 1, so signals pass through without shrinking.
+
+```python
+# Sigmoid gradient shrinks signals
+def sigmoid_grad(x):
+    s = 1 / (1 + math.exp(-x))
+    return s * (1 - s)  # Always between 0 and 0.25
+
+# ReLU gradient preserves signals
+def relu_grad(x):
+    return 1 if x > 0 else 0  # Full strength or nothing
+```
+
+**2. Skip Connections (Residual Learning)** — Let the signal jump over layers entirely. If a layer has nothing useful to add, the data just flows through unchanged.
+
+```
+x ──→ [Layer] ──→ (+) ──→ output
+ │                  ↑
+ └──────────────────┘   ← skip connection
+```
+
+**3. Batch Normalisation** — Normalise the inputs to each layer so values stay in a healthy range throughout the network.
+
+<FunFact>
+Before these breakthroughs, networks deeper than about 10 layers were nearly impossible to train. After them, researchers successfully trained networks with over 1,000 layers!
+</FunFact>
+
+---
+
+## Landmark Architectures 🏛️
+
+### ResNet — Residual Networks (2015)
+
+ResNet introduced skip connections and won the ImageNet competition with a **152-layer** network. The key insight: instead of learning an output directly, each block learns the **residual** — the difference between what you have and what you want.
+
+```
+Traditional:  output = F(x)
+Residual:     output = F(x) + x     ← the "+ x" is the skip connection
+```
+
+This simple change made ultra-deep networks trainable for the first time.
+
+### Transformers (2017)
+
+The Transformer architecture replaced the sequential processing of older models with a **self-attention mechanism**. Instead of reading text word by word, it looks at all words simultaneously and decides which ones are important for each other.
+
+```
+"The cat sat on the mat because it was tired"
+
+Self-attention asks: What does "it" refer to?
+  "it" ←→ "cat"    (high attention score: 0.82)
+  "it" ←→ "mat"    (low attention score: 0.11)
+  "it" ←→ "sat"    (low attention score: 0.07)
+```
+
+<Callout>
+Transformers are the architecture behind GPT, Claude, Llama, and virtually every modern LLM. Understanding them at a high level is essential — we will go deeper in the next lesson.
+</Callout>
+
+---
+
+## Transfer Learning — Standing on Giants' Shoulders 🦕
+
+Training a deep network from scratch requires millions of examples and days of GPU time. **Transfer learning** lets you skip most of that work.
+
+The idea: take a model that someone already trained on a massive dataset, then **fine-tune** it on your smaller, specific dataset.
+
+```
+Step 1: Start with a pre-trained model (trained on millions of images)
+Step 2: Freeze the early layers (they already know edges, shapes, textures)
+Step 3: Replace the final layer with your own task (e.g., 3 classes: cat, dog, bird)
+Step 4: Train only the last few layers on your data
+Step 5: Done! High accuracy with a fraction of the data and time.
+```
+
+Why it works: early layers learn **universal features** (edges, colours, textures) that transfer across tasks. Only the later, task-specific layers need retraining.
+
+<ThinkAboutIt>
+Transfer learning is like an experienced chef switching from French to Japanese cuisine. They don't need to relearn how to hold a knife or control heat — those skills transfer. They only need to learn the new recipes and ingredients.
+</ThinkAboutIt>
+
+---
+
+## GPU Training — Why Hardware Matters ⚡
+
+Neural network training is mostly **matrix multiplication** — billions of multiply-and-add operations. CPUs handle these one at a time (or a few at a time). GPUs handle thousands **simultaneously**.
+
+```
+CPU:  4-16 cores   → processes tasks one by one (fast per task)
+GPU:  thousands of cores → processes thousands of tasks in parallel
+
+Training time comparison (approximate):
+┌────────────────┬─────────┬──────────┐
+│ Model          │ CPU     │ GPU      │
+├────────────────┼─────────┼──────────┤
+│ Small CNN      │ 2 hours │ 5 min    │
+│ ResNet-50      │ 2 weeks │ 6 hours  │
+│ GPT-scale LLM  │ decades │ weeks*   │
+└────────────────┴─────────┴──────────┘
+* with thousands of GPUs working together
+```
+
+Modern AI breakthroughs would be impossible without GPUs (and specialised chips like TPUs). When you hear about AI companies spending billions on hardware, this is why.
+
+---
+
+## Hands-On: Fine-Tuning a Pre-Trained Model 🛠️
+
+Let's fine-tune a pre-trained image classifier to recognise three types of flowers. This pseudocode mirrors what real frameworks like PyTorch do:
+
+```python
+# Step 1: Load a pre-trained model (e.g., ResNet-50 trained on ImageNet)
+model = load_pretrained_model("resnet50")
+
+# Step 2: Freeze all layers — we don't want to change what's already learned
+for layer in model.layers:
+    layer.trainable = False
+
+# Step 3: Replace the final classification layer
+# Original: 1000 classes (ImageNet categories)
+# Ours: 3 classes (rose, sunflower, tulip)
+model.final_layer = DenseLayer(input_size=2048, output_size=3)
+
+# Step 4: Only the new final layer will be trained
+model.final_layer.trainable = True
+
+# Step 5: Prepare our small dataset
+train_data = load_images("flowers/train/", categories=["rose", "sunflower", "tulip"])
+val_data = load_images("flowers/val/", categories=["rose", "sunflower", "tulip"])
+
+# Step 6: Train (fine-tune) for a few epochs
+model.compile(optimizer="adam", loss="cross_entropy", learning_rate=0.001)
+model.fit(train_data, validation_data=val_data, epochs=5)
+
+# Step 7: Evaluate
+accuracy = model.evaluate(val_data)
+print(f"Validation accuracy: {accuracy:.1%}")
+# Typical result: ~95% accuracy with just a few hundred images!
+```
+
+<Callout>
+Notice how little data we need! Without transfer learning, training from scratch on a few hundred images would overfit badly. Transfer learning makes deep learning accessible even without massive datasets.
+</Callout>
+
+---
+
+## Quick Recap 🎯
+
+1. **Depth** lets networks build hierarchical representations — edges to objects to scenes
+2. **Vanishing gradients** made deep training impossible until ReLU, skip connections, and batch normalisation solved it
+3. **ResNet** introduced residual learning with skip connections, enabling 100+ layer networks
+4. **Transformers** use self-attention to process sequences in parallel — the architecture behind modern LLMs
+5. **Transfer learning** lets you fine-tune pre-trained models on small datasets, saving time and data
+6. **GPUs** make deep learning practical by performing thousands of computations in parallel
+
+---
+
+## What's Next? 🚀
+
+You now understand **how** deep networks work and **why** modern architectures are so powerful. In the next lesson, we'll zoom into the most impactful application of deep learning today: **Large Language Models** — the engines behind ChatGPT, Claude, and the AI revolution. 📝

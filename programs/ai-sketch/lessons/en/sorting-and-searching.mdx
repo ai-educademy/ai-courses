@@ -1,0 +1,205 @@
+---
+title: "Sorting & Searching — How AI Ranks Results"
+description: "Visualise sorting algorithms and binary search. See how search engines rank results and how ML models use sorted data."
+order: 3
+difficulty: "beginner"
+duration: 15
+icon: "🔍"
+published: true
+---
+
+# Sorting & Searching
+
+Every search result you see is **sorted by relevance**. Every database query uses **binary search** on indexes. These algorithms are everywhere — and they're interview staples.
+
+---
+
+## The Big Picture
+
+<Illustration src="/images/lessons/craft/sorting-searching.svg" alt="Merge sort divide-and-conquer tree showing split and merge phases, and binary search step-by-step elimination" caption="Merge sort (left) recursively divides then merges sorted halves. Binary search (right) eliminates half the data at each step." />
+
+---
+
+## Bubble Sort — The Naive Approach
+
+> Repeatedly swap adjacent elements if they're in the wrong order.
+
+**Walkthrough** with `[5, 3, 8, 1]`:
+
+| Pass | Comparisons | Result |
+|------|------------|--------|
+| 1 | 5>3 swap, 5<8 skip, 8>1 swap | [3, 5, 1, **8**] |
+| 2 | 3<5 skip, 5>1 swap | [3, 1, **5**, 8] |
+| 3 | 3>1 swap | [**1**, 3, 5, 8] |
+
+**Time: O(n²) | Space: O(1)**
+
+<Callout type="info">
+Bubble sort is only useful for learning. In interviews, mention it to show you know why better algorithms exist — then immediately pivot to merge sort or quick sort.
+</Callout>
+
+---
+
+## Merge Sort — Divide & Conquer
+
+> Split the array in half recursively, then merge sorted halves back together.
+
+**The algorithm in 3 steps:**
+
+1. **Divide** — split array into two halves
+2. **Conquer** — recursively sort each half
+3. **Merge** — combine two sorted halves into one sorted array
+
+**The merge step** is the key — compare front elements of each half:
+
+| Left | Right | Pick | Result so far |
+|------|-------|------|---------------|
+| **3**, 27, 38 | **9**, 43, 82 | 3 | [3] |
+| 27, 38 | **9**, 43, 82 | 9 | [3, 9] |
+| **27**, 38 | 43, 82 | 27 | [3, 9, 27] |
+| 38 | 43, 82 | 38 | [3, 9, 27, 38] |
+| — | 43, 82 | 43, 82 | [3, 9, 27, 38, 43, 82] |
+
+```python
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+```
+
+**Time: O(n log n) | Space: O(n)**
+
+<ThinkAboutIt>
+Why O(n log n)? The array splits log(n) times (halving). At each level, we do O(n) work merging. Total: n work x log(n) levels = O(n log n).
+</ThinkAboutIt>
+
+---
+
+## Sorting Algorithm Comparison
+
+| Algorithm | Best | Average | Worst | Space | Stable? |
+|-----------|------|---------|-------|-------|---------|
+| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Merge Sort | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |
+| Quick Sort | O(n log n) | O(n log n) | O(n²) | O(log n) | No |
+| Heap Sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No |
+
+<Callout type="info">
+**Stable** means equal elements keep their original order. This matters when sorting by multiple keys — e.g., sort by name, then by age. A stable sort preserves the name ordering within same-age groups.
+</Callout>
+
+---
+
+## Binary Search — Halving the Problem
+
+> Find a target in a **sorted** array by eliminating half the elements each step.
+
+**Prerequisite:** Array MUST be sorted.
+
+**Walkthrough** — find `23` in `[2, 5, 11, 15, 23, 37, 41, 56]`:
+
+| Step | Range | Mid | Compare | Action |
+|------|-------|-----|---------|--------|
+| 1 | [2..56] | 15 | 23 > 15 | Search right half |
+| 2 | [23..56] | 37 | 23 < 37 | Search left half |
+| 3 | [23] | 23 | 23 = 23 | **Found at index 4!** |
+
+**3 steps** instead of 8 (linear scan). For 1 million elements: **20 steps** instead of 1,000,000.
+
+```python
+def binary_search(nums, target):
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = left + (right - left) // 2  # avoids overflow
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1  # not found
+```
+
+**Time: O(log n) | Space: O(1)**
+
+<FunFact>
+Binary search is deceptively tricky to implement correctly. A study by Jon Bentley found that **90% of professional programmers** couldn't write a bug-free binary search. The most common bug? Integer overflow in `(left + right) / 2` — which is why we use `left + (right - left) // 2`.
+</FunFact>
+
+---
+
+## Binary Search Variants
+
+Binary search isn't just for "find exact value." These variants appear constantly:
+
+| Variant | Description | Key Change |
+|---------|-------------|------------|
+| **Lower bound** | First position where element could be inserted | `left` when `nums[mid] >= target` → `right = mid` |
+| **Upper bound** | Position after last occurrence | `left` when `nums[mid] > target` → `right = mid` |
+| **Search rotated array** | Sorted array rotated at unknown pivot | Check which half is sorted first |
+| **Search answer space** | Find min/max satisfying a condition | Binary search on the answer, not the array |
+
+<ThinkAboutIt>
+"Binary search on the answer space" is a powerful technique. Example: "What's the minimum capacity to ship packages in D days?" Binary search between min and max possible capacity, checking if each candidate works. This turns an optimization problem into a decision problem.
+</ThinkAboutIt>
+
+---
+
+## The AI Connection: Ranking & Retrieval
+
+Sorting and searching are fundamental to how AI systems deliver results:
+
+**Search engines (Google, Bing):**
+
+- **Inverted indexes** — sorted lists of document IDs per keyword
+- **Binary search** on these indexes for sub-millisecond lookups
+- **Merge operations** to combine results from multiple keywords
+
+**Recommendation systems:**
+
+- Sort candidates by predicted score (relevance ranking)
+- **Top-K selection** — find the K best items without fully sorting (partial sort)
+- **Approximate nearest neighbour** search uses tree-based structures similar to binary search
+
+**Database query optimisation:**
+
+- B-trees (a generalisation of binary search trees) power every SQL index
+- Query planners choose between sequential scan (O(n)) and index scan (O(log n))
+
+<FunFact>
+Google processes over 8.5 billion searches per day. Each query searches an index of hundreds of billions of web pages. Without sorted indexes and binary search, a single query would take minutes instead of milliseconds.
+</FunFact>
+
+---
+
+## Complexity Cheat Sheet
+
+| Operation | Unsorted Array | Sorted Array |
+|-----------|---------------|--------------|
+| Search | O(n) | O(log n) |
+| Insert | O(1) | O(n)* |
+| Find min/max | O(n) | O(1) |
+| Find k-th element | O(n) | O(1) |
+
+*Must shift elements to maintain sorted order
+
+<Callout type="info">
+The trade-off is clear: **sorting costs O(n log n) upfront**, but enables O(log n) searches forever after. If you search more than O(log n) times, sorting pays for itself.
+</Callout>

@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="'Segoe UI', system-ui, sans-serif">
+  <rect width="800" height="400" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E293B">Strings &amp; Pattern Matching — Visual Guide</text>
+
+  <!-- SECTION 1: String as Char Array (Top Left) -->
+  <text x="195" y="60" text-anchor="middle" font-size="14" font-weight="600" fill="#F97316">String = Character Array</text>
+  <text x="195" y="76" text-anchor="middle" font-size="11" fill="#64748B">"HELLO" in memory</text>
+
+  <rect x="50" y="85" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="72" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E293B">H</text>
+  <text x="72" y="140" text-anchor="middle" font-size="10" fill="#94A3B8">[0]</text>
+
+  <rect x="98" y="85" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="120" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E293B">E</text>
+  <text x="120" y="140" text-anchor="middle" font-size="10" fill="#94A3B8">[1]</text>
+
+  <rect x="146" y="85" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="168" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E293B">L</text>
+  <text x="168" y="140" text-anchor="middle" font-size="10" fill="#94A3B8">[2]</text>
+
+  <rect x="194" y="85" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="216" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E293B">L</text>
+  <text x="216" y="140" text-anchor="middle" font-size="10" fill="#94A3B8">[3]</text>
+
+  <rect x="242" y="85" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="264" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E293B">O</text>
+  <text x="264" y="140" text-anchor="middle" font-size="10" fill="#94A3B8">[4]</text>
+
+  <rect x="290" y="85" width="44" height="40" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="312" y="110" text-anchor="middle" font-size="14" fill="#94A3B8">\0</text>
+  <text x="312" y="140" text-anchor="middle" font-size="10" fill="#94A3B8">[5]</text>
+
+  <!-- SECTION 2: Palindrome Check (Top Right) -->
+  <text x="600" y="60" text-anchor="middle" font-size="14" font-weight="600" fill="#F97316">Palindrome Check — Two Pointers</text>
+  <text x="600" y="76" text-anchor="middle" font-size="11" fill="#64748B">"RACECAR" — compare from both ends</text>
+
+  <!-- Step 1 -->
+  <rect x="440" y="85" width="36" height="34" rx="4" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+  <text x="458" y="108" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">R</text>
+  <rect x="478" y="85" width="36" height="34" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="496" y="108" text-anchor="middle" font-size="15" fill="#1E293B">A</text>
+  <rect x="516" y="85" width="36" height="34" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="534" y="108" text-anchor="middle" font-size="15" fill="#1E293B">C</text>
+  <rect x="554" y="85" width="36" height="34" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="572" y="108" text-anchor="middle" font-size="15" fill="#1E293B">E</text>
+  <rect x="592" y="85" width="36" height="34" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="610" y="108" text-anchor="middle" font-size="15" fill="#1E293B">C</text>
+  <rect x="630" y="85" width="36" height="34" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="648" y="108" text-anchor="middle" font-size="15" fill="#1E293B">A</text>
+  <rect x="668" y="85" width="36" height="34" rx="4" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+  <text x="686" y="108" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">R</text>
+
+  <!-- Pointers step 1 -->
+  <text x="458" y="134" text-anchor="middle" font-size="10" font-weight="600" fill="#10B981">L</text>
+  <line x1="458" y1="126" x2="458" y2="119" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrowG)"/>
+  <text x="686" y="134" text-anchor="middle" font-size="10" font-weight="600" fill="#10B981">R</text>
+  <line x1="686" y1="126" x2="686" y2="119" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrowG)"/>
+  <text x="754" y="108" font-size="11" fill="#10B981" font-weight="600">R=R</text>
+
+  <!-- Step 2 indicators -->
+  <rect x="478" y="148" width="36" height="28" rx="4" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+  <text x="496" y="167" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">A</text>
+  <rect x="516" y="148" width="36" height="28" rx="3" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="534" y="167" text-anchor="middle" font-size="13" fill="#94A3B8">C</text>
+  <rect x="554" y="148" width="36" height="28" rx="3" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="572" y="167" text-anchor="middle" font-size="13" fill="#94A3B8">E</text>
+  <rect x="592" y="148" width="36" height="28" rx="3" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="610" y="167" text-anchor="middle" font-size="13" fill="#94A3B8">C</text>
+  <rect x="630" y="148" width="36" height="28" rx="4" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+  <text x="648" y="167" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">A</text>
+  <text x="754" y="167" font-size="11" fill="#10B981" font-weight="600">A=A</text>
+
+  <!-- Step 3 indicators -->
+  <rect x="516" y="186" width="36" height="28" rx="4" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+  <text x="534" y="205" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">C</text>
+  <rect x="554" y="186" width="36" height="28" rx="3" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="572" y="205" text-anchor="middle" font-size="13" fill="#94A3B8">E</text>
+  <rect x="592" y="186" width="36" height="28" rx="4" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+  <text x="610" y="205" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">C</text>
+  <text x="754" y="205" font-size="11" fill="#10B981" font-weight="600">C=C</text>
+
+  <!-- Palindrome result -->
+  <rect x="542" y="222" width="60" height="22" rx="11" fill="#10B981"/>
+  <text x="572" y="237" text-anchor="middle" font-size="11" fill="#FFFFFF" font-weight="700">PASS</text>
+
+  <!-- SECTION 3: Sliding Window (Bottom) -->
+  <text x="400" y="270" text-anchor="middle" font-size="14" font-weight="600" fill="#F97316">Sliding Window — Find Longest Substring Without Repeats</text>
+  <text x="400" y="286" text-anchor="middle" font-size="11" fill="#64748B">"ABCABCBB" — window slides right, shrinks on duplicate</text>
+
+  <!-- Base string -->
+  <rect x="120" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="142" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">A</text>
+  <rect x="168" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="190" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">B</text>
+  <rect x="216" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="238" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">C</text>
+  <rect x="264" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="286" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">A</text>
+  <rect x="312" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="334" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">B</text>
+  <rect x="360" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="382" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">C</text>
+  <rect x="408" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="430" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">B</text>
+  <rect x="456" y="298" width="44" height="40" rx="4" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="478" y="323" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">B</text>
+
+  <!-- Window 1: ABC (highlight) -->
+  <rect x="118" y="296" width="144" height="44" rx="6" fill="none" stroke="#F97316" stroke-width="3"/>
+  <text x="190" y="360" text-anchor="middle" font-size="11" fill="#F97316" font-weight="600">window = 3</text>
+
+  <!-- Window 2: BCA -->
+  <rect x="166" y="296" width="144" height="44" rx="6" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- Window 3: CAB -->
+  <rect x="214" y="296" width="144" height="44" rx="6" fill="none" stroke="#3B82F6" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- Legend -->
+  <rect x="530" y="298" width="16" height="16" rx="3" fill="none" stroke="#F97316" stroke-width="3"/>
+  <text x="554" y="311" font-size="11" fill="#1E293B">Current window</text>
+  <rect x="530" y="322" width="16" height="16" rx="3" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="554" y="335" font-size="11" fill="#1E293B">Next position</text>
+  <text x="530" y="360" font-size="11" fill="#64748B">Max length = 3 ("ABC")</text>
+
+  <!-- AI Connection Banner -->
+  <rect x="30" y="370" width="740" height="28" rx="6" fill="#1E293B"/>
+  <text x="50" y="389" font-size="12" fill="#F97316" font-weight="700">AI CONNECTION</text>
+  <text x="175" y="389" font-size="12" fill="#E2E8F0">NLP tokenizers split text into subwords using sliding window &amp; hash lookups</text>
+
+  <defs>
+    <marker id="arrowG" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#10B981"/>
+    </marker>
+  </defs>
+</svg>

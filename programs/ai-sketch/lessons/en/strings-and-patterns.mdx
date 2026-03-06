@@ -1,0 +1,193 @@
+---
+title: "Strings & Pattern Matching — How AI Reads Text"
+description: "Understand string manipulation and pattern matching. Discover how NLP tokenizers and search engines process text."
+order: 2
+difficulty: "beginner"
+duration: 15
+icon: "🔤"
+published: true
+---
+
+# Strings & Pattern Matching
+
+Every time you type a search query, send a message, or ask an AI a question — strings are being processed. Understanding how they work under the hood unlocks both interview success and AI intuition.
+
+---
+
+## Strings Under the Hood
+
+A string is just a **character array** with special rules.
+
+<Illustration src="/images/lessons/craft/strings-patterns.svg" alt="String as character array, palindrome two-pointer check, and sliding window technique" caption="Strings are character arrays (top-left). Palindromes are checked with two pointers from both ends (top-right). Sliding window finds optimal substrings (bottom)." />
+
+**Key facts:**
+
+- **Immutable** in most languages (Java, Python, Go) — every "change" creates a new string
+- **Indexed** — access any character in O(1)
+- **Encoded** — UTF-8, UTF-16, ASCII affect how characters map to bytes
+
+<Callout type="info">
+In Python, `s = "hello"` then `s[0] = "H"` throws an error. Strings are **immutable**. Use `s = "H" + s[1:]` or `list(s)` to modify.
+</Callout>
+
+---
+
+## Pattern 1: String Reversal
+
+> Reverse a string in-place using two pointers.
+
+**Visual walkthrough** — `"HELLO"`:
+
+| Step | L ptr | R ptr | Action | Result |
+|------|-------|-------|--------|--------|
+| 1 | H (0) | O (4) | Swap | **O**ELL**H** |
+| 2 | E (1) | L (3) | Swap | O**L**L**E**H |
+| 3 | L=L | — | Done | OLLEH |
+
+```python
+def reverse_string(s: list[str]) -> None:
+    left, right = 0, len(s) - 1
+    while left < right:
+        s[left], s[right] = s[right], s[left]
+        left += 1
+        right -= 1
+```
+
+**Time: O(n) | Space: O(1)** — no extra memory needed.
+
+---
+
+## Pattern 2: Palindrome Check
+
+> Is the string the same forwards and backwards?
+
+**Two-pointer approach** — compare from both ends, move inward:
+
+1. Set `left = 0`, `right = len - 1`
+2. If `s[left] != s[right]` → **not a palindrome**
+3. Move both pointers inward
+4. If they meet → **palindrome confirmed**
+
+```python
+def is_palindrome(s: str) -> bool:
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+```
+
+<ThinkAboutIt>
+How would you handle "A man, a plan, a canal: Panama"? You need to **skip non-alphanumeric characters** and **ignore case**. Add `while left < right and not s[left].isalnum(): left += 1` before each comparison.
+</ThinkAboutIt>
+
+---
+
+## Pattern 3: Anagram Detection
+
+> Are two strings anagrams? (Same characters, different order)
+
+**Hash map approach** — count character frequencies:
+
+```python
+def is_anagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    count = {}
+    for c in s:
+        count[c] = count.get(c, 0) + 1
+    for c in t:
+        count[c] = count.get(c, 0) - 1
+        if count[c] < 0:
+            return False
+    return True
+```
+
+| | "listen" | "silent" |
+|---|----------|----------|
+| l | 1 | 1 |
+| i | 1 | 1 |
+| s | 1 | 1 |
+| t | 1 | 1 |
+| e | 1 | 1 |
+| n | 1 | 1 |
+
+All counts zero → **anagram confirmed**.
+
+---
+
+## Pattern 4: Sliding Window
+
+> Find the longest substring without repeating characters.
+
+**The technique:** Maintain a "window" of valid characters. Expand right, shrink left when a duplicate is found.
+
+**Walkthrough** with `"ABCABCBB"`:
+
+| Step | Window | Seen | Length |
+|------|--------|------|--------|
+| 1 | **A** | {A} | 1 |
+| 2 | **AB** | {A,B} | 2 |
+| 3 | **ABC** | {A,B,C} | 3 |
+| 4 | A is duplicate → shrink → **BCA** | {B,C,A} | 3 |
+| 5 | B is duplicate → shrink → **CAB** | {C,A,B} | 3 |
+
+**Answer: 3** (any of "ABC", "BCA", or "CAB")
+
+```python
+def length_of_longest_substring(s: str) -> int:
+    seen = {}
+    left = max_len = 0
+    for right, char in enumerate(s):
+        if char in seen and seen[char] >= left:
+            left = seen[char] + 1
+        seen[char] = right
+        max_len = max(max_len, right - left + 1)
+    return max_len
+```
+
+<Callout type="info">
+The sliding window pattern solves **dozens** of substring problems. Key insight: if expanding the window breaks a condition, shrink from the left until the condition holds again.
+</Callout>
+
+---
+
+## The AI Connection: Tokenization
+
+Before any NLP model (GPT, BERT, LLaMA) processes text, it **tokenizes** — splits text into sub-word pieces using techniques built on the patterns above.
+
+**How BPE (Byte Pair Encoding) works:**
+
+1. Start with individual characters: `["h", "e", "l", "l", "o"]`
+2. Count adjacent pairs — most frequent pair: `("l", "l")`
+3. Merge: `["h", "e", "ll", "o"]`
+4. Repeat until vocabulary size reached
+
+**This uses:**
+
+- **Frequency counting** (hash maps) to find common pairs
+- **Sliding window** to scan adjacent characters
+- **String manipulation** to merge tokens
+
+<FunFact>
+GPT-4's tokenizer has ~100,000 tokens. The word "indescribable" might become ["in", "desc", "rib", "able"] — 4 tokens. Common words like "the" are a single token. This is why AI models "think" in tokens, not words!
+</FunFact>
+
+---
+
+## Complexity Summary
+
+| Pattern | Time | Space | Key Technique |
+|---------|------|-------|---------------|
+| String reversal | O(n) | O(1) | Two pointers |
+| Palindrome check | O(n) | O(1) | Two pointers |
+| Anagram detection | O(n) | O(1)* | Hash map counting |
+| Sliding window | O(n) | O(k) | Hash set + two pointers |
+
+*O(1) because character set is fixed (26 letters)
+
+<ThinkAboutIt>
+Why is sliding window O(n) and not O(n²)? Because each character is added and removed from the window **at most once**. The left pointer only moves forward, never backwards — so the total work across all steps is linear.
+</ThinkAboutIt>
