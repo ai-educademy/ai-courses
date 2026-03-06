@@ -2,17 +2,17 @@
 
 # 🪨 AI Chisel — Intermediate DSA
 
-### Carving Precision — Level 2 of the **Craft Engineering** track at [Open AI School](https://openaischool.vercel.app)
+### Carving Precision — Level 2 of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
 
-[![GitHub stars](https://img.shields.io/github/stars/open-ai-school/ai-chisel?style=flat-square)](https://github.com/open-ai-school/ai-chisel/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-chisel?style=flat-square)](https://github.com/ai-educademy/ai-chisel/stargazers)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/open-ai-school/ai-chisel/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ai-educademy/ai-chisel/pulls)
 [![Level](https://img.shields.io/badge/level-2%20Intermediate-06B6D4?style=flat-square)](#-what-youll-learn)
 [![Track](https://img.shields.io/badge/track-Craft%20Engineering-purple?style=flat-square)](#-craft-engineering-track)
 
 **Level up with intermediate algorithmic patterns: two pointers, sliding window, BFS/DFS, trees, stacks, and monotonic patterns — each connected to real AI/ML applications.**
 
-[🚀 Start Learning](https://openaischool.vercel.app/programs/ai-chisel) · [📦 Platform Repo](https://github.com/open-ai-school/ai-platform) · [🎨 UI Library](https://github.com/open-ai-school/ai-ui-library)
+[🚀 Start Learning](https://aieducademy.vercel.app/programs/ai-chisel) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library)
 
 ---
 
@@ -66,11 +66,11 @@ AI Chisel is **Level 2** of the 5-program Craft Engineering track:
 
 | # | Program | Focus |
 |---|---------|-------|
-| 1 | [✏️ AI Sketch](https://github.com/open-ai-school/ai-sketch) | DSA Fundamentals — Arrays, Strings, Sorting |
-| 2 | **[🪨 AI Chisel](https://github.com/open-ai-school/ai-chisel)** | **Intermediate DSA — Two Pointers, Trees, Stacks** ← you are here |
-| 3 | [⚒️ AI Craft](https://github.com/open-ai-school/ai-craft) | System Design — URL Shortener, Rate Limiter, Recommendations |
-| 4 | [💎 AI Polish](https://github.com/open-ai-school/ai-polish) | Behavioural Interviews — STAR Framework, Communication |
-| 5 | [🏆 AI Masterpiece](https://github.com/open-ai-school/ai-masterpiece) | Career Capstone — Mock Interviews, Portfolio, Job Strategy |
+| 1 | [✏️ AI Sketch](https://github.com/ai-educademy/ai-sketch) | DSA Fundamentals — Arrays, Strings, Sorting |
+| 2 | **[🪨 AI Chisel](https://github.com/ai-educademy/ai-chisel)** | **Intermediate DSA — Two Pointers, Trees, Stacks** ← you are here |
+| 3 | [⚒️ AI Craft](https://github.com/ai-educademy/ai-craft) | System Design — URL Shortener, Rate Limiter, Recommendations |
+| 4 | [💎 AI Polish](https://github.com/ai-educademy/ai-polish) | Behavioural Interviews — STAR Framework, Communication |
+| 5 | [🏆 AI Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Career Capstone — Mock Interviews, Portfolio, Job Strategy |
 
 ```mermaid
 graph LR
@@ -84,7 +84,7 @@ graph LR
 
 ## ✅ Prerequisites
 
-- Complete [✏️ AI Sketch](https://github.com/open-ai-school/ai-sketch) or have equivalent DSA fundamentals (arrays, strings, sorting, hashing)
+- Complete [✏️ AI Sketch](https://github.com/ai-educademy/ai-sketch) or have equivalent DSA fundamentals (arrays, strings, sorting, hashing)
 - Comfortable with Python or JavaScript
 - Basic understanding of time/space complexity (Big-O)
 
@@ -92,7 +92,7 @@ graph LR
 
 **Option 1 — Web platform (recommended)**
 
-Visit [openaischool.vercel.app/programs/ai-chisel](https://openaischool.vercel.app/programs/ai-chisel) for the full interactive experience with progress tracking, illustrations, and quizzes.
+Visit [aieducademy.vercel.app/programs/ai-chisel](https://aieducademy.vercel.app/programs/ai-chisel) for the full interactive experience with progress tracking, illustrations, and quizzes.
 
 **Option 2 — Browse directly**
 
@@ -128,14 +128,14 @@ Please keep PRs focused and follow the existing MDX frontmatter format.
 
 ## 📄 License
 
-MIT © [Open AI School Contributors](https://github.com/open-ai-school)
+MIT © [AI Educademy Contributors](https://github.com/ai-educademy)
 
 ---
 
 <div align="center">
 
-**Part of [Open AI School](https://openaischool.vercel.app)** — Free, open-source AI & engineering education for everyone.
+**Part of [AI Educademy](https://aieducademy.vercel.app)** — Free, open-source AI & engineering education for everyone.
 
-[🌐 Platform](https://github.com/open-ai-school/ai-platform) · [🎨 UI Library](https://github.com/open-ai-school/ai-ui-library) · [🌱 All Programs](https://github.com/open-ai-school)
+[🌐 Platform](https://github.com/ai-educademy/ai-platform) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library) · [🌱 All Programs](https://github.com/ai-educademy)
 
 </div>

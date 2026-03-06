@@ -4,15 +4,15 @@
 
 **Rough Outlines — Master the building blocks of Data Structures & Algorithms**
 
-Part of the **Craft Engineering** track at [Open AI School](https://openaischool.vercel.app)
+Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
 
-[![GitHub stars](https://img.shields.io/github/stars/open-ai-school/ai-sketch?style=social)](https://github.com/open-ai-school/ai-sketch)
+[![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-sketch?style=social)](https://github.com/ai-educademy/ai-sketch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/open-ai-school/ai-sketch/pulls)
-[![Level](https://img.shields.io/badge/Level-1-F97316)](https://openaischool.vercel.app)
-[![Track](https://img.shields.io/badge/Track-Craft_Engineering-6366f1)](https://openaischool.vercel.app)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-sketch/pulls)
+[![Level](https://img.shields.io/badge/Level-1-F97316)](https://aieducademy.vercel.app)
+[![Track](https://img.shields.io/badge/Track-Craft_Engineering-6366f1)](https://aieducademy.vercel.app)
 
-[**🚀 Start Learning**](https://openaischool.vercel.app) · [**🌐 Platform**](https://github.com/open-ai-school/ai-platform) · [**🏗️ All Programs**](https://github.com/open-ai-school)
+[**🚀 Start Learning**](https://aieducademy.vercel.app) · [**🌐 Platform**](https://github.com/ai-educademy/ai-platform) · [**🏗️ All Programs**](https://github.com/ai-educademy)
 
 </div>
 
@@ -91,11 +91,11 @@ The Craft Engineering track takes you from DSA fundamentals to career-ready engi
 
 | Level | Program | Focus | Status |
 |-------|---------|-------|--------|
-| 1 | [✏️ AI Sketch](https://github.com/open-ai-school/ai-sketch) | DSA Fundamentals | ✅ **You are here** |
-| 2 | [🪨 AI Chisel](https://github.com/open-ai-school/ai-chisel) | Intermediate DSA | 🚧 Coming soon |
-| 3 | [⚒️ AI Craft](https://github.com/open-ai-school/ai-craft) | System Design | 🚧 Coming soon |
-| 4 | [💎 AI Polish](https://github.com/open-ai-school/ai-polish) | Behavioral Interviews | 🚧 Coming soon |
-| 5 | [🏆 AI Masterpiece](https://github.com/open-ai-school/ai-masterpiece) | Career Capstone | 🚧 Coming soon |
+| 1 | [✏️ AI Sketch](https://github.com/ai-educademy/ai-sketch) | DSA Fundamentals | ✅ **You are here** |
+| 2 | [🪨 AI Chisel](https://github.com/ai-educademy/ai-chisel) | Intermediate DSA | 🚧 Coming soon |
+| 3 | [⚒️ AI Craft](https://github.com/ai-educademy/ai-craft) | System Design | 🚧 Coming soon |
+| 4 | [💎 AI Polish](https://github.com/ai-educademy/ai-polish) | Behavioral Interviews | 🚧 Coming soon |
+| 5 | [🏆 AI Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Career Capstone | 🚧 Coming soon |
 
 ---
 
@@ -127,14 +127,14 @@ graph LR
 
 ### Option 1: Online (Recommended)
 
-Visit **[openaischool.vercel.app](https://openaischool.vercel.app)** for the full interactive experience with progress tracking, dark mode, and multilingual support.
+Visit **[aieducademy.vercel.app](https://aieducademy.vercel.app)** for the full interactive experience with progress tracking, dark mode, and multilingual support.
 
 ### Option 2: Browse Locally
 
 The lessons are standard MDX files — read them directly on GitHub or clone this repo:
 
 ```bash
-git clone https://github.com/open-ai-school/ai-sketch.git
+git clone https://github.com/ai-educademy/ai-sketch.git
 cd ai-sketch/lessons/en
 # Open any .mdx file in your editor
 ```
@@ -150,7 +150,7 @@ Contributions are welcome! Here's how you can help:
 3. **Translate lessons** — help make DSA education accessible worldwide
 4. **Report issues** — found something confusing? Let us know
 
-Please see the [Open AI School contribution guidelines](https://github.com/open-ai-school/.github) for details.
+Please see the [AI Educademy contribution guidelines](https://github.com/ai-educademy/.github) for details.
 
 ---
 
@@ -162,8 +162,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-Made with ❤️ by the [Open AI School](https://github.com/open-ai-school) community
+Made with ❤️ by the [AI Educademy](https://github.com/ai-educademy) community
 
-[🌐 Platform](https://openaischool.vercel.app) · [🎨 UI Library](https://github.com/open-ai-school/ai-ui-library) · [📦 npm](https://www.npmjs.com/package/@open-ai-school/ai-ui-library)
+[🌐 Platform](https://aieducademy.vercel.app) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library) · [📦 npm](https://www.npmjs.com/package/@ai-educademy/ai-ui-library)
 
 </div>

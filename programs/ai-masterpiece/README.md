@@ -4,15 +4,15 @@
 
 ### Portfolio-Ready — End-to-End Case Studies
 
-[![Coming Soon](https://img.shields.io/badge/status-coming%20soon-yellow?style=for-the-badge)](https://github.com/open-ai-school/ai-masterpiece)
-[![GitHub stars](https://img.shields.io/github/stars/open-ai-school/ai-masterpiece?style=for-the-badge)](https://github.com/open-ai-school/ai-masterpiece/stargazers)
+[![Coming Soon](https://img.shields.io/badge/status-coming%20soon-yellow?style=for-the-badge)](https://github.com/ai-educademy/ai-masterpiece)
+[![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-masterpiece?style=for-the-badge)](https://github.com/ai-educademy/ai-masterpiece/stargazers)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
 
 ---
 
 🚧 **Coming Soon** — This program is under active development.
 
-Part of the **Craft Engineering** track at [Open AI School](https://openaischool.vercel.app).
+Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app).
 
 </div>
 
@@ -47,11 +47,11 @@ The Craft Engineering track takes you from fundamentals to career-ready through 
 
 | # | Program | Focus |
 |---|---------|-------|
-| 1 | ✏️ [Sketch](https://github.com/open-ai-school/ai-sketch) | Foundations — Pattern Recognition & Core Thinking |
-| 2 | 🪨 [Chisel](https://github.com/open-ai-school/ai-chisel) | Problem Solving — Guided DSA Deep-Dives |
-| 3 | ⚒️ [Craft](https://github.com/open-ai-school/ai-craft) | System Design — Scalable Architecture Patterns |
-| 4 | 💎 [Polish](https://github.com/open-ai-school/ai-polish) | Interview Ready — Behavioral & Communication |
-| 5 | **🏆 [Masterpiece](https://github.com/open-ai-school/ai-masterpiece)** | **Career Capstone — Portfolio & Mock Interviews** ⬅️ You are here |
+| 1 | ✏️ [Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations — Pattern Recognition & Core Thinking |
+| 2 | 🪨 [Chisel](https://github.com/ai-educademy/ai-chisel) | Problem Solving — Guided DSA Deep-Dives |
+| 3 | ⚒️ [Craft](https://github.com/ai-educademy/ai-craft) | System Design — Scalable Architecture Patterns |
+| 4 | 💎 [Polish](https://github.com/ai-educademy/ai-polish) | Interview Ready — Behavioral & Communication |
+| 5 | **🏆 [Masterpiece](https://github.com/ai-educademy/ai-masterpiece)** | **Career Capstone — Portfolio & Mock Interviews** ⬅️ You are here |
 
 ---
 
@@ -68,11 +68,11 @@ The Craft Engineering track takes you from fundamentals to career-ready through 
 This program is still being shaped — and we'd love your help! Whether you have ideas for interview scenarios, portfolio tips, or career advice, contributions are welcome.
 
 1. ⭐ Star this repo to show interest
-2. 💬 [Open a discussion](https://github.com/open-ai-school/ai-masterpiece/discussions) to share ideas
-3. 🐛 [Open an issue](https://github.com/open-ai-school/ai-masterpiece/issues) to suggest content or report problems
+2. 💬 [Open a discussion](https://github.com/ai-educademy/ai-masterpiece/discussions) to share ideas
+3. 🐛 [Open an issue](https://github.com/ai-educademy/ai-masterpiece/issues) to suggest content or report problems
 4. 🔀 Fork and submit a PR when development begins
 
-See the main [Open AI School](https://github.com/open-ai-school) org for contribution guidelines.
+See the main [AI Educademy](https://github.com/ai-educademy) org for contribution guidelines.
 
 ---
 
@@ -84,6 +84,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-**[Open AI School](https://openaischool.vercel.app)** · [GitHub Org](https://github.com/open-ai-school) · Built with ❤️ by the community
+**[AI Educademy](https://aieducademy.vercel.app)** · [GitHub Org](https://github.com/ai-educademy) · Built with ❤️ by the community
 
 </div>

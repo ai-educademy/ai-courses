@@ -1,8 +1,8 @@
 ---
 title: "How We Built a Multilingual AI Education Platform with Next.js and MDX"
-description: "Explore the technical architecture behind Open AI School: Next.js 15 App Router, next-intl for i18n, MDX content pipeline, git submodules, PWA support, and Vercel deployment."
+description: "Explore the technical architecture behind AI Educademy: Next.js 15 App Router, next-intl for i18n, MDX content pipeline, git submodules, PWA support, and Vercel deployment."
 date: "2026-03-06"
-author: "Open AI School Team"
+author: "AI Educademy Team"
 tags:
   - nextjs
   - open-source
@@ -12,13 +12,13 @@ published: true
 image: "/images/blog/placeholder.png"
 ---
 
-Building Open AI School presented a unique technical challenge: create a platform that's accessible to learners worldwide, easy to maintain, and scalable enough to serve millions of users—all while keeping the codebase clean and developer-friendly.
+Building AI Educademy presented a unique technical challenge: create a platform that's accessible to learners worldwide, easy to maintain, and scalable enough to serve millions of users—all while keeping the codebase clean and developer-friendly.
 
 In this deep dive, we'll walk through the architectural decisions that shaped our platform, from our choice of Next.js 15 to how we manage multilingual content with git submodules. Whether you're building an educational platform, a documentation site, or any content-heavy application, you'll find practical insights here.
 
 ## Why Next.js 15 App Router? 🏗️
 
-When we started building Open AI School, Next.js 14 was the standard. By the time we launched, Next.js 15 was released with significant improvements to the App Router. We made the jump because several factors aligned perfectly with our goals:
+When we started building AI Educademy, Next.js 14 was the standard. By the time we launched, Next.js 15 was released with significant improvements to the App Router. We made the jump because several factors aligned perfectly with our goals:
 
 **Server Components by Default**: The Next.js 15 App Router uses Server Components by default, which means we can fetch data directly in our components without extra API routes for simple operations. This reduces complexity and improves performance out of the box.
 
@@ -47,7 +47,7 @@ app/
 
 ## Multilingual Support with next-intl 🌍
 
-Open AI School is built for the global community. Offering content in multiple languages isn't just nice-to-have—it's essential for fulfilling our mission of free AI education for everyone.
+AI Educademy is built for the global community. Offering content in multiple languages isn't just nice-to-have—it's essential for fulfilling our mission of free AI education for everyone.
 
 We chose `next-intl` because it:
 
@@ -94,7 +94,7 @@ This approach scales beautifully. Adding a new language means adding a new folde
 
 Here's where things get interesting. We could have used a traditional headless CMS, but we chose MDX because it gives us the best of both worlds: content management that's version-controlled alongside our code, and the ability to embed interactive React components directly in our educational content.
 
-When you read a blog post or tutorial on Open AI School, you're not just reading static HTML. You might be interacting with:
+When you read a blog post or tutorial on AI Educademy, you're not just reading static HTML. You might be interacting with:
 
 - **Interactive code examples** that show input and output side-by-side
 - **Embedded quizzes** that check your understanding
@@ -155,7 +155,7 @@ Why? Because it enables:
 Our directory structure looks like:
 
 ```
-open-ai-school/
+ai-educademy/
 ├── content/ (git submodule)
 │   ├── blog/
 │   │   ├── en/
@@ -183,7 +183,7 @@ This decoupling has been game-changing for our velocity. Content can be updated 
 
 ## Progressive Web App (PWA) Support 📱
 
-Education happens on all devices, including low-bandwidth environments. We built Open AI School as a PWA so learners can:
+Education happens on all devices, including low-bandwidth environments. We built AI Educademy as a PWA so learners can:
 
 - **Work offline**: Download lessons and complete work without constant connectivity
 - **Install like an app**: Add to home screen on mobile for app-like experience
@@ -249,7 +249,7 @@ Whether you're building an educational platform or any content-heavy application
 4. **Progressive enhancement works**: PWA support reaches users where they are
 5. **Measure what matters**: Core Web Vitals impact education outcomes
 
-Open AI School represents our commitment to accessible, performant, and maintainable tech infrastructure for education. If you're interested in any of these technologies or want to contribute, [our code is open source and waiting for your collaboration](https://github.com/openaischool).
+AI Educademy represents our commitment to accessible, performant, and maintainable tech infrastructure for education. If you're interested in any of these technologies or want to contribute, [our code is open source and waiting for your collaboration](https://github.com/aieducademy).
 
 ---
 

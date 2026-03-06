@@ -4,13 +4,13 @@
 
 **Refining Excellence — Structured Frameworks for Behavioral Rounds**
 
-Part of the **Craft Engineering** track at [Open AI School](https://openaischool.vercel.app)
+Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
 
-[![GitHub stars](https://img.shields.io/github/stars/open-ai-school/ai-polish?style=flat-square)](https://github.com/open-ai-school/ai-polish/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-polish?style=flat-square)](https://github.com/ai-educademy/ai-polish/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/open-ai-school/ai-polish/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ai-educademy/ai-polish/pulls)
 [![Level](https://img.shields.io/badge/Level-4%20Polish-EC4899?style=flat-square)](#craft-engineering-track)
-[![Track](https://img.shields.io/badge/Track-Craft%20Engineering-blue?style=flat-square)](https://github.com/open-ai-school)
+[![Track](https://img.shields.io/badge/Track-Craft%20Engineering-blue?style=flat-square)](https://github.com/ai-educademy)
 
 </div>
 
@@ -78,11 +78,11 @@ AI Polish is **Level 4** in the five-program Craft Engineering track:
 
 | Level | Program | Focus |
 |-------|---------|-------|
-| 1 | [✏️ Sketch](https://github.com/open-ai-school/ai-sketch) | Foundations — Data Structures & Patterns |
-| 2 | [🪨 Chisel](https://github.com/open-ai-school/ai-chisel) | Shaping — Algorithm Problem-Solving |
-| 3 | [⚒️ Craft](https://github.com/open-ai-school/ai-craft) | Building — System Design Mastery |
-| 4 | **[💎 Polish](https://github.com/open-ai-school/ai-polish)** | **Refining — Behavioral Interview Mastery** |
-| 5 | [🏆 Masterpiece](https://github.com/open-ai-school/ai-masterpiece) | Perfecting — Mock Interviews & Synthesis |
+| 1 | [✏️ Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations — Data Structures & Patterns |
+| 2 | [🪨 Chisel](https://github.com/ai-educademy/ai-chisel) | Shaping — Algorithm Problem-Solving |
+| 3 | [⚒️ Craft](https://github.com/ai-educademy/ai-craft) | Building — System Design Mastery |
+| 4 | **[💎 Polish](https://github.com/ai-educademy/ai-polish)** | **Refining — Behavioral Interview Mastery** |
+| 5 | [🏆 Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Perfecting — Mock Interviews & Synthesis |
 
 ```mermaid
 graph LR
@@ -104,7 +104,7 @@ graph LR
 
 ## 📋 Prerequisites
 
-- Complete [⚒️ AI Craft](https://github.com/open-ai-school/ai-craft) or have equivalent system design experience
+- Complete [⚒️ AI Craft](https://github.com/ai-educademy/ai-craft) or have equivalent system design experience
 - Real project experience to draw stories from
 - Familiarity with common behavioral question categories
 
@@ -114,14 +114,14 @@ graph LR
 
 **Option 1 — Web Platform (Recommended)**
 
-Visit **[openaischool.vercel.app](https://openaischool.vercel.app)** for the full interactive experience with progress tracking and AI-assisted practice.
+Visit **[aieducademy.vercel.app](https://aieducademy.vercel.app)** for the full interactive experience with progress tracking and AI-assisted practice.
 
 **Option 2 — Browse Locally**
 
 Lessons are self-contained MDX files you can read directly:
 
 ```bash
-git clone https://github.com/open-ai-school/ai-polish.git
+git clone https://github.com/ai-educademy/ai-polish.git
 cd ai-polish/lessons/en
 ```
 
@@ -144,7 +144,7 @@ Contributions are welcome! Here's how you can help:
 3. **Translate lessons** — create a new folder under `lessons/` (e.g., `lessons/es/`)
 4. **Suggest new diagrams** — SVG format preferred
 
-Please read the [Open AI School contributing guidelines](https://github.com/open-ai-school) before submitting.
+Please read the [AI Educademy contributing guidelines](https://github.com/ai-educademy) before submitting.
 
 ---
 
@@ -156,6 +156,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-**[Open AI School](https://openaischool.vercel.app)** · [GitHub Org](https://github.com/open-ai-school) · Made with ❤️ for engineers everywhere
+**[AI Educademy](https://aieducademy.vercel.app)** · [GitHub Org](https://github.com/ai-educademy) · Made with ❤️ for engineers everywhere
 
 </div>

@@ -1,13 +1,13 @@
 # ⚒️ AI Craft — System Design
 
-> **Level 3** of the **Craft Engineering** track at [Open AI School](https://openaischool.vercel.app)
+> **Level 3** of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
 
 Design large-scale systems that power AI: recommendation engines, URL shorteners, rate limiters.
 Learn to think in **architectures**, not just code.
 
-[![GitHub stars](https://img.shields.io/github/stars/open-ai-school/ai-craft?style=flat-square)](https://github.com/open-ai-school/ai-craft/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-craft?style=flat-square)](https://github.com/ai-educademy/ai-craft/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/open-ai-school/ai-craft/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ai-educademy/ai-craft/pulls)
 [![Level](https://img.shields.io/badge/Level-3-8B5CF6?style=flat-square)]()
 [![Track](https://img.shields.io/badge/Track-Craft%20Engineering-8B5CF6?style=flat-square)]()
 
@@ -78,11 +78,11 @@ that take you from coding fundamentals to mastery:
 
 | Level | Program | Focus |
 |-------|---------|-------|
-| 1 | [✏️ Sketch](https://github.com/open-ai-school/ai-sketch) | Foundations — Arrays, Strings, Sorting |
-| 2 | [🪨 Chisel](https://github.com/open-ai-school/ai-chisel) | Sharpening Skill — Trees, Graphs, DP |
+| 1 | [✏️ Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations — Arrays, Strings, Sorting |
+| 2 | [🪨 Chisel](https://github.com/ai-educademy/ai-chisel) | Sharpening Skill — Trees, Graphs, DP |
 | **3** | **⚒️ Craft** (you are here) | **Building Skill — System Design** |
-| 4 | [💎 Polish](https://github.com/open-ai-school/ai-polish) | Refining Skill — Behavioural & Leadership |
-| 5 | [🏆 Masterpiece](https://github.com/open-ai-school/ai-masterpiece) | Interview Excellence — Mock Interviews |
+| 4 | [💎 Polish](https://github.com/ai-educademy/ai-polish) | Refining Skill — Behavioural & Leadership |
+| 5 | [🏆 Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Interview Excellence — Mock Interviews |
 
 ```mermaid
 flowchart LR
@@ -98,7 +98,7 @@ flowchart LR
 
 ## ✅ Prerequisites
 
-- Complete **[AI Chisel](https://github.com/open-ai-school/ai-chisel)** (Level 2), or have a solid foundation in data structures & algorithms
+- Complete **[AI Chisel](https://github.com/ai-educademy/ai-chisel)** (Level 2), or have a solid foundation in data structures & algorithms
 - Comfortable with at least one programming language
 - Basic understanding of databases, APIs, and networking
 
@@ -106,7 +106,7 @@ flowchart LR
 
 ## 🚀 How to Use
 
-1. **Online:** Visit [openaischool.vercel.app](https://openaischool.vercel.app) for the full interactive experience with progress tracking
+1. **Online:** Visit [aieducademy.vercel.app](https://aieducademy.vercel.app) for the full interactive experience with progress tracking
 2. **Offline:** Browse the MDX lesson files directly in [`lessons/en/`](lessons/en/) — they're readable as-is
 
 Each lesson follows a structured format:
@@ -126,7 +126,7 @@ Contributions are welcome! Whether it's fixing a typo, improving a diagram, or a
 3. Commit your changes
 4. Open a Pull Request
 
-Please see the [Open AI School org](https://github.com/open-ai-school) for contribution guidelines.
+Please see the [AI Educademy org](https://github.com/ai-educademy) for contribution guidelines.
 
 ---
 
@@ -138,8 +138,8 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-**Part of [Open AI School](https://openaischool.vercel.app)** · Built with ❤️ by the community
+**Part of [AI Educademy](https://aieducademy.vercel.app)** · Built with ❤️ by the community
 
-[🌐 Platform](https://openaischool.vercel.app) · [🏫 Organization](https://github.com/open-ai-school) · [⭐ Star this repo](https://github.com/open-ai-school/ai-craft)
+[🌐 Platform](https://aieducademy.vercel.app) · [🏫 Organization](https://github.com/ai-educademy) · [⭐ Star this repo](https://github.com/ai-educademy/ai-craft)
 
 </div>

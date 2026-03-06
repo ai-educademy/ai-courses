@@ -2,7 +2,7 @@
 
 **Free, open-source AI education for everyone** — from absolute beginners to advanced practitioners.
 
-Part of [Open AI School](https://openaischool.vercel.app), a multilingual platform making AI education accessible worldwide.
+Part of [AI Educademy](https://aieducademy.vercel.app), a multilingual platform making AI education accessible worldwide.
 
 ## 🎓 Programs
 

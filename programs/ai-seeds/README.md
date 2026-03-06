@@ -2,7 +2,7 @@
 
 # 🌱 AI Seeds — Level 1: Absolute Beginners
 
-### The first step in your AI journey at [Open AI School](https://openaischool.vercel.app)
+### The first step in your AI journey at [AI Educademy](https://aieducademy.vercel.app)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -10,7 +10,7 @@
 
 **No coding. No maths. No prior experience needed.**
 
-[🚀 Start Learning](https://openaischool.vercel.app/programs/ai-seeds) · [🌍 Translate](#-help-translate) · [📦 Platform Repo](https://github.com/open-ai-school/ai-platform)
+[🚀 Start Learning](https://aieducademy.vercel.app/programs/ai-seeds) · [🌍 Translate](#-help-translate) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
 ---
 
@@ -18,11 +18,11 @@
 
 ## 📋 What is This?
 
-This repo contains the **lesson content** for AI Seeds — the first level of Open AI School. It's a content-only package consumed by the [`ai-platform`](https://github.com/open-ai-school/ai-platform) app shell via git submodules.
+This repo contains the **lesson content** for AI Seeds — the first level of AI Educademy. It's a content-only package consumed by the [`ai-platform`](https://github.com/ai-educademy/ai-platform) app shell via git submodules.
 
-> **Looking for the live site?** Visit [openaischool.vercel.app](https://openaischool.vercel.app)
-> **Looking for the app code?** See [ai-platform](https://github.com/open-ai-school/ai-platform)
-> **Looking for UI components?** See [ai-ui-library](https://github.com/open-ai-school/ai-ui-library)
+> **Looking for the live site?** Visit [aieducademy.vercel.app](https://aieducademy.vercel.app)
+> **Looking for the app code?** See [ai-platform](https://github.com/ai-educademy/ai-platform)
+> **Looking for UI components?** See [ai-ui-library](https://github.com/ai-educademy/ai-ui-library)
 
 ## 📚 Lessons
 
@@ -75,12 +75,12 @@ We'd love translations! Each lesson lives in a locale folder (`en/`, `fr/`, etc.
 3. Translate the content, keeping the frontmatter keys in English
 4. Submit a PR
 
-## 🏗️ Part of Open AI School
+## 🏗️ Part of AI Educademy
 
 | Repo | Description |
 |------|-------------|
-| [`ai-platform`](https://github.com/open-ai-school/ai-platform) | 🌐 Main Next.js app shell |
-| [`ai-ui-library`](https://github.com/open-ai-school/ai-ui-library) | 🎨 Shared design system ([npm](https://www.npmjs.com/package/@open-ai-school/ai-ui-library)) |
+| [`ai-platform`](https://github.com/ai-educademy/ai-platform) | 🌐 Main Next.js app shell |
+| [`ai-ui-library`](https://github.com/ai-educademy/ai-ui-library) | 🎨 Shared design system ([npm](https://www.npmjs.com/package/@ai-educademy/ai-ui-library)) |
 | **`ai-seeds`** | 🌱 **Level 1: Absolute beginners** ← you are here |
 | `ai-sprouts` | 🌿 Level 2: Foundations (coming soon) |
 | `ai-branches` | 🌳 Level 3: Applied AI (coming soon) |
@@ -89,4 +89,4 @@ We'd love translations! Each lesson lives in a locale folder (`en/`, `fr/`, etc.
 
 ## 📄 License
 
-MIT © [Open AI School](https://github.com/open-ai-school)
+MIT © [AI Educademy](https://github.com/ai-educademy)
