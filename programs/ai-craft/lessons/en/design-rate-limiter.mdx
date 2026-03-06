@@ -89,7 +89,7 @@ limiter = TokenBucket(capacity=10, refill_rate=5)
 | **Precision** | Approximate | Depends on refill granularity |
 
 <ThinkAboutIt>
-Why does the Token Bucket algorithm allow **bursts**? Think about real user behavior — you might load a page and fire 10 API calls simultaneously, then nothing for 2 seconds. A strict "5 per second" limit would reject 5 of those initial calls, even though your average rate is well within limits.
+Why does the Token Bucket algorithm allow **bursts**? Think about real user behaviour — you might load a page and fire 10 API calls simultaneously, then nothing for 2 seconds. A strict "5 per second" limit would reject 5 of those initial calls, even though your average rate is well within limits.
 </ThinkAboutIt>
 
 ---
@@ -260,7 +260,7 @@ Instead of fixed limits, ML models adjust thresholds based on:
 
 - **Current system load**: Lower limits when CPUs are at 80%+
 - **Time of day**: Higher limits during off-peak hours
-- **User behavior**: Trusted users get higher limits
+- **User behaviour**: Trusted users get higher limits
 - **Request type**: Expensive operations (AI inference) get stricter limits
 
 ### 3. Anomaly Detection
@@ -272,7 +272,7 @@ Action:         Auto-throttle + alert security team
 ```
 
 <FunFact>
-Cloudflare's Bot Management uses ML models that analyze over 30 signals per request — including TLS fingerprinting, HTTP/2 frame ordering, and JavaScript execution patterns. They classify 40% of internet traffic as automated bots.
+Cloudflare's Bot Management uses ML models that analyse over 30 signals per request — including TLS fingerprinting, HTTP/2 frame ordering, and JavaScript execution patterns. They classify 40% of internet traffic as automated bots.
 </FunFact>
 
 ---
