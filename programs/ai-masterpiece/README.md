@@ -12,7 +12,7 @@
 
 🚧 **Coming Soon** — This program is under active development.
 
-Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app).
+Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org).
 
 </div>
 
@@ -84,6 +84,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-**[AI Educademy](https://aieducademy.vercel.app)** · [GitHub Org](https://github.com/ai-educademy) · Built with ❤️ by the community
+**[AI Educademy](https://aieducademy.org)** · [GitHub Org](https://github.com/ai-educademy) · Built with ❤️ by the community
 
 </div>

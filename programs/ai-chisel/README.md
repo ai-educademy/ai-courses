@@ -2,7 +2,7 @@
 
 # 🪨 AI Chisel — Intermediate DSA
 
-### Carving Precision — Level 2 of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
+### Carving Precision — Level 2 of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
 [![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-chisel?style=flat-square)](https://github.com/ai-educademy/ai-chisel/stargazers)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
@@ -12,7 +12,7 @@
 
 **Level up with intermediate algorithmic patterns: two pointers, sliding window, BFS/DFS, trees, stacks, and monotonic patterns — each connected to real AI/ML applications.**
 
-[🚀 Start Learning](https://aieducademy.vercel.app/programs/ai-chisel) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library)
+[🚀 Start Learning](https://aieducademy.org/programs/ai-chisel) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library)
 
 ---
 
@@ -92,7 +92,7 @@ graph LR
 
 **Option 1 — Web platform (recommended)**
 
-Visit [aieducademy.vercel.app/programs/ai-chisel](https://aieducademy.vercel.app/programs/ai-chisel) for the full interactive experience with progress tracking, illustrations, and quizzes.
+Visit [aieducademy.org/programs/ai-chisel](https://aieducademy.org/programs/ai-chisel) for the full interactive experience with progress tracking, illustrations, and quizzes.
 
 **Option 2 — Browse directly**
 
@@ -134,7 +134,7 @@ MIT © [AI Educademy Contributors](https://github.com/ai-educademy)
 
 <div align="center">
 
-**Part of [AI Educademy](https://aieducademy.vercel.app)** — Free, open-source AI & engineering education for everyone.
+**Part of [AI Educademy](https://aieducademy.org)** — Free, open-source AI & engineering education for everyone.
 
 [🌐 Platform](https://github.com/ai-educademy/ai-platform) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library) · [🌱 All Programs](https://github.com/ai-educademy)
 

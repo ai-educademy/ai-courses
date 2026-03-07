@@ -4,7 +4,7 @@
 
 **Refining Excellence — Structured Frameworks for Behavioral Rounds**
 
-Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
+Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
 [![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-polish?style=flat-square)](https://github.com/ai-educademy/ai-polish/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
@@ -114,7 +114,7 @@ graph LR
 
 **Option 1 — Web Platform (Recommended)**
 
-Visit **[aieducademy.vercel.app](https://aieducademy.vercel.app)** for the full interactive experience with progress tracking and AI-assisted practice.
+Visit **[aieducademy.org](https://aieducademy.org)** for the full interactive experience with progress tracking and AI-assisted practice.
 
 **Option 2 — Browse Locally**
 
@@ -156,6 +156,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-**[AI Educademy](https://aieducademy.vercel.app)** · [GitHub Org](https://github.com/ai-educademy) · Made with ❤️ for engineers everywhere
+**[AI Educademy](https://aieducademy.org)** · [GitHub Org](https://github.com/ai-educademy) · Made with ❤️ for engineers everywhere
 
 </div>

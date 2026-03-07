@@ -27,21 +27,9 @@ Before writing a single line of code, answer these questions:
 3. **What does success look like?** Define measurable metrics upfront
 4. **What are the risks?** False positives vs false negatives — which is worse?
 
-```
-Decision Framework: Should You Use AI?
-─────────────────────────────────────────
-✅ Use AI when:
-   • Pattern is too complex for hand-written rules
-   • You have sufficient labelled data (or can get it)
-   • The problem tolerates some level of error
-   • The value justifies the cost
+**✅ Use AI when:** the pattern is too complex for hand-written rules, you have sufficient labelled data, the problem tolerates some error, and the value justifies the cost.
 
-❌ Skip AI when:
-   • Simple rules or lookups solve the problem
-   • You need 100% accuracy (e.g., financial calculations)
-   • Data is scarce and hard to obtain
-   • A deterministic solution exists
-```
+**❌ Skip AI when:** simple rules solve the problem, you need 100% accuracy, data is scarce, or a deterministic solution exists.
 
 <ThinkAboutIt>
 A major retailer spent millions building an AI recommendation engine, only to discover that a simple "customers also bought" lookup table performed nearly as well. Always start with the simplest solution that could work, then add AI complexity only when it demonstrably improves results.
@@ -127,21 +115,8 @@ MLOps (Machine Learning Operations) is DevOps for AI. It covers everything neede
 - Code (Git), Data (DVC, LakeFS), Models (MLflow, Weights & Biases), Configurations and hyperparameters
 
 **2. Automate pipelines**
-```
-CI/CD for ML:
-─────────────
-Code commit → Run tests → Train model → Evaluate
-                                           ↓
-                               Performance improved?
-                              ↙                ↘
-                           Yes                  No
-                            ↓                    ↓
-                    Deploy to staging       Alert team
-                            ↓
-                    Integration tests
-                            ↓
-                    Deploy to production
-```
+
+Code commit → Run tests → Train model → Evaluate → Deploy to staging (if improved) → Integration tests → Deploy to production
 
 **3. Monitor relentlessly**
 - **Model metrics**: accuracy, latency, throughput
@@ -161,27 +136,11 @@ AI can be expensive. Smart architecture decisions save thousands.
 
 ### LLM vs Traditional ML: a cost comparison
 
-```
-Task: Classify customer support tickets into 10 categories
+**Option A — LLM API (GPT-4):** ~$0.01–$0.03/request, ~$10K–$30K/month at 1M tickets, 1 day setup, ~90% accuracy
 
-Option A — LLM API (GPT-4)
-  Cost per request: ~$0.01–$0.03
-  1 million tickets/month: $10,000–$30,000/month
-  Setup time: 1 day (prompt engineering)
-  Accuracy: ~90%
+**Option B — Fine-tuned small model (BERT):** ~$0.0001/request (self-hosted), ~$100/month + infra, 2 weeks setup, ~92% accuracy
 
-Option B — Fine-tuned small model (BERT)
-  Cost per request: ~$0.0001 (self-hosted)
-  1 million tickets/month: ~$100/month + infrastructure
-  Setup time: 2 weeks (training + deployment)
-  Accuracy: ~92%
-
-Option C — Hybrid approach
-  Use the fine-tuned model for clear-cut cases (80%)
-  Route ambiguous cases to LLM (20%)
-  Cost: ~$2,000–$6,000/month
-  Accuracy: ~94%
-```
+**Option C — Hybrid approach:** Fine-tuned model for clear cases (80%), LLM for ambiguous (20%), ~$2K–$6K/month, ~94% accuracy
 
 ### Cost optimisation strategies
 
@@ -254,7 +213,10 @@ for i in ranked_indices:
 - Biased training data produces biased models — always audit for fairness
 
 <Callout>
-**The pattern in failed AI products is remarkably consistent:** over-promising, under-investing in data quality, and skipping real-world validation. Successful ones have focused use cases, strong data foundations, and iterative improvement.</Callout>
+
+**The pattern in failed AI products is remarkably consistent:** over-promising, under-investing in data quality, and skipping real-world validation. Successful ones have focused use cases, strong data foundations, and iterative improvement.
+
+</Callout>
 
 ---
 
@@ -269,17 +231,7 @@ Before deploying any AI product, run through this checklist:
 5. **Consent** — Do users know AI is being used, and can they opt out?
 6. **Feedback** — Can users report problems, and do you act on those reports?
 
-```
-Responsible AI Deployment Checklist
-────────────────────────────────────
-□ Bias audit completed across key demographics
-□ Model card documenting capabilities and limitations
-□ Human-in-the-loop for high-stakes decisions
-□ Monitoring for performance degradation
-□ Clear user communication about AI involvement
-□ Incident response plan for AI failures
-□ Regular re-evaluation schedule (quarterly minimum)
-```
+**Responsible AI Deployment Checklist:** Bias audit completed across key demographics · Model card documenting capabilities and limitations · Human-in-the-loop for high-stakes decisions · Monitoring for performance degradation · Clear user communication about AI involvement · Incident response plan for AI failures · Regular re-evaluation schedule (quarterly minimum)
 
 ---
 

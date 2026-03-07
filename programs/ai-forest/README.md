@@ -2,7 +2,7 @@
 
 # 🌲 AI Forest — Level 5: Mastery
 
-### Master the AI ecosystem at [AI Educademy](https://aieducademy.vercel.app)
+### Master the AI ecosystem at [AI Educademy](https://aieducademy.org)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md)
@@ -10,7 +10,7 @@
 
 See the forest for the trees. Tackle advanced research topics, contribute to open-source AI, lead AI strategy, and push the boundaries of what's possible.
 
-[🚀 AI Educademy](https://aieducademy.vercel.app) · [🏕️ Level 4: AI Canopy](https://github.com/ai-educademy/ai-canopy) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+[🚀 AI Educademy](https://aieducademy.org) · [🏕️ Level 4: AI Canopy](https://github.com/ai-educademy/ai-canopy) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
 ---
 

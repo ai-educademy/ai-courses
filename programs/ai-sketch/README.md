@@ -4,15 +4,15 @@
 
 **Rough Outlines — Master the building blocks of Data Structures & Algorithms**
 
-Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
+Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
 [![GitHub stars](https://img.shields.io/github/stars/ai-educademy/ai-sketch?style=social)](https://github.com/ai-educademy/ai-sketch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-sketch/pulls)
-[![Level](https://img.shields.io/badge/Level-1-F97316)](https://aieducademy.vercel.app)
-[![Track](https://img.shields.io/badge/Track-Craft_Engineering-6366f1)](https://aieducademy.vercel.app)
+[![Level](https://img.shields.io/badge/Level-1-F97316)](https://aieducademy.org)
+[![Track](https://img.shields.io/badge/Track-Craft_Engineering-6366f1)](https://aieducademy.org)
 
-[**🚀 Start Learning**](https://aieducademy.vercel.app) · [**🌐 Platform**](https://github.com/ai-educademy/ai-platform) · [**🏗️ All Programs**](https://github.com/ai-educademy)
+[**🚀 Start Learning**](https://aieducademy.org) · [**🌐 Platform**](https://github.com/ai-educademy/ai-platform) · [**🏗️ All Programs**](https://github.com/ai-educademy)
 
 </div>
 
@@ -127,7 +127,7 @@ graph LR
 
 ### Option 1: Online (Recommended)
 
-Visit **[aieducademy.vercel.app](https://aieducademy.vercel.app)** for the full interactive experience with progress tracking, dark mode, and multilingual support.
+Visit **[aieducademy.org](https://aieducademy.org)** for the full interactive experience with progress tracking, dark mode, and multilingual support.
 
 ### Option 2: Browse Locally
 
@@ -164,6 +164,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 Made with ❤️ by the [AI Educademy](https://github.com/ai-educademy) community
 
-[🌐 Platform](https://aieducademy.vercel.app) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library) · [📦 npm](https://www.npmjs.com/package/@ai-educademy/ai-ui-library)
+[🌐 Platform](https://aieducademy.org) · [🎨 UI Library](https://github.com/ai-educademy/ai-ui-library) · [📦 npm](https://www.npmjs.com/package/@ai-educademy/ai-ui-library)
 
 </div>

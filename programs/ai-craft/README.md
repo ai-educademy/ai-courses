@@ -1,6 +1,6 @@
 # ⚒️ AI Craft — System Design
 
-> **Level 3** of the **Craft Engineering** track at [AI Educademy](https://aieducademy.vercel.app)
+> **Level 3** of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
 Design large-scale systems that power AI: recommendation engines, URL shorteners, rate limiters.
 Learn to think in **architectures**, not just code.
@@ -106,7 +106,7 @@ flowchart LR
 
 ## 🚀 How to Use
 
-1. **Online:** Visit [aieducademy.vercel.app](https://aieducademy.vercel.app) for the full interactive experience with progress tracking
+1. **Online:** Visit [aieducademy.org](https://aieducademy.org) for the full interactive experience with progress tracking
 2. **Offline:** Browse the MDX lesson files directly in [`lessons/en/`](lessons/en/) — they're readable as-is
 
 Each lesson follows a structured format:
@@ -138,8 +138,8 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-**Part of [AI Educademy](https://aieducademy.vercel.app)** · Built with ❤️ by the community
+**Part of [AI Educademy](https://aieducademy.org)** · Built with ❤️ by the community
 
-[🌐 Platform](https://aieducademy.vercel.app) · [🏫 Organization](https://github.com/ai-educademy) · [⭐ Star this repo](https://github.com/ai-educademy/ai-craft)
+[🌐 Platform](https://aieducademy.org) · [🏫 Organization](https://github.com/ai-educademy) · [⭐ Star this repo](https://github.com/ai-educademy/ai-craft)
 
 </div>

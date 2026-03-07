@@ -2,7 +2,7 @@
 
 # 🌿 AI Sprouts — Level 2: Foundations
 
-### Build Your AI Foundations at [AI Educademy](https://aieducademy.vercel.app)
+### Build Your AI Foundations at [AI Educademy](https://aieducademy.org)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md)
@@ -10,7 +10,7 @@
 
 After planting your first seeds of AI knowledge in [AI Seeds](https://github.com/ai-educademy/ai-seeds), it's time to grow! AI Sprouts covers the building blocks: data, algorithms, neural networks, and responsible AI.
 
-[🚀 AI Educademy](https://aieducademy.vercel.app) · [🌱 Level 1: AI Seeds](https://github.com/ai-educademy/ai-seeds) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+[🚀 AI Educademy](https://aieducademy.org) · [🌱 Level 1: AI Seeds](https://github.com/ai-educademy/ai-seeds) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
 ---
 

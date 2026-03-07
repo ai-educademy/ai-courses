@@ -2,7 +2,7 @@
 
 # 🌳 AI Branches — Level 3: Specialisations
 
-### Explore AI specialisations at [AI Educademy](https://aieducademy.vercel.app)
+### Explore AI specialisations at [AI Educademy](https://aieducademy.org)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md)
@@ -10,7 +10,7 @@
 
 Time to branch out! Choose your path through machine learning, computer vision, NLP, and generative AI. Hands-on projects with real code.
 
-[🚀 AI Educademy](https://aieducademy.vercel.app) · [🌿 Level 2: AI Sprouts](https://github.com/ai-educademy/ai-sprouts) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+[🚀 AI Educademy](https://aieducademy.org) · [🌿 Level 2: AI Sprouts](https://github.com/ai-educademy/ai-sprouts) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
 ---
 

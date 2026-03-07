@@ -2,7 +2,7 @@
 
 # 🌱 AI Seeds — Level 1: Absolute Beginners
 
-### The first step in your AI journey at [AI Educademy](https://aieducademy.vercel.app)
+### The first step in your AI journey at [AI Educademy](https://aieducademy.org)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -10,7 +10,7 @@
 
 **No coding. No maths. No prior experience needed.**
 
-[🚀 Start Learning](https://aieducademy.vercel.app/programs/ai-seeds) · [🌍 Translate](#-help-translate) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+[🚀 Start Learning](https://aieducademy.org/programs/ai-seeds) · [🌍 Translate](#-help-translate) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
 ---
 
@@ -20,7 +20,7 @@
 
 This repo contains the **lesson content** for AI Seeds — the first level of AI Educademy. It's a content-only package consumed by the [`ai-platform`](https://github.com/ai-educademy/ai-platform) app shell via git submodules.
 
-> **Looking for the live site?** Visit [aieducademy.vercel.app](https://aieducademy.vercel.app)
+> **Looking for the live site?** Visit [aieducademy.org](https://aieducademy.org)
 > **Looking for the app code?** See [ai-platform](https://github.com/ai-educademy/ai-platform)
 > **Looking for UI components?** See [ai-ui-library](https://github.com/ai-educademy/ai-ui-library)
 

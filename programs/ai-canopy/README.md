@@ -2,7 +2,7 @@
 
 # 🏕️ AI Canopy — Level 4: Production AI
 
-### Build production AI systems at [AI Educademy](https://aieducademy.vercel.app)
+### Build production AI systems at [AI Educademy](https://aieducademy.org)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md)
@@ -10,7 +10,7 @@
 
 Move beyond experiments. Learn to design, deploy, and maintain AI systems in the real world — from MLOps pipelines to responsible AI governance and scaling strategies.
 
-[🚀 AI Educademy](https://aieducademy.vercel.app) · [🌳 Level 3: AI Branches](https://github.com/ai-educademy/ai-branches) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+[🚀 AI Educademy](https://aieducademy.org) · [🌳 Level 3: AI Branches](https://github.com/ai-educademy/ai-branches) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
 ---
 
