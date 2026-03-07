@@ -1,255 +1,133 @@
 ---
 title: "Large Language Models — The Engines Behind Modern AI"
-description: "Understand what LLMs are, how the Transformer architecture works, the training pipeline from pretraining to RLHF, and compare major models like GPT, Claude, and Llama."
-order: 2
-difficulty: "intermediate"
-duration: 45
-icon: "📝"
+description: "Explore how LLMs work, from transformer architecture to emergent capabilities and real-world limitations."
+order: 1
+difficulty: "advanced"
+duration: 20
+icon: "🤖"
 published: true
 ---
 
-## What Is an LLM? 🤖
+# Large Language Models — The Engines Behind Modern AI
 
-A **Large Language Model** (LLM) is a neural network trained on massive amounts of text to understand and generate human language. The word "large" refers to three things:
+Large language models have fundamentally changed what machines can do with text, code, and reasoning. In this lesson, we'll pull back the curtain on how they work, why they're so powerful, and where they still fall short.
 
-```
-Scale of modern LLMs:
-┌──────────────────────┬──────────────────────────────────┐
-│ Parameters           │ Billions (7B → 400B+)            │
-│ Training data        │ Trillions of tokens (words)      │
-│ Training cost        │ Millions of dollars               │
-│ Training time        │ Weeks to months on thousands of GPUs │
-└──────────────────────┴──────────────────────────────────┘
-```
+## What Exactly Is an LLM?
 
-At its core, an LLM does one thing: **predict the next token**. Given "The cat sat on the", it predicts "mat" (or "roof" or "couch") with different probabilities. This simple objective, at massive scale, produces remarkably intelligent behaviour.
+A **large language model** is a neural network trained on enormous quantities of text to predict the next token in a sequence. "Large" refers to the number of **parameters** — learnable weights that encode patterns from training data.
 
-<ThinkAboutIt>
-Imagine reading every book, article, and website ever written — billions of pages. After all that reading, you'd be pretty good at predicting what word comes next in any sentence. That's essentially what an LLM does, but with mathematical precision.
-</ThinkAboutIt>
+- **GPT-4** is estimated to have over 1 trillion parameters.
+- **Llama 3** comes in sizes from 8 billion to 405 billion parameters.
+- **Mistral 7B** shows that smaller models can punch well above their weight.
 
----
+These models are trained on hundreds of billions of words drawn from books, websites, code repositories, and academic papers. The sheer scale of data and parameters is what gives LLMs their remarkable versatility.
 
-## The Transformer Architecture 🏗️
-
-Every modern LLM is built on the **Transformer** architecture (from the 2017 paper "Attention Is All You Need"). The key innovation: **self-attention**.
-
-### Self-Attention — The Core Idea
-
-Traditional models read text sequentially — word by word, left to right. Transformers read **everything at once** and figure out which words are relevant to each other.
-
-```
-Sentence: "The bank by the river was steep"
-
-For the word "bank", attention scores might be:
-  "bank" ←→ "river"  = 0.45  (high — helps clarify meaning)
-  "bank" ←→ "steep"  = 0.30  (medium — supports the "riverbank" meaning)
-  "bank" ←→ "The"    = 0.05  (low — not very informative)
-```
-
-This lets the model understand context: "bank" near "river" means a riverbank, not a financial bank.
-
-### Multi-Head Attention
-
-Transformers have **multiple attention heads** running in parallel, each learning different relationships (grammar, meaning, coreference). GPT-3 has 96 heads across 96 layers — all self-discovered, no human guidance.
-
-Each Transformer layer follows: **Self-Attention → Add + Normalise → Feed-Forward → Add + Normalise**. Stack 50–100+ of these blocks and you have a modern LLM.
+**Tokens, not words:** LLMs don't process whole words — they work with **tokens**, which are sub-word units. The word "understanding" might be split into "under" + "stand" + "ing". A typical English word averages about 1.3 tokens. This tokenisation scheme allows models to handle rare words, technical jargon, and even multiple languages without an impossibly large vocabulary.
 
 <FunFact>
-The "Add + Normalise" steps are skip connections — the same trick from ResNet! They keep gradients healthy across dozens of layers, making deep Transformers trainable.
+Training GPT-4 is estimated to have cost over $100 million in compute alone. That's roughly the budget of a mid-range Hollywood film — except the "actor" can speak every programming language.
 </FunFact>
 
----
+## The Transformer Architecture
 
-## The Training Pipeline 🔄
+Every modern LLM is built on the **transformer**, introduced in the 2017 paper *Attention Is All You Need*. The key innovation is **self-attention** — a mechanism that lets the model weigh how important each word is relative to every other word in the input.
 
-Training an LLM happens in three distinct phases:
+**How self-attention works (simplified):**
+1. Each token is converted into three vectors: **Query**, **Key**, and **Value**.
+2. The model computes attention scores by comparing every Query against every Key.
+3. These scores determine how much each token "pays attention" to every other token.
+4. The weighted sum of Values produces a context-aware representation.
 
-### Phase 1: Pretraining (learn language)
+The mathematical formula at the heart of attention is:
 
-The model reads trillions of tokens from books, websites, and code. It learns grammar, facts, reasoning patterns, and even some world knowledge — all from predicting the next token.
+**Attention(Q, K, V) = softmax(QK^T / √d) × V**
 
-```
-Input:  "The capital of France is ___"
-Target: "Paris"
+The division by √d (the square root of the key dimension) prevents the dot products from growing too large, which would push the softmax function into regions with extremely small gradients. This simple scaling trick was one of the key insights that made training deep Transformers stable.
 
-Input:  "def fibonacci(n):\n    if n <= 1:\n        return ___"
-Target: "n"
-```
+This is repeated across multiple **attention heads** in parallel, allowing the model to capture different types of relationships simultaneously — syntax in one head, semantics in another.
 
-**Cost:** Millions of dollars and weeks of GPU time. This is the expensive step.
-
-### Phase 2: Fine-Tuning (learn to follow instructions)
-
-The base model is great at completing text but terrible at following instructions. Fine-tuning trains it on curated question-answer pairs:
-
-```
-User: "Summarise this article in three bullet points."
-Assistant: "• Point one...\n• Point two...\n• Point three..."
-```
-
-### Phase 3: RLHF (learn human preferences)
-
-**Reinforcement Learning from Human Feedback** teaches the model what humans consider helpful, harmless, and honest.
-
-```
-Prompt: "How do I pick a lock?"
-
-Response A: "Here are detailed instructions..."   ← Ranked lower
-Response B: "I can't help with that because..."   ← Ranked higher
-
-The model learns: safety and helpfulness matter.
-```
-
-<Callout>
-RLHF is what makes the difference between a model that just completes text and one that feels like a helpful assistant. It aligns the model with human values — but it's not perfect, which is why AI safety research remains critical.
-</Callout>
-
----
-
-## Comparing Major Models 🏆
-
-The LLM landscape evolves rapidly. Here are the major players:
-
-```
-┌──────────────┬─────────────┬────────────────────────────────────┐
-│ Model Family │ Creator     │ Key Characteristics                │
-├──────────────┼─────────────┼────────────────────────────────────┤
-│ GPT-4/4o     │ OpenAI      │ Strong general reasoning,          │
-│              │             │ multimodal (text + images)         │
-├──────────────┼─────────────┼────────────────────────────────────┤
-│ Claude       │ Anthropic   │ Safety-focused, long context,      │
-│              │             │ strong at analysis and coding      │
-├──────────────┼─────────────┼────────────────────────────────────┤
-│ Llama        │ Meta        │ Open-weight, community-driven,     │
-│              │             │ can run locally                    │
-├──────────────┼─────────────┼────────────────────────────────────┤
-│ Gemini       │ Google      │ Multimodal-native, integrated      │
-│              │             │ with Google services               │
-├──────────────┼─────────────┼────────────────────────────────────┤
-│ Mistral      │ Mistral AI  │ Efficient, European-made,          │
-│              │             │ strong for its size                │
-└──────────────┴─────────────┴────────────────────────────────────┘
-```
-
-No single model is "best" at everything. The right choice depends on your task, budget, privacy requirements, and whether you need to run the model locally.
-
----
-
-## Capabilities and Limitations ⚖️
-
-### What LLMs Can Do Well
-- Generate fluent, coherent text in many languages
-- Summarise, translate, and transform text
-- Write and explain code
-- Answer questions using knowledge from training data
-- Reason through multi-step problems (with the right prompting)
-
-### What LLMs Struggle With
-- **Hallucinations** — confidently stating incorrect facts
-- **Maths** — unreliable with complex arithmetic without tools
-- **Recency** — knowledge has a training cutoff date
-- **True reasoning** — pattern-matching can look like reasoning but fail on novel problems
-- **Privacy** — they may memorise and regurgitate training data
+<Illustration src="/images/lessons/large-language-models.svg" alt="Diagram showing the transformer self-attention mechanism with Query, Key, and Value vectors" caption="Self-attention allows every token to attend to every other token, capturing long-range dependencies." />
 
 <ThinkAboutIt>
-LLMs are like brilliant but unreliable interns. They can draft amazing work, but you should always fact-check their output. Trust, but verify — especially for anything critical.
+If a sentence has 500 tokens, self-attention compares every token with every other — that's 250,000 comparisons per layer. How might this quadratic cost affect what LLMs can process?
 </ThinkAboutIt>
 
----
+## Key Models in the Landscape
 
-## Token Economics and Context Windows 📊
+| Model | Creator | Notable Feature |
+|-------|---------|-----------------|
+| **GPT-4o** | OpenAI | Multimodal (text, image, audio) |
+| **Claude 4** | Anthropic | Extended thinking, safety-focused |
+| **Gemini 2.5** | Google DeepMind | Native multimodality, long context |
+| **Llama 3** | Meta | Open-weight, community-driven |
+| **Mistral Large** | Mistral AI | Efficient European alternative |
 
-LLMs don't read characters or words — they read **tokens**. A token is roughly 3–4 characters or about ¾ of a word.
+The field moves extraordinarily fast — by the time you read this, newer models may already exist.
 
-```
-"Hello, how are you today?" → ["Hello", ",", " how", " are", " you", " today", "?"]
-                               = 7 tokens
-
-Rule of thumb:
-  100 tokens  ≈  75 words
-  1,000 tokens ≈  750 words  ≈  1.5 pages
-```
-
-The **context window** is the maximum tokens an LLM can process at once (input + output). GPT-4o supports 128K tokens (~300 pages), Claude handles 200K (~500 pages). API pricing is per token, so understanding token economics is essential:
-
-```python
-# Rough cost estimation
-input_tokens = 1000    # Your prompt
-output_tokens = 500    # Model's response
-price_per_1k = 0.01   # Varies by model and provider
-
-cost = ((input_tokens + output_tokens) / 1000) * price_per_1k
-print(f"Cost per request: ${cost:.4f}")   # $0.0150
-print(f"Cost for 10,000 requests: ${cost * 10000:.2f}")  # $150.00
-```
-
----
-
-## Hands-On: Using an LLM API 🛠️
-
-Here's how to call an LLM API in Python. This pattern works similarly across providers:
-
-```python
-from openai import OpenAI
-
-# Initialise the client (API key from environment variable)
-client = OpenAI()
-
-# Send a request
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[
-        {
-            "role": "system",
-            "content": "You are a helpful science tutor for teenagers."
-        },
-        {
-            "role": "user",
-            "content": "Explain photosynthesis in simple terms."
-        }
-    ],
-    temperature=0.7,    # 0 = deterministic, 1 = creative
-    max_tokens=300       # Limit response length
-)
-
-# Extract the reply
-answer = response.choices[0].message.content
-print(answer)
-
-# Check token usage
-usage = response.usage
-print(f"Input tokens:  {usage.prompt_tokens}")
-print(f"Output tokens: {usage.completion_tokens}")
-print(f"Total tokens:  {usage.total_tokens}")
-```
-
-**Key parameters explained:**
-
-```
-temperature:  Controls randomness (0 = focused, 1 = creative)
-max_tokens:   Limits response length (saves cost)
-messages:     The conversation history (system + user + assistant turns)
-model:        Which LLM to use
-```
+A crucial distinction in this landscape is between **closed-source** models (GPT-4o, Claude, Gemini) where only the API is available, and **open-weight** models (Llama, Mistral) where the model weights are publicly released. Open-weight models allow organisations to run inference on their own infrastructure, fine-tune for specific domains, and inspect the model's behaviour — advantages that matter greatly for privacy-sensitive industries.
 
 <Callout>
-The `messages` array is your conversation history. The model doesn't "remember" previous conversations — you send the full context every time. This is why context windows matter: longer conversations cost more tokens.
+Not all "open" models are truly open source. Some release weights but restrict commercial use or don't share training data and code. Always check the licence before deploying an open-weight model in production.
 </Callout>
 
----
+## Pre-Training, Fine-Tuning, and RLHF
 
-## Quick Recap 🎯
+LLMs are built in stages:
 
-1. **LLMs** are neural networks trained on trillions of tokens to predict the next word — scale creates emergent intelligence
-2. **Transformers** use self-attention to understand context, processing all tokens in parallel
-3. **Training pipeline**: pretraining (learn language) → fine-tuning (follow instructions) → RLHF (align with human values)
-4. **Major models** (GPT, Claude, Llama, Gemini) each have different strengths — no single "best" model
-5. LLMs are powerful but **not perfect** — hallucinations, maths errors, and knowledge cutoffs are real limitations
-6. **Tokens** are the currency of LLMs — understanding them helps you manage cost and context
+1. **Pre-training** — The model reads vast amounts of text and learns to predict the next token. This stage is enormously expensive and produces a base model that can complete text but isn't particularly helpful.
 
----
+2. **Supervised fine-tuning (SFT)** — Human-written examples of ideal responses teach the model to follow instructions and answer questions properly.
 
-## What's Next? 🚀
+3. **RLHF (Reinforcement Learning from Human Feedback)** — Human raters rank model outputs from best to worst. A reward model learns these preferences, and the LLM is trained to maximise the reward. This is what makes models helpful, harmless, and honest.
 
-You now understand the engines — but knowing how to **drive** them is equally important. In the next lesson, we'll master **prompt engineering**: the art and science of getting the best results from LLMs through carefully crafted instructions. ✨
+<Quiz question="What is the primary purpose of RLHF in LLM training?" options="To increase the model's parameter count|To align the model's outputs with human preferences|To reduce the cost of pre-training|To enable the model to process images" answer="1" explanation="RLHF uses human feedback to train a reward model, which then guides the LLM to produce outputs that humans rate as helpful, safe, and accurate." />
+
+## Emergent Capabilities
+
+As models scale up, they develop abilities that weren't explicitly trained:
+
+- **Complex reasoning** — Multi-step logical deduction and mathematical problem-solving.
+- **Code generation** — Writing, debugging, and explaining code across dozens of languages.
+- **Multilingual fluency** — Translating and generating text in languages with relatively little training data.
+- **In-context learning** — Adapting behaviour based on examples provided in the prompt, without any weight updates.
+
+These emergent properties are one of the most fascinating aspects of scaling — abilities that appear almost "for free" once a model crosses certain size thresholds.
+
+<FunFact>
+GPT-4 passed the Uniform Bar Exam in the 90th percentile — better than most human law graduates. Yet it can still struggle with basic arithmetic if the numbers are unusual enough.
+</FunFact>
+
+## Limitations You Must Understand
+
+LLMs are powerful but far from perfect:
+
+- **Hallucinations** — Models generate confident-sounding text that is factually wrong. They don't "know" facts; they predict likely token sequences.
+- **Context window limits** — Each model has a maximum input size (e.g., 128K tokens for GPT-4o). Information beyond this window is simply invisible.
+- **Cost and latency** — Running inference on large models requires expensive GPU clusters. A single GPT-4 query costs significantly more than a GPT-3.5 query.
+- **Lack of true understanding** — LLMs manipulate statistical patterns in text. Whether this constitutes "understanding" is a deep philosophical debate.
+- **Training data cutoffs** — Models don't know about events after their training data was collected unless augmented with retrieval systems.
+
+<Callout>
+Always verify critical facts from LLM outputs against authoritative sources. Treat LLMs as a brilliant but unreliable research assistant — extraordinarily useful, but never the final word on matters of fact.
+</Callout>
+
+<Quiz question="Why do LLMs sometimes produce hallucinations?" options="Because they access unreliable databases|Because they predict statistically likely token sequences rather than retrieving verified facts|Because their training data is deliberately inaccurate|Because hallucinations are a feature designed for creativity" answer="1" explanation="LLMs generate text by predicting the most probable next tokens. They have no mechanism to verify factual accuracy — they model language patterns, not truth." />
+
+## The Scaling Debate
+
+For years, the dominant belief was that **bigger is always better** — more parameters, more data, and more compute would steadily improve performance. This "scaling law" held remarkably well through GPT-2, GPT-3, and GPT-4.
+
+However, recent research suggests we may be approaching diminishing returns on raw scale alone. The focus is shifting towards:
+- **Better data quality** over quantity (curated, deduplicated datasets).
+- **Inference-time compute** — letting models "think longer" on hard problems rather than making the model itself larger.
+- **Specialised architectures** — mixture-of-experts models that activate only a fraction of parameters per query, improving efficiency without sacrificing capability.
+
+## Wrapping Up
+
+Large language models represent a genuine paradigm shift in computing. Understanding their architecture, training pipeline, and limitations isn't optional for anyone working seriously with AI — it's foundational knowledge that will serve you well as the field continues to evolve.
+
+<Quiz question="Which stage of LLM training is the most computationally expensive?" options="Supervised fine-tuning|RLHF|Pre-training on large text corpora|Prompt engineering" answer="2" explanation="Pre-training involves processing hundreds of billions of tokens across thousands of GPUs over weeks or months. Fine-tuning and RLHF are comparatively lightweight stages." />
+
+<ThinkAboutIt>
+If an LLM can pass the bar exam but can't reliably count the number of letters in a word, what does that tell us about the difference between human intelligence and language model capabilities?
+</ThinkAboutIt>

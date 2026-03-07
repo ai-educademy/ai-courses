@@ -1,0 +1,130 @@
+---
+title: "Fine-Tuning and RAG — How Companies Customise AI for Their Data"
+description: "Learn when and how to fine-tune models or use retrieval-augmented generation to build domain-specific AI applications."
+order: 4
+difficulty: "advanced"
+duration: 20
+icon: "🔧"
+published: true
+---
+
+# Fine-Tuning and RAG — How Companies Customise AI for Their Data
+
+A general-purpose LLM knows a lot about the world, but nothing about your company's internal documents, proprietary data, or domain-specific terminology. This lesson covers the two main approaches to bridging that gap: **fine-tuning** and **retrieval-augmented generation (RAG)**.
+
+## Why Generic Models Aren't Enough
+
+Imagine asking GPT-4 to answer customer queries about your company's specific return policy, internal product codes, or medical treatment protocols. It can't — that information isn't in its training data.
+
+Businesses need AI that combines the **general intelligence** of a large model with **specific knowledge** of their domain. There are two paths to get there, and choosing the right one matters enormously.
+
+<Callout>
+A common misconception is that you can simply "upload your data" to an LLM. In reality, customising a model requires either retraining its weights (fine-tuning) or building a retrieval pipeline (RAG) — both are engineering efforts that demand careful planning.
+</Callout>
+
+<Illustration src="/images/lessons/fine-tuning-and-rag.svg" alt="Diagram comparing fine-tuning and RAG approaches to customising LLMs" caption="Fine-tuning changes the model's weights; RAG provides external knowledge at query time." />
+
+## Fine-Tuning: Teaching the Model New Tricks
+
+Fine-tuning takes a pre-trained model and continues training it on your own dataset. The model's weights are updated to reflect your domain's language, style, and knowledge.
+
+**When to fine-tune:**
+- You need the model to adopt a specific tone or writing style consistently.
+- Your domain has specialised terminology the base model handles poorly.
+- You want faster inference (knowledge is "baked in" rather than retrieved).
+
+**The process:**
+1. Prepare a dataset of high-quality examples in your domain (typically hundreds to thousands of input-output pairs).
+2. Choose a base model (e.g., Llama 3, Mistral).
+3. Train for a few epochs with a low learning rate to avoid catastrophic forgetting.
+4. Evaluate on held-out test data.
+
+<FunFact>
+Bloomberg built BloombergGPT by fine-tuning on 363 billion tokens of financial data. The resulting model significantly outperformed general-purpose models on financial NLP tasks like sentiment analysis of earnings calls and named entity recognition in SEC filings.
+</FunFact>
+
+## LoRA and QLoRA: Efficient Fine-Tuning
+
+Traditional fine-tuning updates **all** model parameters, requiring enormous GPU memory. A 70-billion parameter model needs hundreds of gigabytes just for gradient storage.
+
+**LoRA (Low-Rank Adaptation)** solves this elegantly:
+- Instead of updating all weights, LoRA freezes the original model and adds small **trainable adapter matrices** to each layer.
+- These adapters typically add only 0.1–1% extra parameters.
+- The result is nearly identical performance at a fraction of the cost.
+
+**QLoRA** goes further by quantising the frozen model to 4-bit precision, reducing memory requirements dramatically. You can fine-tune a 70B parameter model on a single consumer GPU with 48GB of VRAM.
+
+<Quiz question="What is the key advantage of LoRA over traditional fine-tuning?" options="LoRA produces more accurate models than full fine-tuning|LoRA trains only small adapter matrices, requiring far less GPU memory and compute|LoRA eliminates the need for training data|LoRA works only with small models under 1 billion parameters" answer="1" explanation="LoRA freezes the original model weights and trains small low-rank adapter matrices instead. This dramatically reduces memory usage and training time while achieving performance comparable to full fine-tuning." />
+
+## RAG: Retrieval-Augmented Generation
+
+RAG takes a completely different approach. Instead of changing the model, you **give it access to external documents at query time**.
+
+**How RAG works:**
+1. **Index** — Your documents are split into chunks and converted into numerical vectors (embeddings) using an embedding model.
+2. **Store** — These vectors are stored in a vector database for fast similarity search.
+3. **Retrieve** — When a user asks a question, the query is also embedded, and the most relevant document chunks are retrieved.
+4. **Generate** — The retrieved chunks are inserted into the prompt as context, and the LLM generates an answer grounded in your actual documents.
+
+**When to use RAG:**
+- Your knowledge base changes frequently (new documents, updated policies).
+- You need source citations and traceability.
+- You want to avoid the cost and complexity of fine-tuning.
+- Factual accuracy is critical and hallucinations must be minimised.
+
+<ThinkAboutIt>
+RAG provides the model with relevant documents at query time, but the model still generates the final answer. How might you verify that the model's response actually reflects what the retrieved documents say, rather than hallucinating beyond them?
+</ThinkAboutIt>
+
+## Vector Databases
+
+Vector databases are purpose-built for storing and searching high-dimensional embeddings:
+
+| Database | Type | Key Feature |
+|----------|------|-------------|
+| **Pinecone** | Managed cloud | Fully hosted, simple API |
+| **Weaviate** | Open-source | Hybrid search (vector + keyword) |
+| **pgvector** | PostgreSQL extension | Use your existing Postgres database |
+| **Chroma** | Open-source | Lightweight, great for prototyping |
+| **Qdrant** | Open-source | High performance, Rust-based |
+
+Choosing a vector database depends on your scale, existing infrastructure, and whether you need managed hosting or prefer self-hosted solutions.
+
+<Quiz question="In a RAG system, what role does the vector database serve?" options="It trains the language model on new data|It stores document embeddings and enables fast similarity search for relevant context|It generates the final answer to user queries|It replaces the need for a language model entirely" answer="1" explanation="The vector database stores numerical representations (embeddings) of your documents. When a query arrives, it quickly finds the most semantically similar document chunks, which are then provided to the LLM as context for generating an answer." />
+
+## When to Fine-Tune vs When to Use RAG
+
+| Consideration | Fine-Tuning | RAG |
+|---------------|-------------|-----|
+| **Data freshness** | Static (retrain to update) | Dynamic (update documents anytime) |
+| **Cost** | Higher upfront (training) | Lower upfront, ongoing retrieval cost |
+| **Traceability** | Low (knowledge is implicit) | High (can cite source documents) |
+| **Style/behaviour** | Excellent for tone and format | Limited to prompt instructions |
+| **Hallucination risk** | Moderate | Lower (grounded in documents) |
+
+**The best production systems often combine both.** Fine-tune for domain-specific language and style, then use RAG to inject up-to-date factual content at query time.
+
+<FunFact>
+The UK's National Health Service has piloted RAG systems that connect LLMs to clinical guidelines and drug interaction databases. Doctors can ask natural language questions and receive answers grounded in the latest NICE guidelines, complete with page references.
+</FunFact>
+
+## Real-World Examples
+
+- **Customer support** — A retailer fine-tunes a model on past support tickets for tone, then uses RAG against the product catalogue and return policy for factual answers.
+- **Legal document analysis** — Law firms use RAG to search millions of case documents, with the LLM summarising relevant precedents for each new case.
+- **Medical Q&A** — Healthcare providers use RAG against peer-reviewed literature so clinicians can ask questions in natural language and receive evidence-based answers with citations.
+
+## Building a Production RAG Pipeline
+
+A robust RAG system requires more than just a vector database and an LLM. Key considerations include:
+
+- **Chunking strategy** — How you split documents matters enormously. Too large and irrelevant content dilutes the signal; too small and you lose context. Overlapping chunks with 10–20% overlap often work well.
+- **Re-ranking** — After initial vector retrieval, a cross-encoder re-ranker can reorder results by relevance, significantly improving answer quality.
+- **Evaluation** — Measure retrieval precision (did you find the right chunks?) and generation faithfulness (did the answer reflect the chunks?) separately.
+- **Hybrid search** — Combining vector similarity with traditional keyword search (BM25) catches cases where semantic search alone misses exact terms or acronyms.
+
+<Quiz question="A company's knowledge base is updated daily with new product information. Which approach is most appropriate?" options="Fine-tuning the model daily on the new data|Using RAG so the model always retrieves the latest documents|Retraining the model from scratch each week|Using a smaller model that doesn't need external data" answer="1" explanation="RAG is ideal for frequently changing data because you only need to update the document index — no model retraining required. Fine-tuning would be impractical for daily updates due to cost and time." />
+
+<ThinkAboutIt>
+If a RAG system retrieves the wrong documents due to a poor embedding model, the LLM will confidently generate an answer based on irrelevant context. How might you design safeguards to detect and prevent this failure mode?
+</ThinkAboutIt>

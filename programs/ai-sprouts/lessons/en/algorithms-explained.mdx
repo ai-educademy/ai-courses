@@ -1,290 +1,133 @@
 ---
-title: "Algorithms Explained — The Recipes of AI"
-description: "Learn what algorithms are through everyday analogies, then explore decision trees, K-nearest neighbors, and linear regression — the building blocks of machine learning."
+title: "Algorithms Explained — The Recipes Behind Every AI System"
+description: "Learn what algorithms are, how they work with everyday examples, and why choosing the right one matters for AI."
 order: 2
 difficulty: "beginner"
-duration: 30
-icon: "🧮"
+duration: 15
+icon: "📝"
 published: true
 ---
 
-## From Data to Decisions 👋
+# Algorithms Explained
 
-In the previous lesson, you learned that data is the fuel of AI. But fuel alone doesn't drive a car — you need an engine. In AI, that engine is called an **algorithm**.
+In the previous lesson, you learned that data is the fuel for AI. But fuel alone does not move a car — you need an engine. In AI, that engine is an **algorithm**. Every time an AI system makes a prediction, recommends a video, or detects spam, an algorithm is doing the heavy lifting behind the scenes.
 
-By the end of this lesson, you'll understand three fundamental algorithms and know when to use each one.
+## What Is an Algorithm?
 
-<Illustration src="/images/lessons/algorithms-explained.svg" alt="Data goes in, the algorithm processes it, predictions come out" caption="An algorithm transforms raw data into useful predictions" />
+An algorithm is simply a **step-by-step set of instructions** for solving a problem. You follow algorithms every day without realising it.
 
----
+- **A recipe** is an algorithm: combine ingredients in a specific order to produce a cake.
+- **Flat-pack furniture instructions** are an algorithm: follow each step to build a bookshelf.
+- **Driving directions** are an algorithm: turn left, go straight, turn right, arrive.
 
-## What is an Algorithm? 🤔
+The key idea is that an algorithm must be **precise**, **ordered**, and **repeatable** — anyone following the same steps should get the same result.
 
-An algorithm is simply a **set of step-by-step instructions** to solve a problem.
-
-You already follow algorithms every day:
-
-- 🍳 **A cooking recipe** — "Heat oil, add onions, stir for 3 minutes..."
-- 🗺️ **Directions to school** — "Walk north, turn left at the park, cross the bridge..."
-- 🔢 **Long division** — A step-by-step process you learned in maths class
-
-In AI, algorithms are the step-by-step instructions a computer follows to **find patterns in data** and **make predictions**.
-
-<ThinkAboutIt>
-Think about how you decide what to wear each morning. You probably check the weather, think about your plans, consider what's clean — that's an algorithm! You follow a series of steps (even if unconsciously) to reach a decision. AI algorithms do the same thing, just with data instead of gut feelings.
-</ThinkAboutIt>
-
----
-
-## Algorithm 1: Decision Trees 🌳
-
-A decision tree is one of the most intuitive algorithms in AI. It makes decisions by asking a series of **yes/no questions** — just like the game "20 Questions."
-
-### How it works
-
-Imagine you're deciding whether to play outside:
-
-```
-Is it raining?
-├── Yes → Stay inside 🏠
-└── No → Is it above 15°C?
-    ├── Yes → Play outside! ⚽
-    └── No → Wear a jacket and play outside 🧥
-```
-
-That's a decision tree! Each **node** asks a question, each **branch** follows an answer, and each **leaf** gives a final decision.
-
-### A real ML example
-
-Suppose we want to predict whether someone will buy a product:
-
-```
-Age greater than 25?
-├── Yes → Has bought before?
-│   ├── Yes → WILL BUY ✅ (95% confidence)
-│   └── No → Price under £20?
-│       ├── Yes → WILL BUY ✅ (70% confidence)
-│       └── No → WON'T BUY ❌ (80% confidence)
-└── No → Student discount available?
-    ├── Yes → WILL BUY ✅ (60% confidence)
-    └── No → WON'T BUY ❌ (75% confidence)
-```
-
-### Why decision trees are great
-
-- ✅ **Easy to understand** — you can literally draw them on paper
-- ✅ **Explainable** — you can trace exactly why a decision was made
-- ✅ **Work with both numbers and categories** — age (number) or colour (category)
-
-### When they struggle
-
-- ❌ Can **overfit** — memorise the training data instead of learning general patterns
-- ❌ A single tree can be **inaccurate** on complex problems
-- ❌ Small changes in data can create a **completely different tree**
+<Illustration src="/images/lessons/algorithms-explained.svg" alt="A flowchart showing a simple decision algorithm: Is it raining? If yes, take an umbrella. If no, wear sunglasses." caption="An algorithm is a clear set of instructions — like a flowchart that guides you to a decision." />
 
 <FunFact>
-Random Forests — one of the most powerful ML algorithms — simply combine hundreds of decision trees and let them "vote" on the answer. It's like asking 500 people for directions and going with the majority. This simple idea dramatically improves accuracy!
+The word "algorithm" comes from the name of a 9th-century Persian mathematician, Muhammad ibn Musa al-Khwarizmi, who wrote one of the first books on systematic problem-solving.
 </FunFact>
 
----
+## Everyday Algorithm Examples
 
-## Algorithm 2: K-Nearest Neighbors (KNN) 🏘️
+Before we dive into AI, let us look at two simple algorithms you already understand intuitively.
 
-KNN is the "ask your neighbors" algorithm. Its logic is beautifully simple: **things that are similar tend to be close together.**
+### Sorting a Hand of Cards
 
-### The intuition
+When you pick up a hand of playing cards and arrange them in order, you are running a **sorting algorithm**:
 
-Imagine you move to a new city and want to find a good restaurant. What do you do? You ask your **nearest neighbors** for recommendations! If 3 out of 5 neighbors recommend Italian food, you'd probably try Italian.
+1. Look at the first two cards. Swap them if they are out of order.
+2. Move to the next pair. Compare and swap again.
+3. Repeat until the entire hand is sorted.
 
-KNN works exactly the same way:
+This is essentially how **bubble sort** works — one of the simplest sorting algorithms in computer science.
 
-1. Take a new, unknown data point
-2. Find the **K closest** data points in the training data (K is a number you choose)
-3. Let those neighbors **vote** on the answer
-4. Go with the majority
+### Finding a Word in a Dictionary
 
-### A visual example
+You do not start at page one and read every word. Instead, you:
 
-Imagine a graph with red dots (cats) and blue dots (dogs), based on weight and height:
+1. Open the dictionary roughly in the middle.
+2. Check if the word you need comes before or after that page.
+3. Discard the half you do not need and repeat.
 
-```
-Height
-  |   🔴  🔴
-  |  🔴  ❓  🔴      ← What is ❓?
-  |    🔴   🔵
-  |  🔵  🔵
-  |   🔵   🔵  🔵
-  +----------------→ Weight
-```
+This is called **binary search**, and it is incredibly efficient. It can find any word among a million entries in about 20 steps.
 
-If K=3, we find the 3 nearest neighbors to ❓. If 2 are red (cat) and 1 is blue (dog), we predict: **cat!** 🐱
+<Quiz question="Why is binary search faster than reading every entry from the start?" options="It uses a bigger dictionary|It skips entries randomly|It halves the remaining options each step|It only works with short words" answer="2" explanation="Binary search eliminates half the remaining entries with each comparison, making it dramatically faster than checking every single entry in order." />
 
-### Choosing K
+## How Algorithms Power AI
 
-- **K too small** (e.g., K=1) → Sensitive to noise — one weird data point changes everything
-- **K too large** (e.g., K=100) → Too general — distant points that aren't really relevant get a vote
-- **Sweet spot** → Usually K=3, 5, or 7 works well. Always use an odd number to avoid ties!
+AI algorithms are more sophisticated than sorting cards, but the principle is the same: follow structured steps to reach an answer. Here are two foundational AI algorithms.
 
-```python
-from sklearn.neighbors import KNeighborsClassifier
+### Decision Trees
 
-# Create and train a KNN model with K=5
-knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(X_train, y_train)
+A decision tree asks a series of yes-or-no questions to classify something.
 
-# Predict on new data
-prediction = knn.predict(X_test)
-print(f"Accuracy: {knn.score(X_test, y_test):.2%}")
-```
+**Example — Is this email spam?**
 
-<Callout>
-**KNN is a "lazy learner"** — it doesn't actually learn anything during training! It just memorises all the data and does the real work at prediction time by calculating distances. This makes training instant but predictions slow on large datasets.
-</Callout>
+1. Does the subject line contain "FREE MONEY"? → If yes, likely spam.
+2. Is the sender in your contacts? → If yes, probably not spam.
+3. Does it contain more than five links? → If yes, lean towards spam.
 
----
+Each question is a **branch**, and each final answer is a **leaf**. Decision trees are easy to understand, which makes them popular when humans need to explain the AI's reasoning.
 
-## Algorithm 3: Linear Regression 📈
+### K-Nearest Neighbours (KNN)
 
-Linear regression is the art of **fitting a line through data points**. It's used when you want to predict a number (not a category).
+KNN classifies something by looking at the **closest examples** it has already seen.
 
-### The intuition
+Imagine you move to a new neighbourhood and want to know if a house is expensive or affordable. You look at the five nearest houses (your "neighbours") and check their prices. If most are expensive, you predict yours is too.
 
-Think about this: the more hours you study, the higher your test score tends to be. If you plotted this on a graph, you'd see data points trending upward. Linear regression draws the **best-fitting line** through those points.
-
-```
-Score
-100 |                    *   *
- 80 |              *  *
- 60 |        *  *
- 40 |     *
- 20 |  *
-    +-------------------------→ Hours studied
-```
-
-The line lets you predict: "If I study for 7 hours, I'll probably score around 85."
-
-### The equation
-
-Every line can be described as:
-
-```
-y = mx + b
-```
-
-- **y** = what we're predicting (test score)
-- **x** = input feature (hours studied)
-- **m** = slope (how steep the line is)
-- **b** = intercept (where the line crosses the y-axis)
-
-The algorithm finds the **best values for m and b** so the line is as close as possible to all the data points.
-
-```python
-from sklearn.linear_model import LinearRegression
-import numpy as np
-
-# Study hours and test scores
-hours = np.array([1, 2, 3, 4, 5, 6, 7, 8]).reshape(-1, 1)
-scores = np.array([20, 35, 45, 55, 65, 75, 82, 90])
-
-# Fit the model
-model = LinearRegression()
-model.fit(hours, scores)
-
-# Predict score for 5.5 hours of study
-predicted = model.predict([[5.5]])
-print(f"Predicted score for 5.5 hours: {predicted[0]:.1f}")
-print(f"Slope (m): {model.coef_[0]:.2f}")
-print(f"Intercept (b): {model.intercept_:.2f}")
-```
-
-### When linear regression works — and when it doesn't
-
-- ✅ Great when the relationship is roughly a **straight line**
-- ✅ Fast, simple, and easy to interpret
-- ❌ Terrible when the relationship is **curved** or complex
-- ❌ Sensitive to **outliers** — one extreme point can tilt the whole line
-
----
-
-## When to Use Which Algorithm? 🧭
-
-| Question | Decision Tree | KNN | Linear Regression |
-|----------|:---:|:---:|:---:|
-| Predicting a category (cat/dog)? | ✅ | ✅ | ❌ |
-| Predicting a number (price, score)? | ✅ | ✅ | ✅ |
-| Need to explain the decision? | ✅✅ | ❌ | ✅ |
-| Have a very large dataset? | ✅ | ❌ | ✅ |
-| Relationship is a straight line? | ❌ | ❌ | ✅✅ |
-| Don't know the relationship shape? | ✅ | ✅ | ❌ |
+KNN works exactly the same way with data points — it finds the K closest examples and takes a vote.
 
 <ThinkAboutIt>
-There's no single "best" algorithm. The right choice depends on your data, your problem, and what you need. A doctor diagnosing diseases might prefer a decision tree because it can explain *why* it made a diagnosis. A weather app predicting temperature might use linear regression because the relationship with historical data is roughly linear.
+If you asked three friends for a film recommendation and two of them suggested the same film, you would probably watch that one. That is the core idea behind KNN — majority rules among your nearest neighbours.
 </ThinkAboutIt>
 
----
+<Quiz question="In a K-Nearest Neighbours algorithm with K=5, how does the model make its prediction?" options="It averages all data points in the dataset|It picks the single closest data point|It takes a majority vote from the 5 closest data points|It randomly selects 5 data points" answer="2" explanation="KNN with K=5 finds the five data points closest to the new example and uses a majority vote among them to decide the classification." />
 
-## Interactive: Build a Movie Recommender 🎬
+## Big O Notation: Fast vs Slow Algorithms
 
-Let's build a simple decision tree for recommending films! Think about how *you* choose films:
+Not all algorithms are equally fast. Computer scientists use **Big O notation** to describe how an algorithm's speed changes as the data grows.
 
-```
-Do you want something funny?
-├── Yes → Do you like animated films?
-│   ├── Yes → Watch "Inside Out 2" 🎭
-│   └── No → Do you want something family-friendly?
-│       ├── Yes → Watch "Home Alone" 🏠
-│       └── No → Watch "The Grand Budapest Hotel" 🏨
-└── No → Do you like action?
-    ├── Yes → Do you prefer superheroes?
-    │   ├── Yes → Watch "Spider-Man: Across the Spider-Verse" 🕷️
-    │   └── No → Watch "Top Gun: Maverick" ✈️
-    └── No → Do you want a true story?
-        ├── Yes → Watch "Hidden Figures" 🚀
-        └── No → Watch "Interstellar" 🌌
-```
+| Notation | Name | Example | Speed |
+|----------|------|---------|-------|
+| O(1) | Constant | Looking up a value by index | ⚡ Instant |
+| O(log n) | Logarithmic | Binary search | 🚀 Very fast |
+| O(n) | Linear | Reading every item in a list | 🏃 Decent |
+| O(n²) | Quadratic | Comparing every item to every other | 🐢 Slow |
 
-**Try this yourself:** Add more branches! What about genre, mood, length, or language? Every question you add makes the tree more personalised. This is exactly how recommendation algorithms start — simple rules that get refined with data.
+You do not need to memorise the maths. The key insight is this: **as your dataset grows, a poorly chosen algorithm can go from fast to impossibly slow**.
 
-```python
-# A simple decision tree in code
-def recommend_movie(funny, animated, action, superhero, true_story):
-    if funny:
-        if animated:
-            return "Inside Out 2 🎭"
-        else:
-            return "The Grand Budapest Hotel 🏨"
-    else:
-        if action:
-            if superhero:
-                return "Spider-Man: Across the Spider-Verse 🕷️"
-            else:
-                return "Top Gun: Maverick ✈️"
-        else:
-            if true_story:
-                return "Hidden Figures 🚀"
-            else:
-                return "Interstellar 🌌"
+<FunFact>
+Google processes over 8.5 billion searches per day. If their search algorithm were O(n²) instead of highly optimised, a single search could take hours instead of milliseconds.
+</FunFact>
 
-# Try it!
-print(recommend_movie(funny=False, animated=False,
-                      action=True, superhero=True,
-                      true_story=False))
-# Output: Spider-Man: Across the Spider-Verse 🕷️
-```
+<Callout>
+Big O notation is not about exact speed — it is about how speed *scales*. An O(n) algorithm might be slow on tiny data but will always outperform an O(n²) algorithm as the dataset grows large.
+</Callout>
 
----
+## Why Choosing the Right Algorithm Matters
 
-## Quick Recap 🎯
+There is no single "best" algorithm. The right choice depends on:
 
-1. An **algorithm** is a step-by-step procedure for solving a problem
-2. **Decision trees** ask yes/no questions to reach a decision — explainable and visual
-3. **KNN** classifies by asking the K nearest neighbors to vote — simple but lazy
-4. **Linear regression** fits a line through data to predict numbers — fast but limited to linear relationships
-5. **No algorithm is universally best** — choose based on your data and problem
-6. Real AI systems often **combine** multiple algorithms for better results
+- **The problem type** — Are you classifying images or predicting numbers?
+- **The data size** — Some algorithms struggle with millions of rows.
+- **Explainability needs** — Can you use a black box, or must you explain every decision?
+- **Speed requirements** — Does the answer need to arrive in milliseconds or can it take minutes?
 
----
+A decision tree might be perfect for a simple loan approval system where transparency is required. But for recognising objects in a photo, you would need a neural network — which we will explore in the next lesson.
 
-## What's Next? 🚀
+<ThinkAboutIt>
+A hospital needs an AI to help diagnose patients. Should they choose an algorithm that is highly accurate but impossible to explain, or one that is slightly less accurate but shows its reasoning clearly? What are the trade-offs?
+</ThinkAboutIt>
 
-You've now met three classic algorithms. In the next lesson, we'll explore **neural networks** — the powerful, brain-inspired algorithms behind modern AI breakthroughs like ChatGPT, image generation, and self-driving cars. Get ready to think in layers! 🧠
+<Quiz question="Which factor is LEAST important when choosing an AI algorithm?" options="The size of the dataset|Whether the model needs to explain its decisions|The colour of the user interface|The speed at which predictions are needed" answer="2" explanation="The colour of the user interface has nothing to do with algorithm selection. Dataset size, explainability, and prediction speed are all critical factors." />
+
+## Key Takeaways
+
+- An **algorithm** is a step-by-step set of instructions for solving a problem.
+- **Decision trees** classify by asking sequential yes/no questions.
+- **K-Nearest Neighbours** classifies by looking at the closest known examples.
+- **Big O notation** tells us how an algorithm's speed scales with data size.
+- Choosing the right algorithm depends on the problem, data, and constraints.
+
+Next, we will look at the most powerful family of algorithms in modern AI: **neural networks**.

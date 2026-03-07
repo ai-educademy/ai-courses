@@ -1,205 +1,150 @@
 ---
-title: "Sorting & Searching — How AI Ranks Results"
-description: "Visualise sorting algorithms and binary search. See how search engines rank results and how ML models use sorted data."
+title: "Sorting and Searching — How AI Ranks and Finds Results"
+description: "Discover why sorting and searching algorithms are fundamental to how AI ranks recommendations and finds answers."
 order: 3
-difficulty: "beginner"
+difficulty: "intermediate"
 duration: 15
 icon: "🔍"
 published: true
 ---
 
-# Sorting & Searching
+## Finding Things Fast
 
-Every search result you see is **sorted by relevance**. Every database query uses **binary search** on indexes. These algorithms are everywhere — and they're interview staples.
+When you search Google, results appear in under a second — ranked from most to least relevant. When Netflix recommends films, it sorts thousands of titles by how likely you are to enjoy them. Behind every fast lookup and every ranked list sits a sorting or searching algorithm.
 
----
+## Why Sorting Matters
 
-## The Big Picture
+Sorted data is powerful data. Once a list is in order, you can:
 
-<Illustration src="/images/lessons/craft/sorting-searching.svg" alt="Merge sort divide-and-conquer tree showing split and merge phases, and binary search step-by-step elimination" caption="Merge sort (left) recursively divides then merges sorted halves. Binary search (right) eliminates half the data at each step." />
+- **Search it efficiently** using binary search (we'll get to this shortly).
+- **Find duplicates** — they'll be sitting right next to each other.
+- **Identify the top-N results** — just grab the first N items.
+- **Merge datasets** — combining two sorted lists is much faster than combining unsorted ones.
 
----
+<Illustration src="/images/lessons/sorting-and-searching.svg" alt="An unsorted array being transformed into a sorted array, with a magnifying glass highlighting binary search" caption="Sorting transforms chaotic data into something searchable and structured." />
 
-## Bubble Sort — The Naive Approach
+## Bubble Sort — Simple but Slow
 
-> Repeatedly swap adjacent elements if they're in the wrong order.
+Bubble sort repeatedly steps through the list, comparing adjacent items and swapping them if they're in the wrong order. Larger values "bubble" to the end.
 
-**Walkthrough** with `[5, 3, 8, 1]`:
-
-| Pass | Comparisons | Result |
-|------|------------|--------|
-| 1 | 5&gt;3 swap, 5&lt;8 skip, 8&gt;1 swap | [3, 5, 1, **8**] |
-| 2 | 3&lt;5 skip, 5&gt;1 swap | [3, 1, **5**, 8] |
-| 3 | 3>1 swap | [**1**, 3, 5, 8] |
-
-**Time: O(n²) | Space: O(1)**
-
-<Callout type="info">
-Bubble sort is only useful for learning. In interviews, mention it to show you know why better algorithms exist — then immediately pivot to merge sort or quick sort.
-</Callout>
-
----
-
-## Merge Sort — Divide & Conquer
-
-> Split the array in half recursively, then merge sorted halves back together.
-
-**The algorithm in 3 steps:**
-
-1. **Divide** — split array into two halves
-2. **Conquer** — recursively sort each half
-3. **Merge** — combine two sorted halves into one sorted array
-
-**The merge step** is the key — compare front elements of each half:
-
-| Left | Right | Pick | Result so far |
-|------|-------|------|---------------|
-| **3**, 27, 38 | **9**, 43, 82 | 3 | [3] |
-| 27, 38 | **9**, 43, 82 | 9 | [3, 9] |
-| **27**, 38 | 43, 82 | 27 | [3, 9, 27] |
-| 38 | 43, 82 | 38 | [3, 9, 27, 38] |
-| — | 43, 82 | 43, 82 | [3, 9, 27, 38, 43, 82] |
-
-```python
-def merge_sort(arr):
-    if len(arr) <= 1:
-        return arr
-    mid = len(arr) // 2
-    left = merge_sort(arr[:mid])
-    right = merge_sort(arr[mid:])
-    return merge(left, right)
-
-def merge(left, right):
-    result = []
-    i = j = 0
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-            result.append(left[i])
-            i += 1
-        else:
-            result.append(right[j])
-            j += 1
-    result.extend(left[i:])
-    result.extend(right[j:])
-    return result
+```
+[5, 3, 8, 1, 2]
+ ↕
+[3, 5, 8, 1, 2]  → swapped 5 and 3
+[3, 5, 1, 8, 2]  → swapped 8 and 1
+[3, 5, 1, 2, 8]  → swapped 8 and 2
+... keep going until no swaps needed
 ```
 
-**Time: O(n log n) | Space: O(n)**
+**Time complexity**: O(n²) — for each of n items, you might compare against every other item. With 1,000 items, that's up to 1,000,000 comparisons. With 1,000,000 items? A trillion comparisons. Not practical for AI workloads.
 
 <ThinkAboutIt>
-Why O(n log n)? The array splits log(n) times (halving). At each level, we do O(n) work merging. Total: n work x log(n) levels = O(n log n).
+If bubble sort takes roughly n² comparisons, how much slower would it be to sort a million items compared to a thousand? Think about the ratio: (1,000,000)² vs (1,000)². That's a million times slower — just for having a thousand times more data.
 </ThinkAboutIt>
 
----
+## Merge Sort — Divide and Conquer
 
-## Sorting Algorithm Comparison
+Merge sort takes a cleverer approach: split the list in half, sort each half, then merge the two sorted halves together.
 
-| Algorithm | Best | Average | Worst | Space | Stable? |
-|-----------|------|---------|-------|-------|---------|
-| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |
-| Merge Sort | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |
-| Quick Sort | O(n log n) | O(n log n) | O(n²) | O(log n) | No |
-| Heap Sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No |
-
-<Callout type="info">
-**Stable** means equal elements keep their original order. This matters when sorting by multiple keys — e.g., sort by name, then by age. A stable sort preserves the name ordering within same-age groups.
-</Callout>
-
----
-
-## Binary Search — Halving the Problem
-
-> Find a target in a **sorted** array by eliminating half the elements each step.
-
-**Prerequisite:** Array MUST be sorted.
-
-**Walkthrough** — find `23` in `[2, 5, 11, 15, 23, 37, 41, 56]`:
-
-| Step | Range | Mid | Compare | Action |
-|------|-------|-----|---------|--------|
-| 1 | [2..56] | 15 | 23 > 15 | Search right half |
-| 2 | [23..56] | 37 | 23 < 37 | Search left half |
-| 3 | [23] | 23 | 23 = 23 | **Found at index 4!** |
-
-**3 steps** instead of 8 (linear scan). For 1 million elements: **20 steps** instead of 1,000,000.
-
-```python
-def binary_search(nums, target):
-    left, right = 0, len(nums) - 1
-    while left <= right:
-        mid = left + (right - left) // 2  # avoids overflow
-        if nums[mid] == target:
-            return mid
-        elif nums[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-    return -1  # not found
+```
+[5, 3, 8, 1, 2, 7, 4, 6]
+         split
+[5, 3, 8, 1]   [2, 7, 4, 6]
+    split            split
+[5, 3] [8, 1]  [2, 7] [4, 6]
+  ↓       ↓       ↓       ↓
+[3, 5] [1, 8]  [2, 7] [4, 6]
+    merge            merge
+[1, 3, 5, 8]   [2, 4, 6, 7]
+         merge
+[1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
-**Time: O(log n) | Space: O(1)**
+**Time complexity**: O(n log n) — dramatically faster. For a million items, that's about 20 million comparisons instead of a trillion. This is the kind of algorithm that makes real AI systems possible.
 
 <FunFact>
-Binary search is deceptively tricky to implement correctly. A study by Jon Bentley found that **90% of professional programmers** couldn't write a bug-free binary search. The most common bug? Integer overflow in `(left + right) / 2` — which is why we use `left + (right - left) // 2`.
+Python's built-in sort uses Timsort — a hybrid algorithm that combines merge sort with insertion sort. It was invented by Tim Peters in 2002 and is now used in Python, Java, and Android. It's specifically designed to perform well on real-world data that's often partially sorted already.
 </FunFact>
 
----
+### Bubble Sort vs Merge Sort at Scale
 
-## Binary Search Variants
+| Items | Bubble Sort (O(n²)) | Merge Sort (O(n log n)) |
+|-------|---------------------|-------------------------|
+| 100 | 10,000 ops | ~700 ops |
+| 10,000 | 100,000,000 ops | ~130,000 ops |
+| 1,000,000 | 1,000,000,000,000 ops | ~20,000,000 ops |
 
-Binary search isn't just for "find exact value." These variants appear constantly:
+The difference isn't academic — it's the difference between "finishes in a second" and "finishes next week."
 
-| Variant | Description | Key Change |
-|---------|-------------|------------|
-| **Lower bound** | First position where element could be inserted | `left` when `nums[mid] >= target` → `right = mid` |
-| **Upper bound** | Position after last occurrence | `left` when `nums[mid] > target` → `right = mid` |
-| **Search rotated array** | Sorted array rotated at unknown pivot | Check which half is sorted first |
-| **Search answer space** | Find min/max satisfying a condition | Binary search on the answer, not the array |
+<Quiz question="Why is merge sort preferred over bubble sort for large datasets in AI applications?" options="Merge sort uses less memory|Merge sort is O(n log n) compared to bubble sort's O(n²), making it dramatically faster at scale|Merge sort was invented more recently|Merge sort only works with numbers, which is what AI uses" answer="1" explanation="At scale, the difference between O(n²) and O(n log n) is enormous. For a million items, merge sort does about 20 million operations vs bubble sort's trillion — making it essential for AI workloads." />
+
+## Binary Search — The Phone Book Trick
+
+Imagine looking up "Smith" in a phone book. You wouldn't start at page one and read every name. You'd open the book roughly in the middle, see where you are, and jump to the correct half. Then repeat.
+
+That's **binary search** — and it only works on sorted data.
+
+```
+sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+target = 23
+
+Step 1: Middle = 16 → 23 > 16, search right half
+Step 2: Middle = 38 → 23 < 38, search left half
+Step 3: Middle = 23 → Found it!
+```
+
+**Time complexity**: O(log n). In a sorted list of one million items, binary search finds any item in at most 20 steps. A linear search would take up to one million steps.
+
+<Quiz question="A sorted database contains 1,000,000 records. How many comparisons does binary search need in the worst case?" options="1,000,000|500,000|About 20|About 1,000" answer="2" explanation="Binary search halves the search space at each step. log₂(1,000,000) ≈ 20, so you need at most about 20 comparisons to find any item — or confirm it's not there." />
+
+## How AI Uses Sorting and Searching
+
+### Ranking Search Results
+
+When Google processes your query, it scores every relevant page and sorts them by relevance. The top 10 results appear on page one. Without efficient sorting, this would take minutes instead of milliseconds.
+
+### Recommendation Systems
+
+Netflix calculates a "match score" for thousands of titles based on your viewing history, then sorts them to show you the best matches first. The sorting algorithm directly affects what you see on your home screen.
+
+### K-Nearest Neighbours
+
+This classic AI algorithm finds the K most similar items to a given input. It calculates distances to every item, then partially sorts to find the K smallest distances. Efficient sorting makes this practical for millions of data points.
+
+<Callout>
+You don't always need to fully sort. If you only need the top 10 results from a million items, a **partial sort** or **heap** can find them in O(n log k) time — much faster than sorting everything.
+</Callout>
+
+### Training Data Preparation
+
+Before training, AI practitioners often sort data to create balanced batches — ensuring each training batch contains a mix of easy and hard examples, or a balanced distribution of categories.
+
+## When to Sort vs When to Use a Hash Map
+
+This is a crucial design decision:
+
+| Scenario | Best Choice | Why |
+|----------|------------|-----|
+| Find one item by key | Hash map | O(1) lookup |
+| Find the top-10 items | Sort | Need ordered results |
+| Check if item exists | Hash map | O(1) vs O(log n) |
+| Get items in order | Sort | Hash maps have no order |
+| Range queries (items between A and B) | Sorted array + binary search | Hash maps can't do ranges |
 
 <ThinkAboutIt>
-"Binary search on the answer space" is a powerful technique. Example: "What's the minimum capacity to ship packages in D days?" Binary search between min and max possible capacity, checking if each candidate works. This turns an optimization problem into a decision problem.
+A music streaming service needs to show your "Top 50 most played songs." Would you sort your entire listening history, or maintain a data structure that always knows the top 50? What are the trade-offs of each approach?
 </ThinkAboutIt>
 
----
-
-## The AI Connection: Ranking & Retrieval
-
-Sorting and searching are fundamental to how AI systems deliver results:
-
-**Search engines (Google, Bing):**
-
-- **Inverted indexes** — sorted lists of document IDs per keyword
-- **Binary search** on these indexes for sub-millisecond lookups
-- **Merge operations** to combine results from multiple keywords
-
-**Recommendation systems:**
-
-- Sort candidates by predicted score (relevance ranking)
-- **Top-K selection** — find the K best items without fully sorting (partial sort)
-- **Approximate nearest neighbour** search uses tree-based structures similar to binary search
-
-**Database query optimisation:**
-
-- B-trees (a generalisation of binary search trees) power every SQL index
-- Query planners choose between sequential scan (O(n)) and index scan (O(log n))
-
 <FunFact>
-Google processes over 8.5 billion searches per day. Each query searches an index of hundreds of billions of web pages. Without sorted indexes and binary search, a single query would take minutes instead of milliseconds.
+Google processes over 8.5 billion searches per day. Each search involves sorting and ranking hundreds of potential results in milliseconds. The efficiency of sorting algorithms directly impacts how much electricity Google's data centres consume — better algorithms literally save megawatts of power.
 </FunFact>
 
----
+<Quiz question="When would binary search NOT be appropriate?" options="When the data is sorted|When you need to find one specific item|When the data is unsorted and changes frequently|When the dataset is very large" answer="2" explanation="Binary search requires sorted data. If your data changes frequently, maintaining sorted order is expensive. A hash map would be better for quick lookups in unsorted, dynamic data." />
 
-## Complexity Cheat Sheet
+## Key Takeaways
 
-| Operation | Unsorted Array | Sorted Array |
-|-----------|---------------|--------------|
-| Search | O(n) | O(log n) |
-| Insert | O(1) | O(n)* |
-| Find min/max | O(n) | O(1) |
-| Find k-th element | O(n) | O(1) |
-
-*Must shift elements to maintain sorted order
-
-<Callout type="info">
-The trade-off is clear: **sorting costs O(n log n) upfront**, but enables O(log n) searches forever after. If you search more than O(log n) times, sorting pays for itself.
-</Callout>
+- **Sorting** transforms chaotic data into structured, searchable data — essential for ranking and recommendations.
+- **O(n²)** algorithms like bubble sort are educational but impractical at scale; **O(n log n)** algorithms like merge sort power real systems.
+- **Binary search** is extraordinarily efficient on sorted data — 20 steps to search a million items.
+- Choose between sorting and hash maps based on whether you need **ordered results** or **instant lookups**.
+- Every search result, recommendation, and ranked list you see online relies on these fundamental algorithms.

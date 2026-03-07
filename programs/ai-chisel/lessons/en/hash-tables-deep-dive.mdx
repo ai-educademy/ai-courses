@@ -1,0 +1,152 @@
+---
+title: "Hash Tables Deep Dive — The Engine Behind Fast AI Lookups"
+description: "Understand hashing, collision handling, and the probabilistic structures that accelerate AI systems."
+order: 5
+difficulty: "intermediate"
+duration: 15
+icon: "🗄️"
+published: true
+---
+
+## Why Hashing Matters
+
+When a recommendation engine needs to check whether you have already watched a film — out of millions in its catalogue — it cannot afford to scan a list. A **hash table** answers that question in O(1) average time.
+
+Hash tables are the single most used data structure in production software, and AI systems lean on them heavily for feature lookups, caching, and deduplication.
+
+<Illustration src="/images/lessons/hash-tables-deep-dive.svg" alt="A hash function mapping keys to bucket indices in an array, with one bucket showing a chain of colliding entries" caption="A hash function converts keys into array indices; collisions are handled by chaining or probing." />
+
+## How Hashing Works
+
+A **hash function** takes an input (a string, number, or object) and returns an integer — the **hash code**. That code is mapped to a **bucket index** via modulo:
+
+```
+index = hashFunction(key) % numberOfBuckets
+```
+
+A good hash function is:
+- **Deterministic** — same input always produces the same output.
+- **Uniform** — distributes keys evenly across buckets.
+- **Fast** — computable in O(1) relative to key size.
+
+### Example
+
+```
+function simpleHash(key, size):
+    total = 0
+    for char in key:
+        total += charCode(char)
+    return total % size
+```
+
+This is deliberately naïve — production hash functions like MurmurHash3 or xxHash use bit-mixing to achieve much better distribution.
+
+<Quiz question="What happens if a hash function maps many different keys to the same bucket index?" options="The hash table automatically resizes|A collision occurs and must be resolved|The duplicate keys are silently dropped|The programme crashes" answer="1" explanation="When two keys land in the same bucket, a collision occurs. The hash table must resolve it — typically via chaining or open addressing." />
+
+## Collision Handling
+
+Collisions are inevitable (pigeonhole principle). Two main strategies:
+
+### Chaining
+
+Each bucket holds a linked list (or small array) of entries. Colliding keys are appended to the list.
+
+```
+function insert(table, key, value):
+    idx = hash(key) % table.size
+    for entry in table[idx]:
+        if entry.key == key:
+            entry.value = value
+            return
+    table[idx].append((key, value))
+```
+
+**Pros:** Simple, works well at moderate load.
+**Cons:** Cache-unfriendly due to pointer chasing.
+
+### Open Addressing
+
+All entries live directly in the array. On collision, **probe** for the next free slot.
+
+- **Linear probing:** Check index+1, index+2, …
+- **Quadratic probing:** Check index+1², index+2², …
+- **Double hashing:** Use a second hash function to determine the step size.
+
+**Pros:** Better cache performance, no extra pointers.
+**Cons:** Clustering can degrade performance; deletion is fiddly (requires tombstones).
+
+<FunFact>Python dictionaries use open addressing with a custom probing sequence. CPython's dict implementation is so heavily optimised that it processes over 50 million lookups per second on modern hardware.</FunFact>
+
+## Load Factor and Rehashing
+
+The **load factor** α = number of entries / number of buckets. As α grows, collisions increase and performance degrades.
+
+| Load Factor | Expected Lookups (chaining) |
+|------------|----------------------------|
+| 0.5 | ~1.25 |
+| 0.75 | ~1.375 |
+| 1.0 | ~1.5 |
+| 2.0 | ~2.0 |
+
+Most implementations **rehash** when α exceeds a threshold (commonly 0.75): allocate a larger array, recompute every key's index, and reinsert.
+
+Rehashing is O(n) but happens infrequently, so the **amortised** cost of insertion remains O(1).
+
+<ThinkAboutIt>Rehashing doubles the table size and re-inserts every element. If your AI system is handling a live request stream, this pause could cause a latency spike. How might you spread the rehashing cost over multiple insertions instead of doing it all at once?</ThinkAboutIt>
+
+## Real AI Applications
+
+| Use Case | How Hash Tables Help |
+|----------|---------------------|
+| **Embedding tables** | Map token IDs to dense vector representations in O(1) |
+| **Feature hashing** | Hash high-cardinality categorical features into a fixed-size vector (the "hashing trick") |
+| **Deduplication** | Detect duplicate documents or images by hashing their content fingerprints |
+| **Caching layers** | Store precomputed model predictions keyed by input hash |
+| **Count-min sketch** | Approximate frequency counts in streaming data using multiple hash functions |
+
+<Quiz question="In the 'hashing trick' used in machine learning, why might you intentionally allow collisions?" options="Collisions improve model accuracy|It eliminates the need for a fixed vocabulary, saving memory|Hash collisions are impossible to avoid anyway|It speeds up the hash function" answer="1" explanation="Feature hashing deliberately maps an unbounded set of features into a fixed-size array, accepting some collision noise in exchange for a constant memory footprint — no vocabulary dictionary needed." />
+
+## Bloom Filters: Probabilistic Membership
+
+A **Bloom filter** answers "Is this element in the set?" with:
+- **Definite no** — the element is certainly absent.
+- **Probable yes** — the element is likely present (small false-positive rate).
+
+It uses _k_ hash functions and a bit array. Insertion sets _k_ bits; lookup checks if all _k_ bits are set.
+
+```
+function bloomInsert(filter, item):
+    for i in 1..k:
+        idx = hashFunctions[i](item) % filter.size
+        filter.bits[idx] = 1
+
+function bloomContains(filter, item):
+    for i in 1..k:
+        idx = hashFunctions[i](item) % filter.size
+        if filter.bits[idx] == 0: return false
+    return true   // probably present
+```
+
+**AI uses:** Checking whether a URL has already been crawled, filtering spam, and avoiding redundant database queries in caching layers.
+
+<FunFact>Google Chrome uses a Bloom filter containing millions of known malicious URLs. Before loading any page, your browser checks the filter — if it says "probably yes", Chrome fetches the full list to confirm.</FunFact>
+
+## Sets vs Maps: When to Use Which
+
+| Structure | Stores | Use When |
+|-----------|--------|----------|
+| **Set** | Keys only | You need membership checks — "have I seen this before?" |
+| **Map** | Key–value pairs | You need to associate data with each key — "what is the value for this key?" |
+
+Both are backed by hash tables and offer O(1) average operations. Choose a **set** for deduplication, visited tracking, and uniqueness constraints. Choose a **map** for lookups, caches, and configuration stores.
+
+<ThinkAboutIt>An AI content moderation system needs to check incoming messages against a blocklist of 10 million banned phrases. Would you use a hash set, a Bloom filter, or both? What are the trade-offs in memory, speed, and accuracy?</ThinkAboutIt>
+
+## Key Takeaways
+
+1. Hash tables deliver O(1) average-case lookups — the backbone of caching, indexing, and feature engineering.
+2. Collisions are managed via chaining or open addressing; load factor controls when to rehash.
+3. Bloom filters trade a tiny false-positive rate for massive memory savings in membership queries.
+4. Understanding hashing internals helps you choose the right tool — set, map, or probabilistic filter — for each AI workload.
+
+<Quiz question="A Bloom filter reports that an element is NOT in the set. What can you conclude?" options="The element is definitely not in the set|The element might still be in the set|The filter needs to be rebuilt|Nothing — Bloom filters are unreliable" answer="0" explanation="Bloom filters never produce false negatives. If any of the k bit positions is 0, the element was never inserted — guaranteed." />

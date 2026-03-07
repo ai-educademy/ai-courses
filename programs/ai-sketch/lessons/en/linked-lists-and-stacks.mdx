@@ -1,0 +1,147 @@
+---
+title: "Linked Lists and Stacks — The Dynamic Structures Behind AI"
+description: "Understand how linked lists, stacks, and queues handle dynamic data in AI systems and beyond."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+---
+
+## Beyond Arrays — Dynamic Data
+
+Arrays are brilliant when you know the size of your data upfront. But what happens when data arrives unpredictably — a stream of sensor readings, a queue of tasks for an AI to process, or a conversation history that grows with every message? You need structures that grow and shrink gracefully.
+
+Enter **linked lists**, **stacks**, and **queues** — the dynamic trio.
+
+## Linked Lists — Nodes and Pointers
+
+A linked list stores items as a chain of **nodes**. Each node holds two things: the data itself, and a pointer (reference) to the next node in the chain.
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Unlike arrays, linked list nodes don't sit side by side in memory. They can be scattered anywhere — the pointer simply tells you where to find the next one.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="A linked list with three nodes connected by arrows, compared to an array with contiguous blocks" caption="Linked list nodes are connected by pointers, unlike array elements which sit side by side." />
+
+### Linked Lists vs Arrays
+
+| Operation | Array | Linked List |
+|-----------|-------|-------------|
+| Access by index | O(1) ⚡ | O(n) 🐢 |
+| Insert at beginning | O(n) 🐢 | O(1) ⚡ |
+| Insert in middle | O(n) 🐢 | O(1)* ⚡ |
+| Delete from middle | O(n) 🐢 | O(1)* ⚡ |
+| Memory usage | Compact | Extra (pointers) |
+
+*Once you've found the position — finding it is still O(n).
+
+### When Linked Lists Win
+
+- **Frequent insertions and deletions**: If you're constantly adding and removing items from the middle of a collection, linked lists avoid the costly shifting that arrays require.
+- **Unknown size**: When you don't know how many items you'll store, linked lists grow one node at a time without needing to resize.
+- **Building other structures**: Stacks, queues, and more complex structures are often built on top of linked lists.
+
+<ThinkAboutIt>
+Your browser's tab bar lets you open, close, and rearrange tabs freely. Would an array or a linked list be a better fit for managing the list of open tabs? Consider what happens when you close a tab in the middle.
+</ThinkAboutIt>
+
+## Stacks — Last In, First Out (LIFO)
+
+A **stack** works exactly like a stack of plates: you add to the top and remove from the top. The last item placed on the stack is the first one taken off.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+Two operations define a stack:
+- **Push**: Add an item to the top.
+- **Pop**: Remove the item from the top.
+
+Both are **O(1)** — instant, regardless of stack size.
+
+### Stacks in the Real World
+
+- **Undo/Redo**: Every text editor maintains a stack of actions. Press Ctrl+Z and the most recent action is popped off and reversed.
+- **Browser back button**: Your browsing history is a stack. Each new page is pushed; clicking "back" pops the current page.
+- **Call stacks**: When your code calls a function, that function is pushed onto the call stack. When it finishes, it's popped off. This is how programmes keep track of where they are.
+
+<FunFact>
+When you see a "stack overflow" error, it literally means the call stack has run out of space — usually because a function keeps calling itself without stopping (infinite recursion). The famous developer Q&A site Stack Overflow is named after this very error.
+</FunFact>
+
+### Stacks in AI
+
+- **Expression evaluation**: AI compilers and interpreters use stacks to evaluate mathematical expressions in neural network computation graphs.
+- **Backtracking algorithms**: When an AI explores possible solutions (like solving a maze), it uses a stack to remember where it's been so it can backtrack.
+- **Depth-first search**: Traversing trees and graphs depth-first naturally uses a stack — we'll explore this in the next lesson.
+
+<Quiz question="You're implementing an 'undo' feature for a drawing application. Which data structure best models the history of actions?" options="An array sorted by timestamp|A hash map of action IDs|A stack — the most recent action should be undone first|A queue — the oldest action should be undone first" answer="2" explanation="Undo needs Last In, First Out (LIFO) behaviour — you always undo the most recent action first. A stack provides exactly this with O(1) push and pop operations." />
+
+## Queues — First In, First Out (FIFO)
+
+A **queue** works like a queue at a shop: the first person to join is the first person served. Items are added at the back and removed from the front.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+Two operations define a queue:
+- **Enqueue**: Add an item to the back.
+- **Dequeue**: Remove the item from the front.
+
+### Queues in the Real World
+
+- **Print queues**: Documents are printed in the order they're submitted.
+- **Task scheduling**: Operating systems use queues to manage which processes run next.
+- **Message queues**: Web applications use queues (like RabbitMQ or Kafka) to handle thousands of requests without dropping any.
+
+### Queues in AI
+
+- **Breadth-first search (BFS)**: Exploring a graph level by level uses a queue — we'll see this in the trees and graphs lesson.
+- **Training data pipelines**: Training data is loaded into queues so the GPU always has the next batch ready, preventing idle time.
+- **Request handling**: When thousands of users query an AI API simultaneously, requests enter a queue and are processed in order.
+
+<Quiz question="An AI API receives 10,000 requests per second. Which structure ensures requests are processed in the order they arrive?" options="A stack — process the newest request first|A hash map — look up each request by ID|A queue — first request in, first request out|An array — store all requests and process randomly" answer="2" explanation="A queue's FIFO (First In, First Out) behaviour ensures fairness — requests are handled in arrival order, preventing starvation where early requests never get processed." />
+
+<Callout>
+There's also a **priority queue**, where items are dequeued based on priority rather than arrival order. AI systems use priority queues to process urgent tasks first — for example, a self-driving car might prioritise obstacle detection over route planning.
+</Callout>
+
+## Real AI Use: Sequence Processing and Memory Management
+
+### Sequence Processing
+
+Language models process text as sequences. Under the hood, frameworks like PyTorch and TensorFlow use linked-list-like structures to build **computation graphs** — chains of operations where each step points to the next.
+
+### Memory Management in ML Frameworks
+
+When training a neural network, memory is constantly allocated and freed as tensors (multi-dimensional arrays) are created and destroyed. Memory allocators often use linked lists of free memory blocks, finding suitable spaces for new tensors.
+
+<ThinkAboutIt>
+A chatbot needs to remember the last 10 messages in a conversation but discard older ones. Would you use a stack, a queue, or something else? What happens when the 11th message arrives?
+</ThinkAboutIt>
+
+<Quiz question="Which statement about linked lists is FALSE?" options="Linked lists allow O(1) insertion at the beginning|Linked lists use extra memory for pointers|Linked lists provide O(1) access to any element by index|Linked lists can grow dynamically without resizing" answer="2" explanation="Accessing an element by index in a linked list requires traversing from the head — O(n) time. Unlike arrays, there's no way to jump directly to position k." />
+
+<FunFact>
+The undo history in most applications has a limit — typically 100 to 1,000 actions. Without this limit, the stack would consume ever-growing memory. Some advanced systems use a combination of a stack and a queue (a "deque") to keep the most recent actions whilst discarding the oldest.
+</FunFact>
+
+## Key Takeaways
+
+- **Linked lists** excel at dynamic data with frequent insertions and deletions, but sacrifice direct index access.
+- **Stacks** (LIFO) power undo systems, backtracking, and depth-first traversal.
+- **Queues** (FIFO) ensure fair ordering in task scheduling, BFS, and request handling.
+- These structures often work behind the scenes in AI frameworks, managing memory and processing sequences.
+- Choosing between arrays and linked structures depends on your access patterns — random access favours arrays, dynamic modification favours linked lists.

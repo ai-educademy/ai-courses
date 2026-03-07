@@ -1,0 +1,131 @@
+---
+title: "Computer Vision — How AI Learns to See the World"
+description: "Discover how machines interpret images and video, from pixel grids to self-driving cars."
+order: 1
+difficulty: "intermediate"
+duration: 18
+icon: "👁️"
+published: true
+---
+
+# Computer Vision — How AI Learns to See the World
+
+You glance at a photo and instantly know it shows a dog on a beach. For a computer, that same image is nothing more than a giant grid of numbers. **Computer vision** is the branch of AI that teaches machines to extract meaning from those numbers — and it is already reshaping industries around you.
+
+## How Computers "See"
+
+When you look at a photograph, your brain instantly recognises shapes, colours, and depth. A computer
+has none of that intuition. Instead, it works with raw numbers.
+
+A digital image is a grid of **pixels**. Each pixel stores colour values — typically three
+**channels**: red, green, and blue (RGB). A 1920 × 1080 HD image contains over two million pixels,
+each with three values ranging from 0 to 255. Multiply those together and even a single frame
+contains millions of numbers.
+
+<Illustration src="/images/lessons/computer-vision.svg" alt="Diagram showing an image broken into a pixel grid with RGB channels" caption="Every image is just a grid of numbers across red, green, and blue channels." />
+
+**Resolution** determines how much detail the grid captures. Higher resolution means more pixels
+and richer detail — but also far more data for the AI to process. A 4K image has four times the
+pixels of HD, which means four times the computational cost.
+
+Grayscale images have just one channel (brightness), while some specialised formats — like
+satellite imagery or medical scans — may have dozens of channels capturing wavelengths invisible
+to the human eye.
+
+<FunFact>
+The human eye can distinguish roughly 10 million colours. A standard 8-bit RGB image can represent over 16.7 million unique colour combinations — more than we can actually perceive!
+</FunFact>
+
+## Convolutional Neural Networks (CNNs)
+
+Early attempts at computer vision relied on hand-crafted rules — "look for edges here, match this
+template there." These brittle approaches failed whenever the scene changed. Modern systems use
+**Convolutional Neural Networks (CNNs)**, which learn their own rules from thousands of labelled
+examples.
+
+Think of a CNN as an assembly line of pattern detectors, each layer building on the one before it:
+
+1. **Convolutional layers** slide small filters across the image, detecting simple patterns like
+   edges, corners, and textures.
+2. **Pooling layers** shrink the data down, keeping only the most important signals and discarding
+   redundant detail.
+3. **Deeper convolutional layers** combine those simple patterns into more complex features — eyes,
+   wheels, letters.
+4. **Fully connected layers** pull all the features together to make a final decision — "this is a
+   cat" or "this is a tumour."
+
+The beauty is that nobody programmes these filters by hand. The network **learns** them during training, starting from random noise and gradually sharpening into useful detectors.
+
+<ThinkAboutIt>
+When you learn to recognise a friend's face, you do not memorise every pixel — you pick up on key features like eye shape, hairstyle, and expression. CNNs do something remarkably similar. What features do you think a CNN would learn first?
+</ThinkAboutIt>
+
+## Classification, Detection, and Segmentation
+
+Computer vision tackles three progressively harder tasks:
+
+| Task | Question it answers | Example |
+|------|-------------------|---------|
+| **Image classification** | What is in this image? | "This X-ray shows pneumonia." |
+| **Object detection** | What is in this image and where? | Drawing boxes around every pedestrian in a street scene. |
+| **Semantic segmentation** | Which pixels belong to which object? | Colouring every pixel of a road, pavement, car, and sky differently. |
+
+Self-driving cars need all three simultaneously — classifying objects, locating them precisely, and
+understanding the full scene pixel by pixel.
+
+Each task requires progressively more computational power and training data. Classification was
+largely solved by 2015; real-time segmentation on video remains an active area of research today.
+
+<Quiz question="Which computer vision task assigns a label to every individual pixel in an image?" options="Image classification|Object detection|Semantic segmentation|Feature extraction" answer="2" explanation="Semantic segmentation labels every pixel with its corresponding object class, giving the most detailed understanding of a scene." />
+
+## Real-World Applications
+
+Computer vision is already embedded in industries you might not expect:
+
+- **Tesla Autopilot** uses eight cameras and vision-based AI to detect lanes, traffic lights, and
+  obstacles in real time — processing millions of frames per journey.
+- **Medical imaging** — AI models now match or exceed radiologists at spotting early-stage breast
+  cancer in mammograms, sometimes catching what six human experts missed.
+- **Quality control** — factories use vision systems to inspect thousands of products per minute,
+  catching defects far too subtle or fast for human inspectors.
+- **Agriculture** — drones with computer vision identify diseased crops across vast fields,
+  enabling targeted treatment that reduces pesticide use by up to 90%.
+- **Retail** — Amazon Go stores use computer vision to track which products shoppers pick up,
+  enabling checkout-free shopping.
+
+<FunFact>
+Google's DeepMind developed an AI that can detect over 50 eye diseases from retinal scans as accurately as world-leading ophthalmologists — in seconds rather than weeks.
+</FunFact>
+
+## Ethical Concerns
+
+Computer vision is powerful, but it raises serious questions that society is still grappling with:
+
+- **Surveillance** — facial recognition enables mass tracking of citizens. Several cities,
+  including San Francisco and parts of the EU, have banned or restricted its use by police.
+- **Bias** — landmark studies by Joy Buolamwini at MIT showed that commercial facial recognition
+  systems were significantly less accurate for darker-skinned faces and women, because training
+  data has historically over-represented lighter-skinned males.
+- **Consent** — should your face be scanned without your knowledge in shops, airports, or public
+  spaces? Many countries are still drafting legislation to address this.
+- **Deepfakes** — AI-generated fake images and videos can spread misinformation and damage
+  reputations, making visual evidence less trustworthy.
+
+<ThinkAboutIt>
+Imagine a school installs facial recognition cameras to take attendance automatically. What are the benefits? What could go wrong? Would you be comfortable with this system?
+</ThinkAboutIt>
+
+<Quiz question="Why do some facial recognition systems perform worse on certain demographic groups?" options="Those groups have more complex facial features|The cameras used are lower quality|Training datasets are often biased and lack diversity|The algorithms are intentionally discriminatory" answer="2" explanation="When training data over-represents certain groups (e.g., lighter-skinned males), the model learns those features best and performs poorly on under-represented groups." />
+
+## Key Takeaways
+
+- Images are grids of pixel values across colour channels — computers see numbers, not pictures.
+- CNNs learn to extract features automatically through training, starting from edges and building
+  up to complex objects.
+- Classification, detection, and segmentation represent increasing levels of visual understanding.
+- Computer vision drives breakthroughs from healthcare diagnostics to autonomous vehicles and
+  precision agriculture.
+- Bias in training data and surveillance concerns demand careful, ethical deployment — technology
+  alone is never enough without responsible governance.
+
+<Quiz question="In a CNN, what is the purpose of pooling layers?" options="To add colour to the image|To reduce the spatial dimensions while retaining key features|To convert the image into text|To increase the number of pixels" answer="1" explanation="Pooling layers down-sample feature maps, reducing computational cost while preserving the most important information detected by convolutional filters." />

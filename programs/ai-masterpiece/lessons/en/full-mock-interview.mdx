@@ -1,282 +1,161 @@
 ---
 title: "Full Mock Interview — 60-Minute Senior Engineer Simulation"
-description: "Experience a realistic senior engineer interview from start to finish. Practice coding, system design, and behavioural rounds with structured feedback."
+description: "Walk through a complete senior-level AI engineering interview from start to finish."
 order: 2
 difficulty: "advanced"
-duration: 60
+duration: 45
 icon: "🎯"
 published: true
 ---
 
 # Full Mock Interview
 
-This lesson simulates a **60-minute senior engineer interview** — the kind you'd face at a top tech company. Work through each section as if you're in the room.
+This lesson simulates a complete 60-minute senior AI engineering interview. Read it actively — pause at each section, form your own answer before reading the model response, and score yourself honestly.
 
----
+Treat this as a dress rehearsal, not a spectator sport.
+
+<Illustration src="/images/lessons/full-mock-interview.svg" alt="Timeline showing five interview phases: intro, system design, behavioural, questions, and wrap-up" caption="A structured 60-minute interview broken into five distinct phases" />
 
 ## Interview Structure
 
-| Time | Round | Focus |
-|------|-------|-------|
-| 0-5 min | **Introduction** | Your background, current role, why this company |
-| 5-25 min | **Coding Round** | DSA problem with follow-ups |
-| 25-50 min | **System Design** | Design a real system end-to-end |
-| 50-60 min | **Behavioural** | Leadership, conflict, failure stories |
+| Phase | Duration | Focus |
+|-------|----------|-------|
+| Introduction | 5 min | First impression, background summary |
+| System Design | 25 min | Technical depth, architecture thinking |
+| Behavioural | 15 min | Leadership, conflict, growth |
+| Your Questions | 10 min | Curiosity, judgement, culture fit |
+| Wrap-Up | 5 min | Closing impression, next steps |
 
----
-
-## Round 1: Introduction (5 minutes)
-
-The interviewer asks: *"Tell me about yourself and what brings you here."*
-
-### What They're Evaluating
-
-- Can you communicate concisely? (2 minutes max)
-- Do you understand the role?
-- Are you genuinely interested?
-
-### Template
-
-```
-"I'm [Name], a [role] at [company] where I [one sentence about what you do].
-Over the past [N] years, I've focused on [2-3 key areas].
-Most recently, I [your biggest recent achievement — quantified].
-I'm excited about [this company] because [specific reason tied to their work]."
-```
-
-<Callout type="warning">
-Common mistake: Reciting your entire resume. The interviewer has your resume — they want the story behind it. Focus on your last 2-3 years and your strongest achievement.
+<Callout>
+Time management is itself a signal. Interviewers notice when you spend 20 minutes on requirements and leave five for architecture. Practise with a timer.
 </Callout>
 
----
+## Phase 1: Introduction (5 Minutes)
 
-## Round 2: Coding (20 minutes)
+The interviewer says: *"Tell me about yourself and what brought you here."*
 
-### The Problem
+Your answer should be a **two-minute elevator pitch** covering:
 
-> **LRU Cache with TTL**
->
-> Design a data structure that supports `get(key)` and `put(key, value, ttl)` operations.
-> - `get(key)`: Return the value if the key exists and hasn't expired. Otherwise return -1.
-> - `put(key, value, ttl)`: Set or update the key-value pair with a time-to-live in seconds.
-> - When the cache exceeds capacity, evict the least recently used non-expired entry.
+1. Your current role and one headline achievement.
+2. A brief arc of your career — how you got here.
+3. Why this specific role and company excite you.
 
-### Step 1: Clarify (2 minutes)
+Avoid reciting your CV. Tell a story with a clear thread connecting past, present, and future.
 
-Before coding, ask:
+## Phase 2: System Design (25 Minutes)
 
-- "What's the expected capacity?" → *Say 10,000 entries*
-- "Is this single-threaded?" → *Yes, for now*
-- "What time precision — seconds or milliseconds?" → *Seconds is fine*
-- "Should expired entries be lazily cleaned or eagerly cleaned?" → *Lazy is acceptable*
+**The question:** *"Design a real-time AI content moderation system for a social media platform with 500 million daily active users."*
+
+### Step 1: Clarify Requirements (3 min)
+
+Before drawing a single box, ask questions:
+
+- What content types? Text, images, video, or all three?
+- What latency target? Must moderation happen before content is visible?
+- What is the false positive tolerance? Is it worse to miss harmful content or to wrongly remove safe content?
+- What scale? Posts per second, peak traffic patterns?
+
+**Assume:** Text and images, sub-200ms for text, sub-2s for images, 50,000 posts per second at peak.
+
+### Step 2: API Design (3 min)
+
+```
+POST /moderate
+  Body: { contentId, contentType, text?, imageUrl?, userId, context }
+  Response: { decision: "allow" | "flag" | "block", confidence, categories[] }
+```
+
+Keep it simple. One endpoint, clear contract, extensible with new content types.
+
+### Step 3: High-Level Architecture (7 min)
+
+The system has four layers:
+
+1. **Ingestion** — Kafka topic receives every new post. Decouples producers from moderation.
+2. **Classification pipeline** — Text classifier (fine-tuned transformer) and image classifier (vision model) run in parallel.
+3. **Decision engine** — Combines classifier outputs with user reputation score and platform policy rules.
+4. **Action layer** — Executes the decision: allow, flag for human review, or block immediately.
+
+<Quiz question="Why is it important to decouple ingestion from classification using a message queue?" options="It makes the system look more impressive in diagrams|It allows the classification pipeline to scale independently and absorb traffic spikes|It eliminates the need for a database|It guarantees zero false positives" answer="1" explanation="A message queue like Kafka lets the ingestion layer accept posts at any rate while the classification pipeline processes them at its own pace, absorbing spikes without dropping requests." />
+
+### Step 4: Deep Dives (12 min)
+
+**Text moderation model:**
+- Fine-tuned BERT or similar transformer on a labelled dataset of harmful content categories (hate speech, spam, self-harm, etc.).
+- Served via a model server (Triton or TorchServe) with batching for throughput.
+- Confidence threshold: block above 0.95, flag between 0.7 and 0.95, allow below 0.7.
+
+**Image moderation:**
+- Vision transformer classifying into categories: explicit, violent, safe.
+- Pre-processing: resize, normalise. Inference on GPU instances behind an auto-scaling group.
+- For edge cases, route to a human review queue.
+
+**Scaling considerations:**
+- Horizontal scaling of classifier pods behind a load balancer.
+- Model versioning with canary deployments — roll out new models to 5 per cent of traffic first.
+- Circuit breakers: if the classifier is down, default to "allow and queue for async review" rather than blocking all content.
 
 <ThinkAboutIt>
-Interviewers WANT you to ask questions. It shows you think about requirements before jumping to code. Aim for 2-3 clarifying questions.
+The interviewer asks: "What happens when a new type of harmful content emerges that your model has never seen?" Pause and think about your answer before reading on. Consider both short-term and long-term responses.
 </ThinkAboutIt>
 
-### Step 2: Approach (3 minutes)
+**Handling novel threats:** In the short term, use keyword-based rules and human escalation. In the medium term, implement an active learning loop: human reviewers label new examples, which are fed back into the training pipeline for the next model version.
 
-Talk through your approach before writing code:
+## Phase 3: Behavioural (15 Minutes)
 
-```
-"I'll combine a hash map for O(1) lookup with a doubly-linked list 
-for O(1) LRU eviction — the classic LRU pattern from AI Sketch.
+### Question 1: *"Tell me about a time you had to make a difficult technical decision with incomplete information."*
 
-The twist is TTL: each node stores an expiry timestamp. On get(), 
-I'll check if the entry has expired. On put(), I'll set 
-expiry = now + ttl.
+Use the **STAR** framework:
 
-For eviction, I'll skip expired entries when walking from the 
-tail (least recently used)."
-```
+- **Situation**: We needed to choose between building a custom ML pipeline and adopting a managed service, with a deadline in six weeks.
+- **Task**: I was the tech lead responsible for the recommendation.
+- **Action**: I ran a one-week spike comparing both approaches on our actual data. I documented trade-offs in a decision record and presented it to the team.
+- **Result**: We chose the managed service, shipped two weeks early, and saved approximately £40,000 in engineering time over the first year.
 
-### Step 3: Code (10 minutes)
+### Question 2: *"Describe a time you disagreed with a teammate and how you resolved it."*
 
-```python
-class Node:
-    def __init__(self, key, value, expires_at):
-        self.key = key
-        self.value = value
-        self.expires_at = expires_at
-        self.prev = None
-        self.next = None
+- **Situation**: A colleague wanted to use a complex ensemble model; I advocated for a simpler baseline first.
+- **Task**: Reach alignment without damaging the relationship.
+- **Action**: I proposed we both implement our approaches in a time-boxed experiment and let the metrics decide.
+- **Result**: The simpler model performed within 2 per cent of the ensemble at one-tenth the inference cost. We shipped the simple model and agreed to revisit if accuracy became a bottleneck.
 
-class LRUCacheWithTTL:
-    def __init__(self, capacity):
-        self.capacity = capacity
-        self.cache = {}  # key → Node
-        self.head = Node(0, 0, 0)  # dummy head (most recent)
-        self.tail = Node(0, 0, 0)  # dummy tail (least recent)
-        self.head.next = self.tail
-        self.tail.prev = self.head
+<Quiz question="What is the most important element of a strong STAR answer?" options="Making yourself look like the hero of every story|Providing a specific, measurable result that demonstrates impact|Using as many technical buzzwords as possible|Keeping the answer under 30 seconds" answer="1" explanation="Concrete results with numbers — time saved, cost reduced, accuracy improved — make your stories credible and memorable. Vague outcomes like 'it went well' fall flat." />
 
-    def _now(self):
-        import time
-        return int(time.time())
+## Phase 4: Your Questions (10 Minutes)
 
-    def _remove(self, node):
-        node.prev.next = node.next
-        node.next.prev = node.prev
+Asking great questions shows judgement and genuine interest. Here are three strong examples:
 
-    def _add_to_front(self, node):
-        node.next = self.head.next
-        node.prev = self.head
-        self.head.next.prev = node
-        self.head.next = node
+1. *"What does the on-call rotation look like for the ML platform team, and how do you handle model incidents?"* — Shows you think about production realities.
+2. *"What is the biggest technical challenge the team expects to tackle in the next six months?"* — Shows forward thinking.
+3. *"How does the team decide when to build in-house versus buy a managed solution?"* — Shows pragmatism and architecture sense.
 
-    def _is_expired(self, node):
-        return self._now() > node.expires_at
+**Avoid:** Questions about perks, holidays, or anything easily found on the company website.
 
-    def get(self, key):
-        if key not in self.cache:
-            return -1
-        node = self.cache[key]
-        if self._is_expired(node):
-            self._remove(node)
-            del self.cache[key]
-            return -1
-        # Move to front (most recently used)
-        self._remove(node)
-        self._add_to_front(node)
-        return node.value
+<FunFact>
+A Harvard Business Review study found that candidates who asked thoughtful questions were rated 9 per cent higher overall, even when their technical performance was identical to candidates who asked no questions.
+</FunFact>
 
-    def put(self, key, value, ttl):
-        if key in self.cache:
-            self._remove(self.cache[key])
-            del self.cache[key]
-        node = Node(key, value, self._now() + ttl)
-        self.cache[key] = node
-        self._add_to_front(node)
-        # Evict if over capacity
-        while len(self.cache) > self.capacity:
-            lru = self.tail.prev
-            self._remove(lru)
-            del self.cache[lru.key]
-```
+## Phase 5: Wrap-Up (5 Minutes)
 
-### Step 4: Test (3 minutes)
+Thank the interviewer by name. Summarise your enthusiasm in one sentence: *"I am genuinely excited about the content moderation challenges here — it is exactly the kind of high-scale ML systems work I want to be doing."*
 
-Walk through a test case verbally:
+Send a brief thank-you email within 24 hours referencing one specific thing you discussed.
 
-```
-cache = LRUCacheWithTTL(2)
-cache.put("a", 1, ttl=10)    # cache: [a]
-cache.put("b", 2, ttl=5)     # cache: [b, a]
-cache.get("a")                # returns 1, cache: [a, b]
-cache.put("c", 3, ttl=10)    # evicts b (LRU), cache: [c, a]
-# After 6 seconds...
-cache.get("b")                # returns -1 (evicted)
-```
+## Self-Scoring Rubric
 
-### Step 5: Follow-Up Questions
+Rate yourself 1–5 on each dimension:
 
-The interviewer will push further:
+| Dimension | What "5" Looks Like |
+|-----------|-------------------|
+| **Requirements gathering** | Asked clarifying questions before jumping into design |
+| **Architecture clarity** | Drew a clean, logical system with clear data flow |
+| **Depth of knowledge** | Went deep on at least one component with real trade-offs |
+| **Communication** | Structured thoughts clearly; easy to follow |
+| **Behavioural answers** | Used STAR with specific, measurable results |
+| **Questions asked** | Showed genuine curiosity and good judgement |
 
-1. *"How would you make this thread-safe?"*
-   → Read-write lock: multiple readers, exclusive writer. Or use `ConcurrentHashMap` + lock-free linked list.
+<FunFact>
+Google's internal interview data revealed that the single strongest predictor of a candidate's success was not their algorithm score but their ability to structure ambiguous problems — exactly what system design questions test.
+</FunFact>
 
-2. *"How would you add eager expiration cleanup?"*
-   → Background thread with a min-heap sorted by `expires_at`. Pop expired entries periodically.
-
-3. *"What's the time complexity?"*
-   → get: O(1), put: O(1) amortised. Space: O(capacity).
-
----
-
-## Round 3: System Design (25 minutes)
-
-### The Problem
-
-> **Design a real-time collaborative document editor** (like Google Docs).
-> Support: simultaneous editing, cursor tracking, version history, offline mode.
-
-### Framework: Use the AI Craft Approach
-
-**Step 1 — Requirements (3 min):**
-- Functional: Real-time sync, conflict resolution, version history, sharing
-- Non-functional: under 100ms sync latency, 100K concurrent docs, 50 users/doc
-
-**Step 2 — High-Level Design (5 min):**
-```
-Client (Browser) ←→ WebSocket Gateway ←→ Collaboration Service
-                                               │
-                                     ┌─────────┼─────────┐
-                                     │         │         │
-                                  CRDT      Version    Auth
-                                  Engine    Store      Service
-                                     │         │
-                                  Document  Snapshot
-                                  Store     Store
-```
-
-**Step 3 — Deep Dive: Conflict Resolution (10 min):**
-
-Two approaches:
-- **OT (Operational Transformation):** Transform operations against concurrent operations. Used by Google Docs. Complex to implement correctly.
-- **CRDT (Conflict-free Replicated Data Types):** Mathematical guarantee of convergence. No central server needed. Used by Figma, Notion.
-
-Recommend CRDT for new systems — simpler correctness guarantees.
-
-**Step 4 — Trade-offs (5 min):**
-- OT vs CRDT: OT is battle-tested but complex; CRDT is simpler but uses more memory
-- WebSocket vs SSE: WebSocket for bidirectional; SSE for read-heavy
-- Snapshot frequency: More snapshots = faster load but more storage
-
-<Callout type="info">
-At the senior level, interviewers care MORE about your trade-off reasoning than the "correct" answer. Explicitly state: "I'm choosing X over Y because..."
-</Callout>
-
----
-
-## Round 4: Behavioural (10 minutes)
-
-### Question 1: "Tell me about a time you disagreed with your team."
-
-Use the **STAR Framework** from AI Polish:
-
-| Part | Your Answer |
-|------|------------|
-| **Situation** | "We were deciding between microservices and a monolith for a new product..." |
-| **Task** | "I believed we should start monolith-first, but the team wanted microservices..." |
-| **Action** | "I prepared a comparison document with cost estimates and proposed a proof of concept..." |
-| **Result** | "We went monolith-first, launched 6 weeks earlier, and migrated to microservices in year 2..." |
-
-### Question 2: "Tell me about a failure."
-
-<ThinkAboutIt>
-The interviewer is testing self-awareness and growth mindset. Pick a REAL failure (not a humble-brag). Structure: What happened → Why it happened → What you learned → What you changed.
-</ThinkAboutIt>
-
-### Question 3: "Why should we hire you?"
-
-Don't list skills. Connect your unique combination to their specific needs:
-
-```
-"You're scaling [specific system]. I've done exactly that — 
-I took [system] from [X] to [Y] scale, solving [specific challenge] 
-along the way. I also bring [unique skill] that I notice your 
-team is building toward."
-```
-
----
-
-## Self-Assessment Rubric
-
-After completing the mock, rate yourself:
-
-| Criteria | 🔴 Needs Work | 🟡 Good | 🟢 Excellent |
-|----------|---------------|---------|-------------|
-| **Communication** | Silent while coding | Occasional narration | Continuous clear narration |
-| **Clarification** | Jumped straight in | Asked 1-2 questions | Asked 3+ targeted questions |
-| **Coding** | Bugs, incomplete | Working with minor issues | Clean, tested, optimised |
-| **System Design** | Vague boxes | Solid architecture | Deep trade-off analysis |
-| **Behavioural** | Generic answers | STAR structure | Compelling, specific stories |
-
----
-
-## What to Do Next
-
-1. **Record yourself** doing this mock (use your phone) — you'll spot habits you didn't know you had
-2. **Time yourself strictly** — if you go over in practice, you'll go over in the real interview
-3. **Practice with a friend** — have them ask follow-up questions you don't expect
-4. **Repeat weekly** — interview skills are perishable; consistent practice beats cramming
+<Quiz question="During a system design interview, what should you do FIRST?" options="Start drawing the architecture diagram immediately|Ask clarifying questions about requirements and constraints|Write the API endpoints|Choose the database technology" answer="1" explanation="Clarifying requirements first ensures you solve the right problem. Jumping to solutions without understanding constraints is the most common mistake in system design interviews." />

@@ -1,206 +1,131 @@
 ---
-title: "Deep Neural Networks — Why Depth Changes Everything"
-description: "Discover how deep networks surpass shallow ones, understand vanishing gradients, explore landmark architectures like ResNet and Transformers, and learn how transfer learning lets you stand on giants' shoulders."
-order: 1
-difficulty: "intermediate"
-duration: 40
-icon: "🔬"
+title: "Deep Neural Networks — CNNs, RNNs, and Transformers Explained"
+description: "Understand the three major deep learning architectures and why transformers came to dominate modern AI."
+order: 3
+difficulty: "advanced"
+duration: 20
+icon: "🧠"
 published: true
 ---
 
-## From Shallow to Deep — Why Depth Matters 🏔️
+# Deep Neural Networks — CNNs, RNNs, and Transformers Explained
 
-In AI Branches you learned that neural networks have layers. A network with one or two hidden layers is called **shallow**. Add more layers — 10, 50, 100+ — and you have a **deep** neural network. That single word, "deep", is what puts the _deep_ in deep learning.
+Three architectures have shaped modern deep learning: **CNNs** for spatial data, **RNNs** for sequences, and **Transformers** for nearly everything. Understanding their strengths and trade-offs is essential for any advanced AI practitioner.
 
-But why does depth matter? Because each layer learns a **different level of abstraction**:
+## Convolutional Neural Networks (CNNs)
 
-```
-Layer 1  →  Edges and simple textures
-Layer 2  →  Corners and contours
-Layer 3  →  Parts of objects (eyes, wheels)
-Layer 4  →  Whole objects (faces, cars)
-Layer 5+ →  Scenes and context
-```
+CNNs were designed for **spatial data** — images, video frames, and anything with a grid-like structure. They work by sliding small filters across the input to detect patterns.
 
-<ThinkAboutIt>
-Imagine reading a book. Layer 1 recognises letters, Layer 2 recognises words, Layer 3 understands sentences, and Layer 4 grasps the full meaning. A shallow reader stuck at Layer 1 would only ever see letters — never understanding the story.
-</ThinkAboutIt>
+The genius of CNNs lies in two properties:
+- **Parameter sharing** — The same filter is applied across the entire image, drastically reducing the number of weights compared to fully connected layers.
+- **Local connectivity** — Each neuron only connects to a small region of the input, reflecting the fact that nearby pixels are more related than distant ones.
 
-Shallow networks can approximate many functions in theory, but in practice they need an impractically wide layer. Deep networks achieve the same (and better) results with far fewer total parameters by **composing** simple features into complex ones.
+**Core operations:**
+1. **Convolution** — A small filter (e.g., 3×3) slides across the image, computing a dot product at each position. Each filter learns to detect a specific feature — edges, textures, or shapes.
+2. **Pooling** — Reduces spatial dimensions by taking the maximum or average value in small regions. This makes the representation more compact and somewhat invariant to small shifts.
+3. **Feature maps** — Each convolutional layer produces multiple feature maps, building from simple edge detectors in early layers to complex object recognisers in deeper layers.
 
----
+A typical CNN for image classification stacks several convolutional and pooling layers, then flattens the result and passes it through fully connected layers for the final prediction.
 
-## The Vanishing Gradient Problem 🕳️
-
-Early researchers tried stacking many layers, but training kept failing. The culprit: **vanishing gradients**.
-
-During backpropagation, error signals are multiplied through each layer. With activation functions like sigmoid, those multiplications involve numbers between 0 and 1. Multiply enough small numbers together and the signal shrinks to nearly zero:
-
-```
-Error signal:  0.25 × 0.25 × 0.25 × 0.25 = 0.0039
-```
-
-By the time the signal reaches the first layers, it's so tiny the weights barely update. The network's early layers **stop learning**.
-
-### How We Fixed It
-
-**1. ReLU Activation** — Instead of sigmoid, use ReLU (Rectified Linear Unit). For positive inputs the gradient is exactly 1, so signals pass through without shrinking.
-
-```python
-# Sigmoid gradient shrinks signals
-def sigmoid_grad(x):
-    s = 1 / (1 + math.exp(-x))
-    return s * (1 - s)  # Always between 0 and 0.25
-
-# ReLU gradient preserves signals
-def relu_grad(x):
-    return 1 if x > 0 else 0  # Full strength or nothing
-```
-
-**2. Skip Connections (Residual Learning)** — Let the signal jump over layers entirely. If a layer has nothing useful to add, the data just flows through unchanged.
-
-```
-x ──→ [Layer] ──→ (+) ──→ output
- │                  ↑
- └──────────────────┘   ← skip connection
-```
-
-**3. Batch Normalisation** — Normalise the inputs to each layer so values stay in a healthy range throughout the network.
+**Landmark CNN architectures:**
+- **LeNet-5** (1998) — One of the earliest CNNs, used for handwritten digit recognition.
+- **AlexNet** (2012) — Won ImageNet and reignited interest in deep learning. Used ReLU activations and dropout.
+- **ResNet** (2015) — Introduced residual (skip) connections, enabling networks with 150+ layers. This idea of "shortcut connections" later influenced Transformer design.
+- **EfficientNet** (2019) — Systematically scales depth, width, and resolution for optimal performance per compute budget.
 
 <FunFact>
-Before these breakthroughs, networks deeper than about 10 layers were nearly impossible to train. After them, researchers successfully trained networks with over 1,000 layers!
+The architecture of CNNs was inspired by the visual cortex of cats. In the 1960s, Hubel and Wiesel discovered that neurons in a cat's brain respond to specific visual patterns in specific regions of the visual field — almost exactly how convolutional filters work.
 </FunFact>
 
----
+<Quiz question="What is the primary purpose of pooling layers in a CNN?" options="To add more learnable parameters to the network|To reduce spatial dimensions and provide translation invariance|To convert images into text sequences|To increase the resolution of feature maps" answer="1" explanation="Pooling reduces the spatial size of feature maps, which lowers computational cost and helps the network become less sensitive to the exact position of features in the input." />
 
-## Landmark Architectures 🏛️
+## Recurrent Neural Networks (RNNs) and LSTMs
 
-### ResNet — Residual Networks (2015)
+RNNs were designed for **sequential data** — text, speech, time series, and anything where order matters. The key idea: the network maintains a **hidden state** that gets updated at each time step, creating a form of memory.
 
-ResNet introduced skip connections and won the ImageNet competition with a **152-layer** network. The key insight: instead of learning an output directly, each block learns the **residual** — the difference between what you have and what you want.
+At each step, the RNN takes two inputs: the current token and the previous hidden state. It produces a new hidden state that encodes everything the network has "seen" so far. In theory, this gives RNNs unlimited memory. In practice, the story is more complicated.
 
-```
-Traditional:  output = F(x)
-Residual:     output = F(x) + x     ← the "+ x" is the skip connection
-```
+**The vanishing gradient problem:** In practice, standard RNNs struggle with long sequences. During backpropagation through many time steps, gradients either shrink to near zero (vanishing) or explode to infinity, making it difficult for the network to learn long-range dependencies.
 
-This simple change made ultra-deep networks trainable for the first time.
+To understand why this matters, consider a sentence like: *"The author, who grew up in Paris and later moved to London before settling in New York, wrote..."* An RNN must carry the information about "author" through dozens of intervening tokens to correctly predict "wrote." In practice, this signal fades long before it reaches the verb.
 
-### Transformers (2017)
+**LSTMs (Long Short-Term Memory)** solve this with a gating mechanism:
+- **Forget gate** — Decides what information to discard from the cell state.
+- **Input gate** — Decides what new information to store.
+- **Output gate** — Decides what to output based on the current cell state.
 
-The Transformer architecture replaced the sequential processing of older models with a **self-attention mechanism**. Instead of reading text word by word, it looks at all words simultaneously and decides which ones are important for each other.
+These gates allow LSTMs to selectively remember or forget information across hundreds of time steps, making them far more effective than vanilla RNNs.
 
-```
-"The cat sat on the mat because it was tired"
-
-Self-attention asks: What does "it" refer to?
-  "it" ←→ "cat"    (high attention score: 0.82)
-  "it" ←→ "mat"    (low attention score: 0.11)
-  "it" ←→ "sat"    (low attention score: 0.07)
-```
+**GRUs (Gated Recurrent Units)** are a simplified variant of LSTMs with only two gates (reset and update) instead of three. They often achieve similar performance with fewer parameters, making them a popular choice when computational resources are limited.
 
 <Callout>
-Transformers are the architecture behind GPT, Claude, Llama, and virtually every modern LLM. Understanding them at a high level is essential — we will go deeper in the next lesson.
+Although RNNs and LSTMs have been largely superseded by Transformers for most NLP tasks, they remain useful in edge computing and real-time applications where model size and latency constraints rule out large Transformer models.
 </Callout>
 
----
-
-## Transfer Learning — Standing on Giants' Shoulders 🦕
-
-Training a deep network from scratch requires millions of examples and days of GPU time. **Transfer learning** lets you skip most of that work.
-
-The idea: take a model that someone already trained on a massive dataset, then **fine-tune** it on your smaller, specific dataset.
-
-```
-Step 1: Start with a pre-trained model (trained on millions of images)
-Step 2: Freeze the early layers (they already know edges, shapes, textures)
-Step 3: Replace the final layer with your own task (e.g., 3 classes: cat, dog, bird)
-Step 4: Train only the last few layers on your data
-Step 5: Done! High accuracy with a fraction of the data and time.
-```
-
-Why it works: early layers learn **universal features** (edges, colours, textures) that transfer across tasks. Only the later, task-specific layers need retraining.
+<Illustration src="/images/lessons/deep-neural-networks.svg" alt="Visual comparison of CNN, RNN, and Transformer architectures showing data flow patterns" caption="CNNs process spatial grids, RNNs process sequences step by step, and Transformers process entire sequences in parallel." />
 
 <ThinkAboutIt>
-Transfer learning is like an experienced chef switching from French to Japanese cuisine. They don't need to relearn how to hold a knife or control heat — those skills transfer. They only need to learn the new recipes and ingredients.
+If an RNN processes tokens one at a time and must carry information through its hidden state, what happens when the relevant context appeared 500 tokens ago? How does this compare to a Transformer's approach?
 </ThinkAboutIt>
 
----
+## Transformers — The Architecture Behind Everything
 
-## GPU Training — Why Hardware Matters ⚡
+The Transformer, introduced in 2017, replaced recurrence with **self-attention**, allowing the model to look at every token in the input simultaneously.
 
-Neural network training is mostly **matrix multiplication** — billions of multiply-and-add operations. CPUs handle these one at a time (or a few at a time). GPUs handle thousands **simultaneously**.
+**Key components:**
 
-```
-CPU:  4-16 cores   → processes tasks one by one (fast per task)
-GPU:  thousands of cores → processes thousands of tasks in parallel
+**Self-attention** — Each token computes attention scores with every other token. This means a word at position 1 can directly attend to a word at position 1000, without information passing through intermediate states.
 
-Training time comparison (approximate):
-┌────────────────┬─────────┬──────────┐
-│ Model          │ CPU     │ GPU      │
-├────────────────┼─────────┼──────────┤
-│ Small CNN      │ 2 hours │ 5 min    │
-│ ResNet-50      │ 2 weeks │ 6 hours  │
-│ GPT-scale LLM  │ decades │ weeks*   │
-└────────────────┴─────────┴──────────┘
-* with thousands of GPUs working together
-```
+**Positional encoding** — Since Transformers process all tokens in parallel (no inherent sense of order), positional information is injected by adding sine and cosine functions of different frequencies to the input embeddings.
 
-Modern AI breakthroughs would be impossible without GPUs (and specialised chips like TPUs). When you hear about AI companies spending billions on hardware, this is why.
+**Multi-head attention** — Instead of a single attention computation, the model runs several in parallel. Each "head" can learn to attend to different types of relationships — one might capture syntax, another captures coreference, another captures semantic similarity.
 
----
+**Feed-forward layers** — After attention, each token passes through a small neural network independently. This is where much of the model's "knowledge" is stored.
 
-## Hands-On: Fine-Tuning a Pre-Trained Model 🛠️
+**Layer normalisation and residual connections** — These stabilise training and allow gradients to flow through very deep networks (modern LLMs have 80+ layers).
 
-Let's fine-tune a pre-trained image classifier to recognise three types of flowers. This pseudocode mirrors what real frameworks like PyTorch do:
+The encoder-decoder structure of the original Transformer has since been split into specialised variants:
+- **Encoder-only** (e.g., BERT) — Excellent for understanding tasks like classification and named entity recognition.
+- **Decoder-only** (e.g., GPT, Llama) — Designed for text generation, predicting one token at a time.
+- **Encoder-decoder** (e.g., T5, BART) — Best for sequence-to-sequence tasks like translation and summarisation.
 
-```python
-# Step 1: Load a pre-trained model (e.g., ResNet-50 trained on ImageNet)
-model = load_pretrained_model("resnet50")
+<Quiz question="Why do Transformers need positional encoding?" options="To reduce the number of parameters in the model|To process tokens in parallel, they have no inherent sense of sequence order|To convert text into numerical vectors|To prevent overfitting during training" answer="1" explanation="Unlike RNNs, which process tokens sequentially and thus inherently know token order, Transformers process all tokens simultaneously. Positional encoding injects order information so the model knows that 'The cat sat' is different from 'sat cat The'." />
 
-# Step 2: Freeze all layers — we don't want to change what's already learned
-for layer in model.layers:
-    layer.trainable = False
+## Why Transformers Won
 
-# Step 3: Replace the final classification layer
-# Original: 1000 classes (ImageNet categories)
-# Ours: 3 classes (rose, sunflower, tulip)
-model.final_layer = DenseLayer(input_size=2048, output_size=3)
+| Property | CNN | RNN/LSTM | Transformer |
+|----------|-----|----------|-------------|
+| **Parallelisation** | High | Low (sequential) | High |
+| **Long-range dependencies** | Limited by kernel size | Difficult (vanishing gradients) | Excellent (direct attention) |
+| **Training efficiency** | Good | Poor at scale | Excellent at scale |
+| **Versatility** | Spatial data | Sequential data | Nearly universal |
 
-# Step 4: Only the new final layer will be trained
-model.final_layer.trainable = True
+The Transformer's ability to **parallelise** training across GPUs was the decisive advantage. RNNs must process tokens one by one, making them painfully slow on modern hardware. Transformers process the entire sequence at once, enabling training on billions of tokens in reasonable time.
 
-# Step 5: Prepare our small dataset
-train_data = load_images("flowers/train/", categories=["rose", "sunflower", "tulip"])
-val_data = load_images("flowers/val/", categories=["rose", "sunflower", "tulip"])
+Furthermore, self-attention captures **long-range dependencies** directly. An RNN must carry information through hundreds of hidden states; a Transformer simply attends to the relevant token regardless of distance.
 
-# Step 6: Train (fine-tune) for a few epochs
-model.compile(optimizer="adam", loss="cross_entropy", learning_rate=0.001)
-model.fit(train_data, validation_data=val_data, epochs=5)
+<FunFact>
+The original "Attention Is All You Need" paper has been cited over 130,000 times, making it one of the most influential computer science papers ever published. The eight authors have collectively shaped the trajectory of an entire industry.
+</FunFact>
 
-# Step 7: Evaluate
-accuracy = model.evaluate(val_data)
-print(f"Validation accuracy: {accuracy:.1%}")
-# Typical result: ~95% accuracy with just a few hundred images!
-```
+## Modern Developments
 
-<Callout>
-Notice how little data we need! Without transfer learning, training from scratch on a few hundred images would overfit badly. Transfer learning makes deep learning accessible even without massive datasets.
-</Callout>
+Transformers now dominate not just language but also:
+- **Vision** — Vision Transformers (ViT) match or exceed CNNs on image tasks.
+- **Audio** — Whisper and other models transcribe speech using Transformer encoders.
+- **Multimodal** — Models like GPT-4o process text, images, and audio within a single Transformer.
+- **Biology** — AlphaFold uses attention mechanisms to predict protein structures.
 
----
+The boundaries between these architectures are blurring. Modern "CNN" models often include attention layers, and Transformers sometimes borrow convolutional ideas for efficiency.
 
-## Quick Recap 🎯
+**State Space Models (SSMs)**, such as Mamba, represent an emerging alternative that processes sequences in linear time rather than quadratic. While still early, they hint that the Transformer's dominance may not be permanent — the search for better architectures continues.
 
-1. **Depth** lets networks build hierarchical representations — edges to objects to scenes
-2. **Vanishing gradients** made deep training impossible until ReLU, skip connections, and batch normalisation solved it
-3. **ResNet** introduced residual learning with skip connections, enabling 100+ layer networks
-4. **Transformers** use self-attention to process sequences in parallel — the architecture behind modern LLMs
-5. **Transfer learning** lets you fine-tune pre-trained models on small datasets, saving time and data
-6. **GPUs** make deep learning practical by performing thousands of computations in parallel
+The lesson from this history is clear: no architecture is final. Each breakthrough — from CNNs to RNNs to Transformers — solved problems its predecessors couldn't. The next paradigm shift may already be taking shape in research labs today.
 
----
+Understanding all three architectures gives you the conceptual vocabulary to evaluate new ideas as they emerge — and to choose the right tool for each problem you face.
 
-## What's Next? 🚀
+<Quiz question="What is the main reason RNNs have been largely replaced by Transformers for language tasks?" options="RNNs cannot process text at all|Transformers are always smaller and cheaper to run|RNNs process tokens sequentially, limiting parallelisation and making large-scale training impractical|Transformers were invented first and have more research behind them" answer="2" explanation="The sequential nature of RNNs means each token must wait for the previous one to be processed. This makes training on large datasets extremely slow. Transformers process all tokens in parallel, enabling the massive-scale training that powers modern LLMs." />
 
-You now understand **how** deep networks work and **why** modern architectures are so powerful. In the next lesson, we'll zoom into the most impactful application of deep learning today: **Large Language Models** — the engines behind ChatGPT, Claude, and the AI revolution. 📝
+<ThinkAboutIt>
+Vision Transformers (ViT) now rival CNNs on image tasks, despite CNNs being purpose-built for images. What does this suggest about the value of general-purpose architectures versus specialised ones?
+</ThinkAboutIt>

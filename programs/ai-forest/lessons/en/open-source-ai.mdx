@@ -1,300 +1,133 @@
 ---
-title: "Open-Source AI — The Tools, Models, and Communities Shaping the Future"
-description: "Discover the open-source AI ecosystem — from foundational projects like PyTorch and Hugging Face to open models like Llama and Mistral — and learn how to contribute to AI's democratisation."
+title: "The Open-Source AI Ecosystem — Tools, Models, and Communities"
+description: "Navigate the open-source AI landscape, from key platforms and models to running inference locally and building a complete AI stack."
 order: 2
 difficulty: "advanced"
-duration: 40
+duration: 18
 icon: "🌐"
 published: true
 ---
 
-## Why Open-Source Matters for AI 🌍
+# The Open-Source AI Ecosystem
 
-In the early days of AI, cutting-edge research was locked behind corporate labs and expensive proprietary software. Today, the most transformative AI tools are **open-source** — freely available for anyone to use, study, modify, and share.
+Open-source AI has fundamentally changed the game. What once required millions in compute and proprietary datasets is now accessible to anyone with a laptop. This lesson maps the ecosystem and shows you how to use it effectively.
 
-This isn't just a philosophical choice. Open-source AI has practical consequences:
-- **Transparency**: You can inspect exactly how a model works
-- **Reproducibility**: Anyone can verify research claims
-- **Innovation speed**: Thousands of contributors improve tools faster than any single company
-- **Accessibility**: A student in Lagos has the same tools as a researcher at Stanford
+## Why Open-Source AI Matters
 
-<Illustration src="/images/lessons/open-source-ai.svg" alt="A globe surrounded by interconnected open-source AI project logos" caption="Open-source AI connects researchers, developers, and learners worldwide." />
+Open-source is not just free software — it is a philosophy that shapes how AI develops.
 
----
+**Democratisation** — State-of-the-art models are no longer locked behind corporate APIs. A researcher in Nairobi has the same access as an engineer in San Francisco.
 
-## The Open-Source AI Landscape 🗺️
+**Innovation speed** — Open communities iterate faster than any single company. Techniques like LoRA fine-tuning, quantisation, and chain-of-thought prompting emerged from open research and were adopted by the industry within weeks.
 
-The ecosystem is vast. Here's a map of the key projects and where they fit:
+**Transparency** — When you can inspect model weights, training data, and code, you can audit for bias, verify safety claims, and understand failure modes. Black-box APIs offer none of this.
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  APPLICATION LAYER                    │
-│  LangChain · LlamaIndex · Haystack · Streamlit       │
-├─────────────────────────────────────────────────────┤
-│                    MODEL LAYER                        │
-│  Llama · Mistral · Stable Diffusion · Whisper         │
-├─────────────────────────────────────────────────────┤
-│                   PLATFORM LAYER                      │
-│  Hugging Face · Ollama · vLLM · TGI                   │
-├─────────────────────────────────────────────────────┤
-│                  FRAMEWORK LAYER                      │
-│  PyTorch · TensorFlow · JAX · scikit-learn            │
-├─────────────────────────────────────────────────────┤
-│                    DATA LAYER                         │
-│  Common Crawl · The Pile · LAION · RedPajama          │
-└─────────────────────────────────────────────────────┘
-```
-
----
-
-## Key Open-Source Frameworks 🔧
-
-### PyTorch — The researcher's favourite
-
-```python
-import torch.nn as nn
-
-# Define a simple neural network in PyTorch
-class SimpleClassifier(nn.Module):
-    def __init__(self, input_size, num_classes):
-        super().__init__()
-        self.layers = nn.Sequential(
-            nn.Linear(input_size, 128),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Linear(64, num_classes),
-        )
-
-    def forward(self, x):
-        return self.layers(x)
-
-model = SimpleClassifier(input_size=768, num_classes=10)
-print(f"Parameters: {sum(p.numel() for p in model.parameters()):,}")
-```
-
-**Why PyTorch won**: Pythonic API, dynamic computation graphs (easier debugging), massive community, and first-class GPU support.
-
-### Hugging Face — The GitHub of AI
-
-Hugging Face has become the central hub for sharing AI models, datasets, and applications.
-
-```python
-from transformers import pipeline
-
-# Sentiment analysis in 3 lines
-classifier = pipeline("sentiment-analysis")
-result = classifier("Open-source AI is transforming the world!")
-print(result)
-# [{'label': 'POSITIVE', 'score': 0.9998}]
-
-# Summarisation in 3 lines
-summariser = pipeline("summarization")
-summary = summariser("Your long article text goes here...", max_length=50)
-print(summary)
-```
-
-**Key Hugging Face resources:** Model Hub (500,000+ models), Datasets (100,000+), Spaces (free hosting), Transformers library (unified API)
-
-### LangChain and LlamaIndex — Building AI applications
-
-These frameworks help you build applications **on top of** language models:
+**Data sovereignty** — Running models locally means sensitive data never leaves your infrastructure. For healthcare, legal, and financial applications, this is often a hard requirement.
 
 <FunFact>
-Hugging Face was originally a chatbot company for teenagers! They pivoted to become the central platform for open-source AI when they realised the real value was in the tools they'd built to manage NLP models. Today they're valued at over $4.5 billion.
+Meta's Llama 3 was downloaded over 30 million times in its first month of release, making it the fastest-adopted open AI model in history. Open-source adoption is accelerating, not slowing.
 </FunFact>
 
----
+## Key Platforms
 
-## Open-Source Models: The New Frontier 🦙
+The open-source AI ecosystem centres around a few critical platforms.
 
-The most exciting development in open-source AI is the release of powerful **open-weight models** that rival proprietary alternatives.
+**Hugging Face** — The GitHub of AI. Hosts over 500,000 models, 100,000 datasets, and thousands of demo apps (Spaces). The `transformers` library is the de facto standard for working with pre-trained models.
 
-### Llama (Meta)
+**Ollama** — Run LLMs locally with a single command. Handles model downloading, quantisation, and serving behind a clean API. Perfect for development and privacy-sensitive deployments.
 
-Meta's Llama family changed the game by releasing models competitive with GPT-3.5:
+**LangChain** — A framework for building LLM-powered applications. Provides abstractions for chains, agents, retrieval, and memory. Best for complex workflows involving multiple model calls.
 
-```
-Llama Model Family
-──────────────────
-Llama 1 (Feb 2023)  → Research-only licence, leaked widely
-Llama 2 (Jul 2023)  → Open licence, commercial use allowed
-Llama 3 (Apr 2024)  → Major quality leap, 8B and 70B variants
-Llama 3.1 (Jul 2024)→ 405B parameter model, multilingual
+**LlamaIndex** — Specialises in connecting LLMs to your data. Excellent for building RAG (Retrieval-Augmented Generation) systems with custom knowledge bases.
 
-Key advantage: Can be run locally, fine-tuned for specific tasks,
-and deployed without API costs.
-```
+<Quiz question="Which platform is best described as 'the GitHub of AI' for hosting models and datasets?" options="Ollama|LangChain|Hugging Face|LlamaIndex" answer="2" explanation="Hugging Face hosts hundreds of thousands of models and datasets with a collaborative, Git-based workflow — earning its reputation as the central hub of open-source AI." />
 
-### Mistral
+## Open Models Worth Knowing
 
-A French AI company that punches above its weight:
-- **Mistral 7B**: Outperformed Llama 2 13B despite being half the size
-- **Mixtral 8x7B**: Mixture-of-experts architecture — uses only 12B parameters per inference despite having 46B total
-- Known for releasing models via torrent links on Twitter/X — unconventional but effective!
+The open model landscape evolves monthly, but these families define the current state of the art.
 
-### Stable Diffusion
-
-The open-source image generation model that democratised AI art:
-- Run locally on a consumer GPU
-- Thousands of community fine-tunes and extensions
-- Spawned an entire ecosystem of tools (ControlNet, LoRA adapters, ComfyUI)
-
-### Running models locally
-
-```bash
-# Using Ollama — the easiest way to run models locally
-# Install: https://ollama.ai
-
-# Download and run Llama 3
-ollama run llama3
-
-# Download and run Mistral
-ollama run mistral
-
-# Use in Python
-# pip install ollama
-```
-
-```python
-import ollama
-
-response = ollama.chat(
-    model="llama3",
-    messages=[{"role": "user", "content": "Explain quantum computing simply"}]
-)
-print(response["message"]["content"])
-```
+| Model Family | Creator | Strengths | Best For |
+|---|---|---|---|
+| **Llama 3** | Meta | Strong general performance, large community | General-purpose, fine-tuning base |
+| **Mistral / Mixtral** | Mistral AI | Excellent efficiency, MoE architecture | Cost-sensitive production use |
+| **Phi** | Microsoft | Surprisingly capable for size | Edge devices, mobile |
+| **Gemma** | Google | Strong reasoning, well-documented | Research, structured tasks |
+| **Qwen** | Alibaba | Multilingual strength, competitive benchmarks | Global applications |
 
 <Callout>
-**Open-weight vs open-source**: Many "open" models release the trained weights but not the training data or full training code. This is technically "open-weight" rather than truly open-source. It's an important distinction — you can use the model, but you can't fully reproduce or audit how it was trained.
+**Licence matters.** Not all "open" models are truly open. Llama 3 has a community licence with usage restrictions above 700M monthly users. Mistral and Gemma use Apache 2.0. Always check the licence before building a product.
 </Callout>
 
----
+## Running Models Locally
 
-## Contributing to Open-Source AI 🤝
+You do not need a data centre to run powerful AI models. Here is how to get started.
 
-You don't need to be a PhD researcher to contribute. Here's how to get started:
+**Ollama** — The simplest path. Install it, then:
+```bash
+ollama pull llama3.1:8b
+ollama run llama3.1:8b "Explain transformer attention in one paragraph"
+```
 
-### Contribution levels
+**llama.cpp** — C++ inference engine optimised for consumer hardware. Supports GGUF quantised models and runs on CPU, Apple Silicon, and CUDA GPUs.
 
-**Level 1 — User (start here)**
-- Use open-source tools in your projects
-- Report bugs when you find them
-- Star and share projects you find useful
+**vLLM** — High-throughput serving engine for production deployments. Implements PagedAttention for efficient memory use and supports continuous batching.
 
-**Level 2 — Documentation**
-- Fix typos, improve examples, add tutorials
-- Translate documentation (hugely valuable!)
-- Write blog posts about your experience
+**Hardware guidelines:**
+- **8B models** — 8GB RAM minimum, runs on most modern laptops
+- **13B models** — 16GB RAM, benefits from a GPU
+- **70B models** — 48GB+ VRAM, requires a serious GPU or multi-GPU setup
 
-**Level 3 — Code**
-- Fix small bugs (look for "good first issue" labels)
-- Add tests for untested functionality
-- Improve error messages
+<Quiz question="What is the minimum RAM recommended to run an 8-billion parameter model locally?" options="2GB|4GB|8GB|32GB" answer="2" explanation="8-billion parameter models, when quantised to 4-bit precision, require approximately 4-6GB of memory, making 8GB RAM the practical minimum for comfortable operation." />
 
-**Level 4 — Features and Research**
-- Implement new features or model architectures
-- Contribute model weights and datasets
-- Reproduce and extend research papers
+<Illustration src="/images/lessons/open-source-ai.svg" alt="Open-source AI stack showing models, frameworks, and deployment tools" caption="The open-source AI stack — from models to deployment" />
+
+## Building a Full AI Stack
+
+Here is how to compose open-source tools into a production-ready AI system.
+
+**The reference architecture:**
+1. **Model layer** — Llama 3 or Mistral, served via vLLM or Ollama
+2. **Orchestration** — LangChain or LlamaIndex for multi-step workflows
+3. **Vector store** — Chroma, Qdrant, or Weaviate for embedding-based retrieval
+4. **Data pipeline** — Apache Airflow or Prefect for ETL and data processing
+5. **Monitoring** — Langfuse or Phoenix for LLM observability
+6. **Frontend** — Gradio or Streamlit for rapid prototyping; Next.js for production
 
 <ThinkAboutIt>
-The most impactful open-source contributions are often not code at all. Clear documentation, helpful answers on forums, well-written bug reports, and translated tutorials lower the barrier for thousands of new users. If you can explain a concept clearly, you can contribute meaningfully to open-source AI today.
+If you were building a customer support AI using only open-source tools, which components from the stack above would you choose? Consider the trade-offs between simplicity and capability.
 </ThinkAboutIt>
 
----
+## Contributing Back
 
-## AI Licensing: Know the Rules 📜
+The open-source ecosystem thrives because people give back. Here is how to start.
 
-When using or contributing to open-source AI, licensing matters:
+**Low-barrier contributions:**
+- Report bugs with clear reproduction steps
+- Improve documentation — every project needs better docs
+- Add tests for untested edge cases
+- Translate documentation into other languages
 
-### Common licences
-
-```
-Licence          Commercial Use    Modify    Distribute    Patent Grant
-─────────────    ──────────────    ──────    ──────────    ────────────
-MIT              ✅ Yes            ✅ Yes    ✅ Yes        ❌ No
-Apache 2.0       ✅ Yes            ✅ Yes    ✅ Yes        ✅ Yes
-GPL              ✅ Yes*           ✅ Yes    ✅ Yes*       ❌ No
-Llama Licence    ✅ Yes**          ✅ Yes    ✅ Yes**      ❌ No
-
-* GPL requires derivative works to also be GPL (copyleft)
-** Llama licence restricts use above 700M monthly active users
-```
-
-<Callout>
-**Always check the licence** before building a product on top of an open-source model. Some models that appear "open" have restrictions on commercial use, competition, or specific industries. When in doubt, consult your legal team.
-</Callout>
-
----
-
-## Building with Open-Source: Composing Your AI Stack 🏗️
-
-Here's how to assemble a complete AI application from open-source components:
-
-```
-Example: AI-Powered Customer Support Bot
-─────────────────────────────────────────
-
-Frontend:       Next.js + Tailwind CSS (open-source)
-                     ↓
-API Layer:      FastAPI (open-source)
-                     ↓
-Orchestration:  LangChain (open-source)
-                     ↓
-LLM:            Llama 3 via Ollama (open-source)
-                     ↓
-Knowledge:      pgvector on PostgreSQL (open-source)
-                     ↓
-Embeddings:     all-MiniLM-L6-v2 from Hugging Face (open-source)
-                     ↓
-Monitoring:     Langfuse (open-source)
-                     ↓
-Deployment:     Docker + Kubernetes (open-source)
-
-Total licence cost: £0
-```
-
----
-
-## The Open vs Closed Debate ⚖️
-
-**For open**: Safety through transparency, democratisation, faster innovation, sovereignty
-
-**For closed**: Safety through control, concentrated quality, clear accountability
-
-Most of the industry is moving towards a spectrum rather than a binary:
-
-```
-Fully Closed          Hybrid               Fully Open
-────────────          ──────               ──────────
-GPT-4 (OpenAI)       Llama 3 (Meta)       Pythia (EleutherAI)
-Claude (Anthropic)    Mistral (Mistral)    BLOOM (BigScience)
-Gemini (Google)       Gemma (Google)       OLMo (AI2)
-
-← More control                     More freedom →
-← Less transparency               More transparency →
-```
+**Higher-impact contributions:**
+- Fix bugs or implement requested features
+- Benchmark models and publish results
+- Create tutorials or example applications
+- Release your own fine-tuned models on Hugging Face
 
 <FunFact>
-The term "open-source" in AI is hotly contested. The Open Source Initiative (OSI) argues that truly open-source AI must include training data, training code, and model weights. By this strict definition, even Meta's Llama — which many call "open-source" — would be classified as "open-weight" since the training data isn't fully disclosed.
+The GGUF quantisation format, now used by millions of developers worldwide, was created by a single open-source contributor (Georgi Gerganov) working on llama.cpp in his spare time.
 </FunFact>
 
----
+<Quiz question="What is the most practical first step for contributing to an open-source AI project?" options="Rewrite the core model architecture|Improve documentation or report bugs|Create a competing fork|Add support for a new programming language" answer="1" explanation="Documentation improvements and clear bug reports are the most accessible and valued first contributions. They build trust with maintainers and teach you the codebase." />
 
-## Quick Recap 🎯
+<ThinkAboutIt>
+Browse Hugging Face or GitHub and find one open-source AI project you use regularly. Check its issues page — is there something you could contribute today, even if it is just a documentation fix?
+</ThinkAboutIt>
 
-1. **Open-source AI has democratised** access to cutting-edge tools and models
-2. **PyTorch, Hugging Face, LangChain, and LlamaIndex** form the backbone of the open-source AI ecosystem
-3. **Open models** (Llama, Mistral, Stable Diffusion) offer powerful alternatives to proprietary APIs
-4. **Contributing** starts with using tools, reporting bugs, and improving documentation — no PhD required
-5. **Licensing matters** — MIT and Apache 2.0 are most permissive; always check custom AI licences
-6. **Full AI stacks** can be built entirely from open-source components at zero licence cost
-7. **The open vs closed debate** is evolving toward a spectrum of openness
+## Key Takeaways
 
----
-
-## What's Next? 🔮
-
-You've mastered the tools and ecosystem of modern AI. In the final lesson, we'll look ahead to the **future of AI** — from AGI and autonomous agents to regulation and career paths. It's time to think about where AI is going and where **you** fit in that future. 🌲
+- Open-source AI democratises access, accelerates innovation, and enables transparency
+- Hugging Face, Ollama, LangChain, and LlamaIndex form the core ecosystem
+- Open models like Llama 3, Mistral, and Phi rival proprietary alternatives for many tasks
+- Running models locally is practical on consumer hardware with the right tools
+- A full open-source AI stack can be assembled from freely available components
+- Contributing back strengthens the ecosystem and builds your professional profile

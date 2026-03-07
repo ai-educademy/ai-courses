@@ -1,327 +1,133 @@
 ---
 title: "Introduction to Neural Networks — How AI Thinks in Layers"
-description: "Explore how artificial neural networks work — from biological neurons to layers, activation functions, forward propagation, and backpropagation — all without heavy maths."
+description: "Explore how neural networks mimic the brain, process information through layers, and learn from their mistakes."
 order: 3
-difficulty: "intermediate"
-duration: 35
-icon: "🧠"
+difficulty: "beginner"
+duration: 18
+icon: "🕸️"
 published: true
 ---
 
-## The Brain-Inspired Algorithm 👋
+# Introduction to Neural Networks
 
-In the last lesson, you learned about decision trees, KNN, and linear regression. They're powerful — but they struggle with truly complex tasks like recognising faces, understanding language, or generating images.
+Decision trees and KNN are powerful, but the technology behind today's most impressive AI — from ChatGPT to self-driving cars — is the **neural network**. Inspired by the human brain, neural networks can learn incredibly complex patterns that simpler algorithms cannot.
 
-For those tasks, we need something more powerful: **neural networks** — algorithms loosely inspired by how your brain works.
+Let us peel back the layers and see how they work.
 
-<Illustration src="/images/lessons/neural-networks-intro.svg" alt="A biological neuron on the left transforms into an artificial neuron on the right" caption="Neural networks borrow ideas from biology — but they're not actual brains!" />
+## The Brain Analogy
 
----
+Your brain contains roughly 86 billion **neurons** connected by trillions of **synapses**. When you learn something new, certain neurons fire together and the connections between them strengthen. This is often summarised as: *neurons that fire together, wire together.*
 
-## From Neurons to Artificial Neurons 🔬
-
-Your brain has about 86 billion neurons. Each one:
-1. **Receives** signals from other neurons
-2. **Processes** those signals (adds them up)
-3. **Decides** whether to fire (send a signal onwards)
-
-An artificial neuron does the same thing, but with numbers:
-1. **Receives** numbers as inputs (data)
-2. **Multiplies** each input by a weight (how important is this input?)
-3. **Adds** them all up
-4. **Decides** whether to "fire" using an activation function
-
-```
-Inputs          Weights        Sum         Activation      Output
-─────           ──────         ───         ──────────      ──────
-x₁ = 0.5  ──→  w₁ = 0.8  ─┐
-                             ├──→ 1.25 ──→ f(1.25) ──→  0.78
-x₂ = 0.3  ──→  w₂ = 1.5  ─┘
-
-Sum = (0.5 × 0.8) + (0.3 × 1.5) = 0.40 + 0.85 = 1.25
-```
-
-<ThinkAboutIt>
-Think of weights like volume knobs on a mixing board. Each input is a different instrument. The weights control how loud each instrument is. The neuron blends them together, and the activation function decides if the combined sound is loud enough to pass through to the speakers.
-</ThinkAboutIt>
-
----
-
-## Layers: How Neurons Organise 🏗️
-
-A single neuron can't do much — just like a single brain cell can't think. The power comes from organising neurons into **layers**.
-
-### The three types of layers
-
-**1. Input Layer** — The eyes and ears 👀
-- Receives raw data (pixel values, numbers, words)
-- One neuron per input feature
-- Doesn't do any computation — just passes data forward
-
-**2. Hidden Layer(s)** — The thinking brain 🧠
-- Where the actual learning happens
-- Each neuron finds a pattern in the data
-- More hidden layers = ability to find more complex patterns
-- Called "hidden" because you don't directly see their inputs or outputs
-
-**3. Output Layer** — The answer 💡
-- Produces the final prediction
-- For classification: one neuron per category (cat, dog, bird)
-- For regression: one neuron with a number (predicted price)
-
-```
-INPUT LAYER      HIDDEN LAYER 1    HIDDEN LAYER 2     OUTPUT LAYER
-(3 features)     (4 neurons)       (4 neurons)        (2 classes)
-
-  [x₁] ──────→  [h₁] ──────→     [h₅] ──────→       [Cat: 0.92]
-  [x₂] ──────→  [h₂] ──────→     [h₆] ──────→       [Dog: 0.08]
-  [x₃] ──────→  [h₃] ──────→     [h₇]
-                 [h₄] ──────→     [h₈]
-
-Note: In reality, EVERY neuron in one layer connects
-to EVERY neuron in the next layer (fully connected).
-```
+Artificial neural networks borrow this idea. They use **artificial neurons** (small mathematical functions) connected in a network. When the network practises on data, the connections that lead to correct answers get strengthened, and the ones that lead to wrong answers get weakened.
 
 <FunFact>
-The term "deep learning" simply means a neural network with many hidden layers — typically more than 2. GPT-4 has over 100 layers! More layers let the network learn increasingly abstract patterns: edges → shapes → objects → scenes.
+The first artificial neuron — the Perceptron — was invented in 1958 by Frank Rosenblatt. It could only learn simple patterns, but it laid the groundwork for everything we have today.
 </FunFact>
 
----
+## The Three Types of Layers
 
-## Activation Functions — The Decision Makers 💧
+Every neural network has three types of layers:
 
-After a neuron adds up its inputs, it needs to decide: should I fire or not? That's the job of the **activation function**.
+### 1. Input Layer
+This is where data enters the network. Each neuron in this layer receives one feature from the dataset. For a 28×28 pixel image, the input layer would have 784 neurons — one for each pixel.
 
-### The water flow analogy 🚿
+### 2. Hidden Layers
+These are the layers between input and output where the real learning happens. Each neuron takes inputs, processes them, and passes the result forward. A network can have one hidden layer or hundreds — the more layers, the "deeper" the network.
 
-Imagine a water pipe with a valve:
-- Water flows in (the weighted sum of inputs)
-- The valve controls what comes out (the activation function)
-- Some valves let everything through; others block most flow
+### 3. Output Layer
+This layer produces the final answer. For a digit classifier (0–9), the output layer has 10 neurons, each representing the probability of a different digit.
 
-### Common activation functions
+<Illustration src="/images/lessons/neural-networks-intro.svg" alt="A diagram showing three layers of a neural network: input layer on the left, two hidden layers in the middle, and output layer on the right, with arrows connecting neurons between layers" caption="A neural network processes data through layers — input, hidden, and output — to arrive at a prediction." />
 
-**ReLU (Rectified Linear Unit)** — The simple gate
-- If the input is positive → let it through unchanged
-- If the input is negative → block it (output zero)
-- Like a one-way valve: water flows forward but never backward
+<Quiz question="What is the role of hidden layers in a neural network?" options="They store the original training data|They display the final prediction to the user|They process inputs and learn complex patterns|They clean and format the raw data" answer="2" explanation="Hidden layers are where the actual learning takes place. Each layer extracts increasingly complex patterns from the data as it flows through the network." />
 
-```python
-def relu(x):
-    return max(0, x)
+## Weights and Biases: The Volume Knobs
 
-# Examples
-print(relu(3.5))   # 3.5 (positive → passes through)
-print(relu(-2.0))  # 0.0 (negative → blocked)
-```
+Every connection between two neurons has a **weight** — a number that controls how much influence one neuron has on the next. Think of weights as **volume knobs**: turning one up makes that connection louder; turning it down makes it quieter.
 
-**Sigmoid** — The gentle squisher
-- Squishes any input into a range between 0 and 1
-- Perfect for probabilities: "There's a 0.87 chance this is a cat"
-- Like a dimmer switch — gently controls the flow
+Each neuron also has a **bias** — a number that shifts the output up or down, like adjusting the baseline volume before any signal arrives.
 
-```python
-import math
+When a neural network learns, it is really just **adjusting thousands or millions of these weights and biases** until it finds the combination that gives the best predictions.
 
-def sigmoid(x):
-    return 1 / (1 + math.exp(-x))
+<ThinkAboutIt>
+Imagine you are mixing music and you have hundreds of volume knobs — one for each instrument and microphone. Getting the perfect mix means carefully adjusting every knob. That is what training a neural network is like, except with millions of knobs adjusted automatically.
+</ThinkAboutIt>
 
-# Examples
-print(sigmoid(5.0))    # 0.993 (very confident "yes")
-print(sigmoid(0.0))    # 0.500 (completely uncertain)
-print(sigmoid(-5.0))   # 0.007 (very confident "no")
-```
+## How a Neural Network Learns
 
-**Softmax** — The vote counter
-- Used in the output layer for classification
-- Takes multiple values and converts them to probabilities that add up to 1
-- Like an election: every class gets a vote share
+Learning happens in a cycle with four steps:
 
-```
-Raw outputs:  [2.0, 1.0, 0.5]
-After softmax: [0.59, 0.24, 0.17]  → Cat (59%), Dog (24%), Bird (17%)
-```
+### Step 1: Forward Pass
+Data flows through the network from input to output. Each neuron multiplies its inputs by its weights, adds its bias, and passes the result through an **activation function** (which decides whether the neuron should "fire" or stay quiet). The network produces a prediction.
+
+### Step 2: Calculate the Error
+The prediction is compared to the correct answer. The difference is the **error** (also called **loss**). A prediction of "7" when the answer is "3" produces a large error; a prediction of "3" produces a small one.
+
+### Step 3: Backpropagation
+The error is sent **backwards** through the network. Each weight learns how much it contributed to the mistake. This is the mathematical magic of **backpropagation** — it figures out which knobs to turn and by how much.
+
+### Step 4: Update Weights
+The weights and biases are adjusted slightly to reduce the error. Then the cycle repeats with the next piece of data.
 
 <Callout>
-**Why do we need activation functions?** Without them, a neural network — no matter how many layers — would just be fancy linear regression. Activation functions introduce non-linearity, which lets the network learn curves, edges, and complex patterns instead of only straight lines.
+A neural network does not learn in one go. It repeats this cycle thousands or millions of times, gradually getting better with each pass — much like how you improve at a skill through practice.
 </Callout>
 
----
+<Quiz question="What does backpropagation do in a neural network?" options="It sends data forward through the network|It deletes neurons that are not useful|It sends the error backwards to update weights|It adds new layers to the network" answer="2" explanation="Backpropagation calculates how much each weight contributed to the error and sends that information backwards through the network so weights can be adjusted." />
 
-## Forward Propagation — Data Flows Through 🌊
+## Visual Walkthrough: Classifying a Handwritten Digit
 
-Now let's see how data actually moves through a neural network. This process is called **forward propagation** — and it's simpler than it sounds.
+Let us trace how a neural network classifies a handwritten "5" from the MNIST dataset:
 
-Think of it as a relay race:
+1. **Input:** The 28×28 pixel image is flattened into 784 numbers (pixel brightness values from 0 to 255). These enter the 784 input neurons.
 
-1. **Input layer** receives the data and passes it to the first hidden layer
-2. Each neuron in the hidden layer **multiplies**, **adds**, and **activates**
-3. The results pass to the next layer
-4. This continues until we reach the **output layer**
-5. The output layer gives us the final prediction
+2. **Hidden layers:** The first hidden layer might detect simple edges and curves. The second hidden layer combines those into shapes like loops and strokes. Deeper layers recognise digit-like patterns.
 
-### A concrete example
+3. **Output:** The 10 output neurons produce probabilities. The network might output:
+   - Digit 3: 5% confident
+   - Digit 5: 89% confident
+   - Digit 8: 4% confident
+   - All others: less than 1%
 
-Let's classify whether a fruit is an apple or orange using two features: weight (grams) and colour intensity (0–1 scale).
+4. **Decision:** The network picks the digit with the highest probability — **5**. Correct!
 
-```
-Input: weight = 150g, colour = 0.8 (orange-ish)
-
-Step 1 — Input layer passes values forward:
-  x₁ = 150 (weight)
-  x₂ = 0.8 (colour)
-
-Step 2 — Hidden neuron 1 computes:
-  sum = (150 × 0.01) + (0.8 × 2.0) + bias(0.1) = 1.5 + 1.6 + 0.1 = 3.2
-  output = ReLU(3.2) = 3.2
-
-Step 3 — Hidden neuron 2 computes:
-  sum = (150 × -0.005) + (0.8 × 1.5) + bias(0.3) = -0.75 + 1.2 + 0.3 = 0.75
-  output = ReLU(0.75) = 0.75
-
-Step 4 — Output layer computes from hidden outputs:
-  apple_score  = (3.2 × -0.5) + (0.75 × 0.8) = -1.0
-  orange_score = (3.2 × 0.7) + (0.75 × 0.3) = 2.465
-
-Step 5 — Softmax converts to probabilities:
-  Apple:  18%
-  Orange: 82%  ← Prediction: Orange! 🍊
-```
-
----
-
-## Backpropagation — Learning from Mistakes 🔄
-
-Forward propagation gives us a prediction. But what if it's wrong? That's where **backpropagation** comes in — the process by which a neural network learns.
-
-### The dart-throwing analogy 🎯
-
-Imagine you're learning to throw darts blindfolded:
-
-1. **Throw a dart** (forward propagation — make a prediction)
-2. **Someone tells you how far off you were** (calculate the error)
-3. **Adjust your aim** — a little left, a little higher (update the weights)
-4. **Throw again** — this time you're closer!
-5. **Repeat** thousands of times until you're hitting near the bullseye
-
-That's backpropagation in a nutshell:
-
-```
-Forward propagation:  Data → Network → Prediction
-                                          ↓
-Compare:              Prediction vs Actual Answer = Error
-                                          ↓
-Backpropagation:      Error flows BACKWARD through the network
-                                          ↓
-Update:               Adjust weights to reduce the error
-                                          ↓
-Repeat:               Do this thousands of times!
-```
-
-### Why "backward"?
-
-The error signal starts at the output and flows **backward** through the network, layer by layer. Each neuron learns: "How much did *I* contribute to the error? What should I adjust?"
-
-- **Output layer** adjusts first — it's closest to the error
-- Then **hidden layer 2** adjusts based on the output layer's feedback
-- Then **hidden layer 1** adjusts based on hidden layer 2's feedback
-- The **input layer** doesn't adjust — it just provides data
-
-<ThinkAboutIt>
-Imagine a factory assembly line making defective products. To fix the problem, you trace backward from the final product through each station: "Was the packaging wrong? Was the painting wrong? Was the raw material wrong?" Each station adjusts its process. That's backpropagation — tracing errors backward to fix each part of the network.
-</ThinkAboutIt>
-
----
-
-## Interactive: Trace Data Through a Network 🔍
-
-Let's trace data through a tiny network step by step. We have a 3-layer network (input → hidden → output) that classifies whether an email is spam.
-
-**Features:**
-- x₁ = number of exclamation marks (5)
-- x₂ = contains the word "free" (1 = yes)
-
-**Weights (pre-trained):**
-
-```
-Input → Hidden:          Hidden → Output:
-  h₁: w₁=0.6, w₂=0.9   out: w₃=0.7, w₄=0.5
-  h₂: w₁=0.3, w₂=0.4
-
-Biases: b₁=0.1, b₂=0.2, b_out=-0.5
-```
-
-**Let's trace it:**
-
-```python
-import math
-
-# Inputs
-x1, x2 = 5, 1
-
-# Hidden neuron 1
-z1 = (x1 * 0.6) + (x2 * 0.9) + 0.1    # = 3.0 + 0.9 + 0.1 = 4.0
-h1 = max(0, z1)                          # ReLU → 4.0
-
-# Hidden neuron 2
-z2 = (x1 * 0.3) + (x2 * 0.4) + 0.2    # = 1.5 + 0.4 + 0.2 = 2.1
-h2 = max(0, z2)                          # ReLU → 2.1
-
-# Output neuron
-z_out = (h1 * 0.7) + (h2 * 0.5) - 0.5  # = 2.8 + 1.05 - 0.5 = 3.35
-output = 1 / (1 + math.exp(-z_out))      # Sigmoid → 0.966
-
-print(f"Hidden layer: h1={h1}, h2={h2}")
-print(f"Raw output: {z_out:.2f}")
-print(f"Spam probability: {output:.1%}")   # 96.6% → SPAM! 🚫
-```
-
-**What happened:**
-1. Both hidden neurons activated strongly — lots of exclamation marks + "free" is suspicious
-2. The output neuron combined these signals
-3. Sigmoid converted the result to a probability: **96.6% chance of spam**
-
-**Try modifying the inputs:** What happens with x₁=0 (no exclamation marks) and x₂=0 (no "free")? The probability drops dramatically! That's the network using what it learned.
-
----
-
-## The Big Picture 🗺️
-
-Here's how everything connects:
-
-```
-Data (Lesson 1) → Algorithm (Lesson 2) → Neural Network (Lesson 3)
-     📊                  🧮                      🧠
-
-Ingredients        Cooking method          The master chef
-The fuel           The engine              The power plant
-```
-
-Neural networks are just a type of algorithm — but a remarkably powerful one. They power:
-
-- 🗣️ **ChatGPT** — understanding and generating language
-- 🎨 **DALL-E / Midjourney** — creating images from text
-- 🚗 **Self-driving cars** — seeing and understanding the road
-- 🔬 **AlphaFold** — predicting protein structures in biology
-- 🎵 **Spotify** — recommending your next favourite song
+5. **If wrong:** Backpropagation adjusts the weights so next time, the correct digit gets a higher score.
 
 <FunFact>
-The basic idea of neural networks was proposed in 1943 — over 80 years ago! But they only became practical in the 2010s when we had enough data and fast-enough computers (GPUs) to train large networks. Sometimes great ideas just need to wait for technology to catch up.
+Modern neural networks can classify handwritten digits with over 99.7% accuracy — better than most humans. The MNIST dataset has become so "easy" for AI that researchers now use harder benchmarks to test new models.
 </FunFact>
 
----
+<ThinkAboutIt>
+When you look at a handwritten "5", your brain does not analyse individual pixels. You recognise the overall shape instantly. Neural networks learn to do something similar — but they build that understanding one layer at a time, starting from pixels and working up to shapes.
+</ThinkAboutIt>
 
-## Quick Recap 🎯
+## Activation Functions: The Gatekeepers
 
-1. **Artificial neurons** receive inputs, multiply by weights, add them up, and apply an activation function
-2. Neural networks have **three layer types**: input (receives data), hidden (learns patterns), output (makes predictions)
-3. **Activation functions** (ReLU, Sigmoid, Softmax) add non-linearity — without them, networks can only learn straight lines
-4. **Forward propagation** pushes data through the network to produce a prediction
-5. **Backpropagation** sends errors backward through the network to adjust weights and improve
-6. Neural networks power modern AI — from chatbots to self-driving cars
+Not every signal should pass through a neuron at full strength. **Activation functions** act as gatekeepers that decide whether and how much a neuron should fire.
 
----
+The most common activation function today is **ReLU** (Rectified Linear Unit). It has a simple rule: if the input is positive, let it through unchanged; if negative, output zero. This simplicity makes it fast to compute while still allowing the network to learn complex patterns.
 
-## What's Next? 🚀
+Without activation functions, no matter how many layers you stack, the network could only learn simple linear relationships — like drawing straight lines through data. Activation functions give neural networks the ability to learn curves, boundaries, and intricate patterns.
 
-Congratulations — you now understand the three pillars of AI: **data**, **algorithms**, and **neural networks**! In upcoming lessons, we'll explore AI tools and APIs you can use right away, and dive into responsible AI — because building AI that works is only half the job. Building AI that's **fair** is the other half. 🌱
+## Why "Deep" Learning?
+
+When a neural network has **many hidden layers**, it is called a **deep neural network**, and training it is called **deep learning**. Depth allows the network to learn hierarchies of features:
+
+- **Layer 1:** Detects edges and gradients.
+- **Layer 2:** Combines edges into textures and simple shapes.
+- **Layer 3:** Recognises parts of objects (eyes, wheels, letters).
+- **Layer 4+:** Identifies whole objects and scenes.
+
+This layered approach is why deep learning excels at complex tasks like image recognition, language understanding, and game playing.
+
+<Quiz question="Why are neural networks with many hidden layers called 'deep' learning?" options="Because they require deep mathematical knowledge|Because they process data through many layers of increasing complexity|Because they take a long time to train|Because they use very large datasets" answer="1" explanation="The 'deep' in deep learning refers to the many layers in the network. Each layer learns increasingly complex features, enabling the network to understand sophisticated patterns." />
+
+## Key Takeaways
+
+- Neural networks are inspired by the brain's **neurons and synapses**.
+- They have three layer types: **input**, **hidden**, and **output**.
+- **Weights** and **biases** are the adjustable knobs that control learning.
+- Learning follows a cycle: **forward pass → error → backpropagation → update**.
+- **Deep learning** uses many hidden layers to learn complex patterns.
+
+In the next lesson, we will zoom in on the **training process** — how you actually teach a neural network to get smarter over time.

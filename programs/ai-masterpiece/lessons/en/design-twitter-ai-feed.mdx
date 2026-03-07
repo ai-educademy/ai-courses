@@ -1,7 +1,7 @@
 ---
-title: "Design Twitter's AI Feed — End-to-End Case Study"
-description: "Design a real-time AI-powered social feed from scratch. Combine DSA, system design, and ML to build a production-grade recommendation system."
-order: 1
+title: "Design Twitter's AI Feed — An End-to-End Case Study"
+description: "Dissect the architecture behind a personalised timeline serving billions of tweets to hundreds of millions of users."
+order: 3
 difficulty: "advanced"
 duration: 30
 icon: "🐦"
@@ -10,217 +10,150 @@ published: true
 
 # Design Twitter's AI Feed
 
-This is a **capstone case study** — you'll combine everything from AI Sketch through AI Polish to design a complete AI-powered social media feed.
+Imagine you are given one task: every time a user opens the app, show them the tweets they will find most valuable — out of billions of possibilities — in under 200 milliseconds.
 
----
+This is one of the hardest recommendation problems in industry. Let us design it from scratch.
 
-## The Problem Statement
+<Illustration src="/images/lessons/design-twitter-ai-feed.svg" alt="Pipeline diagram showing tweet candidates flowing through ranking and filtering stages to produce a personalised feed" caption="The journey of a tweet from creation to your timeline" />
 
-> Design a system that serves personalised tweets to 500M+ users in real-time, ranking content by relevance, recency, and engagement potential.
+## The Problem at Scale
 
-**What makes this hard:**
+Twitter (now X) handles roughly 500 million tweets per day. Each of its 350+ million monthly active users expects a feed that feels **personally curated** — relevant, timely, and engaging.
 
-- **Scale:** 500M daily active users, 500M+ tweets/day
-- **Latency:** Feed must load in under 200ms
-- **Freshness:** New tweets appear in seconds
-- **Personalisation:** Each user sees a unique feed
-- **Cold start:** New users with no history
+A chronological feed does not work at this scale. If you follow 500 accounts, you might have 10,000 unread tweets. Most of them are irrelevant. The AI feed's job is to surface the 50 that matter most to **you**.
 
-<Callout type="info">
-This is the exact type of question asked at senior+ interviews at Meta, Google, Twitter/X, and LinkedIn. It tests DSA, system design, AND ML knowledge simultaneously.
+<Callout>
+This is not just a ranking problem — it is a multi-stage system involving candidate generation, feature engineering, real-time scoring, content safety, and massive-scale serving.
 </Callout>
 
----
+## Stage 1: Candidate Generation
 
-## Phase 1: Data Modelling (DSA Foundations)
+You cannot score all 500 million daily tweets for every user. Instead, you **narrow the field** first.
 
-### Core Entities
+### Sources of candidates:
+- **In-network**: Tweets from accounts you follow (highest recall, moderate relevance).
+- **Out-of-network**: Tweets liked or retweeted by people you follow, or trending in your interest graph.
+- **Topic-based**: Tweets matching topics you have engaged with recently.
 
-```
-User { id, name, followers[], following[], interests[] }
-Tweet { id, authorId, content, media[], timestamp, metrics }
-Engagement { userId, tweetId, type: view|like|retweet|reply, timestamp }
-```
+### How it works:
+A lightweight retrieval model (often embedding-based) generates a candidate set of roughly 1,000–5,000 tweets per user. This runs on a schedule or is triggered when the user opens the app.
 
-### Key Data Structures
+<Quiz question="Why does Twitter use candidate generation instead of scoring every tweet for every user?" options="Because scoring every tweet would be too fast|Because it is computationally impossible to run a heavy ranking model on billions of tweets per user request|Because users prefer random tweets|Because the ranking model only works on small datasets" answer="1" explanation="With 500 million tweets per day and 350 million users, scoring every tweet for every user would require astronomical compute. Candidate generation reduces the set to a manageable size before the expensive ranking model runs." />
 
-| Structure | Purpose | Why This One? |
-|-----------|---------|---------------|
-| **Hash Map** | User → profile lookup | O(1) access by userId |
-| **Sorted Set** | Timeline ranking | O(log n) insert + range queries |
-| **Bloom Filter** | "Already seen" dedup | Space-efficient set membership |
-| **Inverted Index** | Content search | Maps tokens → tweet IDs |
-| **Graph (adjacency list)** | Social connections | Follow/follower relationships |
+## Stage 2: The Ranking Model
+
+Once you have a few thousand candidates, a **heavy ranking model** scores each one. This is where the real intelligence lives.
+
+### Features the model uses:
+
+**User features:**
+- Interests inferred from past engagement (likes, retweets, replies, dwell time).
+- Social graph: who you interact with most.
+- Demographics and language preferences.
+
+**Tweet features:**
+- Content: text embeddings, media type, hashtags.
+- Author: follower count, engagement rate, trust score.
+- Freshness: age of the tweet in minutes.
+
+**Cross features:**
+- User-author affinity: how often you engage with this author.
+- User-topic affinity: does the tweet topic match your interest profile?
+- Social proof: have people similar to you engaged with this tweet?
+
+### Model architecture:
+A deep neural network (often a multi-task model) predicts multiple engagement types simultaneously:
+
+- Probability of like.
+- Probability of retweet.
+- Probability of reply.
+- Probability of extended dwell time (reading for more than two seconds).
+
+The final score is a **weighted combination** of these predictions, tuned to optimise a platform-level objective like "healthy engagement".
 
 <ThinkAboutIt>
-Why use a Bloom Filter instead of a regular HashSet for "already seen" detection? With 500M users each seeing 100+ tweets/day, a HashSet would consume terabytes. A Bloom Filter uses ~1% of that memory with an acceptable false positive rate (~1%).
+If you optimise purely for clicks and likes, you risk promoting sensational or outrage-driven content. How would you design the scoring formula to balance engagement with content quality?
 </ThinkAboutIt>
 
----
+## Stage 3: Real-Time Features
 
-## Phase 2: System Architecture
+Static features are not enough. The feed must respond to what is happening **right now**.
 
-### High-Level Components
+- **Recency decay**: A tweet from 30 seconds ago gets a boost over one from three hours ago.
+- **Trending topics**: If a major event is unfolding, surface related tweets even if they are from outside the user's usual interests.
+- **Session context**: If a user has been scrolling for ten minutes, diversify the content to reduce fatigue.
+- **Real-time engagement signals**: A tweet going viral in the last five minutes gets a temporary boost.
 
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
-│  Tweet       │────▶│  Fan-out     │────▶│  Timeline Cache  │
-│  Ingestion   │     │  Service     │     │  (Redis Sorted   │
-└─────────────┘     └──────────────┘     │   Sets)          │
-                                          └────────┬────────┘
-                                                   │
-┌─────────────┐     ┌──────────────┐              ▼
-│  User        │────▶│  Ranking     │     ┌─────────────────┐
-│  Request     │     │  Service     │────▶│  Feed Response   │
-└─────────────┘     └──────────────┘     └─────────────────┘
-                           │
-                    ┌──────┴──────┐
-                    │  ML Model   │
-                    │  Service    │
-                    └─────────────┘
-```
+These features require a **streaming infrastructure** — often Apache Kafka feeding into a feature store like Redis or Feast — that updates in near real-time.
 
-### Fan-Out Strategy: Hybrid Approach
+<FunFact>
+Twitter's engineering team reported that adding real-time features to their ranking model increased user engagement by 8 per cent — a massive improvement at their scale, translating to millions of additional daily interactions.
+</FunFact>
 
-**Fan-out on write** for users with fewer than 10K followers:
-- When a user tweets, push to all follower timelines
-- Low-latency reads (timeline is pre-computed)
-- O(followers) writes per tweet
+## The "For You" Algorithm: Explore vs Exploit
 
-**Fan-out on read** for celebrities (> 10K followers):
-- Don't push — merge at read time
-- Avoids writing to millions of timelines
-- Slightly higher read latency
+The feed faces a classic **exploration-exploitation dilemma**:
 
-```
-function handleNewTweet(tweet, author):
-    if author.followerCount < CELEBRITY_THRESHOLD:
-        // Fan-out on write
-        for follower in author.followers:
-            timelineCache.add(follower.id, tweet, score=tweet.timestamp)
-    else:
-        // Fan-out on read — store in celebrity tweets pool
-        celebrityTweets.add(author.id, tweet)
-```
+- **Exploit**: Show content similar to what the user has engaged with before. Safe, predictable, high short-term engagement.
+- **Explore**: Introduce new topics, new authors, and new formats. Riskier, but essential for long-term retention and content diversity.
 
-<Callout type="warning">
-The hybrid approach is what Twitter actually uses. Pure fan-out-on-write doesn't scale for accounts with millions of followers (one tweet = millions of cache writes).
+Twitter's approach blends both:
+
+- Roughly 80 per cent of the feed is exploitation — content the model is confident the user will enjoy.
+- Roughly 20 per cent is exploration — new content injected to test the user's evolving interests.
+
+The exploration ratio is itself a parameter tuned by A/B testing across millions of users.
+
+<Quiz question="What is the main risk of a feed that only 'exploits' and never 'explores'?" options="The feed becomes too diverse and confusing|The user gets trapped in a filter bubble and the platform cannot discover their evolving interests|The system uses too much compute|The feed loads too slowly" answer="1" explanation="Pure exploitation creates filter bubbles — the user only sees what they already like, the platform cannot adapt to changing tastes, and content diversity collapses. Exploration is essential for long-term health." />
+
+## Content Moderation and Safety
+
+Before any tweet reaches the feed, it passes through a **safety layer**:
+
+1. **Pre-ranking filter**: Known spam, harassment, and policy-violating content is removed before ranking.
+2. **Post-ranking filter**: After ranking, a secondary check catches edge cases — for example, a tweet that is individually acceptable but harmful when clustered with similar content.
+3. **User-level controls**: Users can mute topics, block accounts, and mark content as "not interested", all of which feed back into their personalisation model.
+
+The safety layer must be **fast** (adding no more than 10–20ms of latency) and **conservative** (when in doubt, filter it out and route to human review).
+
+<Callout>
+Content moderation is not a separate system bolted on afterwards. It is deeply integrated into the ranking pipeline, influencing scores and filtering at every stage.
 </Callout>
 
----
+## Scaling: Fan-Out on Read vs Fan-Out on Write
 
-## Phase 3: ML Ranking Model
+This is the architectural decision that defines Twitter's infrastructure.
 
-### Feature Engineering
+### Fan-out on write:
+When a user tweets, **push** that tweet into the feed cache of every follower. Fast reads, but expensive writes — especially for accounts with millions of followers.
 
-The ranking model predicts: **P(user engages with tweet)**
+### Fan-out on read:
+When a user opens the app, **pull** the latest tweets from all accounts they follow and rank them on the fly. Cheap writes, but expensive reads.
 
-| Feature Category | Examples |
-|-----------------|----------|
-| **User features** | interests, past engagement patterns, active hours |
-| **Tweet features** | age, media type, length, hashtags, author popularity |
-| **Cross features** | user-author interaction history, topic overlap |
-| **Context features** | time of day, device type, connection speed |
+### Twitter's hybrid approach:
+- For most users (fewer than 10,000 followers): fan-out on write. Pre-compute and cache the feed.
+- For celebrity accounts (millions of followers): fan-out on read. Compute the feed at request time to avoid flooding millions of caches on every tweet.
 
-### Two-Stage Ranking
+This hybrid strategy balances write amplification against read latency, handling both a normal user's tweet and a pop star's viral post efficiently.
 
-**Stage 1 — Candidate Generation (fast, broad):**
-- Retrieve ~1000 candidates from timeline cache + celebrity pool
-- Use lightweight model (logistic regression) for initial scoring
-- Latency budget: 50ms
+<FunFact>
+When a celebrity with 50 million followers tweets, fan-out on write would require 50 million cache insertions — taking minutes and consuming enormous bandwidth. The hybrid approach handles this in milliseconds by deferring the work to read time.
+</FunFact>
 
-**Stage 2 — Fine Ranking (slow, precise):**
-- Re-rank top 200 candidates
-- Deep neural network with attention mechanism
-- Consider cross-features and sequence patterns
-- Latency budget: 100ms
+## Putting It All Together
 
-```
-function rankFeed(userId, candidates):
-    // Stage 1: Coarse ranking
-    scored = candidates.map(tweet =>
-        ({tweet, score: lightweightModel.predict(userId, tweet)})
-    )
-    top200 = scored.sortBy(s => -s.score).slice(0, 200)
+The full pipeline for a single feed request:
 
-    // Stage 2: Fine ranking
-    reranked = deepModel.batchPredict(userId, top200)
-
-    // Stage 3: Business rules (diversity, freshness boost)
-    return applyBusinessRules(reranked)
-```
-
-### Diversity & Freshness
-
-The ranking model alone would show only viral content. Apply post-ranking rules:
-
-- **Topic diversity:** No more than 3 consecutive tweets on the same topic
-- **Author diversity:** Spread out tweets from the same author
-- **Freshness boost:** Logarithmic time decay — newer tweets get bonus score
-- **Exploration:** 5% of feed slots show content from outside the user's bubble
-
----
-
-## Phase 4: Handling Edge Cases
-
-### Cold Start Problem
-
-New users have no engagement history. Solutions:
-
-1. **Onboarding interests:** Ask users to pick 3-5 topics during signup
-2. **Popular content fallback:** Show trending tweets in selected topics
-3. **Explore-exploit:** Aggressively explore in first 48 hours, then exploit
-4. **Demographic priors:** Use location, language, device for initial signals
-
-### Real-Time Updates
-
-```
-// WebSocket connection for live updates
-connection.onTweet(tweet => {
-    if (isHighPriority(tweet)):  // Breaking news, close friend
-        injectToFeed(tweet, position=TOP)
-    else:
-        showNewTweetsButton(count++)
-})
-```
-
-### Abuse & Safety
-
-- **Content moderation:** ML classifier flags harmful content before ranking
-- **Rate limiting:** Token bucket per user (see AI Craft — Rate Limiter)
-- **Spam detection:** Graph-based analysis of follow patterns + content similarity
-
----
-
-## Phase 5: Behavioural Discussion
-
-In a real interview, expect follow-up questions:
+1. User opens app → request hits the feed service.
+2. Candidate generation retrieves ~3,000 tweets from in-network and out-of-network sources.
+3. Feature store provides real-time and batch features for each candidate.
+4. Ranking model scores all candidates in a single batched inference call.
+5. Safety filters remove policy-violating content.
+6. Exploration logic injects 20 per cent diverse content.
+7. Final ranked list is returned to the client in under 200ms.
 
 <ThinkAboutIt>
-1. "How would you measure if the new ranking model is better?" → A/B testing with engagement metrics (CTR, time spent, DAU retention)
-2. "What happens when the ML model goes down?" → Graceful degradation to chronological timeline
-3. "How do you handle political content bias?" → Transparency reports, user controls, diverse committee review
-4. "Walk me through a production incident with this system" → Use the STAR framework from AI Polish
+You are asked in an interview: "If you could add one new signal to improve the feed, what would it be and why?" Consider signals that are not commonly discussed — perhaps something related to user wellbeing or content credibility.
 </ThinkAboutIt>
 
----
-
-## Summary: What You Demonstrated
-
-| Skill Area | Applied Here |
-|-----------|-------------|
-| **DSA** (AI Sketch) | Hash maps, sorted sets, bloom filters, graphs |
-| **Patterns** (AI Chisel) | Two pointers (sliding window for time ranges), BFS (social graph) |
-| **System Design** (AI Craft) | Distributed architecture, caching, fan-out strategies |
-| **Behavioural** (AI Polish) | Trade-off discussion, incident handling, ethical considerations |
-
-This is what a **senior engineer** answer looks like — it connects algorithms to architecture to real-world constraints.
-
----
-
-## Practice Exercises
-
-1. **Estimate storage:** How much Redis memory for 500M users × 800 tweets per timeline?
-2. **Design the A/B testing system** for rolling out a new ranking model safely
-3. **Write pseudocode** for the diversity algorithm that prevents topic clustering
-4. **Prepare a 5-minute STAR story** about a time you debugged a caching issue at scale
+<Quiz question="In Twitter's hybrid fan-out strategy, how are tweets from celebrity accounts handled?" options="They are pushed to every follower's cache immediately|They are computed at read time when a follower opens their feed|They are excluded from the AI feed entirely|They are only shown to verified users" answer="1" explanation="Celebrity tweets use fan-out on read — the feed is computed when a follower requests it, avoiding the enormous cost of pushing a single tweet to millions of caches." />

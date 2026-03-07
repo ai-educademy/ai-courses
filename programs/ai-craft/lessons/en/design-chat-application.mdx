@@ -1,0 +1,170 @@
+---
+title: "Design a Chat Application — Real-Time Communication at Scale"
+description: "Design a WhatsApp-like chat system handling millions of concurrent users with real-time delivery."
+order: 3
+difficulty: "advanced"
+duration: 25
+icon: "💬"
+published: true
+---
+
+## The Interview Prompt
+
+*"Design a chat application like WhatsApp or Slack that supports one-to-one messaging, group chats, and online presence indicators."*
+
+This is a favourite in system design interviews because it tests real-time communication, connection management, storage at scale, and distributed system trade-offs — all in one problem.
+
+## Step 1: Requirements Gathering
+
+**Functional requirements:**
+- One-to-one messaging with delivery and read receipts
+- Group chat (up to 500 members)
+- Online/offline presence indicators
+- Message history and search
+- Push notifications for offline users
+
+**Non-functional requirements:**
+- Low latency: messages delivered within 200ms
+- High availability: 99.99% uptime
+- Message ordering guaranteed within a conversation
+- Support 50 million concurrent connections
+
+<Callout>
+Always quantify your non-functional requirements with specific numbers. "Fast delivery" is vague — "sub-200ms delivery" shows you understand the domain.
+</Callout>
+
+## Step 2: API Design
+
+Unlike REST-only systems, chat requires **bidirectional communication**. We need two protocols:
+
+**REST API** (for non-real-time operations):
+```
+POST /api/users/login
+GET  /api/conversations
+GET  /api/conversations/:id/messages?before=timestamp&limit=50
+POST /api/groups
+```
+
+**WebSocket** (for real-time messaging):
+```
+CONNECT  ws://chat.example.com/ws?token=jwt
+SEND     { type: "message", to: "user_456", content: "Hello!" }
+RECEIVE  { type: "message", from: "user_123", content: "Hello!", ts: 1706000000 }
+SEND     { type: "ack", messageId: "msg_789", status: "read" }
+```
+
+## Step 3: WebSocket Connection Management
+
+Each connected user maintains a persistent WebSocket connection. At 50 million concurrent users, this is a significant engineering challenge.
+
+**Connection servers** (sometimes called gateway servers) hold WebSocket connections. Each server can handle roughly 50,000-100,000 concurrent connections, meaning we need 500-1,000 connection servers.
+
+A **connection registry** (Redis cluster) maps each user to their connection server:
+```
+user_123 → ws-server-042
+user_456 → ws-server-187
+```
+
+When user A sends a message to user B, the flow is:
+1. Message arrives at A's connection server via WebSocket
+2. Server looks up B's connection server in Redis
+3. Message is routed to B's connection server via internal messaging
+4. B's server pushes the message down B's WebSocket
+
+<Illustration src="/images/lessons/design-chat-application.svg" alt="Chat architecture showing WebSocket connection servers, message routing, and storage layers" caption="Messages flow through connection servers, with Redis tracking which user is connected where." />
+
+## Step 4: Message Storage
+
+Chat applications generate enormous volumes of data. WhatsApp processes over 100 billion messages daily.
+
+**Storage strategy:**
+- **Recent messages** — kept in a fast datastore (Cassandra or HBase) partitioned by conversation ID
+- **Message index** — enables search via Elasticsearch
+- **Media files** — stored in object storage (S3) with CDN delivery
+
+**Schema design (Cassandra):**
+```
+Table: messages
+  partition_key: conversation_id
+  clustering_key: message_timestamp (descending)
+  columns: sender_id, content, type, status
+```
+
+This design ensures all messages in a conversation are co-located on the same partition, making "load older messages" queries extremely efficient — just a sequential read within one partition.
+
+<Quiz question="Why is Cassandra a strong choice for chat message storage over a relational database like PostgreSQL?" options="Cassandra supports SQL joins for complex queries|Cassandra provides strong ACID transactions|Cassandra handles massive write throughput and scales horizontally by design|Cassandra automatically encrypts all data at rest" answer="2" explanation="Chat systems are write-heavy (billions of messages daily). Cassandra's distributed architecture handles massive write throughput and scales horizontally by adding nodes, whereas PostgreSQL would struggle with this write volume on a single primary." />
+
+## Step 5: Presence System
+
+Showing who's online seems simple but is surprisingly tricky at scale. You can't poll the database for every user in your contact list every few seconds.
+
+**Heartbeat approach:**
+1. Connected clients send a heartbeat every 30 seconds via WebSocket
+2. The server updates a Redis key with a TTL of 60 seconds: `presence:user_123 → online (TTL 60s)`
+3. If no heartbeat arrives, the key expires and the user appears offline
+
+**Fan-out for status updates:**
+When a user comes online, their status must be pushed to all contacts who are also online. For a user with 500 contacts, this means checking which contacts are online and sending presence updates only to those — **lazy fan-out** avoids broadcasting to offline users.
+
+<FunFact>
+WhatsApp's "last seen" feature caused unexpected social drama globally. Some countries saw relationship disputes spike because partners could see each other's exact last-active timestamps. WhatsApp eventually added privacy controls to hide this information.
+</FunFact>
+
+## Step 6: Push Notifications
+
+When a user is offline (no active WebSocket), messages must still reach them via push notifications.
+
+The message flow changes:
+1. Connection registry shows user B is offline
+2. Message is stored in the database with status "undelivered"
+3. A notification service sends a push via APNs (iOS) or FCM (Android)
+4. When user B reconnects, undelivered messages are fetched and sent via WebSocket
+5. Delivery receipts are sent back to confirm receipt
+
+<ThinkAboutIt>
+Group chats with 500 members present a fan-out challenge. If a message is sent to a group where 400 members are offline, that's 400 push notifications. How would you batch and rate-limit these to avoid overwhelming notification services during peak hours?
+</ThinkAboutIt>
+
+## Step 7: End-to-End Encryption Basics
+
+In interview discussions, briefly mentioning E2E encryption shows security awareness:
+
+- Each user generates a **public/private key pair** on their device
+- Messages are encrypted with the recipient's public key before leaving the sender's device
+- The server only sees ciphertext — it cannot read message content
+- Group chats use a **shared group key** that rotates when members join or leave
+
+This means the server's message storage contains only encrypted blobs, which is actually simpler from a data compliance perspective.
+
+## Step 8: Scaling to Millions
+
+**Key scaling strategies:**
+- **Connection servers** scale horizontally — add more servers as users grow
+- **Message routing** uses Kafka or Redis Pub/Sub for inter-server communication
+- **Database sharding** by conversation ID distributes storage load
+- **Geographic distribution** — deploy connection servers in multiple regions to reduce latency
+- **Message queue buffering** — absorb spikes during peak usage hours
+
+<Quiz question="A user in London sends a message to a user in Tokyo. What's the most effective way to minimise delivery latency?" options="Store all messages in a single centralised database|Deploy connection servers in both regions with inter-region message routing|Force all WebSocket connections through London servers|Cache all messages at the CDN edge" answer="1" explanation="Deploying connection servers in multiple regions means each user connects to a nearby server. Messages route between regions through optimised inter-region links, minimising the latency each user experiences." />
+
+<Quiz question="During a major sporting event, message volume spikes 10x. Which component is most at risk of becoming a bottleneck?" options="The CDN serving static assets|The WebSocket connection servers (already established connections)|The message storage write path (database writes)|The user authentication service" answer="2" explanation="Message volume spikes hit the storage write path hardest. Connections are already established, the CDN handles static content, and auth only runs at login. The database must absorb the sudden surge in writes." />
+
+## Interview Tips for Chat System Design
+
+1. **Start with the WebSocket decision** — explain why HTTP polling won't work at this scale
+2. **Quantify connection capacity** — show you understand server limits (~50-100K connections per server)
+3. **Address offline delivery** — many candidates forget that users aren't always connected
+4. **Mention message ordering** — timestamp-based ordering with conflict resolution
+
+<ThinkAboutIt>
+Slack and WhatsApp take very different approaches to message history. WhatsApp stores messages on-device and doesn't sync full history to new devices. Slack stores everything server-side and provides full search. What are the privacy, cost, and user experience trade-offs of each approach?
+</ThinkAboutIt>
+
+## Key Takeaways
+
+- Chat systems require WebSockets for real-time bidirectional communication
+- Connection management at scale needs a registry mapping users to servers
+- Cassandra's write throughput and partition-based queries suit chat message storage
+- Presence systems use heartbeats with TTL-based expiry in Redis
+- Push notifications handle offline message delivery
+- Geographic distribution and horizontal scaling address global latency requirements

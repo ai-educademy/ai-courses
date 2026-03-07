@@ -1,189 +1,131 @@
 ---
-title: "Datasets and Data — The Fuel of AI"
-description: "Discover what data really is, how AI uses it to learn, why data quality matters, and explore real-world datasets that power today's smartest models."
+title: "How Data Powers AI — The Fuel Behind Every Smart System"
+description: "Discover what datasets are, why data quality matters, and how the right data teaches AI to be smart."
 order: 1
 difficulty: "beginner"
-duration: 25
+duration: 12
 icon: "📊"
 published: true
 ---
 
-## Welcome to Level 2! 👋
+# How Data Powers AI
 
-In AI Seeds, you learned that AI learns from examples — just like a child learns to recognise animals from picture books. But where do those examples come from?
+You already know that AI can recognise faces, translate languages, and recommend songs. But what actually powers all of that? **Data.** Without data, AI is like a car without fuel — it simply cannot go anywhere.
 
-The answer is **data** — and it's the single most important ingredient in AI. Bad data leads to bad AI. Great data leads to great AI. Let's dig in.
+In this lesson, we will explore what datasets look like, the different types of data AI uses, and why the quality of that data matters enormously.
 
-<Illustration src="/images/lessons/datasets-and-data.svg" alt="Data flows into an AI model like fuel into an engine" caption="Data is the fuel that powers every AI system" />
+## What Is a Dataset?
 
----
+A dataset is an organised collection of information that an AI system learns from. Think of it as a giant spreadsheet.
 
-## What is Data? 🤔
+- **Rows** represent individual examples (e.g., one photo of a cat, one patient record).
+- **Columns** represent features — the characteristics being measured (e.g., age, colour, size).
+- **Labels** are the answers we want the AI to predict (e.g., "cat" or "dog").
 
-Data is simply **recorded information**. Every time you do something digital, you create data:
-
-- 📸 Take a photo → image data
-- 💬 Send a message → text data
-- 🎵 Play a song → listening history data
-- 🛒 Buy something online → transaction data
-- 📍 Open Google Maps → location data
-
-In AI, we collect these pieces of information, organise them, and use them to teach machines.
-
----
-
-## Structured vs Unstructured Data
-
-Not all data looks the same. There are two main types:
-
-### 📋 Structured Data
-Data that fits neatly into rows and columns — like a spreadsheet.
-
-| Name | Age | City | Favourite Colour |
-|------|-----|------|-----------------|
-| Aisha | 14 | London | Blue |
-| Ravi | 16 | Hyderabad | Green |
-| Emma | 15 | Amsterdam | Red |
-
-Databases, CSV files, and Excel sheets contain structured data. It's easy for machines to read and process.
-
-### 🖼️ Unstructured Data
-Data that doesn't fit into a table — images, videos, audio, emails, social media posts.
-
-- A photo of a cat is unstructured — there are no neat columns
-- A voice message is unstructured — it's a waveform, not a spreadsheet
-- A tweet is unstructured — free-form text with slang and emojis
+<Illustration src="/images/lessons/datasets-and-data.svg" alt="A simple dataset table showing rows of animal images with columns for features like colour and size, and a label column showing cat or dog" caption="A dataset is like a well-organised spreadsheet where each row is an example and each column is a feature." />
 
 <FunFact>
-Over 80% of the world's data is unstructured! Photos, videos, and text messages massively outnumber spreadsheets. Modern AI — especially deep learning — was designed specifically to handle this messy, unstructured data.
+The ImageNet dataset contains over 14 million hand-labelled images across more than 20,000 categories. It took researchers years and thousands of human annotators to build it.
 </FunFact>
 
----
+## Types of Data
 
-## Training, Validation, and Test Data
+AI works with two broad categories of data:
 
-When you study for an exam, you don't just read the textbook — you also practise with sample questions and then take the real exam. AI does the same thing with three data splits:
+### Structured Data
 
-### 📚 Training Data (the textbook)
-The largest portion — typically 70–80% of all data. The AI model studies this to learn patterns.
+This is data that fits neatly into tables with rows and columns — like a bank transaction log or a hospital patient record. Each field has a clear type (number, date, category).
 
-### 📝 Validation Data (practice questions)
-About 10–15% of the data. Used *during* training to check progress. Think of it as a practice test — "Am I learning the right things?"
+**Examples:** sales figures, sensor readings, survey responses.
 
-### 🎓 Test Data (the final exam)
-The remaining 10–15%. Used *after* training is complete. The model has **never** seen this data before. It's the true measure of how well the model performs.
+### Unstructured Data
 
-```python
-# A common way to split data in Python
-from sklearn.model_selection import train_test_split
+This is data that does not follow a fixed format. It includes images, videos, audio recordings, emails, and social media posts. Over 80% of the world's data is unstructured.
 
-# Split: 80% training, 20% temporary
-train_data, temp_data = train_test_split(all_data, test_size=0.2)
+**Examples:** photos on your phone, voice messages, news articles.
 
-# Split the temporary set: half validation, half test
-val_data, test_data = train_test_split(temp_data, test_size=0.5)
+<Quiz question="Which of the following is an example of unstructured data?" options="A spreadsheet of exam scores|A database of customer addresses|A collection of handwritten letters|A table of product prices" answer="2" explanation="Handwritten letters do not follow a fixed row-and-column format, making them unstructured data. The other options all fit neatly into tables." />
 
-print(f"Training: {len(train_data)}")
-print(f"Validation: {len(val_data)}")
-print(f"Test: {len(test_data)}")
-```
+## Why Does AI Need So Much Data?
+
+Humans can learn to recognise a dog after seeing just a few pictures. AI typically needs thousands — sometimes millions — of examples before it can do the same. That is because AI has no built-in understanding of the world. Every piece of knowledge must come from the data.
+
+The more varied and representative the data, the better the AI generalises to new situations. A model trained only on photos of golden retrievers might fail to recognise a poodle. Diversity in data leads to robustness in AI.
+
+This is why companies invest heavily in collecting, cleaning, and curating large datasets — it is often the most time-consuming and expensive part of building an AI system.
+
+The good news is that once a high-quality dataset exists, it can be reused and shared, accelerating research worldwide.
+
+## Data Quality: Garbage In, Garbage Out
+
+AI is only as good as the data it learns from. If the data is messy, incomplete, or incorrect, the AI will produce unreliable results. This principle is known as **garbage in, garbage out (GIGO)**.
+
+Common data quality problems include:
+
+- **Missing values** — blank fields that leave gaps in what the AI can learn.
+- **Duplicates** — the same example appearing multiple times, skewing the model.
+- **Incorrect labels** — a photo of a dog labelled as a cat confuses the learning process.
+- **Outdated information** — training on data from 2005 will not reflect 2025 trends.
 
 <ThinkAboutIt>
-Why can't we just test the model on the same data it trained on? Because it would be like giving a student the exact exam questions in advance — they'd score perfectly but might not actually understand the material. Test data must be unseen to give an honest evaluation.
+Imagine you are studying for an exam, but half your textbook pages are missing and some answers in the back are wrong. How well would you perform? That is exactly what happens when AI trains on poor-quality data.
 </ThinkAboutIt>
 
----
+## Real-World Datasets
 
-## Data Bias — Why It Matters ⚖️
+Some datasets have become famous in the AI community:
 
-Here's a critical concept: **AI is only as fair as the data it learns from.**
+| Dataset | What It Contains | Size |
+|---------|-----------------|------|
+| **ImageNet** | Labelled photographs | 14 million+ images |
+| **Common Crawl** | Web pages from across the internet | Petabytes of text |
+| **Wikipedia** | Encyclopaedia articles | 60 million+ articles |
+| **MNIST** | Handwritten digits (0–9) | 70,000 images |
 
-If you train a facial recognition system mostly on photos of light-skinned people, it will perform poorly on darker-skinned faces. This isn't the algorithm being "racist" — it simply never had enough examples to learn properly.
+These datasets are freely available and have been used to train some of the most influential AI models in history.
 
-Real-world examples of data bias:
+<Quiz question="What does the MNIST dataset contain?" options="Medical X-ray images|Handwritten digit images|Audio recordings of speech|Satellite photographs" answer="1" explanation="MNIST is a classic dataset of 70,000 handwritten digit images (0 to 9), widely used to teach machines to recognise numbers." />
 
-- 🏥 **Healthcare AI** trained mostly on data from men misdiagnosed heart attacks in women
-- 💼 **Hiring AI** trained on historical resumes penalised applicants from women's colleges
-- 🚗 **Self-driving cars** trained mostly in sunny California struggled with rain and snow
+## Data Labelling and Annotation
 
-<Callout>
-**Bias isn't always obvious.** If your dataset contains 90% English text, your AI will be excellent at English but poor at Hindi, Telugu, or Dutch. That's a bias — even though nobody intended it. Always ask: "Who is missing from this data?"
-</Callout>
+Before AI can learn from data, someone usually needs to **label** it. This means telling the system what each example represents.
 
----
+- A photo gets tagged as "cat" or "dog."
+- A sentence gets marked as "positive sentiment" or "negative sentiment."
+- A medical scan gets annotated by a doctor as "healthy" or "abnormal."
 
-## Famous Real-World Datasets 🌍
-
-Many AI breakthroughs started with a great dataset. Here are some you should know:
-
-### ✍️ MNIST (Modified National Institute of Standards and Technology)
-- **What:** 70,000 images of handwritten digits (0–9)
-- **Why it matters:** The "Hello World" of machine learning — almost every beginner starts here
-- **Size:** Tiny by modern standards — each image is just 28×28 pixels
-
-### 🖼️ ImageNet
-- **What:** Over 14 million labelled images across 20,000+ categories
-- **Why it matters:** The ImageNet competition (2010–2017) drove massive improvements in image recognition. In 2012, a deep learning model called AlexNet stunned the world by dramatically outperforming traditional approaches.
-
-### 🌐 Common Crawl
-- **What:** Petabytes of web page data collected since 2008
-- **Why it matters:** This is what powers large language models like GPT. It contains billions of web pages — essentially a snapshot of the internet.
-
-### 🗣️ LibriSpeech
-- **What:** 1,000 hours of read English speech from audiobooks
-- **Why it matters:** Used to train speech recognition systems like voice assistants
+This process is called **annotation**, and it is often done by humans — sometimes thousands of them working together.
 
 <FunFact>
-The entire MNIST dataset is under 15 MB — smaller than a single smartphone photo! Yet it launched thousands of AI careers. You don't always need "big data" to learn big concepts.
+Many AI companies use crowd-sourcing platforms where workers around the world label data for just a few pence per item. It is a massive global effort that most people never see.
 </FunFact>
 
----
+## Data Bias: When Data Gets It Wrong
 
-## Hands-On: Exploring a Dataset 🔬
+Data reflects the world it comes from — including the world's prejudices. When a dataset over-represents one group or under-represents another, the AI trained on it will inherit those imbalances.
 
-Let's explore a real dataset using Python. We'll use the famous Iris dataset — 150 measurements of flowers with 4 features each.
+**Real examples of data bias:**
 
-```python
-import pandas as pd
-from sklearn.datasets import load_iris
+- A hiring algorithm trained mostly on male CVs learned to penalise female applicants.
+- Facial recognition systems trained mostly on lighter skin tones performed poorly on darker skin tones.
+- A medical AI trained on data from one country missed symptoms common in other populations.
 
-# Load the dataset
-iris = load_iris()
-df = pd.DataFrame(iris.data, columns=iris.feature_names)
-df['species'] = [iris.target_names[t] for t in iris.target]
+<Callout>
+Bias is not just a technical problem — it is a social one. Every dataset carries the assumptions and blind spots of the people who created it.
+</Callout>
 
-# Basic exploration
-print("Shape:", df.shape)              # (150, 5)
-print("\nFirst 5 rows:")
-print(df.head())
+<ThinkAboutIt>
+If you trained an AI to recommend restaurants but only gave it data from London, would it give good recommendations for someone in Manchester? What might it get wrong?
+</ThinkAboutIt>
 
-print("\nSpecies counts:")
-print(df['species'].value_counts())    # 50 of each species
+<Quiz question="What is the most likely consequence of training an AI on biased data?" options="The AI will run more slowly|The AI will use more electricity|The AI will produce unfair or inaccurate results|The AI will refuse to make predictions" answer="2" explanation="Biased training data leads to models that reproduce and amplify those biases, producing unfair or inaccurate outcomes for under-represented groups." />
 
-print("\nBasic statistics:")
-print(df.describe())
-```
+## Key Takeaways
 
-When you explore a dataset, always ask:
-1. **How many samples?** (rows)
-2. **How many features?** (columns)
-3. **Are the classes balanced?** (equal numbers of each category)
-4. **Are there missing values?** (gaps in the data)
-5. **What do the numbers look like?** (range, average, spread)
+- A **dataset** is an organised collection of examples that AI learns from.
+- Data can be **structured** (tables) or **unstructured** (images, text, audio).
+- **Data quality** directly determines AI quality — garbage in, garbage out.
+- **Labelling** is the human effort that teaches AI what each example means.
+- **Bias** in data leads to bias in AI — and it has real-world consequences.
 
----
-
-## Quick Recap 🎯
-
-1. **Data** is recorded information — every photo, message, and click generates data
-2. **Structured data** fits in tables; **unstructured data** (images, text, audio) doesn't
-3. Data is split into **training** (learn), **validation** (tune), and **test** (evaluate) sets
-4. **Data bias** leads to unfair AI — always ask who's missing from your data
-5. Real datasets like **MNIST**, **ImageNet**, and **Common Crawl** power today's AI
-6. Always **explore your data** before building a model
-
----
-
-## What's Next? 🚀
-
-You now know what fuels AI. In the next lesson, we'll explore **algorithms** — the step-by-step recipes that turn data into intelligent decisions. Think of it this way: data is the ingredients, and algorithms are the cooking instructions!
+Next up, we will look at the **algorithms** that actually process all this data and turn it into intelligence.

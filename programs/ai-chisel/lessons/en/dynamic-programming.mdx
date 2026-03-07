@@ -1,0 +1,146 @@
+---
+title: "Dynamic Programming — How AI Solves Complex Problems by Breaking Them Down"
+description: "Understand memoisation, tabulation, and classic DP patterns used across AI and computer science."
+order: 4
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## The Big Idea
+
+Some problems look impossibly complex until you notice they are made of **smaller, repeating sub-problems**. Dynamic programming (DP) solves each sub-problem **once**, stores the result, and reuses it — trading a little memory for a dramatic speed-up.
+
+Two conditions signal a DP opportunity:
+
+1. **Overlapping sub-problems** — the same calculations recur many times.
+2. **Optimal substructure** — the best solution to the whole problem can be built from best solutions to its parts.
+
+<Illustration src="/images/lessons/dynamic-programming.svg" alt="A recursion tree for Fibonacci showing repeated sub-problems highlighted, alongside a filled DP table" caption="Without DP, Fibonacci recalculates the same values exponentially. With DP, each value is computed once." />
+
+## Fibonacci: The Classic Example
+
+### Naïve Recursion — O(2ⁿ)
+
+```
+function fib(n):
+    if n <= 1: return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+Calling `fib(5)` triggers **15** function calls, many redundant. At `fib(40)` it takes seconds; at `fib(100)` it would outlast the universe.
+
+### Memoisation (Top-Down) — O(n)
+
+Store results in a cache. If you have already solved a sub-problem, return the cached answer.
+
+```
+memo = {}
+function fib(n):
+    if n in memo: return memo[n]
+    if n <= 1: return n
+    memo[n] = fib(n - 1) + fib(n - 2)
+    return memo[n]
+```
+
+### Tabulation (Bottom-Up) — O(n)
+
+Build the answer iteratively from the base cases upward.
+
+```
+function fib(n):
+    table = [0, 1]
+    for i in 2..n:
+        table[i] = table[i - 1] + table[i - 2]
+    return table[n]
+```
+
+<Quiz question="What distinguishes memoisation from tabulation?" options="Memoisation uses a stack; tabulation uses a queue|Memoisation works top-down with recursion; tabulation works bottom-up with iteration|Memoisation is always faster|They are different names for the same technique" answer="1" explanation="Memoisation starts from the original problem and recurses downward, caching as it goes. Tabulation starts from the smallest sub-problems and builds upward iteratively." />
+
+## Classic DP Problems
+
+### Climbing Stairs
+
+You can take 1 or 2 steps at a time. How many distinct ways to reach step _n_?
+
+```
+function climbStairs(n):
+    if n <= 2: return n
+    a = 1, b = 2
+    for i in 3..n:
+        a, b = b, a + b
+    return b
+```
+
+This is Fibonacci in disguise — the answer for step _n_ is the sum of ways to reach steps _n−1_ and _n−2_.
+
+### Coin Change
+
+Given coin denominations, find the **fewest coins** to make a target amount.
+
+```
+function coinChange(coins, amount):
+    dp = array of size (amount + 1), filled with INF
+    dp[0] = 0
+    for i in 1..amount:
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    return dp[amount] if dp[amount] != INF else -1
+```
+
+### Longest Common Subsequence (LCS)
+
+Find the longest sequence of characters common to two strings (not necessarily contiguous).
+
+```
+function lcs(s1, s2):
+    m = s1.length, n = s2.length
+    dp = 2D array of size (m+1) x (n+1), filled with 0
+    for i in 1..m:
+        for j in 1..n:
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    return dp[m][n]
+```
+
+<FunFact>The `diff` tool that shows changes between file versions is powered by LCS. Git uses a variant of it every time you run `git diff`.</FunFact>
+
+<ThinkAboutIt>Coin change asks for the minimum number of coins. What if you wanted to count the total number of different ways to make the amount? How would the recurrence relation change?</ThinkAboutIt>
+
+## Real AI Applications
+
+| Problem | AI Domain | DP Technique |
+|---------|-----------|-------------|
+| **Edit distance** (Levenshtein) | Spell checkers, fuzzy search | 2D table comparing characters |
+| **Viterbi algorithm** | Speech recognition, POS tagging | Best path through a hidden Markov model |
+| **Sequence alignment** | Bioinformatics (DNA matching) | Variant of LCS with gap penalties |
+| **CTC decoding** | Handwriting / speech-to-text | Merging repeated characters optimally |
+| **Beam search pruning** | Machine translation | Keeping top-k partial translations |
+
+<Quiz question="Which DP-based algorithm does a spell checker most likely use to suggest corrections?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Climbing stairs" answer="1" explanation="Edit distance counts the minimum insertions, deletions, and substitutions to transform one word into another — directly measuring how 'close' a misspelling is to a dictionary word." />
+
+## Top-Down vs Bottom-Up
+
+| Aspect | Top-Down (Memoisation) | Bottom-Up (Tabulation) |
+|--------|----------------------|----------------------|
+| Style | Recursive + cache | Iterative + table |
+| Sub-problems solved | Only those needed | All sub-problems up to _n_ |
+| Stack overflow risk | Yes, for deep recursion | No |
+| Ease of optimisation | Harder to reduce space | Easier (often just keep last row) |
+
+**Rule of thumb:** Start with memoisation to understand the recurrence, then convert to tabulation if you need to optimise space or avoid stack limits.
+
+<ThinkAboutIt>The coin change table has size O(amount). The LCS table has size O(m × n). Could you reduce the LCS space to O(min(m, n)) by only keeping two rows at a time? What information would you lose?</ThinkAboutIt>
+
+## Key Takeaways
+
+1. DP transforms exponential brute-force into polynomial time by **caching repeated work**.
+2. Identify overlapping sub-problems and optimal substructure before reaching for DP.
+3. Memoisation is intuitive; tabulation is efficient — learn both.
+4. Edit distance, Viterbi, and sequence alignment show DP at the heart of modern AI.
+
+<Quiz question="A problem has overlapping sub-problems but does NOT have optimal substructure. Can you apply DP to find the optimal solution?" options="Yes — DP always works if sub-problems overlap|No — both conditions are required for DP to guarantee optimality|Only if you use tabulation|Only for graph problems" answer="1" explanation="DP requires both overlapping sub-problems (for efficiency) and optimal substructure (for correctness). Without optimal substructure, caching alone does not guarantee the global optimum." />
