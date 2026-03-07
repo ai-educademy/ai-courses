@@ -1,0 +1,138 @@
+---
+title: "Agentic Workflows — Building Multi-Agent AI Systems"
+description: "Learn how AI agents observe, reason, and act autonomously using tool use, memory, planning strategies, and multi-agent architectures for complex real-world tasks."
+order: 9
+difficulty: "advanced"
+duration: 20
+icon: "🤖"
+published: true
+---
+
+# Agentic Workflows — Building Multi-Agent AI Systems
+
+A language model answers questions. An **agent** accomplishes goals. The difference is the loop: agents observe their environment, reason about what to do, take actions using tools, and repeat until the task is complete. This lesson covers the architecture, patterns, and failure modes of modern agentic AI systems.
+
+## What Makes an AI Agent
+
+An AI agent is defined by three capabilities operating in a continuous loop:
+
+1. **Observe** — Perceive the current state: user instructions, tool outputs, environment data, previous actions
+2. **Reason** — Decide what to do next: decompose the goal, plan steps, evaluate options
+3. **Act** — Execute an action: call a tool, write code, send an API request, return a result
+
+The critical distinction from simple prompting is **autonomy over multiple steps**. An agent doesn't just respond — it iterates. It might search the web, read the results, decide it needs more information, search again with a refined query, synthesise findings, and then present an answer.
+
+<Illustration src="/images/lessons/agentic-workflows.svg" alt="Circular diagram showing the observe-reason-act loop with connections to tools, memory, and environment" caption="The agentic loop: observe the environment, reason about the next step, act using tools, and repeat until the goal is achieved." />
+
+## Tool Use and Function Calling
+
+Without tools, an agent is limited to text generation. **Tool use** gives agents the ability to interact with the world:
+
+- **Function calling** — The LLM outputs structured JSON specifying which function to call and with what arguments. The runtime executes the function and feeds results back as context.
+- **API integration** — Agents can query databases, call REST endpoints, send emails, or manipulate files.
+- **Code execution** — Some agents write and run code in a sandboxed environment, using the output to inform next steps.
+
+Modern frameworks expose tools as typed function signatures with descriptions. The model learns which tool to invoke based on the task — choosing a calculator for maths, a search engine for current events, or a code interpreter for data analysis.
+
+<Quiz question="What is the primary advantage of function calling over asking the LLM to 'imagine' using a tool?" options="Function calling uses less compute|Function calling produces actual real-world results by executing code or API calls, rather than generating plausible but potentially fabricated answers|Function calling doesn't require a language model|Function calling always produces correct results" answer="1" explanation="When an LLM 'imagines' a search result, it may hallucinate plausible but incorrect information. Function calling actually executes the search and returns real data, grounding the agent's reasoning in factual results from external systems." />
+
+## Memory: Short-Term and Long-Term
+
+Agents need memory to handle complex tasks that exceed a single context window:
+
+**Short-term memory** is the conversation context — the sliding window of recent observations, actions, and results. It is limited by the model's context length and degrades for information far back in the window.
+
+**Long-term memory** uses external storage, typically **vector databases**, to persist and retrieve information across sessions:
+- Embed important observations and store them in a vector store
+- At each step, query the store for relevant past experiences
+- This gives agents access to knowledge accumulated over many interactions
+
+The combination of short-term context and long-term retrieval mirrors human working memory and episodic memory — keeping immediate context readily available while drawing on a larger knowledge base when needed.
+
+## Planning Strategies
+
+How an agent decides **what to do next** determines its effectiveness:
+
+**Chain-of-Thought (CoT)** — The model reasons step by step before acting. Simple but effective for straightforward problems.
+
+**ReAct (Reason + Act)** — Interleaves explicit reasoning traces with tool actions in a structured format: `Thought → Action → Observation → Thought → ...` This makes the agent's decision process transparent and debuggable.
+
+**Tree-of-Thought (ToT)** — The agent explores multiple reasoning paths simultaneously, evaluates each branch, and selects the most promising one. Useful for problems where the first approach might be wrong (e.g., puzzle-solving, complex debugging).
+
+**Plan-then-Execute** — The agent first generates a complete plan, then executes each step. This separates high-level strategy from low-level execution, reducing the chance of losing track of the overall goal mid-execution.
+
+<FunFact>
+AutoGPT, one of the first autonomous agent experiments, went viral in April 2023 and briefly became the fastest-growing GitHub repository in history. Despite its popularity, it frequently got stuck in infinite loops — a problem that highlighted the enormous gap between impressive demos and reliable production agents.
+</FunFact>
+
+## Multi-Agent Architectures
+
+Complex tasks often benefit from multiple specialised agents working together:
+
+**Supervisor pattern** — A central "manager" agent decomposes the task and delegates subtasks to specialised worker agents (a researcher, a coder, a reviewer). The supervisor synthesises their outputs and manages coordination.
+
+**Peer-to-peer** — Agents communicate directly with each other without a central coordinator. Each agent has a defined role and passes results to the next agent in a chain or network.
+
+**Hierarchical** — Multiple layers of supervision: a top-level planner delegates to mid-level coordinators, who manage specialist workers. This mirrors organisational structures and scales to very complex tasks.
+
+<ThinkAboutIt>
+Multi-agent systems introduce coordination overhead, communication costs, and potential for agents to work at cross-purposes. Under what circumstances do the benefits of specialisation outweigh the complexity of orchestration? When is a single, more capable agent the better choice?
+</ThinkAboutIt>
+
+## Modern Agent Frameworks
+
+The ecosystem has matured rapidly from early experiments:
+
+- **LangGraph** — Builds agents as stateful graphs with explicit control flow, cycles, and persistence. Favours predictability and debuggability over autonomy.
+- **CrewAI** — Focuses on role-based multi-agent collaboration with defined tasks, tools, and delegation patterns.
+- **AutoGen (Microsoft)** — Enables conversational multi-agent workflows where agents chat with each other to solve problems.
+- **OpenAI Agents SDK** — First-party framework with built-in function calling, handoffs between agents, and guardrails.
+
+## Agentic Coding
+
+Perhaps the most transformative application: AI agents that write, test, and debug code autonomously:
+
+- **GitHub Copilot** — In-editor agent mode that plans changes, edits multiple files, and runs terminal commands.
+- **Cursor** — IDE built around an agent that understands entire codebases and makes multi-file edits.
+- **Devin (Cognition)** — Autonomous software engineering agent that can handle full development tasks from issue to pull request.
+
+These tools represent a shift from **autocomplete to autonomy** — the agent doesn't just suggest the next line, it understands the goal and works towards it across files, terminals, and browsers.
+
+## When Agents Fail
+
+Understanding failure modes is essential for building reliable agents:
+
+- **Hallucination loops** — The agent fabricates a tool result, reasons from it, and digs deeper into fiction with each iteration.
+- **Infinite recursion** — The agent repeatedly retries a failing action without changing its approach, burning tokens and compute.
+- **Goal drift** — Over many steps, the agent gradually loses sight of the original objective, pursuing tangential subtasks.
+- **Reward hacking** — The agent finds shortcuts that satisfy its success criteria without actually solving the problem.
+
+<Quiz question="An agent is tasked with finding a bug in a codebase. It searches for the file, doesn't find it, then searches again with the same query, repeatedly. What failure mode is this?" options="Hallucination loop|Goal drift|Infinite recursion — retrying a failing action without adapting the approach|Reward hacking" answer="2" explanation="This is infinite recursion: the agent is stuck in a loop, retrying the exact same failing action without modifying its approach. A well-designed agent should detect repeated failures and try an alternative strategy — different search terms, asking for clarification, or exploring a different path." />
+
+## Production Agent Patterns
+
+Building agents that work reliably in production requires defensive engineering:
+
+- **Guardrails** — Input/output validation, content filtering, and boundary checks that prevent agents from taking dangerous actions.
+- **Human-in-the-loop** — For high-stakes actions (sending emails, modifying databases, deploying code), require human approval before execution.
+- **Structured outputs** — Force agents to produce machine-parseable responses (JSON schemas) rather than free-form text, reducing parsing errors.
+- **Observability** — Log every thought, action, and tool call. Without comprehensive traces, debugging a failed 20-step agent run is nearly impossible.
+- **Circuit breakers** — Set maximum step counts, token budgets, and time limits. If an agent exceeds these bounds, halt and escalate to a human.
+
+<Quiz question="Why is human-in-the-loop approval critical for production agents performing high-stakes actions?" options="Because AI agents are always wrong|Because it reduces compute costs|Because agents can hallucinate, misunderstand intent, or take irreversible actions — human oversight provides a safety net for decisions with real-world consequences|Because regulations require it in all cases" answer="2" explanation="Agents can misinterpret goals, hallucinate information, or take actions that are difficult to reverse (deleting data, sending communications, deploying code). For high-stakes operations, human approval acts as a critical safety net, catching errors before they have real-world impact." />
+
+<FunFact>
+Browser agents — AI systems that navigate websites by clicking, typing, and reading screens — are among the hardest agentic applications to build reliably. Benchmarks like WebArena show that even the best agents complete only 15-30% of realistic web tasks successfully, compared to near-perfect human performance.
+</FunFact>
+
+<ThinkAboutIt>
+As agentic coding tools become more capable, the role of the software engineer shifts from writing code to reviewing, directing, and verifying AI-generated code. What new skills become essential in this world — and which traditional skills become less critical?
+</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2023)](https://arxiv.org/abs/2210.03629) — The foundational paper on the ReAct agent pattern
+- [The Landscape of Emerging AI Agent Architectures (LangChain)](https://blog.langchain.dev/what-is-an-agent/) — Comprehensive overview of modern agent design patterns
+- [Andrew Ng — Agentic Design Patterns](https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/) — Four key agentic patterns: reflection, tool use, planning, and multi-agent collaboration

@@ -1,0 +1,186 @@
+---
+title: "Matrix and Grid Problems — BFS on Grids and Island Counting"
+description: "Master 2D grid traversal with BFS, DFS, flood fill, multi-source BFS, spiral traversal, and dynamic programming on grids."
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+---
+
+## 2D Arrays as Grids
+
+A matrix is just a 2D array, but in interviews it often represents a **grid** — a map, a board, or a maze. Each cell `grid[r][c]` is a node, and its neighbours are adjacent cells.
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Row `r`, column `c`, dimensions `m × n`. Simple — but the patterns built on top are powerful.
+
+## Directional Arrays
+
+Instead of writing four separate if-statements, use a **direction array**:
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+This is the single most reusable snippet in grid problems.
+
+<FunFact>The direction array trick is sometimes called "delta encoding." It appears in game development, image processing, and competitive programming — anywhere grids are used.</FunFact>
+
+## BFS on a Grid — Shortest Path in a Maze
+
+BFS finds the **shortest path** in an unweighted grid. Start from the source, explore all neighbours at distance 1, then distance 2, and so on.
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS expanding level by level across a grid maze" caption="BFS explores cells level by level, guaranteeing the shortest path." />
+
+## DFS on a Grid — Flood Fill and Number of Islands
+
+**Flood fill** (like the paint bucket tool): from a starting cell, change all connected cells of the same colour. DFS or BFS both work.
+
+**Number of Islands:** scan the grid; when you find a `1`, run DFS/BFS to mark the entire island as visited, then increment your count.
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="In 'Number of Islands', why do we mark cells as visited during DFS?" options="To count them twice for accuracy|To avoid counting the same island multiple times|To sort the islands|To find the largest island" answer="1" explanation="Marking visited cells prevents the outer loop from starting a new DFS on the same island, which would overcount." />
+
+## Rotting Oranges — Multi-Source BFS
+
+All initially rotten oranges are sources. Push them all into the queue at time 0, then BFS. Each level is one minute. When the queue empties, check if any fresh oranges remain.
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    All reachable oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+The key insight: **multi-source BFS** starts from multiple nodes simultaneously, not one.
+
+<Quiz question="What makes 'Rotting Oranges' different from standard BFS?" options="It uses DFS instead|Multiple starting points are enqueued simultaneously|It requires Dijkstra's algorithm|The grid has weighted edges" answer="1" explanation="Multi-source BFS enqueues all rotten oranges at once as the starting 'frontier', so rotting spreads from every source in parallel." />
+
+## Spiral Matrix Traversal
+
+Walk the matrix in spiral order: right → down → left → up, shrinking boundaries after each pass.
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Matrix Rotation (90°)
+
+Rotate an N×N matrix clockwise in-place: **transpose** (swap `[r][c]` with `[c][r]`), then **reverse each row**.
+
+```
+Original → Transpose → Reverse rows
+1 2 3     1 4 7       7 4 1
+4 5 6  →  2 5 8   →   8 5 2
+7 8 9     3 6 9       9 6 3
+```
+
+<ThinkAboutIt>To rotate anti-clockwise, would you reverse rows first and then transpose, or transpose and then reverse columns? Try it on paper.</ThinkAboutIt>
+
+## Search in a Sorted 2D Matrix
+
+Two common variants:
+- **Rows and columns sorted independently** — start from the top-right corner. If the target is smaller, move left; if larger, move down. O(m + n).
+- **Fully sorted** (each row starts where the previous ends) — treat as a flat sorted array and binary search. O(log(m × n)).
+
+## Dynamic Programming on Grids
+
+**Unique Paths:** count paths from top-left to bottom-right moving only right or down. `dp[r][c] = dp[r-1][c] + dp[r][c-1]`.
+
+**Minimum Path Sum:** same idea but pick the minimum incoming path.
+
+These are often the gentlest introduction to 2D dynamic programming.
+
+<Quiz question="In the Unique Paths problem, what is dp[0][c] for any column c?" options="0|1|c|c + 1" answer="1" explanation="The first row can only be reached by moving right, so there is exactly one path to every cell in the first row. dp[0][c] = 1." />
+
+## Grid Patterns Cheat Sheet
+
+| Pattern | Technique | Key Problem |
+|---------|-----------|-------------|
+| Shortest path (unweighted) | BFS | Maze shortest path |
+| Connected components | DFS / BFS | Number of Islands |
+| Multi-source spread | Multi-source BFS | Rotting Oranges |
+| Traversal order | Boundary pointers | Spiral Matrix |
+| In-place transform | Transpose + reverse | Rotate Image |
+| Counting paths | DP | Unique Paths |
+| Search in sorted grid | Staircase / binary search | Search 2D Matrix |
+
+<ThinkAboutIt>Many grid problems are really graph problems in disguise. When would you prefer DFS over BFS on a grid, and vice versa?</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — grid DP problems with visual explanations
+- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — common patterns and techniques
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — hundreds of practice problems

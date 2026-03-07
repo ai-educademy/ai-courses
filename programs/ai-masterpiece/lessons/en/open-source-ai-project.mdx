@@ -1,0 +1,177 @@
+---
+title: "Ship an Open-Source AI Project — Your Masterpiece"
+description: "From idea to launch: plan, build, document, publish, and promote an open-source AI project that becomes a career catalyst and your portfolio's centrepiece."
+order: 10
+difficulty: "advanced"
+duration: 24
+icon: "🚀"
+published: true
+---
+
+# Ship an Open-Source AI Project — Your Masterpiece
+
+This is it — the final lesson. Everything you've learned converges here: ML pipelines, research implementation, system design, and engineering craft. You're going to **ship a real open-source AI project** that solves a genuine problem and lives on beyond this course.
+
+## 💡 Choosing Your Project Idea
+
+The best OSS projects start from **personal frustration**. Don't build another TODO app with AI — find a gap:
+
+- **Scratch your own itch** — a tool you wish existed in your daily workflow
+- **Improve an existing tool** — find a popular library's limitation and solve it
+- **Implement a paper** — turn a research breakthrough into a usable library
+- **Bridge a gap** — connect two ecosystems that don't talk to each other
+
+<Illustration src="/images/lessons/open-source-ai-project.svg" alt="Open-source project lifecycle from idea through launch to community growth" caption="The OSS lifecycle — shipping is the midpoint, not the finish line." />
+
+**Validate before building**: search GitHub, PyPI, and npm. If something similar exists, your project needs a clear differentiator — faster, simpler API, better documentation, or a novel approach.
+
+<FunFact>Hugging Face started as a chatbot company for teenagers. When they open-sourced their Transformers library as a side project, it became so popular that they pivoted the entire company around it — now valued at over $4.5 billion.</FunFact>
+
+## 📋 Project Planning — MVP Scope
+
+Define your **Minimum Viable Project** ruthlessly:
+
+```markdown
+## MVP Scope (Week 1-2)
+- Core functionality: ONE thing, done well
+- CLI or Python API interface
+- 3 working examples
+- Basic README with installation and quickstart
+
+## V1.0 Scope (Week 3-4)
+- Comprehensive documentation
+- Test coverage > 80%
+- CI/CD pipeline
+- Published to PyPI/npm
+- Demo deployed
+```
+
+**The anti-pattern**: spending months perfecting code nobody has seen. Ship early, iterate based on feedback.
+
+<ThinkAboutIt>Think about the last three tools you installed. What made you choose them over alternatives? Was it the README, the API design, the star count, or something else? Apply those insights to your own project.</ThinkAboutIt>
+
+## 🏗️ Repository Setup
+
+First impressions matter. A professional repository needs: `src/` layout for code, `tests/`, `examples/`, `docs/`, `.github/workflows/ci.yml`, plus root files — `LICENSE` (MIT or Apache 2.0), `README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `pyproject.toml`.
+
+### The README — Your Most Important File
+
+Your README is a sales page. It must have: **one-line description**, **installation** (`pip install my-project`), **quickstart** (working code in under 10 lines), **key features** (bullet points), **comparison table** vs alternatives, and a **documentation link**.
+
+<Quiz question="What is the single most important element of an open-source project's README?" options="A detailed architecture diagram|A working quickstart example that users can copy-paste and run immediately|A comprehensive list of all features|The project's star count and contributor badges" answer="1" explanation="Users decide within 30 seconds whether to try your project. A copy-pasteable quickstart that works immediately converts browsers into users. Everything else is secondary to that first successful experience." />
+
+## 📦 Publishing to PyPI
+
+Modern Python packaging with `pyproject.toml`:
+
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "my-ai-project"
+version = "0.1.0"
+description = "One-line description of your project"
+requires-python = ">=3.9"
+license = "MIT"
+dependencies = ["torch>=2.0", "numpy>=1.24"]
+
+[project.urls]
+Documentation = "https://my-ai-project.readthedocs.io"
+Repository = "https://github.com/username/my-ai-project"
+```
+
+```bash
+# Build and publish
+pip install build twine
+python -m build
+twine upload dist/*
+```
+
+**Automated releases**: use GitHub Actions to publish to PyPI on every tagged release — never publish manually after the first time.
+
+## 🎨 Creating Demos
+
+A demo converts sceptics into users. Three excellent platforms:
+
+| Platform | Best For | Deployment |
+|----------|----------|-----------|
+| **Hugging Face Spaces** | ML model demos | Git push, free GPU tier |
+| **Streamlit** | Data apps, dashboards | Streamlit Cloud, free tier |
+| **Gradio** | Quick ML interfaces | Hugging Face Spaces or standalone |
+
+```python
+# Gradio demo — 8 lines to a shareable interface
+import gradio as gr
+from my_ai_project import predict
+
+demo = gr.Interface(
+    fn=predict,
+    inputs=gr.Textbox(label="Enter text"),
+    outputs=gr.Label(label="Prediction"),
+    title="My AI Project Demo"
+)
+demo.launch()
+```
+
+<Quiz question="Which demo platform is MOST effective for getting initial traction for an ML project?" options="A custom React frontend deployed on Vercel|Hugging Face Spaces — discoverable by the ML community with built-in social features|A Jupyter notebook in the repository|A command-line demo in the README" answer="1" explanation="Hugging Face Spaces is discoverable by millions of ML practitioners, supports likes and comments, and appears in search results. It combines deployment simplicity with built-in distribution — your demo finds users, not the other way around." />
+
+## 📖 Writing Documentation
+
+Follow the **Diátaxis framework** — four types of documentation: **Tutorials** (learning-oriented, step-by-step), **How-to guides** (task-oriented, practical), **Reference** (complete API docs), and **Explanation** (conceptual understanding). Use **MkDocs** or **Docusaurus** to generate sites from Markdown. Deploy free on GitHub Pages or Read the Docs.
+
+## 📣 Marketing Your Project
+
+Building it is half the battle. Getting people to use it is the other half:
+
+1. **Hacker News** — "Show HN: [description]" post on launch day
+2. **Reddit** — r/MachineLearning, r/Python, relevant subreddits
+3. **Twitter/X** — thread explaining the problem and your solution, with a GIF demo
+4. **Product Hunt** — if your project has a web interface
+5. **Blog post** — detailed technical writeup on your personal site or Medium/Dev.to
+
+**Timing matters**: launch on Tuesday–Thursday mornings (GMT). Avoid weekends and holidays.
+
+<FunFact>The creators of FastAPI, LangChain, and Streamlit all credit a well-timed Hacker News "Show HN" post as the single biggest driver of their initial adoption wave.</FunFact>
+
+<ThinkAboutIt>Your project gets 500 GitHub stars in the first week but zero issues or PRs from external contributors. Is this a success? What would you do differently to convert passive stargazers into active contributors?</ThinkAboutIt>
+
+## 🔧 Maintaining Your Project
+
+Sustainability matters more than virality:
+
+- **Label issues** as `good-first-issue`, `help-wanted`, `bug`, `enhancement`
+- **Respond to issues within 48 hours** — even a "Thanks, I'll look into this" builds trust
+- **Write a CONTRIBUTING.md** with setup instructions, coding standards, and PR guidelines
+- **Use semantic versioning** — breaking changes get a major version bump
+- **Automate everything** — CI, releases, changelog generation, dependency updates
+
+## 💰 Monetisation Paths
+
+Open source doesn't mean free labour forever. Sustainable models: **GitHub Sponsors** (low effort, recurring donations), **consulting** (paid setup and training), **SaaS wrapper** (hosted version with enterprise features — highest effort but most sustainable), **dual licensing** (open-source + commercial), and **corporate sponsorship** (priority features for paying companies).
+
+<Quiz question="What is the MOST sustainable long-term monetisation strategy for a popular open-source AI library?" options="Relying on GitHub Sponsors donations|Building a hosted SaaS version with enterprise features and support|Selling the project to a large company|Placing advertisements in the documentation" answer="1" explanation="A SaaS wrapper (hosted version with enterprise features, SLAs, and support) creates recurring revenue tied to the value users receive. Donations are unpredictable, acquisitions are one-time events, and ads erode trust." />
+
+## 🎯 Your Masterpiece Checklist
+
+Before you call it shipped:
+
+- [ ] Core functionality works and is tested
+- [ ] README has installation, quickstart, and feature overview
+- [ ] Published to PyPI or npm
+- [ ] Live demo on Hugging Face Spaces or Streamlit
+- [ ] CI/CD pipeline runs tests on every PR
+- [ ] Documentation covers tutorials and API reference
+- [ ] LICENSE, CONTRIBUTING.md, and CODE_OF_CONDUCT.md present
+- [ ] Launched on at least two platforms (HN, Reddit, Twitter)
+
+**This project IS your portfolio.** When an interviewer asks "What have you built?", you'll have a live, documented, published answer.
+
+---
+
+## 📚 Further Reading
+
+- [The Diátaxis Documentation Framework](https://diataxis.fr/) — A systematic approach to writing better technical documentation
+- [Open Source Guides by GitHub](https://opensource.guide/) — Official guides on launching, growing, and sustaining OSS projects
+- [Working in Public by Nadia Eghbal](https://www.amazon.co.uk/Working-Public-Making-Maintenance-Software/dp/0578675862) — The economics and sociology of open-source maintenance

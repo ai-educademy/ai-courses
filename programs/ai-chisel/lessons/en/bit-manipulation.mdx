@@ -1,0 +1,188 @@
+---
+title: "Bit Manipulation — XOR Tricks, Power of Two, and Counting Bits"
+description: "Unlock bit-level thinking for coding interviews. Master XOR cancellation, Brian Kernighan's trick, bit masking for subsets, and practical applications."
+order: 10
+difficulty: "advanced"
+duration: 17
+icon: "⚡"
+published: true
+---
+
+## Binary Number Review
+
+Every integer is a sequence of bits. The number 13 in binary is `1101`:
+
+```
+Bit position:  3  2  1  0
+Bit value:     1  1  0  1
+Decimal:       8+ 4+ 0+ 1 = 13
+```
+
+Bit manipulation operates directly on these bits using bitwise operators — often replacing loops with single operations.
+
+## Core Bitwise Operations
+
+| Operator | Symbol | Example (5 = 101, 3 = 011) | Result |
+|----------|--------|----------------------------|--------|
+| AND      | `&`    | `101 & 011`                | `001` (1) |
+| OR       | `\|`   | `101 \| 011`               | `111` (7) |
+| XOR      | `^`    | `101 ^ 011`                | `110` (6) |
+| NOT      | `~`    | `~101`                     | `...010` |
+| Left shift  | `<<` | `101 << 1`              | `1010` (10) |
+| Right shift | `>>` | `101 >> 1`              | `10` (2) |
+
+## Essential Bit Tricks
+
+### Check if Power of Two
+
+A power of 2 has exactly one set bit: `n & (n - 1) == 0`.
+
+```
+  n = 8:  1000          n = 6:  0110
+  n-1=7:  0111          n-1=5:  0101
+  &    :  0000 ✓ power  &    :  0100 ✗ not power
+```
+
+### Count Set Bits (Brian Kernighan's Algorithm)
+
+Each `n & (n - 1)` removes the lowest set bit. Count iterations until n = 0.
+
+```python
+def count_bits(n):
+    count = 0
+    while n:
+        n &= n - 1
+        count += 1
+    return count
+```
+
+This runs in O(k) where k is the number of set bits — not O(32).
+
+### Swap Without Temp Variable
+
+```python
+a ^= b
+b ^= a
+a ^= b
+```
+
+Works because XOR is its own inverse: `a ^ b ^ b = a`.
+
+<Quiz
+  question="What does n & (n - 1) do to the binary representation of n?"
+  options="Sets all bits to 1|Clears all bits|Clears the lowest set bit|Flips all bits"
+  answer="2"
+  explanation="n - 1 flips all bits from the lowest set bit downward. AND-ing with n zeroes out that lowest set bit."
+/>
+
+## Single Number — XOR Cancellation
+
+Every element appears twice except one. Find it. Since `a ^ a = 0` and `a ^ 0 = a`, XOR all elements — pairs cancel, leaving the unique number.
+
+```python
+def single_number(nums):
+    result = 0
+    for n in nums:
+        result ^= n
+    return result
+```
+
+Time O(n), space O(1). No hash map needed.
+
+<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR pairs cancel to zero — only the unpaired element survives." />
+
+## Single Number III — Two Unique Numbers
+
+When *two* numbers are unique, XOR everything to get `x = a ^ b`. Find any set bit in `x` (the numbers differ there). Partition all numbers by that bit and XOR each group — each group contains exactly one unique number.
+
+```python
+def single_number_iii(nums):
+    xor = 0
+    for n in nums:
+        xor ^= n
+    diff_bit = xor & (-xor)  # isolate rightmost set bit
+    a = b = 0
+    for n in nums:
+        if n & diff_bit:
+            a ^= n
+        else:
+            b ^= n
+    return [a, b]
+```
+
+<ThinkAboutIt>Why does `xor & (-xor)` isolate the rightmost set bit? Think about how negative numbers are represented in two's complement.</ThinkAboutIt>
+
+## Number of 1 Bits (LeetCode 191)
+
+This is Brian Kernighan's algorithm from above — a direct interview question. The follow-up asks: what if the input is signed? In Python, integers have arbitrary precision, but in Java/C++ you must handle 32-bit boundaries.
+
+## Bit Masking for Subsets
+
+A bitmask of length n represents a subset of n items. Bit `i` being set means item `i` is included. Iterating from `0` to `2^n - 1` generates all subsets.
+
+```python
+def all_subsets(items):
+    n = len(items)
+    for mask in range(1 << n):
+        subset = [items[i] for i in range(n)
+                  if mask & (1 << i)]
+        yield subset
+```
+
+This technique powers solutions for problems with n ≤ 20 — small enough for 2^n enumeration.
+
+<FunFact>Linux file permissions (rwxr-xr-x = 755) are a real-world bitmask. Each digit encodes three permission bits: read (4), write (2), execute (1), combined with OR.</FunFact>
+
+## Reversing Bits (LeetCode 190)
+
+Reverse a 32-bit unsigned integer bit by bit. Shift the result left and OR in the lowest bit of the input, then shift the input right.
+
+```python
+def reverse_bits(n):
+    result = 0
+    for _ in range(32):
+        result = (result << 1) | (n & 1)
+        n >>= 1
+    return result
+```
+
+## Missing Number (LeetCode 268)
+
+Array of n numbers from 0 to n with one missing. XOR all array elements with all indices 0 to n — pairs cancel, leaving the missing number. Alternatively, use the sum formula, but XOR avoids potential overflow.
+
+## Hamming Distance (LeetCode 461)
+
+The number of positions where corresponding bits differ. XOR the two numbers — set bits in the result are the differing positions. Count them with Brian Kernighan's trick.
+
+```python
+def hamming_distance(x, y):
+    return count_bits(x ^ y)
+```
+
+<Quiz
+  question="What is the Hamming distance between 7 (0111) and 1 (0001)?"
+  options="1|2|3|4"
+  answer="1"
+  explanation="7 XOR 1 = 0110, which has two set bits. The bits differ at positions 1 and 2."
+/>
+
+## Practical Applications
+
+Bit manipulation appears everywhere: Unix file permissions use OR/AND masks, feature flags store toggles as individual bits, network subnet masks use AND for routing, and error detection relies on XOR checksums.
+
+<Quiz
+  question="To check if bit k is set in integer n, which expression is correct?"
+  options="n & k|n & (1 << k)|n | (1 << k)|n ^ (1 << k)"
+  answer="1"
+  explanation="(1 << k) creates a mask with only bit k set. AND-ing with n returns non-zero only if bit k is set in n."
+/>
+
+<ThinkAboutIt>Many bit manipulation solutions feel like "magic tricks" in interviews. How would you explain the XOR-based missing number solution to a teammate who has never seen it?</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [Bit Manipulation — LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) — Curated problem collection sorted by difficulty
+- [Brian Kernighan's Algorithm — GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) — Detailed walkthrough with visualisations
+- [Bitmask DP — CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) — Advanced bitmask techniques for competitive programming

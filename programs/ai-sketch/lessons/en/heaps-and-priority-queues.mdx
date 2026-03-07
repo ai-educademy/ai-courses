@@ -1,0 +1,132 @@
+---
+title: "Heaps and Priority Queues — The Swiss Army Knife of Interviews"
+description: "Master heaps, the priority queue abstraction, and classic patterns like top-K problems and merging sorted lists."
+order: 6
+difficulty: "intermediate"
+duration: 18
+icon: "⛰️"
+published: true
+---
+
+## What Is a Heap?
+
+A **heap** is a complete binary tree where every parent satisfies the **heap property** — either always smaller (min-heap) or always larger (max-heap) than its children. "Complete" means every level is full except possibly the last, which fills left to right.
+
+```
+       1            Min-heap
+      / \
+     3   5
+    / \
+   7   4
+```
+
+Because it's complete, we store it in a **flat array** — no pointers needed. For index `i`: left child = `2i + 1`, right child = `2i + 2`, parent = `(i - 1) // 2`.
+
+## Min-Heap vs Max-Heap
+
+| Property | Min-Heap | Max-Heap |
+|----------|----------|----------|
+| Root | Smallest element | Largest element |
+| Parent ≤ Children? | ✅ Yes | ❌ No (≥) |
+| Extract gives | Minimum | Maximum |
+
+Python's `heapq` is a **min-heap** by default. For a max-heap, negate values on insert and negate again on extract.
+
+## Insert and Extract — Step by Step
+
+**Insert** — push to end, then **bubble up** (swap with parent while smaller):
+
+```python
+import heapq
+h = [1, 3, 5, 7]
+heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
+```
+
+**Extract min** — swap root with last element, pop last, then **sift down** (swap with smaller child):
+
+```python
+smallest = heapq.heappop(h)  # returns 1
+```
+
+Both operations run in **O(log n)** because the tree height is log n.
+
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Diagram showing insert bubble-up and extract sift-down on a min-heap" caption="Insert bubbles up; extract-min sifts down." />
+
+## Heapify — Building a Heap in O(n)
+
+Calling `heapq.heapify(arr)` converts a list into a heap **in-place** in O(n), not O(n log n). It works bottom-up, sifting down each non-leaf node. This is one of the most surprising complexity results in CS.
+
+<FunFact>Building a heap is O(n), not O(n log n). Most nodes are near the bottom and barely need to sift down — the maths works out to linear time.</FunFact>
+
+## The Priority Queue Abstraction
+
+A **priority queue** lets you always access the highest-priority item first. Heaps are the go-to implementation because both insert and extract are O(log n). Use one any time you need "give me the best item so far."
+
+## Pattern: Top-K Problems
+
+> "Find the K largest elements in an unsorted array."
+
+Keep a **min-heap of size K**. For each element, push it; if the heap exceeds K, pop the smallest. What remains are the K largest.
+
+```python
+import heapq
+def top_k(nums, k):
+    return heapq.nlargest(k, nums)
+```
+
+Time: **O(n log k)** — much better than sorting when k ≪ n.
+
+<Quiz question="You need the 5 largest scores from 1 million entries. What heap type and size?" options="Max-heap of size 1,000,000|Min-heap of size 5|Max-heap of size 5|Min-heap of size 1,000,000" answer="1" explanation="A min-heap of size 5 keeps the 5 largest seen so far. The root (minimum of the 5) is the gatekeeper — anything smaller gets rejected." />
+
+## Pattern: Merge K Sorted Lists
+
+Push the head of each list into a min-heap. Pop the smallest, then push the next element from that same list. Repeat until all lists are exhausted. Time: **O(N log K)** where N is total elements.
+
+## Pattern: Median from Data Stream
+
+Maintain two heaps: a **max-heap** for the lower half and a **min-heap** for the upper half. Balance their sizes so they differ by at most 1. The median is always at one or both roots.
+
+```
+Lower half (max-heap): [1, 2, 3]  ← max = 3
+Upper half (min-heap): [4, 5, 6]  ← min = 4
+Median = (3 + 4) / 2 = 3.5
+```
+
+<Quiz question="In the two-heap median approach, where does a new element go first?" options="Always the min-heap|Always the max-heap|Whichever heap is smaller|Compare with max-heap root first, then rebalance" answer="3" explanation="Push to the max-heap (lower half) first, then move its root to the min-heap if needed, and rebalance sizes. This guarantees the heap property is maintained." />
+
+## Scheduling Problems
+
+Heaps shine in scheduling: meeting rooms (track earliest end-time), task scheduling with cooldowns, or CPU job queues. The key insight is that a heap efficiently tracks "what finishes next."
+
+<ThinkAboutIt>If you need both the minimum AND maximum efficiently, a single heap won't do. What data structure combination would you use?</ThinkAboutIt>
+
+## When to Use Heap vs Sorted Array vs BST
+
+| Need | Best choice | Why |
+|------|-------------|-----|
+| Repeated min/max extraction | Heap | O(log n) insert + extract |
+| Static data, one-time sort | Sorted array | O(n log n) once, O(1) access |
+| Range queries + order stats | Balanced BST | O(log n) for everything |
+| Top-K from a stream | Heap of size K | O(n log k) total |
+
+<Quiz question="Which operation is O(1) in a min-heap?" options="Find minimum|Delete minimum|Find maximum|Find median" answer="0" explanation="The minimum sits at the root (index 0) of a min-heap, so peeking is O(1). Deleting it is O(log n) because you must sift down." />
+
+## Complexity Cheat Sheet
+
+| Operation | Time |
+|-----------|------|
+| Insert | O(log n) |
+| Extract min/max | O(log n) |
+| Peek min/max | O(1) |
+| Heapify | O(n) |
+| Top-K from n items | O(n log k) |
+
+<ThinkAboutIt>Why can't you do binary search on a heap even though it's stored in an array? Think about what sorted order the heap property actually guarantees.</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [NeetCode — Heap / Priority Queue](https://neetcode.io/roadmap) — visual problem roadmap with heap problems grouped
+- [Tech Interview Handbook — Heap](https://www.techinterviewhandbook.org/algorithms/heap/) — concise patterns and tips
+- [Python heapq docs](https://docs.python.org/3/library/heapq.html) — official module reference with examples

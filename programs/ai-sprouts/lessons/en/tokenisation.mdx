@@ -1,0 +1,137 @@
+---
+title: "Tokenisation — How AI Reads Text"
+description: "Learn how language models break text into tokens using BPE and other algorithms, and why tokenisation shapes everything from cost to capability."
+order: 8
+difficulty: "intermediate"
+duration: 14
+icon: "🔤"
+published: true
+---
+
+# Tokenisation — How AI Reads Text
+
+Neural networks work with numbers. They cannot read the word "hello" the way you do. Before any language model can process text, it must be broken into small numerical pieces called **tokens**. This seemingly simple step has profound consequences for how AI understands — and misunderstands — language.
+
+## Why Can't AI Just Read Characters?
+
+The simplest approach: treat each character as a token. "Hello" becomes `['H', 'e', 'l', 'l', 'o']` — five tokens.
+
+The problem? Words become absurdly long sequences. A 500-word essay might become 2,500+ character tokens. Since Transformer models scale quadratically with sequence length, this is computationally brutal. Worse, individual characters carry almost no meaning — the model must learn that 'c', 'a', 't' together mean a furry animal.
+
+## Word-Level Tokenisation
+
+The opposite extreme: each word is one token. "The cat sat" becomes `['The', 'cat', 'sat']` — compact and meaningful.
+
+But this creates a different problem: the **vocabulary explosion**. English alone has hundreds of thousands of words. Add misspellings, technical jargon, and code, and the vocabulary becomes unmanageable. Any word not in the vocabulary becomes an unknown `[UNK]` token — a dead end for understanding.
+
+<ThinkAboutIt>
+If a model using word-level tokens encounters "ChatGPT" for the first time and it is not in the vocabulary, it becomes `[UNK]`. How might this affect the model's ability to discuss new technology?
+</ThinkAboutIt>
+
+## The Sweet Spot — Subword Tokenisation
+
+Modern language models use **subword tokenisation**, which sits between characters and words. Common words stay whole ("the", "and"), while rare words are split into meaningful pieces ("un" + "believ" + "able").
+
+This gives us a manageable vocabulary (typically 32,000–100,000 tokens) while handling any text — even words the model has never seen before.
+
+<Illustration src="/images/lessons/tokenisation.svg" alt="The word 'unbelievable' split into three subword tokens: 'un', 'believ', and 'able', with arrows showing how they recombine" caption="Subword tokenisation splits rare words into reusable pieces while keeping common words whole." />
+
+## Byte Pair Encoding (BPE) — Step by Step
+
+**BPE** is the algorithm behind GPT models. Here is how it builds a vocabulary:
+
+1. **Start** with individual characters: `{'h', 'e', 'l', 'o', 'w', 'r', 'd', ' '}`.
+2. **Count** which pairs of adjacent tokens appear most frequently in the training text.
+3. **Merge** the most frequent pair into a new token. If 'l' + 'o' appears most, create 'lo'.
+4. **Repeat** steps 2–3 until you reach the desired vocabulary size.
+
+**Worked example** with the text "low lower lowest":
+
+| Step | Most frequent pair | New token | Vocabulary grows |
+|------|-------------------|-----------|-----------------|
+| 1 | l + o | lo | ...lo... |
+| 2 | lo + w | low | ...low... |
+| 3 | e + r | er | ...er... |
+| 4 | low + e | lowe | ...lowe... |
+
+After enough merges, common words and word fragments emerge naturally from the data.
+
+<FunFact>
+BPE was originally invented in 1994 as a data compression algorithm. It was repurposed for NLP in 2015 by Sennrich et al. — a beautiful example of ideas crossing disciplines.
+</FunFact>
+
+## Other Tokenisation Methods
+
+### WordPiece
+
+Used by BERT and related models. Similar to BPE, but instead of merging the most frequent pair, it merges the pair that maximises the **likelihood** of the training data. Subword pieces are prefixed with `##` (e.g., "playing" → `['play', '##ing']`).
+
+### SentencePiece
+
+Treats the input as a raw byte stream — no pre-tokenisation by spaces. This is crucial for languages like Japanese and Chinese that do not use spaces between words. GPT-4 and LLaMA use SentencePiece-style approaches.
+
+## How GPT-4 Tokenises Text
+
+GPT-4 uses a BPE variant called **cl100k_base** with roughly 100,000 tokens in its vocabulary. Some surprising behaviours:
+
+- "Hello world" → 2 tokens (`Hello`, ` world` — note the space is attached).
+- "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` — it splits rare words).
+- A single emoji 🎉 → often 1–3 tokens.
+- Python code `def hello():` → each keyword and symbol is typically its own token.
+
+<Quiz question="Why do language models use subword tokenisation instead of whole words?" options="It makes the model faster at inference|It keeps vocabulary manageable while handling any text, including unseen words|It improves image recognition|It reduces the need for GPUs" answer="1" explanation="Subword tokenisation balances vocabulary size (keeping it practical at 32k–100k tokens) with coverage — rare or novel words are decomposed into known subword pieces rather than being discarded as unknown." />
+
+## The Vocabulary Size Trade-Off
+
+| Vocabulary size | Pros | Cons |
+|----------------|------|------|
+| Small (8k) | Smaller model, fewer embeddings | Longer sequences, slower processing |
+| Large (100k+) | Shorter sequences, richer tokens | Larger embedding table, more memory |
+
+Finding the right balance is an engineering decision that affects model speed, memory, and capability.
+
+## Multilingual Challenges
+
+Tokenisers trained primarily on English text are **biased**. The same sentence in Hindi or Arabic may require 3–5× more tokens than its English equivalent, because those scripts were underrepresented in training data. This means:
+
+- Non-English users hit context limits sooner.
+- API costs are higher per word for non-English text.
+- The model has less "thinking space" for non-English reasoning.
+
+<Quiz question="Why might the same sentence cost more API tokens in Hindi than in English?" options="Hindi has more letters|The tokeniser was trained on more English, so English words are more efficiently encoded|Hindi is a harder language|API providers charge more for Hindi" answer="1" explanation="Tokenisers trained on English-heavy corpora encode English words as single tokens but split Hindi words into many subword pieces, inflating the token count and therefore the cost." />
+
+## Token Counting and Cost Implications
+
+Every API call to GPT-4, Claude, or Gemini is billed per token. Understanding tokenisation helps you:
+
+- **Estimate costs** before running large jobs.
+- **Optimise prompts** — shorter prompts with the same meaning save money.
+- **Respect context windows** — GPT-4 Turbo accepts 128k tokens; exceeding this truncates your input silently.
+
+A rough rule of thumb for English: **1 token ≈ ¾ of a word**, or about 4 characters.
+
+<Quiz question="Approximately how many tokens is a 1,000-word English essay?" options="500 tokens|750 tokens|1,333 tokens|3,000 tokens" answer="2" explanation="The commonly cited approximation is 1 token per ¾ word for English, so 1,000 words ÷ 0.75 ≈ 1,333 tokens. The closest answer here is 1,333 tokens." />
+
+<FunFact>
+OpenAI's open-source `tiktoken` library lets you tokenise text locally with the exact same algorithm GPT-4 uses. Try it on your own writing to see how many tokens your messages really cost.
+</FunFact>
+
+<ThinkAboutIt>
+If you were building a language model for a low-resource language like Welsh, how would you approach tokenisation to ensure fair and efficient encoding?
+</ThinkAboutIt>
+
+## Key Takeaways
+
+- Tokenisation converts raw text into numerical tokens that models can process.
+- **BPE** builds a vocabulary by iteratively merging the most frequent character pairs.
+- Subword tokenisation balances vocabulary size with the ability to handle any text.
+- Tokeniser bias disadvantages non-English languages in cost and capability.
+- Understanding tokens helps you estimate costs and optimise prompts.
+
+---
+
+## 📚 Further Reading
+
+- [Andrej Karpathy — nn-zero-to-hero (Tokenizer lecture)](https://karpathy.ai/zero-to-hero.html) — Build a BPE tokeniser from scratch alongside Karpathy
+- [OpenAI Tokenizer Tool](https://platform.openai.com/tokenizer) — Interactive tool to see how GPT models tokenise your text
+- [Hugging Face — Summary of Tokenizers](https://huggingface.co/docs/transformers/tokenizer_summary) — Clear comparison of BPE, WordPiece, and SentencePiece

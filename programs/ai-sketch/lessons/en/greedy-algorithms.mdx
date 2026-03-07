@@ -1,0 +1,133 @@
+---
+title: "Greedy Algorithms — When Local Choices Lead to Global Solutions"
+description: "Learn when making the locally optimal choice at each step actually produces the globally optimal result, and when it doesn't."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+---
+
+## What Makes an Algorithm Greedy?
+
+A greedy algorithm builds a solution **one step at a time**, always picking the option that looks best **right now** — without reconsidering past choices. No backtracking, no looking ahead.
+
+It works when two properties hold:
+1. **Greedy choice property** — a locally optimal choice leads to a globally optimal solution.
+2. **Optimal substructure** — the remaining problem after each choice is a smaller instance of the same problem.
+
+## Activity Selection — The Classic Example
+
+Given a set of activities with start and end times, select the **maximum number** of non-overlapping activities.
+
+**Greedy strategy:** sort by end time, always pick the activity that finishes earliest.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+Why does this work? Picking the earliest-finishing activity leaves the most room for future activities. No other choice can do better.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Timeline showing activity selection by earliest end time" caption="Selecting by earliest end time maximises the number of non-overlapping activities." />
+
+## Huffman Coding — Concept
+
+Build an optimal prefix-free binary code by repeatedly merging the **two lowest-frequency** symbols. This is greedy: at each step, merge the cheapest pair. The result is a tree where frequent symbols get short codes.
+
+<FunFact>Huffman coding is used in JPEG, MP3, and ZIP compression. David Huffman invented it as a student in 1952 — it was a homework assignment!</FunFact>
+
+## Jump Game
+
+Given an array where `nums[i]` is the maximum jump length from index `i`, determine if you can reach the last index.
+
+**Greedy approach:** track the farthest index reachable so far. Scan left to right — if you ever fall behind, return false.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="In the Jump Game, what does the greedy variable 'farthest' represent?" options="The current position|The number of jumps taken|The maximum index reachable from any visited position|The length of the longest jump" answer="2" explanation="'farthest' tracks the rightmost index reachable from any position visited so far. If your current index exceeds it, you're stuck." />
+
+## Gas Station
+
+Travel a circular route with gas stations. At station `i` you gain `gas[i]` fuel and spend `cost[i]` to reach the next station. Find the starting station that lets you complete the circuit, or return −1.
+
+**Greedy insight:** if total gas ≥ total cost, a solution exists. Track a running surplus; whenever it drops below zero, the answer must start **after** that point.
+
+## Task Scheduler
+
+Schedule tasks with a cooldown of `n` between identical tasks. **Greedy:** always pick the most frequent remaining task. The answer depends on the maximum frequency and how many tasks share it.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>In the task scheduler, why does picking the most frequent task first minimise idle slots? What would go wrong if you picked the least frequent first?</ThinkAboutIt>
+
+## Fractional Knapsack vs 0/1 Knapsack
+
+**Fractional knapsack:** you can take fractions of items. Greedy works — sort by value-per-weight, take the best ratio first.
+
+**0/1 knapsack:** items are all-or-nothing. Greedy **fails** here because skipping a heavy-but-valuable item might be worse than taking two lighter ones. This requires dynamic programming.
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): takes item 1 (w=3, v=4) → 1 remaining → can't fit rest → value = 4
+Optimal: takes items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fails!
+```
+
+<Quiz question="Why does the greedy approach fail for the 0/1 knapsack problem?" options="Items can't be split, so the best ratio item might waste capacity|The items aren't sorted|There are too many items|Greedy algorithms never work for knapsack problems" answer="0" explanation="When you must take whole items, choosing the best ratio first can leave unused capacity that smaller items could have filled more profitably." />
+
+## When Does Greedy Work?
+
+✅ **Works** when you can prove the greedy choice property:
+- Interval scheduling, Huffman coding, minimum spanning trees, Dijkstra's algorithm, coin change with standard denominations
+
+❌ **Fails** when local optima don't compose into global optima:
+- 0/1 knapsack, longest path in general graphs, travelling salesman
+
+## Proving Greedy Correctness — Exchange Argument
+
+The standard technique: assume an optimal solution that **doesn't** use the greedy choice. Show you can **exchange** one of its choices for the greedy choice without making the solution worse. This proves greedy is at least as good.
+
+<Quiz question="What is the 'exchange argument' used for?" options="Swapping two elements in an array|Proving a greedy algorithm produces an optimal solution|Converting recursion to iteration|Optimising time complexity" answer="1" explanation="The exchange argument proves correctness by showing any optimal solution can be transformed to match the greedy solution without loss of quality." />
+
+## Greedy vs Dynamic Programming
+
+| Aspect | Greedy | Dynamic Programming |
+|--------|--------|---------------------|
+| Choices | One best choice per step | Explore all sub-problems |
+| Revisits past? | Never | Yes — stores sub-results |
+| Speed | Usually faster | Depends on state space |
+| Correctness | Only if provable | Always (if formulated right) |
+
+When in doubt, start greedy — if you can't prove it works, switch to DP.
+
+<FunFact>Dijkstra's shortest-path algorithm is greedy — it always processes the closest unvisited node. It works because edge weights are non-negative, ensuring the greedy choice is safe.</FunFact>
+
+<ThinkAboutIt>You're given coin denominations [1, 3, 4] and need to make change for 6. The greedy approach picks 4+1+1=3 coins, but the optimal is 3+3=2 coins. What about these denominations breaks the greedy choice property?</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [NeetCode — Greedy playlist](https://neetcode.io/roadmap) — curated greedy problems with explanations
+- [Tech Interview Handbook — Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) — when to use greedy and common patterns
+- [CP-Algorithms — Greedy algorithms](https://cp-algorithms.com/) — deeper theory and proofs

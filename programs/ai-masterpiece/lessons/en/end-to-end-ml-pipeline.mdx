@@ -1,0 +1,167 @@
+---
+title: "End-to-End ML Pipeline — From Raw Data to Deployed Model"
+description: "Master the complete ML lifecycle: data collection, feature engineering, model training, deployment, and monitoring — all orchestrated as reproducible pipeline code."
+order: 6
+difficulty: "advanced"
+duration: 22
+icon: "🔄"
+published: true
+---
+
+# End-to-End ML Pipeline — From Raw Data to Deployed Model
+
+Most tutorials stop at `model.fit()`. In production, that's barely 20% of the work. This lesson walks through the **entire ML lifecycle** — the same pipeline powering recommendation engines at Spotify, fraud detection at Stripe, and search ranking at Google.
+
+## 🗺️ The ML Lifecycle at a Glance
+
+<Illustration src="/images/lessons/end-to-end-ml-pipeline.svg" alt="Diagram of the ML pipeline stages from data ingestion to monitoring" caption="The eight stages of a production ML pipeline — each one is a potential failure point." />
+
+Every production ML system flows through these stages:
+
+1. **Data Collection** — APIs, databases, event streams, web scraping
+2. **Data Cleaning** — handling nulls, deduplication, type coercion
+3. **Feature Engineering** — transforming raw signals into model-ready features
+4. **Model Selection** — choosing architectures that match your problem
+5. **Training** — GPU/CPU orchestration, hyperparameter tuning
+6. **Evaluation** — offline metrics, A/B testing, fairness audits
+7. **Deployment** — serving infrastructure, latency budgets
+8. **Monitoring** — drift detection, alerting, the retraining trigger
+
+## 📦 Data Collection and Versioning
+
+Raw data is your foundation. Treat it like source code — **version everything**.
+
+```bash
+# Initialise DVC in your repo
+dvc init
+dvc remote add -d storage s3://my-ml-data-bucket
+
+# Track a dataset
+dvc add data/transactions.csv
+git add data/transactions.csv.dvc .gitignore
+git commit -m "Track raw transaction dataset v1"
+dvc push
+```
+
+**DVC** (Data Version Control) lets you `git checkout` any historical dataset. Combined with Git tags, you can reproduce any experiment from any point in time.
+
+<FunFact>Netflix processes over 1.5 trillion events per day through their data pipelines — roughly 17 million events every second feeding their recommendation models.</FunFact>
+
+## 🛠️ Feature Engineering — Where Competitions Are Won
+
+Features matter more than algorithms. A gradient-boosted tree with brilliant features beats a deep neural network with poor ones.
+
+```python
+import pandas as pd
+
+df = pd.read_csv("data/transactions.csv", parse_dates=["timestamp"])
+
+# Temporal features
+df["hour"] = df["timestamp"].dt.hour
+df["is_weekend"] = df["timestamp"].dt.dayofweek >= 5
+
+# Aggregation features
+user_stats = df.groupby("user_id")["amount"].agg(["mean", "std", "count"])
+user_stats.columns = ["user_avg_amount", "user_std_amount", "user_txn_count"]
+df = df.merge(user_stats, on="user_id")
+
+# Ratio features
+df["amount_vs_avg"] = df["amount"] / df["user_avg_amount"]
+```
+
+<Quiz question="Which feature engineering technique typically provides the MOST predictive power in tabular ML problems?" options="One-hot encoding categorical variables|Creating interaction and ratio features between existing columns|Normalising all features to zero mean|Applying PCA dimensionality reduction" answer="1" explanation="Interaction and ratio features capture relationships between variables that linear models cannot learn on their own. Top Kaggle solutions consistently cite these as the highest-impact transformations." />
+
+## 🧪 Experiment Tracking with MLflow
+
+Never lose track of what you tried. MLflow logs parameters, metrics, and artefacts automatically.
+
+```python
+import mlflow
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import f1_score
+
+mlflow.set_experiment("fraud-detection-v2")
+
+with mlflow.start_run(run_name="gbm-baseline"):
+    params = {"n_estimators": 500, "max_depth": 6, "learning_rate": 0.05}
+    mlflow.log_params(params)
+
+    model = GradientBoostingClassifier(**params)
+    model.fit(X_train, y_train)
+
+    score = f1_score(y_test, model.predict(X_test))
+    mlflow.log_metric("f1_score", score)
+    mlflow.sklearn.log_model(model, "model")
+```
+
+Compare runs in the MLflow UI, then promote the best model to the **Model Registry** with staging → production lifecycle tags.
+
+## 🚀 Pipeline as Code — Orchestration
+
+Manual steps break. Encode your pipeline in code using orchestration frameworks:
+
+| Tool | Best For | Key Strength |
+|------|----------|-------------|
+| **Kubeflow Pipelines** | Kubernetes-native ML | Scales on existing K8s clusters |
+| **Apache Airflow** | Complex DAG scheduling | Mature ecosystem, wide adoption |
+| **Prefect** | Modern Python workflows | Pythonic API, excellent error handling |
+| **ZenML** | MLOps abstraction | Stack-agnostic, plug any tool |
+
+<ThinkAboutIt>You have a pipeline that retrains nightly but your data changes hourly. What trade-offs do you weigh when deciding retraining frequency — cost, staleness, infrastructure complexity?</ThinkAboutIt>
+
+## 🌐 Model Serving and Deployment
+
+Your model needs an API. Two dominant patterns:
+
+**REST API** — simple, HTTP-based, great for moderate throughput:
+```python
+# FastAPI model server
+from fastapi import FastAPI
+import joblib
+
+app = FastAPI()
+model = joblib.load("model.pkl")
+
+@app.post("/predict")
+async def predict(features: dict):
+    prediction = model.predict([list(features.values())])
+    return {"prediction": int(prediction[0])}
+```
+
+**gRPC** — binary protocol, 2–10× faster than REST, ideal for internal microservices and high-throughput scenarios.
+
+### Canary Deployments
+
+Never send 100% of traffic to a new model. Use **canary releases**: route 5% → 25% → 50% → 100%, monitoring error rates at each step. Roll back instantly if metrics degrade.
+
+<Quiz question="What is the PRIMARY advantage of canary deployments for ML models?" options="They reduce model training time|They allow gradual rollout with automatic rollback on metric degradation|They improve model accuracy through A/B testing|They eliminate the need for model versioning" answer="1" explanation="Canary deployments limit blast radius. If your new model performs poorly, only a small percentage of users are affected, and you can roll back before wider damage occurs." />
+
+## 📊 Monitoring and the Feedback Loop
+
+Deployment is not the finish line — it's the starting gun. Monitor for:
+
+- **Data drift** — input distributions shifting from training data
+- **Concept drift** — the relationship between features and target changing
+- **Performance degradation** — accuracy/latency metrics declining
+
+Tools like **Evidently AI**, **WhyLabs**, and **Arize** provide drift dashboards. When drift exceeds thresholds, trigger automatic retraining with fresh production data — closing the feedback loop.
+
+<Quiz question="A fraud detection model's precision drops from 95% to 78% over three months, but the input feature distributions haven't changed. What type of drift is this?" options="Data drift|Concept drift|Model drift|Feature drift" answer="1" explanation="When input distributions remain stable but performance degrades, the underlying relationship between features and the target has changed — this is concept drift. Fraudsters evolved their tactics, but the data shape looks the same." />
+
+<ThinkAboutIt>Your monitoring detects significant drift on a Friday evening. Do you trigger an automatic retrain, wait for Monday's manual review, or roll back to a previous model version? What factors influence your decision?</ThinkAboutIt>
+
+## 🎯 Key Takeaways
+
+- Version **everything**: code, data, models, and pipeline configs
+- Feature engineering delivers more ROI than architecture changes
+- Encode pipelines as code — manual steps are technical debt
+- Deploy with canary releases and monitor relentlessly
+- The feedback loop (production data → retraining) is what separates demos from production systems
+
+---
+
+## 📚 Further Reading
+
+- [Made With ML — MLOps Course](https://madewithml.com/) — Comprehensive, free MLOps curriculum covering the full lifecycle
+- [Designing Machine Learning Systems by Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) — The definitive book on production ML system design
+- [MLflow Documentation](https://mlflow.org/docs/latest/index.html) — Official guides for experiment tracking and model registry

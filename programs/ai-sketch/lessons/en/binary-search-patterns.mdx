@@ -1,0 +1,144 @@
+---
+title: "Binary Search Patterns — Beyond Sorted Arrays"
+description: "Learn the binary search mindset: search spaces, binary search on answer, and patterns that appear in dozens of interview problems."
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+---
+
+## Classic Binary Search — A Quick Review
+
+Binary search halves the search space each step. On a sorted array of n elements it finds a target in **O(log n)** time.
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+Simple — but the real power of binary search goes far beyond sorted arrays.
+
+## The Search Space Concept
+
+Binary search works whenever you have a **monotonic condition** over a range. The "array" doesn't even need to exist — you just need a range `[lo, hi]` and a function that flips from `False` to `True` (or vice versa) at some boundary.
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>Binary search was first published in 1946, but the first bug-free version wasn't written until 1962 — 16 years of off-by-one errors!</FunFact>
+
+## Binary Search on Answer
+
+Instead of searching an array, search the **answer space**. Ask: "Can I achieve result X?" If yes, try smaller; if no, try larger.
+
+### Example: Koko Eating Bananas
+
+Koko has `n` piles of bananas and `h` hours. Find the **minimum eating speed** so she finishes in time.
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+The answer space is `[1, max(piles)]` and the condition is monotonic — higher speed always means fewer hours.
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="Binary search narrowing the answer space for minimum eating speed" caption="Binary search on answer: narrow the feasible speed range each iteration." />
+
+## Rotated Sorted Array
+
+A sorted array rotated at some pivot: `[4, 5, 6, 7, 0, 1, 2]`. One half is always sorted. Compare `mid` with `lo` to decide which half, then check if the target falls in the sorted half.
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="In a rotated sorted array [3,4,5,1,2], which half is sorted when mid=2 (value 5)?" options="Right half [1,2]|Left half [3,4,5]|Neither half|Both halves" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, so the left half [3,4,5] is sorted. We check if the target sits in that range; if not, we search right." />
+
+## First and Last Occurrence
+
+To find the **first** occurrence, when you hit the target, don't stop — set `hi = mid` and keep searching left. For the **last**, set `lo = mid + 1` and search right.
+
+This pair of searches also gives you the **count** of a target: `last - first + 1`.
+
+## Peak Element
+
+An element larger than both neighbours. Even in an unsorted array, binary search works: if `nums[mid] < nums[mid + 1]`, the peak is to the right; otherwise it's to the left. O(log n).
+
+<ThinkAboutIt>Why does peak-finding work with binary search even though the array isn't sorted? What property replaces sorted order here?</ThinkAboutIt>
+
+## Search in a 2D Matrix
+
+If rows are sorted and the first element of each row is greater than the last of the previous, treat the matrix as a single sorted array of `m × n` elements. Map index `k` to row `k // n`, column `k % n`.
+
+## Square Root Without a Library
+
+Find the largest integer `x` where `x * x ≤ n`. Search space: `[0, n]`. Classic binary search on answer.
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## The "Minimise the Maximum" Pattern
+
+Problems like "split array largest sum" or "capacity to ship packages within D days" ask you to **minimise the worst case**. The answer is monotonic: if capacity C works, so does C+1. Binary search on C.
+
+<Quiz question="For 'Capacity to Ship Packages in D Days', what is the search space for binary search?" options="[0, total weight]|[max single weight, total weight]|[1, number of packages]|[D, total weight]" answer="1" explanation="The minimum possible capacity is the heaviest single package (otherwise it can't ship). The maximum is the total weight (ship everything in one day)." />
+
+## The Universal Template
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+Adjust `hi = mid` vs `lo = mid` depending on whether you seek the **first True** or **last True**.
+
+<Quiz question="What is the time complexity of binary search on an answer space of size S with an O(n) feasibility check?" options="O(n)|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="You perform O(log S) iterations of binary search, each running an O(n) check, giving O(n log S) total." />
+
+<ThinkAboutIt>When you see the phrase "minimum possible maximum" or "maximum possible minimum" in a problem statement, what should immediately come to mind?</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [NeetCode — Binary Search playlist](https://neetcode.io/roadmap) — curated problems from easy to hard
+- [Tech Interview Handbook — Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) — patterns, tips and pitfalls
+- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) — progressive problem set

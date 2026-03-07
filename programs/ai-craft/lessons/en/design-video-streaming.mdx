@@ -1,0 +1,137 @@
+---
+title: "Design a Video Streaming Platform — YouTube/Netflix Architecture"
+description: "Design a scalable video streaming platform covering upload pipelines, adaptive bitrate transcoding, CDN distribution, and live streaming architecture."
+order: 8
+difficulty: "advanced"
+duration: 25
+icon: "🎬"
+published: true
+---
+
+# Design a Video Streaming Platform — YouTube/Netflix Architecture
+
+Video streaming accounts for over 65% of global internet traffic. Designing this system covers file processing pipelines, CDN architecture, and adaptive streaming — concepts that apply far beyond video.
+
+## Step 1 — Requirements Gathering
+
+### Functional Requirements
+- Upload videos (up to 1 GB per file)
+- Stream videos with adaptive quality based on network conditions
+- Search videos by title, description, and tags
+- Track view counts and engagement metrics
+
+### Non-Functional Requirements
+- **Availability** — 99.99% uptime for streaming
+- **Low latency** — video playback starts within 2 seconds
+- **Global reach** — serve users across all continents efficiently
+- **Cost-efficient** — optimise storage and bandwidth (the two biggest costs)
+
+## Step 2 — High-Level Architecture
+
+```
+Upload Flow:
+Client → Upload Service → Object Storage (raw)
+                              ↓
+                    Transcoding Pipeline (async)
+                         ↓          ↓
+                   Multiple      Thumbnail
+                   Qualities     Generator
+                         ↓          ↓
+                    CDN Origin Storage → CDN Edge Servers
+
+Streaming Flow:
+Client → CDN Edge → (cache miss) → CDN Origin → Object Storage
+```
+
+<Illustration src="/images/lessons/design-video-streaming.svg" alt="Video streaming architecture showing upload pipeline with transcoding, object storage, CDN distribution, and streaming flow to clients" caption="The upload and streaming flows are completely separated — uploads are async and write-heavy while streaming is read-heavy and latency-sensitive" />
+
+## Step 3 — Video Upload Pipeline
+
+### Step-by-Step Processing
+1. **Upload** — client uploads raw video to object storage (e.g., S3) via pre-signed URLs with resumable uploads for large files
+2. **Transcoding** — convert the source video into multiple resolutions (1080p, 720p, 480p, 360p) and codecs (H.264, VP9, AV1)
+3. **Adaptive Bitrate Packaging** — split each quality level into small segments (2-10 seconds) for HLS/DASH streaming
+4. **Thumbnail Generation** — extract frames at regular intervals for preview thumbnails
+5. **Metadata Update** — mark the video as "ready" in the database once all processing completes
+
+### Transcoding at Scale
+A single 10-minute 4K video can take 30+ minutes to transcode on one machine. To handle thousands of concurrent uploads:
+- Split videos into chunks and transcode in parallel using a DAG-based workflow (like AWS Step Functions)
+- Use spot/preemptible instances to reduce compute costs by 60-80%
+
+<Quiz question="Why is video transcoding done asynchronously rather than during upload?" options="To reduce upload time for the user|Transcoding is CPU-intensive and would block the upload service, degrading availability|To save storage space|Because browsers can't play raw video formats" answer="1" explanation="Transcoding a single video into multiple quality levels is extremely CPU-intensive (minutes to hours). Doing this synchronously would block the upload service, create terrible user experience, and require the upload service to have enormous compute resources." />
+
+## Step 4 — Streaming Protocols and CDN
+
+### Adaptive Bitrate Streaming
+The player automatically switches quality based on the viewer's network speed:
+
+| Protocol | Used By | Segment Format | Manifest |
+|----------|---------|----------------|----------|
+| HLS | Apple, most browsers | .ts or .fmp4 | .m3u8 playlist |
+| DASH | YouTube, Netflix | .mp4 segments | .mpd manifest |
+
+The client downloads a manifest file listing all available quality levels, then requests segments one at a time, switching quality seamlessly as bandwidth changes.
+
+### CDN Architecture
+CDN is the most critical component for streaming performance:
+
+```
+User in London → London Edge PoP (cache hit: 95%)
+                     ↓ (cache miss)
+              European Regional Cache
+                     ↓ (cache miss)
+              Origin Storage (S3)
+```
+
+**Key insight:** popular videos are cached at edge locations closest to users. Long-tail content may only be cached at regional nodes, with origin fetches for rare content.
+
+<FunFact>Netflix serves over 700 million hours of video per week. Their Open Connect CDN places custom hardware appliances directly inside ISP data centres, caching popular content at the last mile to reduce internet backbone traffic by over 90%.</FunFact>
+
+## Step 5 — Supporting Services
+
+### Video Metadata Service
+Stores title, description, tags, upload date, view counts, and processing status. Use a relational database (PostgreSQL) for structured queries and search indexing.
+
+### View Counting at Scale
+Naive approach (increment on every view) creates a write hotspot. Instead:
+- Batch view events into a stream (Kafka)
+- Aggregate counts periodically (every 30 seconds)
+- Use approximate counting for real-time display, exact counts for analytics
+
+<Quiz question="A video goes viral and receives 1 million views per minute. What is the biggest problem with incrementing a database counter on every view?" options="The database runs out of storage|Write contention on a single row creates a bottleneck and degrades performance|The counter overflows|Read queries become slow" answer="1" explanation="Millions of concurrent writes to a single row cause extreme lock contention in the database. This is why view counts are typically buffered in-memory or in a stream, then batch-aggregated into the database periodically." />
+
+### Live Streaming Architecture
+Live streaming differs from on-demand in key ways:
+- **No pre-transcoding** — video must be transcoded in real-time
+- **Ultra-low latency** — viewers expect sub-5-second delay
+- **Ingestion protocol** — streamers push via RTMP; viewers receive via HLS/DASH with low-latency extensions
+
+## Step 6 — Cost Breakdown and Optimisations
+
+Video platforms are **extremely expensive** to operate. The three biggest costs:
+
+| Cost Centre | Estimate (10M daily users) | Optimisation |
+|------------|---------------------------|--------------|
+| Storage | ~$200K/month | Tiered storage (hot/warm/cold), delete failed uploads |
+| CDN Bandwidth | ~$500K/month | Edge caching, compress with modern codecs (AV1) |
+| Transcoding Compute | ~$100K/month | Spot instances, skip rarely-watched quality levels |
+
+<ThinkAboutIt>Netflix spends billions annually on content delivery. If you were designing their system from scratch, would you build your own CDN (like Netflix Open Connect) or use a commercial CDN (like CloudFront)? At what scale does building your own become cost-effective?</ThinkAboutIt>
+
+### Content Protection (DRM)
+Premium content requires Digital Rights Management:
+- **Widevine** (Google) — Chrome, Android
+- **FairPlay** (Apple) — Safari, iOS
+- **PlayReady** (Microsoft) — Edge, Windows
+
+Each DRM system requires separate encryption and licence server integration, adding significant complexity.
+
+<ThinkAboutIt>YouTube stores over 800 million videos. If each video is transcoded into 5 quality levels and each level averages 500 MB, estimate the total storage required. How would you design a cost-effective storage strategy?</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+- [YouTube System Design — System Design Interview Vol. 2, Ch. 14](https://bytebytego.com/) — Alex Xu's deep dive into video platform architecture
+- [Netflix Tech Blog: Content Delivery](https://netflixtechblog.com/) — how Netflix built Open Connect and serves global traffic
+- [HLS vs DASH Streaming](https://www.cloudflare.com/learning/video/what-is-http-live-streaming/) — understanding adaptive bitrate protocols

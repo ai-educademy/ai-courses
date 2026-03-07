@@ -1,0 +1,139 @@
+---
+title: "Loss Functions and Optimisers — How AI Learns from Mistakes"
+description: "Discover how loss functions measure a model's errors and how optimisers use gradients to systematically reduce them."
+order: 7
+difficulty: "intermediate"
+duration: 15
+icon: "📉"
+published: true
+---
+
+# Loss Functions and Optimisers
+
+Backpropagation gives us gradients — but gradients *of what*? Before backprop can run, we need a single number that captures how wrong the model is. That number comes from a **loss function**. Once we have gradients, an **optimiser** decides how to update the weights. Together, they form the learning loop.
+
+## What Is a Loss Function?
+
+A loss function (also called a cost function) takes the model's prediction and the true answer, and returns a number measuring "wrongness." The goal of training is to **minimise** this number.
+
+Think of it like a score in golf — lower is better. A loss of 0 means a perfect prediction.
+
+<Illustration src="/images/lessons/loss-functions-and-optimisers.svg" alt="A U-shaped curve showing loss on the y-axis and weight value on the x-axis, with a ball rolling towards the minimum" caption="Training is like rolling a ball downhill on the loss landscape, searching for the lowest point." />
+
+## Loss Functions for Regression — MSE
+
+When predicting continuous values (house prices, temperature), we use **Mean Squared Error (MSE)**:
+
+```
+MSE = (1/n) × Σ(predicted - actual)²
+```
+
+Squaring does two things: it makes all errors positive, and it punishes large errors disproportionately. Predict a house price off by £100k and the squared error is 100× worse than being off by £10k.
+
+<FunFact>
+MSE dates back to Carl Friedrich Gauss in 1795 — over two centuries before neural networks. He used it to track the orbit of the asteroid Ceres.
+</FunFact>
+
+## Loss Functions for Classification — Cross-Entropy
+
+When predicting categories (spam or not, cat vs dog), we use **cross-entropy loss**. It measures how far the model's predicted probabilities are from the true labels.
+
+If the correct answer is "cat" and the model says 99% cat, the loss is tiny. If it says 10% cat, the loss is enormous. Cross-entropy has a useful property: it becomes *infinitely* unhappy when the model is confidently wrong, creating a strong gradient to correct the mistake.
+
+**Binary cross-entropy** is for two-class problems. **Categorical cross-entropy** handles multiple classes by comparing probability distributions.
+
+<Quiz question="Why is MSE a poor choice for classification tasks?" options="It is too slow to compute|It does not penalise confident wrong answers harshly enough|It requires too much memory|It only works with images" answer="1" explanation="MSE treats a probability of 0.4 vs 0.6 as a small error, but in classification that could mean predicting the entirely wrong class. Cross-entropy penalises confident wrong predictions much more severely, creating stronger gradients for learning." />
+
+## Gradient Descent — Rolling Downhill
+
+With a loss function defined, we can visualise the **loss landscape** — a surface where each point represents a set of weights and the height is the loss. Training means finding the lowest valley.
+
+**Gradient descent** is the algorithm that gets us there:
+
+1. Compute the gradient (slope) at the current position.
+2. Take a step in the opposite direction (downhill).
+3. Repeat.
+
+The size of each step is controlled by the **learning rate** — arguably the most important hyperparameter in deep learning.
+
+### The Learning Rate Dilemma
+
+- **Too high:** You overshoot the valley, bouncing back and forth or diverging entirely.
+- **Too low:** You creep along painfully slowly and may get stuck in a shallow local minimum.
+- **Just right:** You converge steadily to a good solution.
+
+<ThinkAboutIt>
+Imagine hiking down a foggy mountain where you can only feel the slope directly under your feet. You step downhill, but you cannot see the whole landscape. How might you end up in a small dip that is not the deepest valley? This is the local minimum problem.
+</ThinkAboutIt>
+
+## Flavours of Gradient Descent
+
+### Batch Gradient Descent
+
+Computes the gradient using the **entire dataset** before each update. Accurate but painfully slow for large datasets — imagine re-reading every book in a library before correcting a single spelling mistake.
+
+### Stochastic Gradient Descent (SGD)
+
+Updates weights after each **single example**. Fast but noisy — the path zigzags wildly. The noise can actually help escape local minima, which is a surprising benefit.
+
+### Mini-Batch Gradient Descent
+
+The practical sweet spot. Computes gradients on a small **batch** (typically 32–512 examples). Balances speed and stability, and is what virtually all modern training uses.
+
+## Modern Optimisers
+
+Plain SGD has limitations. Researchers have developed smarter optimisers that adapt as they go.
+
+### SGD with Momentum
+
+Like a heavy ball rolling downhill, momentum accumulates velocity in consistent directions and dampens oscillations. If the gradient keeps pointing the same way, momentum accelerates. If it keeps changing direction, momentum smooths it out.
+
+### AdaGrad
+
+Adapts the learning rate **per parameter**. Frequently updated weights get smaller steps; rarely updated weights get larger steps. Great for sparse data (like text), but the learning rate can shrink to zero over time.
+
+### Adam (Adaptive Moment Estimation)
+
+Combines momentum *and* per-parameter adaptive rates. It maintains running averages of both the gradient (first moment) and the squared gradient (second moment). Adam is the **default choice** for most practitioners today.
+
+<Quiz question="What advantage does Adam have over basic SGD?" options="It always finds the global minimum|It adapts learning rates per parameter and uses momentum|It requires no learning rate at all|It uses less memory" answer="1" explanation="Adam combines momentum (smoothed gradient direction) with per-parameter adaptive learning rates (from squared gradient estimates), making it robust across a wide range of problems without extensive tuning." />
+
+## Learning Rate Schedules
+
+Rather than fixing the learning rate, modern training often **schedules** it:
+
+- **Step decay:** Halve the rate every N epochs.
+- **Cosine annealing:** Smoothly decrease following a cosine curve, sometimes with warm restarts.
+- **Warmup:** Start with a tiny rate, gradually increase, then decay. Used in Transformer training.
+
+The intuition: take big steps early to explore broadly, then small steps later to fine-tune.
+
+## Gradient Clipping — Safety Rails
+
+Sometimes gradients explode (as we saw in the backpropagation lesson). **Gradient clipping** caps the gradient magnitude before the update step. If the gradient exceeds a threshold, it is scaled down proportionally. This is standard practice when training RNNs and Transformers.
+
+<Quiz question="What does gradient clipping prevent?" options="Vanishing gradients|Overfitting|Exploding gradients causing unstable updates|Slow convergence" answer="2" explanation="Gradient clipping caps the magnitude of gradients to a maximum threshold, preventing the enormous weight updates that cause training instability — the exploding gradient problem." />
+
+<FunFact>
+The Adam optimiser paper (Kingma & Ba, 2014) has over 150,000 citations, making it one of the most cited papers in all of computer science.
+</FunFact>
+
+## Key Takeaways
+
+- **Loss functions** quantify how wrong a model is — MSE for regression, cross-entropy for classification.
+- **Gradient descent** minimises the loss by repeatedly stepping opposite to the gradient.
+- The **learning rate** controls step size and is critical to get right.
+- **Adam** is the go-to optimiser, combining momentum and adaptive rates.
+- **Learning rate schedules** and **gradient clipping** are essential training stabilisers.
+
+<ThinkAboutIt>
+If you were training a model and the loss stopped decreasing after a few epochs, what would you investigate first — the learning rate, the loss function, or the data? Why?
+</ThinkAboutIt>
+
+---
+
+## 📚 Further Reading
+
+- [Andrej Karpathy — A Recipe for Training Neural Networks](https://karpathy.github.io/2019/04/25/recipe/) — Practical wisdom on loss debugging and optimiser selection
+- [3Blue1Brown — Gradient Descent](https://www.3blue1brown.com/lessons/gradient-descent) — Stunning visual intuition for how gradient descent navigates loss landscapes
+- [An Overview of Gradient Descent Optimisation Algorithms (Ruder, 2016)](https://ruder.io/optimizing-gradient-descent/) — Comprehensive comparison of SGD, Adam, and friends

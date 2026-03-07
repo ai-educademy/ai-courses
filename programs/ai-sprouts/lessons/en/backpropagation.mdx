@@ -1,0 +1,132 @@
+---
+title: "Backpropagation — The Calculus Behind Learning"
+description: "Understand how neural networks learn by propagating errors backwards through layers, using the chain rule to update every weight."
+order: 6
+difficulty: "intermediate"
+duration: 16
+icon: "⛓️"
+published: true
+---
+
+# Backpropagation — The Engine of Learning
+
+In the previous lessons you saw that neural networks have weights, and training adjusts those weights. But *how* does the network know which weights to change, and by how much? The answer is **backpropagation** — the single most important algorithm in modern deep learning.
+
+Andrej Karpathy calls it "the most important thing to understand about neural networks." Let us see why.
+
+## A Quick Forward Pass Recap
+
+During a **forward pass**, data flows left to right through the network:
+
+1. Inputs are multiplied by weights and summed.
+2. A bias is added.
+3. An activation function (like ReLU) is applied.
+4. The output feeds into the next layer, repeating until a final prediction emerges.
+
+The prediction is then compared to the true answer using a **loss function** (covered in the next lesson). The loss is a single number that says: *"Here is how wrong you are."*
+
+<Illustration src="/images/lessons/backpropagation.svg" alt="A computation graph showing a forward pass through three nodes, with arrows indicating data flow from input to loss" caption="The forward pass builds a computation graph. Backpropagation then walks it in reverse." />
+
+## The Key Insight — Blame Assignment
+
+Imagine you bake a cake and it tastes awful. You used five ingredients. The question is: *which ingredient contributed most to the bad taste, and by how much?*
+
+Backpropagation answers exactly this question for neural networks. It assigns **blame** to every single weight by asking: "If I nudge this weight slightly, how much does the loss change?"
+
+That rate of change is called a **gradient**, and it comes from calculus — specifically, the **derivative**.
+
+<FunFact>
+Geoffrey Hinton, one of the "godfathers of AI," has said that backpropagation is the key idea that made deep learning practical. Without it, training networks with millions of parameters would be computationally impossible.
+</FunFact>
+
+## The Chain Rule — One Idea to Rule Them All
+
+Neural networks are chains of simple operations composed together. The **chain rule** from calculus tells us how to differentiate composed functions:
+
+> If `y = f(g(x))`, then `dy/dx = f'(g(x)) × g'(x)`.
+
+**Everyday analogy:** You drive to a shop. Your speed depends on how hard you press the accelerator. The accelerator position depends on traffic. To know how traffic affects your speed, you multiply: *(speed per accelerator press)* × *(accelerator press per traffic condition)*. That is the chain rule — multiplying local rates of change along a chain.
+
+<FunFact>
+Backpropagation was popularised in a landmark 1986 paper by Rumelhart, Hinton, and Williams, but the core idea of reverse-mode automatic differentiation dates back to the 1960s.
+</FunFact>
+
+## Computation Graphs — Visualising the Maths
+
+Modern frameworks like PyTorch build a **computation graph** during the forward pass. Every operation — add, multiply, ReLU — becomes a node. Backpropagation then walks this graph **in reverse**, applying the chain rule at each node to compute gradients.
+
+Think of it like a river system. The loss is the ocean at the end. Backprop traces every tributary upstream to find how much each source (weight) contributed to the final flow.
+
+### A Tiny Worked Example
+
+Suppose `L = (w × x - y)²` with `w = 2`, `x = 3`, `y = 10`.
+
+1. **Forward:** `w × x = 6`, then `6 - 10 = -4`, then `(-4)² = 16`. Loss = 16.
+2. **Backward:** `dL/d(diff) = 2 × (-4) = -8`, then `d(diff)/d(wx) = 1`, so `dL/d(wx) = -8`.
+3. Finally, `d(wx)/dw = x = 3`, so **`dL/dw = -8 × 3 = -24`**.
+
+The gradient of −24 tells us: *increasing `w` will decrease the loss rapidly.* That is exactly the signal we need to improve.
+
+<Quiz question="In the chain rule, what do we do with the local derivatives at each node?" options="Add them together|Multiply them together|Take the maximum|Average them" answer="1" explanation="The chain rule multiplies local derivatives along the path from output back to the weight of interest. This is the mathematical backbone of backpropagation." />
+
+## Gradient Flow Through Layers
+
+In a deep network, gradients must travel through many layers. Each layer multiplies the gradient by its local derivative. This creates two dangerous failure modes:
+
+### Vanishing Gradients
+
+If local derivatives are small (e.g., the sigmoid function saturates near 0 or 1), repeated multiplication makes gradients shrink towards zero. Early layers barely learn — they receive almost no signal. This plagued early deep networks.
+
+### Exploding Gradients
+
+If local derivatives are large, gradients grow exponentially. Weights receive enormous updates and the network becomes unstable, producing NaN values.
+
+<ThinkAboutIt>
+ReLU's derivative is either 0 or 1 — it never shrinks the gradient when active. Why might this simple property have been revolutionary for training deep networks?
+</ThinkAboutIt>
+
+**Modern solutions include:**
+- **ReLU activation** — derivative is 1 for positive inputs, avoiding shrinkage.
+- **Residual connections (skip connections)** — give gradients a highway to bypass layers.
+- **Batch normalisation** — keeps values in a healthy range.
+- **Gradient clipping** — caps gradients to prevent explosions.
+
+## How Weights Actually Update
+
+Once backprop computes every gradient, the **optimiser** (next lesson) updates each weight:
+
+```
+w_new = w_old - learning_rate × gradient
+```
+
+The learning rate controls the step size. Too large and you overshoot; too small and training takes forever. The gradient tells you the direction; the learning rate tells you how far to step.
+
+<Quiz question="What causes vanishing gradients in deep networks?" options="Learning rate too high|Activation functions with very small derivatives compounding over layers|Too much training data|Using ReLU activation" answer="1" explanation="When activations like sigmoid saturate, their derivatives approach zero. Multiplying many near-zero values through the chain rule causes gradients to vanish, starving early layers of learning signal." />
+
+## Why Backprop Matters
+
+Every time ChatGPT improves its next-word prediction, every time a self-driving car refines its steering, backpropagation is running underneath. It is the algorithm that makes **learning from mistakes** mathematically precise.
+
+Without backprop, we would have no efficient way to train networks with millions — or billions — of parameters.
+
+<Quiz question="What does a gradient tell us about a weight?" options="The exact value the weight should be|How much the loss changes when we nudge that weight slightly|Whether the weight should be removed|The weight's position in the network" answer="1" explanation="A gradient is the rate of change of the loss with respect to a weight. It tells us both the direction and magnitude of change needed to reduce the loss." />
+
+<ThinkAboutIt>
+Karpathy emphasises that backprop is "just recursive application of the chain rule." If you understand the chain rule and computation graphs, you understand backprop. What other complex systems could be understood by breaking them into simple, composable pieces?
+</ThinkAboutIt>
+
+## Key Takeaways
+
+- **Backpropagation** computes gradients by walking the computation graph in reverse.
+- The **chain rule** multiplies local derivatives along each path.
+- **Vanishing gradients** slow learning; **exploding gradients** destabilise it.
+- Modern tricks (ReLU, skip connections, gradient clipping) keep gradient flow healthy.
+- Backprop + an optimiser = the learning engine of all modern deep learning.
+
+---
+
+## 📚 Further Reading
+
+- [Andrej Karpathy — nn-zero-to-hero (micrograd)](https://karpathy.ai/zero-to-hero.html) — Build backprop from scratch in Python
+- [3Blue1Brown — Backpropagation Calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus) — Beautiful visual explanation of the chain rule in neural networks
+- [CS231n Backprop Notes](https://cs231n.github.io/optimization-2/) — Stanford's concise reference on computation graphs and gradient flow
