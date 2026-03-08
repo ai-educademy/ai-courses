@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="bs-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="bs-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#bs-bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Binary Search</text>
+  <text x="360" y="53" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">Sorted array: find target=23 by eliminating half each step — O(log n)</text>
+
+  <!-- Step 1 -->
+  <rect x="30" y="66" width="660" height="74" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="50" y="84" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Step 1</text>
+
+  <rect x="60" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="82" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">2</text>
+  <rect x="108" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="130" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">5</text>
+  <rect x="156" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="178" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">8</text>
+  <rect x="204" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="226" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">12</text>
+  <rect x="252" y="92" width="44" height="30" rx="5" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><text x="274" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#92400e">15</text>
+  <rect x="300" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="322" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">19</text>
+  <rect x="348" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="370" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">23</text>
+  <rect x="396" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="418" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">34</text>
+  <rect x="444" y="92" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="466" y="112" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">56</text>
+
+  <text x="82" y="134" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#22c55e" font-weight="700">L</text>
+  <text x="274" y="134" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#f59e0b" font-weight="700">M</text>
+  <text x="466" y="134" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="700">R</text>
+
+  <text x="560" y="100" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">mid=15, target=23</text>
+  <text x="560" y="116" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#f59e0b" font-weight="600">23 > 15 → search right</text>
+
+  <!-- Step 2 -->
+  <rect x="30" y="146" width="660" height="74" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="50" y="164" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Step 2</text>
+
+  <!-- Eliminated left half -->
+  <rect x="60" y="172" width="236" height="30" rx="5" fill="#fecaca" opacity="0.3"/>
+  <text x="178" y="192" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#ef4444">eliminated</text>
+
+  <rect x="300" y="172" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="322" y="192" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">19</text>
+  <rect x="348" y="172" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="370" y="192" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">23</text>
+  <rect x="396" y="172" width="44" height="30" rx="5" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><text x="418" y="192" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#92400e">34</text>
+  <rect x="444" y="172" width="44" height="30" rx="5" fill="#e0e7ff" stroke="#818cf8"/><text x="466" y="192" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#4338ca">56</text>
+
+  <text x="322" y="214" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#22c55e" font-weight="700">L</text>
+  <text x="418" y="214" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#f59e0b" font-weight="700">M</text>
+  <text x="466" y="214" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="700">R</text>
+
+  <text x="560" y="180" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">mid=34, target=23</text>
+  <text x="560" y="196" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#f59e0b" font-weight="600">23 &lt; 34 → search left</text>
+
+  <!-- Step 3 - Found! -->
+  <rect x="30" y="226" width="660" height="74" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="50" y="244" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#22c55e">Step 3</text>
+
+  <rect x="60" y="252" width="284" height="30" rx="5" fill="#fecaca" opacity="0.3"/>
+  <text x="200" y="272" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#ef4444">eliminated</text>
+
+  <rect x="348" y="252" width="44" height="30" rx="5" fill="#dcfce7" stroke="#22c55e" stroke-width="2.5"/><text x="370" y="272" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#166534">23</text>
+
+  <rect x="396" y="252" width="96" height="30" rx="5" fill="#fecaca" opacity="0.3"/>
+  <text x="444" y="272" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#ef4444">eliminated</text>
+
+  <text x="370" y="294" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e" font-weight="700">Found! ✓ L=M=R</text>
+
+  <text x="560" y="260" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">mid=23, target=23</text>
+  <text x="560" y="276" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e" font-weight="700">23 == 23 ✓ Found!</text>
+
+  <!-- Summary -->
+  <rect x="30" y="310" width="660" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="360" y="332" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#4338ca">9 elements → only 3 comparisons! O(log₂ 9) ≈ 3.2</text>
+  <text x="200" y="352" text-anchor="middle" font-family="monospace" font-size="10" fill="#475569">1,000 elements → ~10 steps</text>
+  <text x="400" y="352" text-anchor="middle" font-family="monospace" font-size="10" fill="#475569">1,000,000 elements → ~20 steps</text>
+  <text x="600" y="352" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e" font-weight="600">Requires sorted!</text>
+
+  <text x="360" y="394" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — ai-sketch</text>
+</svg>

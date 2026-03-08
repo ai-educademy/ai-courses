@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="ss-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="ss-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#ss-bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Sorting Algorithms</text>
+  <text x="360" y="53" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">Bubble Sort — step-by-step with colored bar visualization</text>
+
+  <!-- Original -->
+  <rect x="30" y="68" width="660" height="66" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="70" y="90" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Original</text>
+  <!-- Bars: 5,2,8,1,4 -->
+  <rect x="180" y="118" width="40" height="-40" rx="4" fill="#ef4444"/><rect x="180" y="78" width="40" height="40" rx="4" fill="#ef4444"/><text x="200" y="127" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">5</text>
+  <rect x="230" y="98" width="40" height="20" rx="4" fill="#f59e0b"/><text x="250" y="127" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#92400e">2</text>
+  <rect x="280" y="68" width="40" height="50" rx="4" fill="#3b82f6"/><text x="300" y="127" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">8</text>
+  <rect x="330" y="108" width="40" height="10" rx="4" fill="#818cf8"/><text x="350" y="127" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#4338ca">1</text>
+  <rect x="380" y="88" width="40" height="30" rx="4" fill="#22c55e"/><text x="400" y="127" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">4</text>
+  <text x="500" y="95" font-family="monospace" font-size="11" fill="#475569">[5, 2, 8, 1, 4]</text>
+
+  <!-- Pass 1 -->
+  <rect x="30" y="142" width="660" height="66" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="70" y="164" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Pass 1</text>
+  <text x="70" y="180" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">8 bubbles up</text>
+  <!-- Bars: 2,5,1,4,8 -->
+  <rect x="180" y="172" width="40" height="20" rx="4" fill="#f59e0b"/><text x="200" y="201" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#92400e">2</text>
+  <rect x="230" y="152" width="40" height="40" rx="4" fill="#ef4444"/><text x="250" y="201" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">5</text>
+  <rect x="280" y="182" width="40" height="10" rx="4" fill="#818cf8"/><text x="300" y="201" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#4338ca">1</text>
+  <rect x="330" y="162" width="40" height="30" rx="4" fill="#22c55e"/><text x="350" y="201" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">4</text>
+  <rect x="380" y="142" width="40" height="50" rx="4" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/><text x="400" y="201" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">8</text>
+  <text x="500" y="170" font-family="monospace" font-size="11" fill="#475569">[2, 5, 1, 4, 8]</text>
+  <text x="500" y="188" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#3b82f6" font-weight="600">8 in final position ✓</text>
+
+  <!-- Pass 2 -->
+  <rect x="30" y="216" width="660" height="66" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="70" y="238" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Pass 2</text>
+  <text x="70" y="254" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">5 bubbles up</text>
+  <!-- Bars: 2,1,4,5,8 -->
+  <rect x="180" y="246" width="40" height="20" rx="4" fill="#f59e0b"/><text x="200" y="275" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#92400e">2</text>
+  <rect x="230" y="256" width="40" height="10" rx="4" fill="#818cf8"/><text x="250" y="275" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#4338ca">1</text>
+  <rect x="280" y="236" width="40" height="30" rx="4" fill="#22c55e"/><text x="300" y="275" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">4</text>
+  <rect x="330" y="226" width="40" height="40" rx="4" fill="#ef4444" stroke="#dc2626" stroke-width="2"/><text x="350" y="275" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">5</text>
+  <rect x="380" y="216" width="40" height="50" rx="4" fill="#3b82f6" opacity="0.5"/><text x="400" y="275" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">8</text>
+  <text x="500" y="244" font-family="monospace" font-size="11" fill="#475569">[2, 1, 4, 5, 8]</text>
+  <text x="500" y="262" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#ef4444" font-weight="600">5, 8 in final positions ✓</text>
+
+  <!-- Sorted -->
+  <rect x="30" y="290" width="660" height="66" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="70" y="312" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="#22c55e">Sorted!</text>
+  <!-- Bars: 1,2,4,5,8 -->
+  <rect x="180" y="330" width="40" height="10" rx="4" fill="#22c55e"/><text x="200" y="349" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#166534">1</text>
+  <rect x="230" y="320" width="40" height="20" rx="4" fill="#22c55e"/><text x="250" y="349" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">2</text>
+  <rect x="280" y="310" width="40" height="30" rx="4" fill="#22c55e"/><text x="300" y="349" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">4</text>
+  <rect x="330" y="300" width="40" height="40" rx="4" fill="#22c55e"/><text x="350" y="349" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">5</text>
+  <rect x="380" y="290" width="40" height="50" rx="4" fill="#22c55e"/><text x="400" y="349" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="white">8</text>
+  <text x="500" y="312" font-family="monospace" font-size="11" fill="#22c55e" font-weight="700">[1, 2, 4, 5, 8] ✓</text>
+  <text x="500" y="332" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Bubble Sort: O(n²)</text>
+  <text x="500" y="348" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Better: merge sort O(n log n)</text>
+
+  <text x="360" y="378" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Each pass, the largest unsorted element "bubbles" to its correct position</text>
+  <text x="360" y="394" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — ai-sketch</text>
+</svg>

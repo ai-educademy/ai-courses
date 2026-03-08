@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="ga-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="ga-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="ga-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#ga-bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Graph Algorithms</text>
+  <text x="360" y="53" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">BFS (breadth-first) vs DFS (depth-first) traversal on the same graph</text>
+
+  <!-- Graph structure (center) -->
+  <rect x="195" y="64" width="330" height="200" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="360" y="82" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#6b7280">Undirected Graph</text>
+
+  <!-- Edges first (behind nodes) -->
+  <line x1="280" y1="120" x2="360" y2="120" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="360" y1="120" x2="440" y2="120" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="280" y1="120" x2="240" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="280" y1="120" x2="320" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="360" y1="120" x2="320" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="440" y1="120" x2="400" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="440" y1="120" x2="480" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="320" y1="190" x2="400" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="240" y1="190" x2="320" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="400" y1="190" x2="480" y2="190" stroke="#cbd5e1" stroke-width="2"/>
+
+  <!-- Node A -->
+  <circle cx="280" cy="120" r="20" fill="url(#ga-accent)"/><text x="280" y="125" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">A</text>
+  <!-- Node B -->
+  <circle cx="360" cy="120" r="20" fill="url(#ga-accent)"/><text x="360" y="125" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">B</text>
+  <!-- Node C -->
+  <circle cx="440" cy="120" r="20" fill="url(#ga-accent)"/><text x="440" y="125" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">C</text>
+  <!-- Node D -->
+  <circle cx="240" cy="190" r="20" fill="url(#ga-accent)"/><text x="240" y="195" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">D</text>
+  <!-- Node E -->
+  <circle cx="320" cy="190" r="20" fill="url(#ga-accent)"/><text x="320" y="195" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">E</text>
+  <!-- Node F -->
+  <circle cx="400" cy="190" r="20" fill="url(#ga-accent)"/><text x="400" y="195" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">F</text>
+  <!-- Node G (extra) -->
+  <circle cx="480" cy="190" r="20" fill="url(#ga-accent)"/><text x="480" y="195" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="white">G</text>
+
+  <!-- BFS panel -->
+  <rect x="20" y="275" width="330" height="90" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="20" y="275" width="330" height="28" rx="14" fill="#3b82f6"/>
+  <rect x="20" y="289" width="330" height="14" fill="#3b82f6"/>
+  <text x="185" y="295" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">BFS — Breadth-First Search</text>
+  <text x="185" y="320" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Uses a queue — explores level by level</text>
+  <text x="185" y="338" text-anchor="middle" font-family="monospace" font-size="12" font-weight="600" fill="#3b82f6">A → B → C → D → E → F → G</text>
+  <text x="185" y="356" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Best for: shortest path, level-order traversal</text>
+
+  <!-- DFS panel -->
+  <rect x="370" y="275" width="330" height="90" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="370" y="275" width="330" height="28" rx="14" fill="#f97316"/>
+  <rect x="370" y="289" width="330" height="14" fill="#f97316"/>
+  <text x="535" y="295" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">DFS — Depth-First Search</text>
+  <text x="535" y="320" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Uses a stack — explores as deep as possible first</text>
+  <text x="535" y="338" text-anchor="middle" font-family="monospace" font-size="12" font-weight="600" fill="#f97316">A → D → E → B → F → C → G</text>
+  <text x="535" y="356" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Best for: cycle detection, topological sort, path finding</text>
+
+  <!-- BFS path highlight on graph -->
+  <line x1="298" y1="124" x2="342" y2="120" stroke="#3b82f6" stroke-width="3" stroke-dasharray="6,3" opacity="0.6"/>
+  <line x1="378" y1="124" x2="422" y2="120" stroke="#3b82f6" stroke-width="3" stroke-dasharray="6,3" opacity="0.6"/>
+
+  <!-- DFS path highlight on graph -->
+  <line x1="268" y1="134" x2="246" y2="174" stroke="#f97316" stroke-width="3" stroke-dasharray="6,3" opacity="0.6"/>
+  <line x1="252" y1="200" x2="305" y2="195" stroke="#f97316" stroke-width="3" stroke-dasharray="6,3" opacity="0.6"/>
+
+  <text x="360" y="394" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — ai-chisel</text>
+</svg>

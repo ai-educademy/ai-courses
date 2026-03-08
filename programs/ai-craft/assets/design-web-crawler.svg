@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="dwc_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="dwc_accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="dwc_arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+    </marker>
+    <marker id="dwc_arrow_accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#6366f1"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="400" rx="20" fill="url(#dwc_bg)"/>
+
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Web Crawler Architecture</text>
+
+  <!-- Stage 1: URL Frontier -->
+  <rect x="30" y="80" width="140" height="130" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="30" y="80" width="140" height="28" rx="14" fill="url(#dwc_accent)"/>
+  <rect x="30" y="94" width="140" height="14" fill="url(#dwc_accent)"/>
+  <text x="100" y="99" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">URL Frontier</text>
+  <!-- Queue icon -->
+  <rect x="60" y="118" width="80" height="12" rx="3" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.8"/>
+  <rect x="60" y="134" width="80" height="12" rx="3" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.8"/>
+  <rect x="60" y="150" width="80" height="12" rx="3" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.8"/>
+  <text x="100" y="128" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#475569">url-1.com</text>
+  <text x="100" y="144" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#475569">url-2.org</text>
+  <text x="100" y="160" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#475569">url-3.net</text>
+  <text x="100" y="180" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Priority queue</text>
+  <text x="100" y="193" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">with politeness</text>
+
+  <!-- Arrow 1: Frontier -> Fetcher -->
+  <line x1="172" y1="145" x2="212" y2="145" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dwc_arrow)"/>
+
+  <!-- Stage 2: Fetcher -->
+  <rect x="218" y="80" width="140" height="130" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="218" y="80" width="140" height="28" rx="14" fill="url(#dwc_accent)"/>
+  <rect x="218" y="94" width="140" height="14" fill="url(#dwc_accent)"/>
+  <text x="288" y="99" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Fetcher</text>
+  <!-- Download icon -->
+  <line x1="288" y1="122" x2="288" y2="142" stroke="#6366f1" stroke-width="2" opacity="0.5"/>
+  <polyline points="278,134 288,142 298,134" fill="none" stroke="#6366f1" stroke-width="2" opacity="0.5"/>
+  <line x1="274" y1="148" x2="302" y2="148" stroke="#6366f1" stroke-width="2" opacity="0.5"/>
+  <text x="288" y="170" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">HTTP GET requests</text>
+  <text x="288" y="183" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">robots.txt check</text>
+  <text x="288" y="196" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Rate limiting</text>
+
+  <!-- Arrow 2: Fetcher -> Parser -->
+  <line x1="360" y1="145" x2="400" y2="145" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dwc_arrow)"/>
+
+  <!-- Stage 3: Parser -->
+  <rect x="406" y="80" width="140" height="130" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="406" y="80" width="140" height="28" rx="14" fill="url(#dwc_accent)"/>
+  <rect x="406" y="94" width="140" height="14" fill="url(#dwc_accent)"/>
+  <text x="476" y="99" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Parser</text>
+  <!-- Code icon -->
+  <text x="476" y="137" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" fill="#6366f1" opacity="0.4">&lt;/&gt;</text>
+  <text x="476" y="163" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Extract content</text>
+  <text x="476" y="176" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">and hyperlinks</text>
+  <text x="476" y="196" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">HTML / DOM parsing</text>
+
+  <!-- Arrow 3: Parser -> Content Store -->
+  <line x1="548" y1="145" x2="578" y2="145" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dwc_arrow)"/>
+
+  <!-- Stage 4: Content Store -->
+  <rect x="584" y="80" width="120" height="130" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="584" y="80" width="120" height="28" rx="14" fill="url(#dwc_accent)"/>
+  <rect x="584" y="94" width="120" height="14" fill="url(#dwc_accent)"/>
+  <text x="644" y="99" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Content Store</text>
+  <!-- Database icon -->
+  <ellipse cx="644" cy="128" rx="16" ry="7" fill="none" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+  <line x1="628" y1="128" x2="628" y2="148" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+  <line x1="660" y1="128" x2="660" y2="148" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+  <ellipse cx="644" cy="148" rx="16" ry="7" fill="none" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+  <text x="644" y="172" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Indexed pages,</text>
+  <text x="644" y="185" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">metadata &amp;</text>
+  <text x="644" y="198" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">dedup fingerprints</text>
+
+  <!-- Feedback arrow: Parser -> URL Frontier ("Discovered URLs") -->
+  <!-- Goes from Parser bottom, curves left and up back to Frontier -->
+  <path d="M 476,212 L 476,240 Q 476,260 456,260 L 120,260 Q 100,260 100,240 L 100,212"
+        fill="none" stroke="#6366f1" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#dwc_arrow_accent)"/>
+  <rect x="220" y="248" width="150" height="24" rx="8" fill="white" stroke="#6366f1" stroke-width="1.2"/>
+  <text x="295" y="264" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#6366f1">Discovered URLs</text>
+
+  <!-- Detail section below -->
+  <rect x="30" y="290" width="210" height="75" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="135" y="310" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Deduplication</text>
+  <text x="135" y="326" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Bloom filter or hash set to</text>
+  <text x="135" y="340" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">avoid re-crawling seen URLs</text>
+  <text x="135" y="354" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Memory-efficient checks</text>
+
+  <rect x="260" y="290" width="210" height="75" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="365" y="310" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Politeness Policy</text>
+  <text x="365" y="326" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Respect robots.txt &amp; crawl-</text>
+  <text x="365" y="340" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">delay; one req per domain at</text>
+  <text x="365" y="354" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">a time to avoid overload</text>
+
+  <rect x="490" y="290" width="210" height="75" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="595" y="310" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Scalability</text>
+  <text x="595" y="326" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Distributed workers with</text>
+  <text x="595" y="340" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">consistent hashing to</text>
+  <text x="595" y="354" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">partition URL space</text>
+
+  <!-- Caption -->
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Web Crawler — Frontier, Fetch, Parse &amp; Discovery Loop</text>
+</svg>

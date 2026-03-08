@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="lobg" x1="0" y1="0" x2="720" y2="400">
+      <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="lohdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#lobg)" rx="20"/>
+  <text x="360" y="36" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Loss Functions</text>
+
+  <!-- Chart area -->
+  <rect x="100" y="55" width="420" height="280" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+
+  <!-- Axes -->
+  <line x1="140" y1="310" x2="490" y2="310" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <line x1="140" y1="310" x2="140" y2="75" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <text x="315" y="330" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Model Weights</text>
+  <text x="125" y="195" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280" transform="rotate(-90,125,195)">Loss</text>
+
+  <!-- U-shaped loss curve -->
+  <path d="M160,100 Q195,95 220,120 Q250,180 280,240 Q300,290 315,295 Q330,290 350,260 Q380,200 410,140 Q435,100 460,90" stroke="#6366f1" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Fill under curve (subtle) -->
+  <path d="M160,100 Q195,95 220,120 Q250,180 280,240 Q300,290 315,295 Q330,290 350,260 Q380,200 410,140 Q435,100 460,90 L460,310 L160,310 Z" fill="#6366f1" opacity="0.05"/>
+
+  <!-- Ball on curve -->
+  <circle cx="225" cy="130" r="10" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+  <text x="225" y="118" text-anchor="middle" font-size="10">🟡</text>
+
+  <!-- Gradient descent arrows -->
+  <line x1="235" y1="138" x2="260" y2="175" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="257,170 265,180 255,178" fill="#ef4444"/>
+
+  <line x1="268" y1="195" x2="288" y2="250" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="285,245 293,255 283,253" fill="#ef4444"/>
+
+  <line x1="293" y1="260" x2="310" y2="290" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="307,285 315,295 305,293" fill="#ef4444"/>
+
+  <!-- Minimum point marker -->
+  <circle cx="315" cy="295" r="8" fill="none" stroke="#22c55e" stroke-width="2.5"/>
+  <circle cx="315" cy="295" r="3" fill="#22c55e"/>
+  <text x="315" y="280" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#16a34a">Minimum!</text>
+
+  <!-- Labels on curve -->
+  <text x="200" y="100" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#b91c1c">High Loss</text>
+  <text x="450" y="82" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#b91c1c">High Loss</text>
+
+  <!-- Right side explanations -->
+  <g transform="translate(550,60)">
+    <rect width="145" height="70" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+    <text x="72" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="#4338ca">📉 Loss</text>
+    <text x="72" y="39" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">How wrong the</text>
+    <text x="72" y="52" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">model's predictions</text>
+    <text x="72" y="65" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">are</text>
+  </g>
+
+  <g transform="translate(550,145)">
+    <rect width="145" height="70" rx="14" fill="white" stroke="#fca5a5" stroke-width="1.5"/>
+    <text x="72" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="#dc2626">⬇️ Gradient</text>
+    <text x="72" y="39" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Direction to move</text>
+    <text x="72" y="52" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">to reduce loss</text>
+    <text x="72" y="65" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">(steepest slope)</text>
+  </g>
+
+  <g transform="translate(550,230)">
+    <rect width="145" height="70" rx="14" fill="white" stroke="#86efac" stroke-width="1.5"/>
+    <text x="72" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="#16a34a">🎯 Goal</text>
+    <text x="72" y="39" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Find the weights</text>
+    <text x="72" y="52" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">that give the</text>
+    <text x="72" y="65" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">lowest loss</text>
+  </g>
+
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Finding the minimum loss — like a ball rolling downhill</text>
+</svg>

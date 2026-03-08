@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="dns_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="dns_accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="dns_arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="400" rx="20" fill="url(#dns_bg)"/>
+
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Notification System Architecture</text>
+
+  <!-- Event Source Box -->
+  <rect x="30" y="120" width="130" height="160" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="30" y="120" width="130" height="28" rx="14" fill="url(#dns_accent)"/>
+  <rect x="30" y="134" width="130" height="14" fill="url(#dns_accent)"/>
+  <text x="95" y="139" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Event Source</text>
+
+  <text x="95" y="168" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">User Actions</text>
+  <text x="95" y="186" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">System Events</text>
+  <text x="95" y="204" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Scheduled Jobs</text>
+  <text x="95" y="222" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Webhooks</text>
+  <text x="95" y="240" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">API Triggers</text>
+  <text x="95" y="265" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18">⚡</text>
+
+  <!-- Arrow: Event Source -> Notification Service -->
+  <line x1="160" y1="200" x2="230" y2="200" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dns_arrow)"/>
+  <text x="195" y="193" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">events</text>
+
+  <!-- Notification Service Box (center) -->
+  <rect x="235" y="100" width="190" height="200" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="235" y="100" width="190" height="28" rx="14" fill="url(#dns_accent)"/>
+  <rect x="235" y="114" width="190" height="14" fill="url(#dns_accent)"/>
+  <text x="330" y="119" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Notification Service</text>
+
+  <text x="330" y="148" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Template Engine</text>
+  <text x="330" y="166" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Priority Queue</text>
+  <text x="330" y="184" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">User Preferences</text>
+  <text x="330" y="202" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Rate Limiting</text>
+  <text x="330" y="220" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Deduplication</text>
+  <text x="330" y="238" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Retry Logic</text>
+
+  <!-- Fan-out label -->
+  <rect x="276" y="260" width="108" height="24" rx="8" fill="#ede9fe" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="330" y="276" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#6366f1">Fan-out Router</text>
+
+  <!-- Fan-out arrows -->
+  <!-- Push -->
+  <path d="M 425 155 L 480 100" stroke="#94a3b8" stroke-width="2.5" fill="none" marker-end="url(#dns_arrow)"/>
+  <!-- Email -->
+  <path d="M 425 180 L 480 175" stroke="#94a3b8" stroke-width="2.5" fill="none" marker-end="url(#dns_arrow)"/>
+  <!-- SMS -->
+  <path d="M 425 210 L 480 250" stroke="#94a3b8" stroke-width="2.5" fill="none" marker-end="url(#dns_arrow)"/>
+  <!-- In-App -->
+  <path d="M 425 240 L 480 325" stroke="#94a3b8" stroke-width="2.5" fill="none" marker-end="url(#dns_arrow)"/>
+
+  <!-- Push Channel -->
+  <rect x="490" y="65" width="200" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="490" y="65" width="40" height="60" rx="14" fill="url(#dns_accent)"/>
+  <rect x="516" y="65" width="14" height="60" fill="url(#dns_accent)"/>
+  <text x="513" y="101" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18">🔔</text>
+  <text x="600" y="89" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#475569">Push Notifications</text>
+  <text x="600" y="107" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">APNs · FCM · Web Push</text>
+
+  <!-- Email Channel -->
+  <rect x="490" y="140" width="200" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="490" y="140" width="40" height="60" rx="14" fill="url(#dns_accent)"/>
+  <rect x="516" y="140" width="14" height="60" fill="url(#dns_accent)"/>
+  <text x="513" y="176" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18">📧</text>
+  <text x="600" y="164" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#475569">Email</text>
+  <text x="600" y="182" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">SMTP · SendGrid · SES</text>
+
+  <!-- SMS Channel -->
+  <rect x="490" y="215" width="200" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="490" y="215" width="40" height="60" rx="14" fill="url(#dns_accent)"/>
+  <rect x="516" y="215" width="14" height="60" fill="url(#dns_accent)"/>
+  <text x="513" y="251" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18">💬</text>
+  <text x="600" y="239" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#475569">SMS</text>
+  <text x="600" y="257" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Twilio · SNS · Vonage</text>
+
+  <!-- In-App Channel -->
+  <rect x="490" y="290" width="200" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="490" y="290" width="40" height="60" rx="14" fill="url(#dns_accent)"/>
+  <rect x="516" y="290" width="14" height="60" fill="url(#dns_accent)"/>
+  <text x="513" y="326" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18">🔲</text>
+  <text x="600" y="314" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#475569">In-App</text>
+  <text x="600" y="332" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">WebSocket · SSE · Polling</text>
+
+  <!-- Caption -->
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Notification Fan-out — Push, Email, SMS &amp; In-App Channels</text>
+</svg>

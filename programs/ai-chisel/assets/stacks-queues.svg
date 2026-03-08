@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Stack (LIFO) vs Queue (FIFO)</text>
+
+  <!-- ======== STACK ======== -->
+  <text x="200" y="60" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="bold" fill="#06B6D4">Stack — Last In, First Out</text>
+
+  <!-- Stack container -->
+  <rect x="140" y="80" width="120" height="250" rx="0" fill="none" stroke="#0F172A" stroke-width="2.5"/>
+  <!-- Open top indicator -->
+  <line x1="137" y1="80" x2="137" y2="95" stroke="#ffffff" stroke-width="4"/>
+  <line x1="263" y1="80" x2="263" y2="95" stroke="#ffffff" stroke-width="4"/>
+
+  <!-- Stack elements (bottom to top) -->
+  <rect x="145" y="280" width="110" height="40" rx="5" fill="#E2E8F0" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="200" y="305" text-anchor="middle" font-family="monospace" font-size="14" fill="#64748B">A</text>
+
+  <rect x="145" y="235" width="110" height="40" rx="5" fill="#BAE6FD" stroke="#7DD3FC" stroke-width="1.5"/>
+  <text x="200" y="260" text-anchor="middle" font-family="monospace" font-size="14" fill="#0369A1">B</text>
+
+  <rect x="145" y="190" width="110" height="40" rx="5" fill="#67E8F9" stroke="#22D3EE" stroke-width="1.5"/>
+  <text x="200" y="215" text-anchor="middle" font-family="monospace" font-size="14" fill="#0E7490">C</text>
+
+  <rect x="145" y="145" width="110" height="40" rx="5" fill="#06B6D4" stroke="#0891B2" stroke-width="1.5"/>
+  <text x="200" y="170" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">D</text>
+  <text x="265" y="170" font-family="system-ui, sans-serif" font-size="11" fill="#06B6D4" font-weight="bold">TOP</text>
+
+  <!-- Push arrow -->
+  <path d="M 85 95 L 85 135 L 135 135" fill="none" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="50" y="92" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#10B981">push()</text>
+
+  <!-- Pop arrow -->
+  <path d="M 135 155 L 85 155 L 85 100" fill="none" stroke="#EF4444" stroke-width="2.5" marker-end="url(#arrowRed)"/>
+  <text x="50" y="180" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#EF4444">pop()</text>
+
+  <!-- Stack label -->
+  <rect x="115" y="340" width="170" height="24" rx="5" fill="#F0FDFA" stroke="#06B6D4" stroke-width="1"/>
+  <text x="200" y="357" text-anchor="middle" font-family="monospace" font-size="11" fill="#06B6D4" font-weight="bold">push/pop/peek: O(1)</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="50" x2="400" y2="380" stroke="#E2E8F0" stroke-width="2" stroke-dasharray="6"/>
+
+  <!-- ======== QUEUE ======== -->
+  <text x="600" y="60" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="bold" fill="#7C3AED">Queue — First In, First Out</text>
+
+  <!-- Queue container (horizontal) -->
+  <rect x="440" y="145" width="320" height="70" rx="0" fill="none" stroke="#0F172A" stroke-width="2.5"/>
+
+  <!-- Queue elements (left=front, right=back) -->
+  <rect x="448" y="152" width="65" height="56" rx="5" fill="#7C3AED" stroke="#6D28D9" stroke-width="1.5"/>
+  <text x="480" y="185" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">A</text>
+  <text x="480" y="228" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#7C3AED" font-weight="bold">FRONT</text>
+
+  <rect x="519" y="152" width="65" height="56" rx="5" fill="#A78BFA" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="551" y="185" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">B</text>
+
+  <rect x="590" y="152" width="65" height="56" rx="5" fill="#C4B5FD" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="622" y="185" text-anchor="middle" font-family="monospace" font-size="14" fill="#5B21B6">C</text>
+
+  <rect x="661" y="152" width="65" height="56" rx="5" fill="#DDD6FE" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="693" y="185" text-anchor="middle" font-family="monospace" font-size="14" fill="#6D28D9">D</text>
+  <text x="693" y="228" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#7C3AED" font-weight="bold">BACK</text>
+
+  <!-- Enqueue arrow (right side) -->
+  <path d="M 780 180 L 732 180" fill="none" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="780" y="170" text-anchor="end" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#10B981">enqueue()</text>
+
+  <!-- Dequeue arrow (left side) -->
+  <path d="M 444 180 L 418 180" fill="none" stroke="#EF4444" stroke-width="2.5" marker-end="url(#arrowRed)"/>
+  <text x="420" y="135" text-anchor="start" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#EF4444">dequeue()</text>
+
+  <!-- Queue label -->
+  <rect x="490" y="250" width="220" height="24" rx="5" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="600" y="267" text-anchor="middle" font-family="monospace" font-size="11" fill="#7C3AED" font-weight="bold">enqueue/dequeue/peek: O(1)</text>
+
+  <!-- Use cases at bottom -->
+  <rect x="40" y="345" width="340" height="45" rx="8" fill="#F0FDFA" stroke="#06B6D4" stroke-width="1"/>
+  <text x="210" y="364" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#06B6D4">Stack Use Cases</text>
+  <text x="210" y="381" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">Undo/Redo | Call Stack | Parentheses | DFS</text>
+
+  <rect x="420" y="345" width="340" height="45" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="590" y="364" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#7C3AED">Queue Use Cases</text>
+  <text x="590" y="381" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">BFS | Task Scheduling | Message Queues</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#10B981"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#EF4444"/>
+    </marker>
+  </defs>
+</svg>

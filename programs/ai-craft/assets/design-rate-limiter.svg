@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="drl_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="drl_accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="drl_green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="drl_red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <marker id="drl_arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+    </marker>
+    <marker id="drl_arrow_green" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="drl_arrow_red" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+    <clipPath id="drl_bucket_clip">
+      <path d="M 280 130 L 280 260 Q 280 275 295 275 L 425 275 Q 440 275 440 260 L 440 130 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="400" rx="20" fill="url(#drl_bg)"/>
+
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Rate Limiter Design</text>
+
+  <!-- Request Box -->
+  <rect x="30" y="130" width="120" height="110" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="30" y="130" width="120" height="28" rx="14" fill="url(#drl_accent)"/>
+  <rect x="30" y="144" width="120" height="14" fill="url(#drl_accent)"/>
+  <text x="90" y="149" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Incoming Request</text>
+  <text x="90" y="178" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">HTTP Request</text>
+  <text x="90" y="196" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Client IP / Key</text>
+  <text x="90" y="214" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">API Endpoint</text>
+
+  <!-- Arrow: Request -> Rate Limiter -->
+  <line x1="150" y1="185" x2="270" y2="185" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#drl_arrow)"/>
+  <text x="210" y="178" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">check limit</text>
+
+  <!-- Rate Limiter / Token Bucket area -->
+  <rect x="275" y="68" width="170" height="250" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="275" y="68" width="170" height="28" rx="14" fill="url(#drl_accent)"/>
+  <rect x="275" y="82" width="170" height="14" fill="url(#drl_accent)"/>
+  <text x="360" y="87" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Rate Limiter</text>
+
+  <!-- Token Bucket visualization -->
+  <text x="360" y="112" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#475569">Token Bucket</text>
+
+  <!-- Bucket shape -->
+  <path d="M 310 128 L 300 255 Q 300 268 315 268 L 405 268 Q 420 268 420 255 L 410 128 Z" fill="#f8fafc" stroke="#c7d2fe" stroke-width="1.5"/>
+
+  <!-- Water level (tokens) fill -->
+  <path d="M 304 190 L 300 255 Q 300 268 315 268 L 405 268 Q 420 268 420 255 L 416 190 Z" fill="#ede9fe" opacity="0.6"/>
+
+  <!-- Tokens (small circles inside the bucket) -->
+  <!-- Row 1 (bottom) -->
+  <circle cx="330" cy="250" r="8" fill="url(#drl_accent)" opacity="0.9"/>
+  <circle cx="350" cy="250" r="8" fill="url(#drl_accent)" opacity="0.9"/>
+  <circle cx="370" cy="250" r="8" fill="url(#drl_accent)" opacity="0.9"/>
+  <circle cx="390" cy="250" r="8" fill="url(#drl_accent)" opacity="0.9"/>
+  <!-- Row 2 -->
+  <circle cx="340" cy="232" r="8" fill="url(#drl_accent)" opacity="0.8"/>
+  <circle cx="360" cy="232" r="8" fill="url(#drl_accent)" opacity="0.8"/>
+  <circle cx="380" cy="232" r="8" fill="url(#drl_accent)" opacity="0.8"/>
+  <!-- Row 3 -->
+  <circle cx="345" cy="214" r="8" fill="url(#drl_accent)" opacity="0.7"/>
+  <circle cx="365" cy="214" r="8" fill="url(#drl_accent)" opacity="0.7"/>
+  <!-- Row 4 (top) -->
+  <circle cx="355" cy="196" r="8" fill="url(#drl_accent)" opacity="0.6"/>
+
+  <!-- Token refill indicator -->
+  <text x="360" y="143" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">⏱ refill rate: N tokens/sec</text>
+
+  <!-- Bucket label -->
+  <text x="360" y="290" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">capacity: max tokens</text>
+
+  <!-- Allowed path (green) -->
+  <path d="M 445 170 L 530 170" stroke="#16a34a" stroke-width="2.5" fill="none" marker-end="url(#drl_arrow_green)"/>
+  <rect x="470" y="155" width="52" height="18" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="496" y="168" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" font-weight="600" fill="#16a34a">Allowed</text>
+
+  <!-- Service Box (green accent) -->
+  <rect x="535" y="120" width="150" height="100" rx="14" fill="white" stroke="#bbf7d0" stroke-width="2"/>
+  <rect x="535" y="120" width="150" height="28" rx="14" fill="url(#drl_green)"/>
+  <rect x="535" y="134" width="150" height="14" fill="url(#drl_green)"/>
+  <text x="610" y="139" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">✓ Service</text>
+  <text x="610" y="165" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">200 OK</text>
+  <text x="610" y="183" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Process Request</text>
+  <text x="610" y="201" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Return Response</text>
+
+  <!-- Denied path (red) -->
+  <path d="M 445 230 L 470 230 Q 485 230 485 245 L 485 280 Q 485 295 500 295 L 530 295" stroke="#dc2626" stroke-width="2.5" fill="none" marker-end="url(#drl_arrow_red)"/>
+  <rect x="460" y="252" width="46" height="18" rx="6" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="483" y="265" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" font-weight="600" fill="#dc2626">Denied</text>
+
+  <!-- 429 Response Box (red accent) -->
+  <rect x="535" y="260" width="150" height="80" rx="14" fill="white" stroke="#fecaca" stroke-width="2"/>
+  <rect x="535" y="260" width="150" height="28" rx="14" fill="url(#drl_red)"/>
+  <rect x="535" y="274" width="150" height="14" fill="url(#drl_red)"/>
+  <text x="610" y="279" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">✗ 429 Too Many</text>
+  <text x="610" y="305" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Rate Limit Exceeded</text>
+  <text x="610" y="323" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Retry-After header</text>
+
+  <!-- Info at bottom left -->
+  <rect x="30" y="300" width="230" height="60" rx="12" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="145" y="320" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Algorithm: Token Bucket</text>
+  <text x="145" y="337" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Tokens consumed per request · Refilled at fixed rate</text>
+  <text x="145" y="351" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Allows short bursts up to bucket capacity</text>
+
+  <!-- Caption -->
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Rate Limiting — Token Bucket Algorithm</text>
+</svg>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="tg-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="tg-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#tg-bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Trees vs Graphs</text>
+  <text x="360" y="53" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">Comparing hierarchical tree structure with general graph (with cycles)</text>
+
+  <!-- Tree Section -->
+  <rect x="20" y="66" width="330" height="270" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="20" y="66" width="330" height="28" rx="14" fill="url(#tg-accent)"/>
+  <rect x="20" y="80" width="330" height="14" fill="url(#tg-accent)"/>
+  <text x="185" y="86" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">Binary Tree (Hierarchical)</text>
+
+  <!-- Tree edges -->
+  <line x1="185" y1="120" x2="115" y2="162" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="185" y1="120" x2="255" y2="162" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="115" y1="186" x2="75" y2="226" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="115" y1="186" x2="155" y2="226" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="255" y1="186" x2="215" y2="226" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="255" y1="186" x2="295" y2="226" stroke="#94a3b8" stroke-width="2.5"/>
+
+  <!-- Tree nodes -->
+  <circle cx="185" cy="112" r="18" fill="url(#tg-accent)"/><text x="185" y="118" text-anchor="middle" font-family="monospace" font-size="14" font-weight="700" fill="white">A</text>
+  <text x="215" y="108" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6366f1" font-weight="600">root</text>
+  <circle cx="115" cy="175" r="17" fill="#818cf8"/><text x="115" y="181" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="white">B</text>
+  <circle cx="255" cy="175" r="17" fill="#818cf8"/><text x="255" y="181" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="white">C</text>
+  <circle cx="75" cy="238" r="15" fill="#a5b4fc"/><text x="75" y="244" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="white">D</text>
+  <circle cx="155" cy="238" r="15" fill="#a5b4fc"/><text x="155" y="244" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="white">E</text>
+  <circle cx="215" cy="238" r="15" fill="#a5b4fc"/><text x="215" y="244" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="white">F</text>
+  <circle cx="295" cy="238" r="15" fill="#a5b4fc"/><text x="295" y="244" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="white">G</text>
+
+  <!-- Tree properties -->
+  <text x="48" y="278" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✓ One root node</text>
+  <text x="48" y="294" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✓ No cycles</text>
+  <text x="48" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✓ One path between nodes</text>
+  <text x="48" y="326" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✓ n nodes, n-1 edges</text>
+
+  <!-- Graph Section -->
+  <rect x="370" y="66" width="330" height="270" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="370" y="66" width="330" height="28" rx="14" fill="#f59e0b"/>
+  <rect x="370" y="80" width="330" height="14" fill="#f59e0b"/>
+  <text x="535" y="86" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">Graph (General, with cycles)</text>
+
+  <!-- Graph edges (including cycle) -->
+  <line x1="495" y1="130" x2="435" y2="178" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="495" y1="130" x2="555" y2="178" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="555" y1="130" x2="625" y2="178" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="435" y1="178" x2="555" y2="178" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="435" y1="202" x2="480" y2="240" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="555" y1="202" x2="560" y2="240" stroke="#94a3b8" stroke-width="2.5"/>
+  <line x1="480" y1="240" x2="560" y2="240" stroke="#94a3b8" stroke-width="2.5"/>
+  <!-- Cycle edge! -->
+  <line x1="625" y1="202" x2="560" y2="240" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="6,3"/>
+  <!-- Another cycle -->
+  <line x1="480" y1="240" x2="435" y2="178" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="6,3"/>
+
+  <!-- Graph nodes -->
+  <circle cx="495" cy="122" r="17" fill="#f59e0b"/><text x="495" y="128" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="white">1</text>
+  <circle cx="555" cy="122" r="17" fill="#f59e0b"/><text x="555" y="128" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="white">2</text>
+  <circle cx="435" cy="190" r="17" fill="#fcd34d"/><text x="435" y="196" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#92400e">3</text>
+  <circle cx="555" cy="190" r="17" fill="#fcd34d"/><text x="555" y="196" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#92400e">4</text>
+  <circle cx="625" cy="190" r="17" fill="#fcd34d"/><text x="625" y="196" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#92400e">5</text>
+  <circle cx="480" cy="252" r="15" fill="#fef3c7" stroke="#f59e0b"/><text x="480" y="258" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#92400e">6</text>
+  <circle cx="560" cy="252" r="15" fill="#fef3c7" stroke="#f59e0b"/><text x="560" y="258" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#92400e">7</text>
+
+  <!-- Cycle label -->
+  <text x="628" y="228" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="600">cycle!</text>
+  <text x="430" y="228" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="600">cycle!</text>
+
+  <!-- Graph properties -->
+  <text x="398" y="282" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✗ No single root</text>
+  <text x="398" y="298" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#ef4444" font-weight="600">✗ Can have cycles</text>
+  <text x="398" y="314" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✗ Multiple paths possible</text>
+  <text x="398" y="330" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">✗ n nodes, up to n(n-1)/2 edges</text>
+
+  <!-- Bottom comparison -->
+  <rect x="20" y="346" width="680" height="28" rx="10" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="360" y="365" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">💡 A tree is a special case of a graph — connected, acyclic, undirected graph with a root</text>
+
+  <text x="360" y="394" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — ai-sketch</text>
+</svg>

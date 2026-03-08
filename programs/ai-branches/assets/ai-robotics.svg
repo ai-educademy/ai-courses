@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="ar-bg" x1="0" y1="0" x2="720" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="ar-accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#ar-bg)" rx="20"/>
+  <text x="360" y="38" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">AI in Robotics</text>
+  <text x="360" y="58" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6b7280">Sensor-Brain-Motor architecture powering intelligent robots</text>
+
+  <!-- Sensors Box -->
+  <rect x="60" y="130" width="150" height="130" rx="14" fill="#fff" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="135" y="162" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4338ca">Sensors</text>
+  <text x="135" y="185" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">📷 Camera</text>
+  <text x="135" y="203" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">🎯 LiDAR</text>
+  <text x="135" y="221" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">🖐 Touch/Force</text>
+  <text x="135" y="239" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">🔊 Ultrasonic</text>
+
+  <!-- Arrow: Sensors -> Brain -->
+  <line x1="210" y1="195" x2="280" y2="195" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="280,189 296,195 280,201" fill="#94a3b8"/>
+
+  <!-- AI Brain (circle) -->
+  <circle cx="370" cy="195" r="70" fill="url(#ar-accent)" opacity="0.9"/>
+  <circle cx="370" cy="195" r="60" fill="#fff" fill-opacity="0.15"/>
+  <text x="370" y="180" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="28">🧠</text>
+  <text x="370" y="205" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#fff">AI Brain</text>
+  <text x="370" y="222" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#e0e7ff">Planning &amp; Control</text>
+
+  <!-- Arrow: Brain -> Motors -->
+  <line x1="440" y1="195" x2="510" y2="195" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="510,189 526,195 510,201" fill="#94a3b8"/>
+
+  <!-- Motors Box -->
+  <rect x="530" y="130" width="150" height="130" rx="14" fill="#fff" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="605" y="162" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4338ca">Motors</text>
+  <text x="605" y="185" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">⚙️ Servo Motors</text>
+  <text x="605" y="203" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">🦾 Actuators</text>
+  <text x="605" y="221" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">🔄 Stepper Motors</text>
+  <text x="605" y="239" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">🏎 DC Motors</text>
+
+  <!-- Robot Arm (simple lines) -->
+  <line x1="370" y1="265" x2="370" y2="310" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+  <line x1="370" y1="310" x2="420" y2="290" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+  <line x1="420" y1="290" x2="460" y2="320" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="370" cy="310" r="4" fill="#4f46e5"/>
+  <circle cx="420" cy="290" r="4" fill="#4f46e5"/>
+  <circle cx="460" cy="320" r="3" fill="#4f46e5"/>
+  <!-- Gripper -->
+  <line x1="460" y1="320" x2="470" y2="330" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+  <line x1="460" y1="320" x2="470" y2="312" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+  <text x="480" y="325" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Gripper</text>
+
+  <!-- Feedback arrow (dashed) -->
+  <path d="M605 270 C605 340, 135 340, 135 270" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4" fill="none" marker-end="url(#ar-arrowhead)"/>
+  <defs>
+    <marker id="ar-arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <text x="370" y="350" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Feedback Loop</text>
+
+  <text x="360" y="388" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — AI in Robotics</text>
+</svg>

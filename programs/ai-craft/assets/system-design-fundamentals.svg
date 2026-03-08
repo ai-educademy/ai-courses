@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="sdf_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="sdf_accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="sdf_accent_v" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="400" rx="20" fill="url(#sdf_bg)"/>
+
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">System Design Fundamentals</text>
+
+  <!-- Connecting top bar -->
+  <rect x="40" y="52" width="640" height="28" rx="10" fill="url(#sdf_accent)"/>
+  <text x="360" y="70" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">These four pillars work together to build scalable, reliable systems</text>
+
+  <!-- Vertical connectors from bar to pillars -->
+  <line x1="120" y1="80" x2="120" y2="94" stroke="#6366f1" stroke-width="2.5"/>
+  <line x1="290" y1="80" x2="290" y2="94" stroke="#6366f1" stroke-width="2.5"/>
+  <line x1="450" y1="80" x2="450" y2="94" stroke="#6366f1" stroke-width="2.5"/>
+  <line x1="610" y1="80" x2="610" y2="94" stroke="#6366f1" stroke-width="2.5"/>
+
+  <!-- Pillar 1: Load Balancing -->
+  <rect x="40" y="94" width="155" height="270" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <!-- Icon area -->
+  <circle cx="120" cy="126" r="22" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <!-- Load balancer icon: split arrows -->
+  <line x1="120" y1="112" x2="120" y2="122" stroke="#6366f1" stroke-width="2.5"/>
+  <line x1="120" y1="122" x2="108" y2="136" stroke="#6366f1" stroke-width="2"/>
+  <line x1="120" y1="122" x2="120" y2="138" stroke="#6366f1" stroke-width="2"/>
+  <line x1="120" y1="122" x2="132" y2="136" stroke="#6366f1" stroke-width="2"/>
+  <circle cx="108" cy="138" r="2.5" fill="#6366f1"/>
+  <circle cx="120" cy="140" r="2.5" fill="#6366f1"/>
+  <circle cx="132" cy="138" r="2.5" fill="#6366f1"/>
+
+  <text x="118" y="164" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Load</text>
+  <text x="118" y="179" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Balancing</text>
+
+  <line x1="60" y1="190" x2="175" y2="190" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="118" y="212" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Distribute traffic</text>
+  <text x="118" y="229" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">across servers</text>
+  <text x="118" y="250" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Round-robin,</text>
+  <text x="118" y="267" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">least connections</text>
+  <text x="118" y="288" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Health checks &amp;</text>
+  <text x="118" y="305" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">failover</text>
+  <text x="118" y="328" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">L4 / L7 balancers</text>
+  <text x="118" y="343" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">NGINX, HAProxy, ALB</text>
+
+  <!-- Pillar 2: Caching -->
+  <rect x="210" y="94" width="155" height="270" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <!-- Icon area -->
+  <circle cx="288" cy="126" r="22" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <!-- Lightning bolt icon -->
+  <polygon points="285,112 280,127 287,127 283,140 296,123 289,123 293,112" fill="#6366f1"/>
+
+  <text x="288" y="164" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Caching</text>
+
+  <line x1="230" y1="175" x2="345" y2="175" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="288" y="197" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Reduce latency &amp;</text>
+  <text x="288" y="214" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">database load</text>
+  <text x="288" y="235" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Write-through,</text>
+  <text x="288" y="252" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">write-back, aside</text>
+  <text x="288" y="273" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• TTL &amp; eviction</text>
+  <text x="288" y="290" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">policies (LRU)</text>
+  <text x="288" y="313" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Redis, Memcached,</text>
+  <text x="288" y="328" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">CDN edge caching</text>
+
+  <!-- Pillar 3: Database Sharding -->
+  <rect x="380" y="94" width="155" height="270" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <!-- Icon area -->
+  <circle cx="458" cy="126" r="22" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <!-- Sharding icon: split database -->
+  <rect x="445" y="114" width="10" height="16" rx="2" fill="#6366f1" opacity="0.8"/>
+  <rect x="457" y="114" width="10" height="16" rx="2" fill="#6366f1" opacity="0.55"/>
+  <rect x="451" y="132" width="10" height="6" rx="1" fill="#6366f1" opacity="0.35"/>
+
+  <text x="458" y="164" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Database</text>
+  <text x="458" y="179" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Sharding</text>
+
+  <line x1="400" y1="190" x2="515" y2="190" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="458" y="212" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Horizontal data</text>
+  <text x="458" y="229" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">partitioning</text>
+  <text x="458" y="250" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Hash-based or</text>
+  <text x="458" y="267" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">range-based keys</text>
+  <text x="458" y="288" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Consistent hashing</text>
+  <text x="458" y="305" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">for rebalancing</text>
+  <text x="458" y="328" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Vitess, CockroachDB,</text>
+  <text x="458" y="343" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Cassandra, MongoDB</text>
+
+  <!-- Pillar 4: Message Queues -->
+  <rect x="550" y="94" width="155" height="270" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <!-- Icon area -->
+  <circle cx="628" cy="126" r="22" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <!-- Queue icon: stacked envelopes -->
+  <rect x="614" y="115" width="28" height="8" rx="2" fill="#6366f1" opacity="0.4"/>
+  <rect x="614" y="125" width="28" height="8" rx="2" fill="#6366f1" opacity="0.6"/>
+  <rect x="614" y="135" width="28" height="8" rx="2" fill="#6366f1" opacity="0.8"/>
+
+  <text x="628" y="164" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Message</text>
+  <text x="628" y="179" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">Queues</text>
+
+  <line x1="570" y1="190" x2="685" y2="190" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="628" y="212" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Async processing</text>
+  <text x="628" y="229" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">&amp; decoupling</text>
+  <text x="628" y="250" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Pub/sub &amp; point-</text>
+  <text x="628" y="267" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">to-point patterns</text>
+  <text x="628" y="288" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Backpressure &amp;</text>
+  <text x="628" y="305" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">retry with DLQ</text>
+  <text x="628" y="328" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Kafka, RabbitMQ,</text>
+  <text x="628" y="343" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">SQS, Azure Service Bus</text>
+
+  <!-- Caption -->
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Four Pillars — Load Balancing, Caching, Sharding &amp; Queues</text>
+</svg>

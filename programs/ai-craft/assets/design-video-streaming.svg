@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="dvs_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="dvs_accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="dvs_arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="400" rx="20" fill="url(#dvs_bg)"/>
+
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Video Streaming Architecture</text>
+
+  <!-- Stage 1: Upload -->
+  <rect x="20" y="70" width="100" height="100" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="20" y="70" width="100" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="20" y="82" width="100" height="14" fill="url(#dvs_accent)"/>
+  <text x="70" y="88" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Upload</text>
+  <!-- Upload icon -->
+  <line x1="70" y1="130" x2="70" y2="112" stroke="#6366f1" stroke-width="2" opacity="0.5"/>
+  <polyline points="60,120 70,112 80,120" fill="none" stroke="#6366f1" stroke-width="2" opacity="0.5"/>
+  <text x="70" y="150" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Raw video</text>
+  <text x="70" y="162" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">ingestion</text>
+
+  <!-- Arrow 1 -->
+  <line x1="122" y1="120" x2="147" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dvs_arrow)"/>
+
+  <!-- Stage 2: Transcoding -->
+  <rect x="153" y="55" width="170" height="175" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="153" y="55" width="170" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="153" y="67" width="170" height="14" fill="url(#dvs_accent)"/>
+  <text x="238" y="73" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">Transcoding</text>
+
+  <!-- Resolution outputs -->
+  <rect x="168" y="92" width="140" height="28" rx="8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="238" y="110" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">1080p (Full HD)</text>
+
+  <rect x="168" y="126" width="140" height="28" rx="8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="238" y="144" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">720p (HD)</text>
+
+  <rect x="168" y="160" width="140" height="28" rx="8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="238" y="178" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">480p (SD)</text>
+
+  <text x="238" y="210" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">FFmpeg / MediaConvert</text>
+  <text x="238" y="222" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">H.264 / H.265 codec</text>
+
+  <!-- Arrows from transcoding outputs to CDN -->
+  <line x1="310" y1="106" x2="350" y2="120" stroke="#94a3b8" stroke-width="2" marker-end="url(#dvs_arrow)"/>
+  <line x1="310" y1="140" x2="350" y2="135" stroke="#94a3b8" stroke-width="2" marker-end="url(#dvs_arrow)"/>
+  <line x1="310" y1="174" x2="350" y2="150" stroke="#94a3b8" stroke-width="2" marker-end="url(#dvs_arrow)"/>
+
+  <!-- Stage 3: CDN -->
+  <rect x="356" y="70" width="110" height="100" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="356" y="70" width="110" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="356" y="82" width="110" height="14" fill="url(#dvs_accent)"/>
+  <text x="411" y="88" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="white">CDN</text>
+  <!-- Globe icon -->
+  <circle cx="411" cy="120" r="14" fill="none" stroke="#6366f1" stroke-width="1.2" opacity="0.4"/>
+  <ellipse cx="411" cy="120" rx="8" ry="14" fill="none" stroke="#6366f1" stroke-width="0.8" opacity="0.3"/>
+  <line x1="397" y1="120" x2="425" y2="120" stroke="#6366f1" stroke-width="0.8" opacity="0.3"/>
+  <text x="411" y="150" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Edge caching</text>
+  <text x="411" y="162" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">worldwide</text>
+
+  <!-- Arrow 3 -->
+  <line x1="468" y1="120" x2="498" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dvs_arrow)"/>
+
+  <!-- Stage 4: Adaptive Bitrate -->
+  <rect x="504" y="70" width="100" height="100" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="504" y="70" width="100" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="504" y="82" width="100" height="14" fill="url(#dvs_accent)"/>
+  <text x="554" y="84" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="white">Adaptive Bitrate</text>
+  <!-- Signal bars icon -->
+  <rect x="537" y="130" width="5" height="18" rx="1" fill="#6366f1" opacity="0.4"/>
+  <rect x="545" y="126" width="5" height="22" rx="1" fill="#6366f1" opacity="0.4"/>
+  <rect x="553" y="120" width="5" height="28" rx="1" fill="#6366f1" opacity="0.4"/>
+  <rect x="561" y="114" width="5" height="34" rx="1" fill="#6366f1" opacity="0.4"/>
+  <text x="554" y="160" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">HLS / DASH</text>
+
+  <!-- Arrow 4 -->
+  <line x1="606" y1="120" x2="631" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#dvs_arrow)"/>
+
+  <!-- Stage 5: Client Player -->
+  <rect x="637" y="70" width="68" height="100" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="637" y="70" width="68" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="637" y="82" width="68" height="14" fill="url(#dvs_accent)"/>
+  <text x="671" y="88" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="white">Player</text>
+  <!-- Play icon -->
+  <polygon points="660,118 660,142 680,130" fill="#6366f1" opacity="0.4"/>
+  <text x="671" y="160" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#475569">Client</text>
+
+  <!-- Detail section below -->
+  <rect x="30" y="255" width="210" height="105" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="30" y="255" width="210" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="30" y="267" width="210" height="14" fill="url(#dvs_accent)"/>
+  <text x="135" y="273" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="white">Upload Pipeline</text>
+  <text x="135" y="298" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Chunked upload (resumable)</text>
+  <text x="135" y="314" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Store raw in object storage</text>
+  <text x="135" y="330" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Trigger transcode job queue</text>
+  <text x="135" y="346" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">S3 / Azure Blob / GCS</text>
+
+  <rect x="260" y="255" width="210" height="105" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="260" y="255" width="210" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="260" y="267" width="210" height="14" fill="url(#dvs_accent)"/>
+  <text x="365" y="273" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="white">CDN Strategy</text>
+  <text x="365" y="298" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Multi-region edge nodes</text>
+  <text x="365" y="314" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Cache segment files (.ts)</text>
+  <text x="365" y="330" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Origin shield for protection</text>
+  <text x="365" y="346" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">CloudFront / Akamai / Fastly</text>
+
+  <rect x="490" y="255" width="210" height="105" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="490" y="255" width="210" height="26" rx="14" fill="url(#dvs_accent)"/>
+  <rect x="490" y="267" width="210" height="14" fill="url(#dvs_accent)"/>
+  <text x="595" y="273" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="white">Adaptive Streaming</text>
+  <text x="595" y="298" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Manifest file (.m3u8 / .mpd)</text>
+  <text x="595" y="314" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Client measures bandwidth</text>
+  <text x="595" y="330" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">• Switch quality seamlessly</text>
+  <text x="595" y="346" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Buffer-based / throughput-based</text>
+
+  <!-- Caption -->
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Video Streaming — Upload, Transcode, CDN &amp; Adaptive Playback</text>
+</svg>

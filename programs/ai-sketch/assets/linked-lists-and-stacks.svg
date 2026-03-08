@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="ll-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="ll-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="ll-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#ll-bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Linked Lists &amp; Stacks</text>
+  <text x="360" y="53" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">Singly linked list traversal and stack LIFO operations</text>
+
+  <!-- Linked List Section -->
+  <rect x="30" y="66" width="660" height="140" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="30" y="66" width="660" height="28" rx="14" fill="url(#ll-accent)"/>
+  <rect x="30" y="80" width="660" height="14" fill="url(#ll-accent)"/>
+  <text x="360" y="86" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">Singly Linked List</text>
+
+  <!-- Head label -->
+  <text x="80" y="116" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e" font-weight="600">head</text>
+  <line x1="80" y1="120" x2="80" y2="130" stroke="#22c55e" stroke-width="1.5"/>
+
+  <!-- Node A -->
+  <rect x="50" y="132" width="60" height="40" rx="8" fill="#e0e7ff" stroke="#818cf8" stroke-width="2"/>
+  <text x="72" y="148" text-anchor="middle" font-family="monospace" font-size="10" fill="#475569">data</text>
+  <text x="72" y="164" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700" fill="#4338ca">A</text>
+  <rect x="110" y="132" width="20" height="40" rx="0" fill="#c7d2fe" stroke="#818cf8" stroke-width="1"/>
+  <text x="120" y="156" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="8" fill="#4338ca">→</text>
+
+  <!-- Arrow A->B -->
+  <line x1="132" y1="152" x2="168" y2="152" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ll-arrow)"/>
+
+  <!-- Node B -->
+  <rect x="175" y="132" width="60" height="40" rx="8" fill="#e0e7ff" stroke="#818cf8" stroke-width="2"/>
+  <text x="197" y="148" text-anchor="middle" font-family="monospace" font-size="10" fill="#475569">data</text>
+  <text x="197" y="164" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700" fill="#4338ca">B</text>
+  <rect x="235" y="132" width="20" height="40" rx="0" fill="#c7d2fe" stroke="#818cf8" stroke-width="1"/>
+  <text x="245" y="156" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="8" fill="#4338ca">→</text>
+
+  <!-- Arrow B->C -->
+  <line x1="257" y1="152" x2="293" y2="152" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ll-arrow)"/>
+
+  <!-- Node C -->
+  <rect x="300" y="132" width="60" height="40" rx="8" fill="#e0e7ff" stroke="#818cf8" stroke-width="2"/>
+  <text x="322" y="148" text-anchor="middle" font-family="monospace" font-size="10" fill="#475569">data</text>
+  <text x="322" y="164" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700" fill="#4338ca">C</text>
+  <rect x="360" y="132" width="20" height="40" rx="0" fill="#c7d2fe" stroke="#818cf8" stroke-width="1"/>
+  <text x="370" y="156" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="8" fill="#4338ca">→</text>
+
+  <!-- Arrow C->D -->
+  <line x1="382" y1="152" x2="418" y2="152" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ll-arrow)"/>
+
+  <!-- Node D -->
+  <rect x="425" y="132" width="60" height="40" rx="8" fill="#e0e7ff" stroke="#818cf8" stroke-width="2"/>
+  <text x="447" y="148" text-anchor="middle" font-family="monospace" font-size="10" fill="#475569">data</text>
+  <text x="447" y="164" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700" fill="#4338ca">D</text>
+  <rect x="485" y="132" width="20" height="40" rx="0" fill="#c7d2fe" stroke="#818cf8" stroke-width="1"/>
+  <text x="495" y="156" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="8" fill="#4338ca">→</text>
+
+  <!-- Null -->
+  <line x1="507" y1="152" x2="540" y2="152" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ll-arrow)"/>
+  <rect x="548" y="140" width="46" height="24" rx="6" fill="#fecaca" stroke="#ef4444"/>
+  <text x="571" y="157" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#ef4444">null</text>
+
+  <!-- Complexity note -->
+  <text x="648" y="128" text-anchor="middle" font-family="monospace" font-size="9" fill="#22c55e" font-weight="600">Insert/Del</text>
+  <text x="648" y="142" text-anchor="middle" font-family="monospace" font-size="9" fill="#22c55e" font-weight="600">at head:</text>
+  <text x="648" y="156" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#22c55e">O(1)</text>
+  <text x="648" y="172" text-anchor="middle" font-family="monospace" font-size="9" fill="#ef4444">Search:</text>
+  <text x="648" y="186" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#ef4444">O(n)</text>
+
+  <!-- Stack Section -->
+  <rect x="30" y="220" width="330" height="150" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="30" y="220" width="330" height="28" rx="14" fill="url(#ll-accent)"/>
+  <rect x="30" y="234" width="330" height="14" fill="url(#ll-accent)"/>
+  <text x="195" y="240" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">Stack — LIFO (Last In, First Out)</text>
+
+  <!-- Stack visual -->
+  <rect x="145" y="262" width="100" height="28" rx="6" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="195" y="280" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#166534">D</text>
+  <text x="260" y="280" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#22c55e" font-weight="600">← top</text>
+  <rect x="145" y="292" width="100" height="28" rx="6" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="195" y="310" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#4338ca">C</text>
+  <rect x="145" y="322" width="100" height="28" rx="6" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="195" y="340" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#4338ca">B</text>
+  <rect x="145" y="352" width="100" height="8" rx="3" fill="#475569"/>
+
+  <!-- Push arrow -->
+  <text x="80" y="268" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e" font-weight="600">push(E)</text>
+  <line x1="100" y1="272" x2="140" y2="272" stroke="#22c55e" stroke-width="2" marker-end="url(#ll-arrow)"/>
+
+  <!-- Pop arrow -->
+  <text x="320" y="268" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#ef4444" font-weight="600">pop()→D</text>
+  <line x1="250" y1="272" x2="290" y2="272" stroke="#ef4444" stroke-width="2" marker-end="url(#ll-arrow)"/>
+
+  <!-- Stack operations -->
+  <rect x="380" y="220" width="310" height="150" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="535" y="244" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#4338ca">Stack Operations</text>
+
+  <text x="400" y="268" font-family="monospace" font-size="11" fill="#475569">push(x): </text><text x="510" y="268" font-family="monospace" font-size="11" font-weight="700" fill="#22c55e">O(1) — add to top</text>
+  <text x="400" y="290" font-family="monospace" font-size="11" fill="#475569">pop():   </text><text x="510" y="290" font-family="monospace" font-size="11" font-weight="700" fill="#22c55e">O(1) — remove top</text>
+  <text x="400" y="312" font-family="monospace" font-size="11" fill="#475569">peek():  </text><text x="510" y="312" font-family="monospace" font-size="11" font-weight="700" fill="#22c55e">O(1) — view top</text>
+  <text x="400" y="334" font-family="monospace" font-size="11" fill="#475569">isEmpty():</text><text x="510" y="334" font-family="monospace" font-size="11" font-weight="700" fill="#22c55e">O(1)</text>
+  <text x="535" y="360" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Used in: DFS, undo, expression eval</text>
+
+  <text x="360" y="394" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — ai-sketch</text>
+</svg>

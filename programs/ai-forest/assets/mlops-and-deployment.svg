@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="mlop_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="mlop_accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <marker id="mlop_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#mlop_bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">MLOps Pipeline</text>
+
+  <!-- Circular loop: 7 stages arranged in an ellipse -->
+  <!-- Center: 360, 200. Rx=250, Ry=130 -->
+  <!-- Positions (clockwise from top): -->
+  <!-- 0°(top): Data(360,70) → 51°: Train(520,110) → 103°: Validate(580,220) → 154°: Package(480,310) -->
+  <!-- 206°: Deploy(240,310) → 257°: Monitor(140,220) → 309°: Retrain(200,110) → back to Data -->
+
+  <!-- Stage: Data (top center) -->
+  <rect x="310" y="52" width="100" height="52" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="360" y="74" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">📊 Data</text>
+  <text x="360" y="92" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Collect &amp; prep</text>
+
+  <!-- Arrow Data → Train -->
+  <line x1="410" y1="72" x2="460" y2="88" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Stage: Train (upper right) -->
+  <rect x="468" y="80" width="100" height="52" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="518" y="102" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">🏋️ Train</text>
+  <text x="518" y="120" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Fit models</text>
+
+  <!-- Arrow Train → Validate -->
+  <line x1="555" y1="132" x2="578" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Stage: Validate (right) -->
+  <rect x="560" y="175" width="110" height="52" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="615" y="197" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">✅ Validate</text>
+  <text x="615" y="215" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Test accuracy</text>
+
+  <!-- Arrow Validate → Package -->
+  <line x1="580" y1="227" x2="545" y2="268" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Stage: Package (lower right) -->
+  <rect x="468" y="275" width="110" height="52" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="523" y="297" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">📦 Package</text>
+  <text x="523" y="315" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Containerize</text>
+
+  <!-- Arrow Package → Deploy -->
+  <line x1="468" y1="305" x2="340" y2="305" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Stage: Deploy (lower center/left) — highlighted -->
+  <rect x="212" y="275" width="120" height="52" rx="14" fill="url(#mlop_accent)"/>
+  <text x="272" y="297" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="white">🚀 Deploy</text>
+  <text x="272" y="315" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="rgba(255,255,255,0.85)">Ship to prod</text>
+
+  <!-- Arrow Deploy → Monitor -->
+  <line x1="220" y1="275" x2="185" y2="235" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Stage: Monitor (left) -->
+  <rect x="80" y="175" width="115" height="52" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="137" y="197" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">📈 Monitor</text>
+  <text x="137" y="215" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Track drift</text>
+
+  <!-- Arrow Monitor → Retrain -->
+  <line x1="140" y1="175" x2="165" y2="140" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Stage: Retrain (upper left) -->
+  <rect x="148" y="80" width="110" height="52" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="203" y="102" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">🔄 Retrain</text>
+  <text x="203" y="120" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Update model</text>
+
+  <!-- Arrow Retrain → Data (closing the loop) -->
+  <line x1="258" y1="100" x2="302" y2="84" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#mlop_arrow)"/>
+
+  <!-- Center label -->
+  <text x="360" y="195" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#4338ca">MLOps</text>
+  <text x="360" y="213" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Continuous Loop</text>
+
+  <!-- Circular guide (subtle) -->
+  <ellipse cx="360" cy="195" rx="210" ry="115" fill="none" stroke="#c7d2fe" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
+
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">MLOps Lifecycle — Continuous Training, Deployment &amp; Monitoring</text>
+</svg>

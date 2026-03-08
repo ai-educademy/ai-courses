@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="st-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="st-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" rx="20" fill="url(#st-bg)"/>
+  <text x="360" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">String Algorithms</text>
+  <text x="360" y="53" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">Minimum Window Substring — find smallest window in S containing all chars of T</text>
+
+  <!-- Problem Statement -->
+  <rect x="30" y="68" width="660" height="42" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="360" y="86" text-anchor="middle" font-family="monospace" font-size="11" fill="#475569">S = "ADOBECODEBANC"    T = "ABC"    → Answer: "BANC"</text>
+  <text x="360" y="102" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Sliding window expands right until valid, then shrinks left to minimize</text>
+
+  <!-- Step 1: Expanding -->
+  <rect x="30" y="120" width="660" height="80" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="50" y="140" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Step 1: Expand right until window contains A, B, C</text>
+
+  <!-- String characters -->
+  <rect x="60" y="150" width="30" height="30" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/><text x="75" y="170" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#166534">A</text>
+  <rect x="94" y="150" width="30" height="30" rx="4" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/><text x="109" y="170" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#4338ca">D</text>
+  <rect x="128" y="150" width="30" height="30" rx="4" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/><text x="143" y="170" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#4338ca">O</text>
+  <rect x="162" y="150" width="30" height="30" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/><text x="177" y="170" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#166534">B</text>
+  <rect x="196" y="150" width="30" height="30" rx="4" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/><text x="211" y="170" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#4338ca">E</text>
+  <rect x="230" y="150" width="30" height="30" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/><text x="245" y="170" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#166534">C</text>
+  <rect x="264" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="279" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">O</text>
+  <rect x="298" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="313" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">D</text>
+  <rect x="332" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="347" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">E</text>
+  <rect x="366" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="381" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">B</text>
+  <rect x="400" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="415" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">A</text>
+  <rect x="434" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="449" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">N</text>
+  <rect x="468" y="150" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="483" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">C</text>
+
+  <!-- Window bracket -->
+  <rect x="56" y="146" width="208" height="38" rx="6" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-dasharray="6,3"/>
+  <text x="75" y="194" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#22c55e" font-weight="600">▲L</text>
+  <text x="245" y="194" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="600">▲R</text>
+  <text x="540" y="168" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6366f1" font-weight="600">Window: "ADOBEC" (len 6)</text>
+  <text x="540" y="184" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e">Contains A✓ B✓ C✓</text>
+
+  <!-- Step 2: Shrink + continue -->
+  <rect x="30" y="208" width="660" height="80" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="50" y="228" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Step 2: Continue expanding and shrinking — find minimum window</text>
+
+  <!-- Later window showing BANC -->
+  <rect x="60" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="75" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">A</text>
+  <rect x="94" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="109" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">D</text>
+  <rect x="128" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="143" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">O</text>
+  <rect x="162" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="177" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">B</text>
+  <rect x="196" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="211" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">E</text>
+  <rect x="230" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="245" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">C</text>
+  <rect x="264" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="279" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">O</text>
+  <rect x="298" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="313" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">D</text>
+  <rect x="332" y="238" width="30" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="347" y="258" text-anchor="middle" font-family="monospace" font-size="12" fill="#94a3b8">E</text>
+  <rect x="366" y="238" width="30" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><text x="381" y="258" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#92400e">B</text>
+  <rect x="400" y="238" width="30" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><text x="415" y="258" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#92400e">A</text>
+  <rect x="434" y="238" width="30" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><text x="449" y="258" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#92400e">N</text>
+  <rect x="468" y="238" width="30" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><text x="483" y="258" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#92400e">C</text>
+
+  <!-- Window bracket for BANC -->
+  <rect x="362" y="234" width="140" height="38" rx="6" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <text x="381" y="282" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#22c55e" font-weight="600">▲L</text>
+  <text x="483" y="282" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="600">▲R</text>
+  <text x="540" y="252" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#f59e0b" font-weight="700">Window: "BANC" (len 4)</text>
+  <text x="540" y="268" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#22c55e" font-weight="600">★ Minimum found!</text>
+
+  <!-- Result -->
+  <rect x="30" y="296" width="660" height="72" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="360" y="318" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#22c55e">Answer: "BANC" — minimum window containing all of "ABC"</text>
+  <text x="200" y="340" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Algorithm: Sliding Window + HashMap</text>
+  <text x="200" y="358" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Track char frequencies with a map</text>
+  <text x="500" y="340" text-anchor="middle" font-family="monospace" font-size="11" fill="#475569" font-weight="600">Time: O(|S| + |T|)</text>
+  <text x="500" y="358" text-anchor="middle" font-family="monospace" font-size="10" fill="#6b7280">Space: O(|S| + |T|)</text>
+
+  <text x="360" y="394" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">AI Educademy — ai-sketch</text>
+</svg>

@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Graph Traversal — BFS Wavefront vs DFS Deep Dive</text>
+
+  <!-- ========= BFS Side ========= -->
+  <text x="200" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="bold" fill="#06B6D4">BFS — Breadth First</text>
+
+  <!-- Edges -->
+  <line x1="120" y1="100" x2="200" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="120" y1="100" x2="80" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="120" y1="100" x2="160" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="200" y1="100" x2="160" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="200" y1="100" x2="240" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="200" y1="100" x2="280" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="80" y1="175" x2="120" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="240" y1="175" x2="200" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="280" y1="175" x2="280" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+
+  <!-- Wavefront rings -->
+  <circle cx="160" cy="165" r="130" fill="none" stroke="#06B6D4" stroke-width="1" stroke-dasharray="4" opacity="0.25"/>
+  <circle cx="160" cy="165" r="75" fill="none" stroke="#06B6D4" stroke-width="1" stroke-dasharray="4" opacity="0.4"/>
+
+  <!-- Distance labels -->
+  <text x="330" y="100" font-family="system-ui, sans-serif" font-size="11" fill="#06B6D4">d=0</text>
+  <text x="330" y="175" font-family="system-ui, sans-serif" font-size="11" fill="#0891B2">d=1</text>
+  <text x="330" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#0E7490">d=2</text>
+
+  <!-- BFS Nodes — distance 0 (start) -->
+  <circle cx="120" cy="100" r="20" fill="#06B6D4" stroke="#0891B2" stroke-width="2"/>
+  <text x="120" y="105" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">0</text>
+  <circle cx="138" cy="84" r="9" fill="#F59E0B"/>
+  <text x="138" y="88" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">1</text>
+
+  <circle cx="200" cy="100" r="20" fill="#06B6D4" stroke="#0891B2" stroke-width="2"/>
+  <text x="200" y="105" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">1</text>
+  <circle cx="218" cy="84" r="9" fill="#F59E0B"/>
+  <text x="218" y="88" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">2</text>
+
+  <!-- BFS Nodes — distance 1 -->
+  <circle cx="80" cy="175" r="20" fill="#22D3EE" stroke="#06B6D4" stroke-width="2"/>
+  <text x="80" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">2</text>
+  <circle cx="98" cy="159" r="9" fill="#F59E0B"/>
+  <text x="98" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">3</text>
+
+  <circle cx="160" cy="175" r="20" fill="#22D3EE" stroke="#06B6D4" stroke-width="2"/>
+  <text x="160" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">3</text>
+  <circle cx="178" cy="159" r="9" fill="#F59E0B"/>
+  <text x="178" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">4</text>
+
+  <circle cx="240" cy="175" r="20" fill="#22D3EE" stroke="#06B6D4" stroke-width="2"/>
+  <text x="240" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">4</text>
+  <circle cx="258" cy="159" r="9" fill="#F59E0B"/>
+  <text x="258" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">5</text>
+
+  <circle cx="280" cy="175" r="20" fill="#22D3EE" stroke="#06B6D4" stroke-width="2"/>
+  <text x="280" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">5</text>
+  <circle cx="298" cy="159" r="9" fill="#F59E0B"/>
+  <text x="298" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">6</text>
+
+  <!-- BFS Nodes — distance 2 -->
+  <circle cx="120" cy="255" r="20" fill="#67E8F9" stroke="#22D3EE" stroke-width="2"/>
+  <text x="120" y="260" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#0E7490">6</text>
+  <circle cx="138" cy="239" r="9" fill="#F59E0B"/>
+  <text x="138" y="243" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">7</text>
+
+  <circle cx="200" cy="255" r="20" fill="#67E8F9" stroke="#22D3EE" stroke-width="2"/>
+  <text x="200" y="260" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#0E7490">7</text>
+  <circle cx="218" cy="239" r="9" fill="#F59E0B"/>
+  <text x="218" y="243" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">8</text>
+
+  <circle cx="280" cy="255" r="20" fill="#67E8F9" stroke="#22D3EE" stroke-width="2"/>
+  <text x="280" y="260" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#0E7490">8</text>
+  <circle cx="298" cy="239" r="9" fill="#F59E0B"/>
+  <text x="298" y="243" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">9</text>
+
+  <!-- BFS visit order -->
+  <rect x="55" y="290" width="290" height="26" rx="6" fill="#F0FDFA" stroke="#06B6D4" stroke-width="1"/>
+  <text x="200" y="308" text-anchor="middle" font-family="monospace" font-size="12" fill="#06B6D4" font-weight="bold">Visit: 0-1-2-3-4-5-6-7-8</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="48" x2="400" y2="375" stroke="#E2E8F0" stroke-width="2" stroke-dasharray="6"/>
+
+  <!-- ========= DFS Side ========= -->
+  <text x="600" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="bold" fill="#7C3AED">DFS — Depth First</text>
+
+  <!-- Edges -->
+  <line x1="520" y1="100" x2="600" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="520" y1="100" x2="480" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="520" y1="100" x2="560" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="600" y1="100" x2="560" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="600" y1="100" x2="640" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="600" y1="100" x2="680" y2="175" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="480" y1="175" x2="520" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="640" y1="175" x2="600" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="680" y1="175" x2="680" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+
+  <!-- DFS path highlight -->
+  <line x1="520" y1="100" x2="480" y2="175" stroke="#7C3AED" stroke-width="3" opacity="0.5"/>
+  <line x1="480" y1="175" x2="520" y2="255" stroke="#7C3AED" stroke-width="3" opacity="0.5"/>
+
+  <!-- DFS Nodes -->
+  <circle cx="520" cy="100" r="20" fill="#7C3AED" stroke="#6D28D9" stroke-width="2"/>
+  <text x="520" y="105" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">0</text>
+  <circle cx="538" cy="84" r="9" fill="#F59E0B"/>
+  <text x="538" y="88" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">1</text>
+
+  <circle cx="600" cy="100" r="20" fill="#A78BFA" stroke="#7C3AED" stroke-width="2"/>
+  <text x="600" y="105" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">1</text>
+  <circle cx="618" cy="84" r="9" fill="#F59E0B"/>
+  <text x="618" y="88" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">5</text>
+
+  <circle cx="480" cy="175" r="20" fill="#7C3AED" stroke="#6D28D9" stroke-width="2"/>
+  <text x="480" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">2</text>
+  <circle cx="498" cy="159" r="9" fill="#F59E0B"/>
+  <text x="498" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">2</text>
+
+  <circle cx="560" cy="175" r="20" fill="#A78BFA" stroke="#7C3AED" stroke-width="2"/>
+  <text x="560" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">3</text>
+  <circle cx="578" cy="159" r="9" fill="#F59E0B"/>
+  <text x="578" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">4</text>
+
+  <circle cx="640" cy="175" r="20" fill="#A78BFA" stroke="#7C3AED" stroke-width="2"/>
+  <text x="640" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">4</text>
+  <circle cx="658" cy="159" r="9" fill="#F59E0B"/>
+  <text x="658" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">6</text>
+
+  <circle cx="680" cy="175" r="20" fill="#A78BFA" stroke="#7C3AED" stroke-width="2"/>
+  <text x="680" y="180" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">5</text>
+  <circle cx="698" cy="159" r="9" fill="#F59E0B"/>
+  <text x="698" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">8</text>
+
+  <circle cx="520" cy="255" r="20" fill="#7C3AED" stroke="#6D28D9" stroke-width="2"/>
+  <text x="520" y="260" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">6</text>
+  <circle cx="538" cy="239" r="9" fill="#F59E0B"/>
+  <text x="538" y="243" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">3</text>
+
+  <circle cx="600" cy="255" r="20" fill="#A78BFA" stroke="#7C3AED" stroke-width="2"/>
+  <text x="600" y="260" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">7</text>
+  <circle cx="618" cy="239" r="9" fill="#F59E0B"/>
+  <text x="618" y="243" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">7</text>
+
+  <circle cx="680" cy="255" r="20" fill="#A78BFA" stroke="#7C3AED" stroke-width="2"/>
+  <text x="680" y="260" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fff">8</text>
+  <circle cx="698" cy="239" r="9" fill="#F59E0B"/>
+  <text x="698" y="243" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">9</text>
+
+  <!-- DFS visit order -->
+  <rect x="455" y="290" width="290" height="26" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="600" y="308" text-anchor="middle" font-family="monospace" font-size="12" fill="#7C3AED" font-weight="bold">Visit: 0-2-6-3-1-4-7-5-8</text>
+
+  <!-- Bottom legend -->
+  <rect x="40" y="335" width="720" height="55" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+  <circle cx="70" cy="354" r="8" fill="#F59E0B"/>
+  <text x="85" y="358" font-family="system-ui, sans-serif" font-size="12" fill="#64748B">= visit order</text>
+  <text x="200" y="358" font-family="system-ui, sans-serif" font-size="12" fill="#06B6D4" font-weight="bold">BFS: shortest path guaranteed</text>
+  <text x="550" y="358" font-family="system-ui, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">DFS: explores full branches first</text>
+  <text x="400" y="380" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#64748B">Both are O(V + E) time | Track visited set to avoid cycles</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="embg" x1="0" y1="0" x2="720" y2="400">
+      <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="emhdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#embg)" rx="20"/>
+  <text x="360" y="36" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Embeddings &amp; Vectors</text>
+
+  <!-- Coordinate Plane -->
+  <rect x="60" y="55" width="380" height="300" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+
+  <!-- Axes -->
+  <line x1="100" y1="330" x2="420" y2="330" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <line x1="100" y1="330" x2="100" y2="70" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Axis arrows -->
+  <polygon points="420,325 430,330 420,335" fill="#94a3b8"/>
+  <polygon points="95,70 100,60 105,70" fill="#94a3b8"/>
+  <text x="425" y="345" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Dim 1</text>
+  <text x="65" y="65" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Dim 2</text>
+
+  <!-- Word dots — Royalty cluster -->
+  <circle cx="300" cy="110" r="8" fill="#6366f1" opacity="0.8"/>
+  <text x="315" y="108" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#4338ca">King</text>
+  <circle cx="340" cy="140" r="8" fill="#8b5cf6" opacity="0.8"/>
+  <text x="355" y="138" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#4338ca">Queen</text>
+  <circle cx="270" cy="145" r="6" fill="#a78bfa" opacity="0.6"/>
+  <text x="285" y="148" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Prince</text>
+
+  <!-- Vector arrow King→Queen -->
+  <line x1="308" y1="113" x2="332" y2="137" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2"/>
+  <polygon points="330,132 337,140 328,140" fill="#f59e0b"/>
+
+  <!-- Word dots — Animal cluster -->
+  <circle cx="170" cy="240" r="8" fill="#22c55e" opacity="0.8"/>
+  <text x="185" y="238" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#15803d">Cat</text>
+  <circle cx="220" cy="265" r="8" fill="#16a34a" opacity="0.8"/>
+  <text x="235" y="263" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#15803d">Dog</text>
+  <circle cx="150" cy="280" r="6" fill="#86efac" opacity="0.6"/>
+  <text x="163" y="284" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Fish</text>
+
+  <!-- Vector arrow Cat→Dog -->
+  <line x1="178" y1="244" x2="212" y2="261" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2"/>
+  <polygon points="210,256 217,264 208,264" fill="#f59e0b"/>
+
+  <!-- Cluster labels -->
+  <rect x="260" y="160" width="85" height="18" rx="6" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="302" y="173" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#4338ca">👑 Royalty</text>
+  <rect x="140" y="295" width="85" height="18" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <text x="182" y="308" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#15803d">🐾 Animals</text>
+
+  <!-- Right side explanation -->
+  <g transform="translate(470,60)">
+    <rect width="220" height="80" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+    <text x="110" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#4338ca">💡 Key Idea</text>
+    <text x="110" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">Words with similar meanings</text>
+    <text x="110" y="55" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">are placed close together</text>
+    <text x="110" y="70" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">in vector space</text>
+  </g>
+
+  <g transform="translate(470,160)">
+    <rect width="220" height="65" rx="14" fill="white" stroke="#a7f3d0" stroke-width="1.5"/>
+    <text x="110" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#4338ca">📐 Vector Math</text>
+    <text x="110" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">King − Man + Woman</text>
+    <text x="110" y="55" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#6366f1">≈ Queen</text>
+  </g>
+
+  <g transform="translate(470,245)">
+    <rect width="220" height="80" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+    <text x="110" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#4338ca">🔢 What is a Vector?</text>
+    <text x="110" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">A list of numbers that</text>
+    <text x="110" y="55" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">represents the meaning</text>
+    <text x="110" y="70" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">of a word: [0.2, 0.8, ...]</text>
+  </g>
+
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Words become numbers — similar words, similar numbers</text>
+</svg>

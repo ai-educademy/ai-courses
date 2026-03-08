@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="ne-bg" x1="0" y1="0" x2="720" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#ne-bg)" rx="20"/>
+  <text x="360" y="42" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="700" fill="#4338ca">Biological → Artificial Neuron</text>
+  <!-- Biological neuron -->
+  <rect x="30" y="70" width="300" height="280" rx="16" fill="#fff" fill-opacity=".7" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="180" y="100" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="600" fill="#4338ca">Biological Neuron</text>
+  <!-- Dendrites -->
+  <line x1="70" y1="170" x2="130" y2="210" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="70" y1="220" x2="130" y2="210" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="70" y1="270" x2="130" y2="230" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="70" cy="170" r="6" fill="#c7d2fe" stroke="#6366f1" stroke-width="1.5"/>
+  <circle cx="70" cy="220" r="6" fill="#c7d2fe" stroke="#6366f1" stroke-width="1.5"/>
+  <circle cx="70" cy="270" r="6" fill="#c7d2fe" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="70" y="305" text-anchor="middle" font-family="system-ui" font-size="10" fill="#6366f1">Dendrites</text>
+  <!-- Cell body -->
+  <circle cx="180" cy="220" r="40" fill="#e0e7ff" stroke="#6366f1" stroke-width="2.5"/>
+  <text x="180" y="225" text-anchor="middle" font-size="28">🧠</text>
+  <text x="180" y="275" text-anchor="middle" font-family="system-ui" font-size="10" fill="#6366f1">Soma</text>
+  <!-- Axon -->
+  <line x1="220" y1="220" x2="300" y2="220" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="300" cy="220" r="5" fill="#6366f1"/>
+  <text x="260" y="245" text-anchor="middle" font-family="system-ui" font-size="10" fill="#6366f1">Axon</text>
+  <!-- Transform arrow -->
+  <path d="M340 200 L380 200" stroke="#4338ca" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4"/>
+  <polygon points="380,193 396,200 380,207" fill="#4338ca"/>
+  <text x="368" y="185" text-anchor="middle" font-family="system-ui" font-size="20">⚡</text>
+  <!-- Artificial neuron -->
+  <rect x="390" y="70" width="300" height="280" rx="16" fill="#fff" fill-opacity=".7" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="540" y="100" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="600" fill="#4338ca">Artificial Neuron</text>
+  <!-- Inputs with weights -->
+  <circle cx="430" cy="170" r="14" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="430" y="175" text-anchor="middle" font-family="system-ui" font-size="10" font-weight="600" fill="#4338ca">x₁</text>
+  <circle cx="430" cy="220" r="14" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="430" y="225" text-anchor="middle" font-family="system-ui" font-size="10" font-weight="600" fill="#4338ca">x₂</text>
+  <circle cx="430" cy="270" r="14" fill="#e0e7ff" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="430" y="275" text-anchor="middle" font-family="system-ui" font-size="10" font-weight="600" fill="#4338ca">x₃</text>
+  <!-- Weighted connections -->
+  <line x1="444" y1="170" x2="510" y2="210" stroke="#818cf8" stroke-width="2"/>
+  <line x1="444" y1="220" x2="510" y2="220" stroke="#818cf8" stroke-width="2"/>
+  <line x1="444" y1="270" x2="510" y2="230" stroke="#818cf8" stroke-width="2"/>
+  <text x="475" y="185" font-family="system-ui" font-size="9" fill="#6366f1">w₁</text>
+  <text x="475" y="213" font-family="system-ui" font-size="9" fill="#6366f1">w₂</text>
+  <text x="475" y="258" font-family="system-ui" font-size="9" fill="#6366f1">w₃</text>
+  <!-- Summation + Activation -->
+  <circle cx="540" cy="220" r="35" fill="#e0e7ff" stroke="#4338ca" stroke-width="2.5"/>
+  <text x="540" y="216" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#4338ca">Σ</text>
+  <text x="540" y="234" text-anchor="middle" font-family="system-ui" font-size="9" fill="#6366f1">f(x)</text>
+  <!-- Output -->
+  <line x1="575" y1="220" x2="650" y2="220" stroke="#4338ca" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="646,213 662,220 646,227" fill="#4338ca"/>
+  <text x="660" y="218" text-anchor="start" font-family="system-ui" font-size="11" font-weight="600" fill="#4338ca">ŷ</text>
+  <text x="540" y="270" text-anchor="middle" font-family="system-ui" font-size="10" fill="#6366f1">Activation fn</text>
+  <!-- Labels -->
+  <text x="180" y="370" text-anchor="middle" font-family="system-ui" font-size="11" fill="#818cf8">Signal in → Process → Out</text>
+  <text x="540" y="370" text-anchor="middle" font-family="system-ui" font-size="11" fill="#818cf8">Input × Weight → Sum → Out</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="tobg" x1="0" y1="0" x2="720" y2="400">
+      <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="tohdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#tobg)" rx="20"/>
+  <text x="360" y="36" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Tokenisation</text>
+
+  <!-- Step 1: Original Sentence -->
+  <text x="360" y="72" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="600" fill="#475569">Step 1: Start with a sentence</text>
+  <rect x="180" y="82" width="360" height="45" rx="14" fill="white" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="360" y="110" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="16" fill="#1e293b">"The cat sat"</text>
+
+  <!-- Arrow down -->
+  <line x1="360" y1="130" x2="360" y2="155" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="355,153 360,163 365,153" fill="#94a3b8"/>
+
+  <!-- Step 2: Split into tokens -->
+  <text x="360" y="180" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="600" fill="#475569">Step 2: Split into tokens</text>
+  <g transform="translate(115,190)">
+    <rect width="120" height="50" rx="12" fill="white" stroke="#a7f3d0" stroke-width="2"/>
+    <text x="60" y="20" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Token 1</text>
+    <text x="60" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="600" fill="#4338ca">"The"</text>
+  </g>
+  <g transform="translate(300,190)">
+    <rect width="120" height="50" rx="12" fill="white" stroke="#a7f3d0" stroke-width="2"/>
+    <text x="60" y="20" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Token 2</text>
+    <text x="60" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="600" fill="#4338ca">"cat"</text>
+  </g>
+  <g transform="translate(485,190)">
+    <rect width="120" height="50" rx="12" fill="white" stroke="#a7f3d0" stroke-width="2"/>
+    <text x="60" y="20" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Token 3</text>
+    <text x="60" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="600" fill="#4338ca">"sat"</text>
+  </g>
+
+  <!-- Arrows down from each token -->
+  <line x1="175" y1="242" x2="175" y2="268" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="170,266 175,276 180,266" fill="#94a3b8"/>
+  <line x1="360" y1="242" x2="360" y2="268" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="355,266 360,276 365,266" fill="#94a3b8"/>
+  <line x1="545" y1="242" x2="545" y2="268" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="540,266 545,276 550,266" fill="#94a3b8"/>
+
+  <!-- Step 3: Map to numbers -->
+  <text x="360" y="290" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="600" fill="#475569">Step 3: Map to token IDs (numbers)</text>
+  <g transform="translate(115,298)">
+    <rect width="120" height="50" rx="12" fill="url(#tohdr)"/>
+    <text x="60" y="20" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="white" opacity="0.8">ID</text>
+    <text x="60" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18" font-weight="700" fill="white">464</text>
+  </g>
+  <g transform="translate(300,298)">
+    <rect width="120" height="50" rx="12" fill="url(#tohdr)"/>
+    <text x="60" y="20" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="white" opacity="0.8">ID</text>
+    <text x="60" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18" font-weight="700" fill="white">2857</text>
+  </g>
+  <g transform="translate(485,298)">
+    <rect width="120" height="50" rx="12" fill="url(#tohdr)"/>
+    <text x="60" y="20" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="white" opacity="0.8">ID</text>
+    <text x="60" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18" font-weight="700" fill="white">3290</text>
+  </g>
+
+  <!-- Side note -->
+  <rect x="15" y="82" width="140" height="55" rx="10" fill="white" stroke="#c7d2fe" stroke-width="1" opacity="0.8"/>
+  <text x="85" y="100" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">AI models read</text>
+  <text x="85" y="114" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">numbers, not words!</text>
+  <text x="85" y="128" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">✂️ → 🔢</text>
+
+  <text x="360" y="385" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Breaking text into tokens — the first step in understanding language</text>
+</svg>

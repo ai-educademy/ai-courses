@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#FAFAFE"/>
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="700" fill="#1E1B4B">URL Shortener — System Architecture</text>
+  <!-- Client -->
+  <rect x="30" y="60" width="110" height="52" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="85" y="83" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="600" fill="#5B21B6">Client</text>
+  <text x="85" y="100" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#7C3AED">Browser / App</text>
+  <!-- Arrow Client → LB -->
+  <line x1="140" y1="86" x2="188" y2="86" stroke="#8B5CF6" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <!-- Load Balancer -->
+  <rect x="190" y="55" width="120" height="62" rx="10" fill="#F0FDFA" stroke="#14B8A6" stroke-width="2"/>
+  <text x="250" y="80" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="600" fill="#0F766E">Load Balancer</text>
+  <text x="250" y="96" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#0D9488">Round Robin / Weighted</text>
+  <text x="250" y="108" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#0D9488">Health Checks</text>
+  <!-- Arrows LB → API Servers -->
+  <line x1="310" y1="72" x2="370" y2="62" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <line x1="310" y1="86" x2="370" y2="86" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <line x1="310" y1="100" x2="370" y2="110" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <!-- API Server 1 -->
+  <rect x="372" y="38" width="115" height="42" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="430" y="57" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">API Server 1</text>
+  <text x="430" y="71" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#7C3AED">Create / Redirect</text>
+  <!-- API Server 2 -->
+  <rect x="372" y="88" width="115" height="42" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="430" y="107" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">API Server 2</text>
+  <text x="430" y="121" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#7C3AED">Create / Redirect</text>
+  <!-- API Server N -->
+  <rect x="372" y="138" width="115" height="42" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="430" y="157" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">API Server N</text>
+  <text x="430" y="171" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#7C3AED">Horizontally Scaled</text>
+
+  <!-- Cache Layer -->
+  <rect x="560" y="40" width="130" height="65" rx="12" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
+  <text x="625" y="62" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="700" fill="#C2410C">Cache (Redis)</text>
+  <text x="625" y="78" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#EA580C">short_code -&gt; long_url</text>
+  <text x="625" y="94" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#EA580C">TTL: 24h, LRU eviction</text>
+  <!-- Arrow API → Cache -->
+  <line x1="487" y1="62" x2="558" y2="62" stroke="#F97316" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="522" y="55" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#EA580C">read</text>
+
+  <!-- Database -->
+  <rect x="560" y="130" width="130" height="70" rx="12" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <text x="625" y="152" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="700" fill="#1D4ED8">Database</text>
+  <text x="625" y="167" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#2563EB">PostgreSQL / DynamoDB</text>
+  <text x="625" y="182" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#2563EB">Primary + Read Replicas</text>
+  <text x="625" y="194" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#3B82F6">Sharded by short_code</text>
+  <!-- Arrow API → DB -->
+  <line x1="487" y1="120" x2="558" y2="155" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <text x="518" y="145" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#2563EB">write</text>
+  <!-- Arrow Cache miss → DB -->
+  <line x1="625" y1="105" x2="625" y2="128" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4 2" marker-end="url(#arrowBlue)"/>
+  <text x="654" y="118" font-family="Inter,system-ui,sans-serif" font-size="7" fill="#3B82F6">miss</text>
+
+  <!-- Separator line -->
+  <line x1="20" y1="225" x2="780" y2="225" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="6 3"/>
+  <text x="400" y="242" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#9CA3AF">Analytics &amp; AI Pipeline</text>
+
+  <!-- Click Event Stream -->
+  <rect x="40" y="262" width="120" height="50" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="100" y="283" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#047857">Click Events</text>
+  <text x="100" y="299" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#059669">User Agent, IP, Time</text>
+
+  <!-- Message Queue -->
+  <rect x="200" y="262" width="120" height="50" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="260" y="283" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#B45309">Message Queue</text>
+  <text x="260" y="299" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#D97706">Kafka / SQS</text>
+  <line x1="160" y1="287" x2="198" y2="287" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Analytics Service -->
+  <rect x="360" y="262" width="130" height="50" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="425" y="283" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">Analytics Service</text>
+  <text x="425" y="299" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#7C3AED">Aggregation + Metrics</text>
+  <line x1="320" y1="287" x2="358" y2="287" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arrowYellow)"/>
+
+  <!-- ML Spam Detector -->
+  <rect x="530" y="262" width="130" height="50" rx="8" fill="#FDF2F8" stroke="#EC4899" stroke-width="2"/>
+  <text x="595" y="280" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#BE185D">ML Spam Detector</text>
+  <text x="595" y="296" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#DB2777">URL Classification</text>
+  <text x="595" y="307" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="7" fill="#EC4899">Phishing / Malware</text>
+  <line x1="490" y1="287" x2="528" y2="287" stroke="#EC4899" stroke-width="1.5" marker-end="url(#arrowPink)"/>
+
+  <!-- Data Warehouse -->
+  <rect x="360" y="336" width="130" height="50" rx="8" fill="#F0F9FF" stroke="#0EA5E9" stroke-width="1.5"/>
+  <text x="425" y="357" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="600" fill="#0369A1">Data Warehouse</text>
+  <text x="425" y="373" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#0284C7">BigQuery / Redshift</text>
+  <line x1="425" y1="312" x2="425" y2="334" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="4 2" marker-end="url(#arrowSky)"/>
+
+  <!-- Click Predictor -->
+  <rect x="530" y="336" width="130" height="50" rx="8" fill="#FDF2F8" stroke="#EC4899" stroke-width="2"/>
+  <text x="595" y="354" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#BE185D">Click Predictor</text>
+  <text x="595" y="370" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#DB2777">ML: Forecast traffic</text>
+  <text x="595" y="381" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="7" fill="#EC4899">Pre-warm cache</text>
+  <line x1="490" y1="361" x2="528" y2="361" stroke="#EC4899" stroke-width="1.2" stroke-dasharray="4 2" marker-end="url(#arrowPink)"/>
+
+  <!-- Legend -->
+  <rect x="30" y="410" width="740" height="78" rx="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="50" y="430" font-family="Inter,system-ui,sans-serif" font-size="10" font-weight="700" fill="#374151">Legend</text>
+  <line x1="50" y1="448" x2="80" y2="448" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="88" y="452" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#6B7280">Synchronous call</text>
+  <line x1="180" y1="448" x2="210" y2="448" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4 2"/>
+  <text x="218" y="452" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#6B7280">Async / Event-driven</text>
+  <rect x="340" y="440" width="16" height="16" rx="3" fill="#FDF2F8" stroke="#EC4899" stroke-width="1.5"/>
+  <text x="364" y="452" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#6B7280">AI/ML Component</text>
+  <rect x="500" y="440" width="16" height="16" rx="3" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5"/>
+  <text x="524" y="452" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#6B7280">Cache Layer</text>
+  <rect x="610" y="440" width="16" height="16" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="634" y="452" font-family="Inter,system-ui,sans-serif" font-size="9" fill="#6B7280">Storage Layer</text>
+  <text x="50" y="474" font-family="Inter,system-ui,sans-serif" font-size="8" fill="#9CA3AF">Reads: ~100:1 read-to-write ratio | Writes: ~100M URLs/month | Latency: p99 &lt; 50ms redirect</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#8B5CF6"/></marker>
+    <marker id="arrowTeal" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#14B8A6"/></marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#F97316"/></marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#3B82F6"/></marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#10B981"/></marker>
+    <marker id="arrowYellow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#F59E0B"/></marker>
+    <marker id="arrowPink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#EC4899"/></marker>
+    <marker id="arrowSky" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#0EA5E9"/></marker>
+  </defs>
+</svg>

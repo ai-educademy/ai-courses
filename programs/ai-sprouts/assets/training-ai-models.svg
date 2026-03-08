@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="trbg" x1="0" y1="0" x2="720" y2="400">
+      <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="trhdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#trbg)" rx="20"/>
+  <text x="360" y="36" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Training AI Models</text>
+
+  <!-- Circular training loop -->
+  <!-- Center circle background -->
+  <circle cx="360" cy="205" r="135" fill="none" stroke="#c7d2fe" stroke-width="2" stroke-dasharray="8 4" opacity="0.5"/>
+
+  <!-- Step 1: Data (top) -->
+  <g transform="translate(310,55)">
+    <rect width="100" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="2"/>
+    <text x="50" y="24" text-anchor="middle" font-size="18">📊</text>
+    <text x="50" y="45" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Data</text>
+  </g>
+  <!-- Arrow: Data → Model -->
+  <path d="M410,100 Q440,100 460,125" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="457,123 465,130 455,128" fill="#94a3b8"/>
+
+  <!-- Step 2: Model (right-top) -->
+  <g transform="translate(460,120)">
+    <rect width="100" height="60" rx="14" fill="white" stroke="#a7f3d0" stroke-width="2"/>
+    <text x="50" y="24" text-anchor="middle" font-size="18">🧠</text>
+    <text x="50" y="45" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Model</text>
+  </g>
+  <!-- Arrow: Model → Prediction -->
+  <path d="M530,180 Q540,210 530,240" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="525,238 530,248 535,238" fill="#94a3b8"/>
+
+  <!-- Step 3: Prediction (right-bottom) -->
+  <g transform="translate(460,245)">
+    <rect width="100" height="60" rx="14" fill="white" stroke="#c7d2fe" stroke-width="2"/>
+    <text x="50" y="24" text-anchor="middle" font-size="18">💬</text>
+    <text x="50" y="45" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="#4338ca">Prediction</text>
+  </g>
+  <!-- Arrow: Prediction → Compare -->
+  <path d="M460,290 Q430,315 400,320" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="402,315 395,322 400,325" fill="#94a3b8"/>
+
+  <!-- Step 4: Compare (bottom) -->
+  <g transform="translate(300,310)">
+    <rect width="110" height="60" rx="14" fill="white" stroke="#fbbf24" stroke-width="2"/>
+    <text x="55" y="24" text-anchor="middle" font-size="18">⚖️</text>
+    <text x="55" y="45" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#4338ca">Compare Truth</text>
+  </g>
+  <!-- Arrow: Compare → Loss -->
+  <path d="M300,340 Q270,340 245,325" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="248,320 240,328 244,320" fill="#94a3b8"/>
+
+  <!-- Step 5: Loss (left-bottom) -->
+  <g transform="translate(160,270)">
+    <rect width="100" height="60" rx="14" fill="white" stroke="#fca5a5" stroke-width="2"/>
+    <text x="50" y="24" text-anchor="middle" font-size="18">📉</text>
+    <text x="50" y="45" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#dc2626">Calculate Loss</text>
+  </g>
+  <!-- Arrow: Loss → Update -->
+  <path d="M190,270 Q180,240 190,210" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="185,212 190,202 195,212" fill="#94a3b8"/>
+
+  <!-- Step 6: Update Weights (left-top) -->
+  <g transform="translate(160,145)">
+    <rect width="100" height="60" rx="14" fill="white" stroke="#a7f3d0" stroke-width="2"/>
+    <text x="50" y="24" text-anchor="middle" font-size="18">🔧</text>
+    <text x="50" y="45" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#15803d">Update Weights</text>
+  </g>
+  <!-- Arrow: Update Weights → back to Data/Model -->
+  <path d="M260,155 Q285,130 310,110" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="308,115 315,107 312,117" fill="#94a3b8"/>
+
+  <!-- Center label -->
+  <text x="360" y="200" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#6366f1">Training</text>
+  <text x="360" y="216" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#6366f1">Loop</text>
+  <text x="360" y="232" text-anchor="middle" font-size="16">🔄</text>
+
+  <text x="360" y="390" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Repeat until the model learns — each cycle reduces the error</text>
+</svg>

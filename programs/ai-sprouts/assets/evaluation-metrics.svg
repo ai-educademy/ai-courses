@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="evbg" x1="0" y1="0" x2="720" y2="400">
+      <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="evhdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="400" fill="url(#evbg)" rx="20"/>
+  <text x="360" y="36" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#4338ca">Evaluation Metrics</text>
+
+  <!-- Confusion Matrix -->
+  <text x="220" y="65" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#4338ca">Confusion Matrix</text>
+
+  <!-- Column headers -->
+  <text x="220" y="85" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Predicted</text>
+  <text x="170" y="98" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#475569">Positive</text>
+  <text x="270" y="98" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#475569">Negative</text>
+  <!-- Row headers -->
+  <text x="85" y="135" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280" transform="rotate(-90,85,135)">Actual</text>
+  <text x="105" y="145" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#475569">Pos</text>
+  <text x="105" y="215" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#475569">Neg</text>
+
+  <!-- TP (green) -->
+  <rect x="120" y="110" width="100" height="65" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+  <text x="170" y="138" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#16a34a">TP</text>
+  <text x="170" y="155" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#15803d">True Positive</text>
+  <text x="170" y="168" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">✅ Correct Yes</text>
+
+  <!-- FP (red) -->
+  <rect x="225" y="110" width="100" height="65" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="275" y="138" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#dc2626">FP</text>
+  <text x="275" y="155" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#b91c1c">False Positive</text>
+  <text x="275" y="168" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">❌ Wrong Yes</text>
+
+  <!-- FN (orange) -->
+  <rect x="120" y="180" width="100" height="65" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="170" y="208" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#ea580c">FN</text>
+  <text x="170" y="225" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#c2410c">False Negative</text>
+  <text x="170" y="238" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">❌ Missed Yes</text>
+
+  <!-- TN (green) -->
+  <rect x="225" y="180" width="100" height="65" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+  <text x="275" y="208" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="700" fill="#16a34a">TN</text>
+  <text x="275" y="225" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#15803d">True Negative</text>
+  <text x="275" y="238" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="9" fill="#6b7280">✅ Correct No</text>
+
+  <!-- Formulas on the right -->
+  <g transform="translate(400,70)">
+    <rect width="280" height="65" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+    <text x="140" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">🎯 Accuracy</text>
+    <text x="140" y="42" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#475569">(TP + TN) / Total</text>
+    <text x="140" y="57" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">How often is the model correct overall?</text>
+  </g>
+
+  <g transform="translate(400,150)">
+    <rect width="280" height="65" rx="14" fill="white" stroke="#a7f3d0" stroke-width="1.5"/>
+    <text x="140" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">🔍 Precision</text>
+    <text x="140" y="42" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#475569">TP / (TP + FP)</text>
+    <text x="140" y="57" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">When it says "yes", how often is it right?</text>
+  </g>
+
+  <g transform="translate(400,230)">
+    <rect width="280" height="65" rx="14" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+    <text x="140" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">📋 Recall</text>
+    <text x="140" y="42" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#475569">TP / (TP + FN)</text>
+    <text x="140" y="57" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#6b7280">Of all actual positives, how many found?</text>
+  </g>
+
+  <!-- F1 Score -->
+  <g transform="translate(400,310)">
+    <rect width="280" height="50" rx="14" fill="white" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="140" y="22" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#4338ca">⚖️ F1 Score</text>
+    <text x="140" y="40" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#475569">2 × (Precision × Recall) / (Precision + Recall)</text>
+  </g>
+
+  <text x="360" y="390" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6366f1" opacity="0.7">Measuring how well your AI model performs</text>
+</svg>

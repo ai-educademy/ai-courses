@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">Two Pointers — Converging on a Sorted Array</text>
+
+  <!-- Array boxes - Step 1 (top) -->
+  <text x="60" y="80" font-family="system-ui, sans-serif" font-size="13" fill="#64748B" font-weight="600">Step 1: Pointers at edges</text>
+  <g transform="translate(100, 90)">
+    <!-- Array cells -->
+    <rect x="0" y="0" width="60" height="50" rx="6" fill="#06B6D4" stroke="#0891B2" stroke-width="2"/>
+    <text x="30" y="32" text-anchor="middle" font-family="monospace" font-size="16" font-weight="bold" fill="#ffffff">1</text>
+    <rect x="70" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="100" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">3</text>
+    <rect x="140" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="170" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">5</text>
+    <rect x="210" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="240" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">7</text>
+    <rect x="280" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="310" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">9</text>
+    <rect x="350" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="380" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">11</text>
+    <rect x="420" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="450" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">14</text>
+    <rect x="490" y="0" width="60" height="50" rx="6" fill="#E879F9" stroke="#C026D3" stroke-width="2"/>
+    <text x="520" y="32" text-anchor="middle" font-family="monospace" font-size="16" font-weight="bold" fill="#ffffff">18</text>
+
+    <!-- Left pointer -->
+    <polygon points="30,62 20,78 40,78" fill="#06B6D4"/>
+    <text x="30" y="95" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#06B6D4">L</text>
+
+    <!-- Right pointer -->
+    <polygon points="520,62 510,78 530,78" fill="#C026D3"/>
+    <text x="520" y="95" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#C026D3">R</text>
+
+    <!-- Sum label -->
+    <text x="600" y="20" font-family="system-ui, sans-serif" font-size="13" fill="#64748B">sum = 1 + 18 = 19</text>
+    <text x="600" y="38" font-family="system-ui, sans-serif" font-size="13" fill="#EF4444" font-weight="600">target = 12</text>
+    <text x="600" y="56" font-family="system-ui, sans-serif" font-size="13" fill="#64748B">19 &gt; 12, move R left</text>
+  </g>
+
+  <!-- Array boxes - Step 2 (middle) -->
+  <text x="60" y="215" font-family="system-ui, sans-serif" font-size="13" fill="#64748B" font-weight="600">Step 2: R moves left</text>
+  <g transform="translate(100, 225)">
+    <rect x="0" y="0" width="60" height="50" rx="6" fill="#06B6D4" stroke="#0891B2" stroke-width="2"/>
+    <text x="30" y="32" text-anchor="middle" font-family="monospace" font-size="16" font-weight="bold" fill="#ffffff">1</text>
+    <rect x="70" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="100" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">3</text>
+    <rect x="140" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="170" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">5</text>
+    <rect x="210" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="240" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">7</text>
+    <rect x="280" y="0" width="60" height="50" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="310" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#334155">9</text>
+    <rect x="350" y="0" width="60" height="50" rx="6" fill="#E879F9" stroke="#C026D3" stroke-width="2"/>
+    <text x="380" y="32" text-anchor="middle" font-family="monospace" font-size="16" font-weight="bold" fill="#ffffff">11</text>
+    <rect x="420" y="0" width="60" height="50" rx="6" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4"/>
+    <text x="450" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#94A3B8">14</text>
+    <rect x="490" y="0" width="60" height="50" rx="6" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4"/>
+    <text x="520" y="32" text-anchor="middle" font-family="monospace" font-size="16" fill="#94A3B8">18</text>
+
+    <!-- Left pointer -->
+    <polygon points="30,62 20,78 40,78" fill="#06B6D4"/>
+    <text x="30" y="95" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#06B6D4">L</text>
+
+    <!-- Right pointer -->
+    <polygon points="380,62 370,78 390,78" fill="#C026D3"/>
+    <text x="380" y="95" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#C026D3">R</text>
+
+    <!-- Sum label -->
+    <text x="600" y="20" font-family="system-ui, sans-serif" font-size="13" fill="#64748B">sum = 1 + 11 = 12</text>
+    <text x="600" y="38" font-family="system-ui, sans-serif" font-size="13" fill="#10B981" font-weight="bold">FOUND! target = 12</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(100, 370)">
+    <rect x="0" y="-12" width="14" height="14" rx="3" fill="#06B6D4"/>
+    <text x="20" y="0" font-family="system-ui, sans-serif" font-size="12" fill="#64748B">Left pointer</text>
+    <rect x="130" y="-12" width="14" height="14" rx="3" fill="#E879F9"/>
+    <text x="150" y="0" font-family="system-ui, sans-serif" font-size="12" fill="#64748B">Right pointer</text>
+    <rect x="260" y="-12" width="14" height="14" rx="3" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3"/>
+    <text x="280" y="0" font-family="system-ui, sans-serif" font-size="12" fill="#64748B">Eliminated</text>
+    <text x="400" y="0" font-family="system-ui, sans-serif" font-size="12" fill="#64748B">O(n) time | O(1) space</text>
+  </g>
+</svg>
