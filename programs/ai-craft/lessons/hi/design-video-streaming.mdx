@@ -1,0 +1,137 @@
+---
+title: "Video Streaming Platform Design करें — YouTube/Netflix Architecture"
+description: "एक scalable video streaming platform design करें जिसमें upload pipelines, adaptive bitrate transcoding, CDN distribution, और live streaming architecture शामिल है।"
+order: 8
+difficulty: "advanced"
+duration: 25
+icon: "🎬"
+published: true
+---
+
+# Video Streaming Platform Design करें — YouTube/Netflix Architecture
+
+Video streaming पूरे global internet traffic का 65% से ज़्यादा हिस्सा है। इस system को design करने में file processing pipelines, CDN architecture, और adaptive streaming जैसे concepts आते हैं — जो सिर्फ video तक सीमित नहीं हैं।
+
+## Step 1 — Requirements इकट्ठा करना
+
+### Functional Requirements
+- Videos upload करना (प्रति file 1 GB तक)
+- Network conditions के हिसाब से adaptive quality में videos stream करना
+- Title, description, और tags से videos search करना
+- View counts और engagement metrics track करना
+
+### Non-Functional Requirements
+- **Availability** — streaming के लिए 99.99% uptime
+- **Low latency** — video playback 2 seconds के अंदर शुरू हो
+- **Global reach** — सभी continents के users को efficiently serve करना
+- **Cost-efficient** — storage और bandwidth optimise करना (दो सबसे बड़े costs)
+
+## Step 2 — High-Level Architecture
+
+```
+Upload Flow:
+Client → Upload Service → Object Storage (raw)
+                              ↓
+                    Transcoding Pipeline (async)
+                         ↓          ↓
+                   Multiple      Thumbnail
+                   Qualities     Generator
+                         ↓          ↓
+                    CDN Origin Storage → CDN Edge Servers
+
+Streaming Flow:
+Client → CDN Edge → (cache miss) → CDN Origin → Object Storage
+```
+
+<Illustration src="/images/lessons/design-video-streaming.svg" alt="Video streaming architecture जिसमें upload pipeline, transcoding, object storage, CDN distribution, और clients को streaming flow दिखाया गया है" caption="Upload और streaming flows पूरी तरह अलग हैं — uploads async और write-heavy होते हैं जबकि streaming read-heavy और latency-sensitive होती है" />
+
+## Step 3 — Video Upload Pipeline
+
+### Step-by-Step Processing
+1. **Upload** — client raw video को object storage (जैसे S3) में pre-signed URLs के ज़रिए upload करता है, बड़ी files के लिए resumable uploads के साथ
+2. **Transcoding** — source video को multiple resolutions (1080p, 720p, 480p, 360p) और codecs (H.264, VP9, AV1) में convert करना
+3. **Adaptive Bitrate Packaging** — हर quality level को छोटे segments (2-10 seconds) में split करना HLS/DASH streaming के लिए
+4. **Thumbnail Generation** — preview thumbnails के लिए regular intervals पर frames extract करना
+5. **Metadata Update** — सारी processing पूरी होने पर database में video को "ready" mark करना
+
+### Transcoding at Scale
+एक 10-minute 4K video को एक machine पर transcode करने में 30+ minutes लग सकते हैं। हज़ारों concurrent uploads handle करने के लिए:
+- Videos को chunks में split करें और DAG-based workflow (जैसे AWS Step Functions) से parallel में transcode करें
+- Spot/preemptible instances use करके compute costs 60-80% तक कम करें
+
+<Quiz question="Video transcoding upload के दौरान नहीं बल्कि asynchronously क्यों की जाती है?" options="User का upload time कम करने के लिए|Transcoding CPU-intensive होती है और upload service को block कर देगी, जिससे availability खराब होगी|Storage space बचाने के लिए|क्योंकि browsers raw video formats नहीं चला सकते" answer="1" explanation="एक video को multiple quality levels में transcode करना बहुत CPU-intensive है (minutes से लेकर hours)। इसे synchronously करने से upload service block हो जाएगी, user experience खराब होगा, और upload service को बहुत ज़्यादा compute resources चाहिए होंगे।" />
+
+## Step 4 — Streaming Protocols और CDN
+
+### Adaptive Bitrate Streaming
+Player viewer की network speed के हिसाब से automatically quality switch करता है:
+
+| Protocol | इस्तेमाल करने वाले | Segment Format | Manifest |
+|----------|-------------------|----------------|----------|
+| HLS | Apple, ज़्यादातर browsers | .ts या .fmp4 | .m3u8 playlist |
+| DASH | YouTube, Netflix | .mp4 segments | .mpd manifest |
+
+Client एक manifest file download करता है जिसमें सभी available quality levels listed होते हैं, फिर एक-एक segment request करता है, और bandwidth बदलने पर seamlessly quality switch करता है।
+
+### CDN Architecture
+Streaming performance के लिए CDN सबसे critical component है:
+
+```
+User in London → London Edge PoP (cache hit: 95%)
+                     ↓ (cache miss)
+              European Regional Cache
+                     ↓ (cache miss)
+              Origin Storage (S3)
+```
+
+**Key insight:** popular videos users के सबसे नज़दीकी edge locations पर cache होते हैं। Long-tail content सिर्फ regional nodes पर cache हो सकता है, और rare content के लिए origin fetch होता है।
+
+<FunFact>Netflix हर हफ़्ते 700 million+ hours video serve करता है। उनका Open Connect CDN ISP data centres के अंदर custom hardware appliances रखता है, जो popular content को last mile पर cache करके internet backbone traffic को 90% से ज़्यादा कम कर देता है।</FunFact>
+
+## Step 5 — Supporting Services
+
+### Video Metadata Service
+Title, description, tags, upload date, view counts, और processing status store करता है। Structured queries और search indexing के लिए relational database (PostgreSQL) use करें।
+
+### View Counting at Scale
+Naive approach (हर view पर increment) से write hotspot बनता है। बेहतर तरीका:
+- View events को एक stream (Kafka) में batch करें
+- Counts को periodically aggregate करें (हर 30 seconds)
+- Real-time display के लिए approximate counting और analytics के लिए exact counts use करें
+
+<Quiz question="एक video viral हो जाता है और प्रति minute 1 million views आते हैं। हर view पर database counter increment करने में सबसे बड़ी problem क्या है?" options="Database की storage खत्म हो जाती है|एक single row पर write contention bottleneck बनाती है और performance खराब करती है|Counter overflow हो जाता है|Read queries slow हो जाती हैं" answer="1" explanation="एक single row पर millions concurrent writes से database में extreme lock contention होता है। इसीलिए view counts को typically in-memory या stream में buffer किया जाता है, फिर periodically batch-aggregate करके database में डाला जाता है।" />
+
+### Live Streaming Architecture
+Live streaming on-demand से कई तरह से अलग है:
+- **No pre-transcoding** — video को real-time में transcode करना होता है
+- **Ultra-low latency** — viewers 5-second से कम delay expect करते हैं
+- **Ingestion protocol** — streamers RTMP से push करते हैं; viewers HLS/DASH low-latency extensions से receive करते हैं
+
+## Step 6 — Cost Breakdown और Optimisations
+
+Video platforms चलाना **बहुत महंगा** होता है। तीन सबसे बड़े costs:
+
+| Cost Centre | अनुमान (10M daily users) | Optimisation |
+|------------|--------------------------|--------------|
+| Storage | ~$200K/month | Tiered storage (hot/warm/cold), failed uploads delete करें |
+| CDN Bandwidth | ~$500K/month | Edge caching, modern codecs (AV1) से compress करें |
+| Transcoding Compute | ~$100K/month | Spot instances, कम देखे जाने वाले quality levels skip करें |
+
+<ThinkAboutIt>Netflix content delivery पर सालाना billions खर्च करता है। अगर आप उनका system scratch से design कर रहे होते, तो अपना खुद का CDN बनाते (जैसे Netflix Open Connect) या commercial CDN (जैसे CloudFront) use करते? किस scale पर अपना CDN बनाना cost-effective हो जाता है?</ThinkAboutIt>
+
+### Content Protection (DRM)
+Premium content को Digital Rights Management चाहिए:
+- **Widevine** (Google) — Chrome, Android
+- **FairPlay** (Apple) — Safari, iOS
+- **PlayReady** (Microsoft) — Edge, Windows
+
+हर DRM system को अलग encryption और licence server integration चाहिए, जो काफ़ी complexity बढ़ा देता है।
+
+<ThinkAboutIt>YouTube पर 800 million+ videos हैं। अगर हर video को 5 quality levels में transcode किया जाए और हर level औसतन 500 MB हो, तो कुल कितनी storage चाहिए? आप cost-effective storage strategy कैसे design करेंगे?</ThinkAboutIt>
+
+---
+
+## 📚 और पढ़ें
+- [YouTube System Design — System Design Interview Vol. 2, Ch. 14](https://bytebytego.com/) — Alex Xu की video platform architecture पर deep dive
+- [Netflix Tech Blog: Content Delivery](https://netflixtechblog.com/) — Netflix ने Open Connect कैसे बनाया और global traffic कैसे serve करता है
+- [HLS vs DASH Streaming](https://www.cloudflare.com/learning/video/what-is-http-live-streaming/) — adaptive bitrate protocols को समझें

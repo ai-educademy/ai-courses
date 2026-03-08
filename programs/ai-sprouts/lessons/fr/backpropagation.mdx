@@ -1,0 +1,132 @@
+---
+title: "Rétropropagation — Le calcul derrière l'apprentissage"
+description: "Comprenez comment les réseaux de neurones apprennent en propageant les erreurs à rebours à travers les couches, en utilisant la règle de la chaîne pour mettre à jour chaque poids."
+order: 6
+difficulty: "intermediate"
+duration: 16
+icon: "⛓️"
+published: true
+---
+
+# Rétropropagation — Le moteur de l'apprentissage
+
+Dans les leçons précédentes, vous avez vu que les réseaux de neurones possèdent des poids, et que l'entraînement ajuste ces poids. Mais *comment* le réseau sait-il quels poids modifier, et de combien ? La réponse est la **rétropropagation** — l'algorithme le plus important de l'apprentissage profond moderne.
+
+Andrej Karpathy la qualifie de « chose la plus importante à comprendre sur les réseaux de neurones ». Voyons pourquoi.
+
+## Rappel rapide de la passe avant
+
+Lors d'une **passe avant** (forward pass), les données circulent de gauche à droite à travers le réseau :
+
+1. Les entrées sont multipliées par les poids puis additionnées.
+2. Un biais est ajouté.
+3. Une fonction d'activation (comme ReLU) est appliquée.
+4. La sortie alimente la couche suivante, et le processus se répète jusqu'à ce qu'une prédiction finale émerge.
+
+La prédiction est ensuite comparée à la vraie réponse à l'aide d'une **fonction de perte** (abordée dans la leçon suivante). La perte est un nombre unique qui dit : *« Voici à quel point tu te trompes. »*
+
+<Illustration src="/images/lessons/backpropagation.svg" alt="Un graphe de calcul montrant une passe avant à travers trois nœuds, avec des flèches indiquant le flux de données de l'entrée vers la perte" caption="La passe avant construit un graphe de calcul. La rétropropagation le parcourt ensuite en sens inverse." />
+
+## L'intuition clé — L'attribution de la responsabilité
+
+Imaginez que vous prépariez un gâteau et qu'il ait un goût affreux. Vous avez utilisé cinq ingrédients. La question est : *quel ingrédient a le plus contribué au mauvais goût, et de combien ?*
+
+La rétropropagation répond exactement à cette question pour les réseaux de neurones. Elle attribue une **responsabilité** à chaque poids en demandant : « Si je modifie légèrement ce poids, de combien la perte change-t-elle ? »
+
+Ce taux de variation est appelé un **gradient**, et il provient du calcul différentiel — plus précisément, de la **dérivée**.
+
+<FunFact>
+Geoffrey Hinton, l'un des « parrains de l'IA », a déclaré que la rétropropagation est l'idée clé qui a rendu l'apprentissage profond praticable. Sans elle, entraîner des réseaux avec des millions de paramètres serait informatiquement impossible.
+</FunFact>
+
+## La règle de la chaîne — Une seule idée pour tout gouverner
+
+Les réseaux de neurones sont des chaînes d'opérations simples composées ensemble. La **règle de la chaîne** du calcul différentiel nous indique comment dériver des fonctions composées :
+
+> Si `y = f(g(x))`, alors `dy/dx = f'(g(x)) × g'(x)`.
+
+**Analogie du quotidien :** Vous conduisez vers un magasin. Votre vitesse dépend de la force avec laquelle vous appuyez sur l'accélérateur. La position de l'accélérateur dépend du trafic. Pour savoir comment le trafic affecte votre vitesse, vous multipliez : *(vitesse par pression de l'accélérateur)* × *(pression de l'accélérateur par condition de trafic)*. C'est la règle de la chaîne — multiplier les taux de variation locaux le long d'une chaîne.
+
+<FunFact>
+La rétropropagation a été popularisée dans un article fondateur de 1986 par Rumelhart, Hinton et Williams, mais l'idée centrale de la différentiation automatique en mode inverse remonte aux années 1960.
+</FunFact>
+
+## Graphes de calcul — Visualiser les mathématiques
+
+Les frameworks modernes comme PyTorch construisent un **graphe de calcul** pendant la passe avant. Chaque opération — addition, multiplication, ReLU — devient un nœud. La rétropropagation parcourt ensuite ce graphe **en sens inverse**, en appliquant la règle de la chaîne à chaque nœud pour calculer les gradients.
+
+Pensez-y comme un réseau fluvial. La perte est l'océan à l'extrémité. La rétropropagation remonte chaque affluent pour déterminer dans quelle mesure chaque source (poids) a contribué au débit final.
+
+### Un petit exemple détaillé
+
+Supposons que `L = (w × x - y)²` avec `w = 2`, `x = 3`, `y = 10`.
+
+1. **Passe avant :** `w × x = 6`, puis `6 - 10 = -4`, puis `(-4)² = 16`. Perte = 16.
+2. **Passe arrière :** `dL/d(diff) = 2 × (-4) = -8`, puis `d(diff)/d(wx) = 1`, donc `dL/d(wx) = -8`.
+3. Enfin, `d(wx)/dw = x = 3`, donc **`dL/dw = -8 × 3 = -24`**.
+
+Le gradient de −24 nous indique : *augmenter `w` diminuera la perte rapidement.* C'est exactement le signal dont nous avons besoin pour nous améliorer.
+
+<Quiz question="Dans la règle de la chaîne, que fait-on avec les dérivées locales à chaque nœud ?" options="On les additionne|On les multiplie entre elles|On prend le maximum|On en fait la moyenne" answer="1" explanation="La règle de la chaîne multiplie les dérivées locales le long du chemin allant de la sortie jusqu'au poids qui nous intéresse. C'est la colonne vertébrale mathématique de la rétropropagation." />
+
+## Flux des gradients à travers les couches
+
+Dans un réseau profond, les gradients doivent traverser de nombreuses couches. Chaque couche multiplie le gradient par sa dérivée locale. Cela crée deux modes de défaillance dangereux :
+
+### Gradients évanescents
+
+Si les dérivées locales sont petites (par exemple, la fonction sigmoïde sature près de 0 ou 1), la multiplication répétée fait tendre les gradients vers zéro. Les premières couches apprennent à peine — elles ne reçoivent presque aucun signal. Ce problème a longtemps affecté les réseaux profonds.
+
+### Gradients explosifs
+
+Si les dérivées locales sont grandes, les gradients croissent de manière exponentielle. Les poids reçoivent des mises à jour énormes et le réseau devient instable, produisant des valeurs NaN.
+
+<ThinkAboutIt>
+La dérivée de ReLU est soit 0, soit 1 — elle ne réduit jamais le gradient lorsqu'elle est active. Pourquoi cette propriété simple a-t-elle pu être révolutionnaire pour l'entraînement des réseaux profonds ?
+</ThinkAboutIt>
+
+**Les solutions modernes incluent :**
+- **Activation ReLU** — la dérivée vaut 1 pour les entrées positives, évitant la diminution.
+- **Connexions résiduelles (skip connections)** — offrent aux gradients une autoroute pour contourner les couches.
+- **Normalisation par lots (batch normalisation)** — maintient les valeurs dans une plage saine.
+- **Écrêtage des gradients (gradient clipping)** — plafonne les gradients pour éviter les explosions.
+
+## Comment les poids sont réellement mis à jour
+
+Une fois que la rétropropagation a calculé chaque gradient, l'**optimiseur** (leçon suivante) met à jour chaque poids :
+
+```
+w_new = w_old - learning_rate × gradient
+```
+
+Le taux d'apprentissage contrôle la taille du pas. Trop grand et vous dépassez la cible ; trop petit et l'entraînement prend une éternité. Le gradient vous donne la direction ; le taux d'apprentissage vous dit de combien avancer.
+
+<Quiz question="Quelle est la cause des gradients évanescents dans les réseaux profonds ?" options="Un taux d'apprentissage trop élevé|Des fonctions d'activation avec de très petites dérivées qui s'accumulent couche après couche|Trop de données d'entraînement|L'utilisation de l'activation ReLU" answer="1" explanation="Lorsque des fonctions d'activation comme la sigmoïde saturent, leurs dérivées tendent vers zéro. Multiplier de nombreuses valeurs proches de zéro à travers la règle de la chaîne fait disparaître les gradients, privant les premières couches de signal d'apprentissage." />
+
+## Pourquoi la rétropropagation est essentielle
+
+Chaque fois que ChatGPT améliore sa prédiction du mot suivant, chaque fois qu'une voiture autonome affine sa direction, la rétropropagation fonctionne en arrière-plan. C'est l'algorithme qui rend l'**apprentissage par les erreurs** mathématiquement précis.
+
+Sans la rétropropagation, nous n'aurions aucun moyen efficace d'entraîner des réseaux avec des millions — voire des milliards — de paramètres.
+
+<Quiz question="Que nous indique un gradient à propos d'un poids ?" options="La valeur exacte que le poids devrait avoir|De combien la perte change lorsqu'on modifie légèrement ce poids|Si le poids devrait être supprimé|La position du poids dans le réseau" answer="1" explanation="Un gradient est le taux de variation de la perte par rapport à un poids. Il nous indique à la fois la direction et l'amplitude du changement nécessaire pour réduire la perte." />
+
+<ThinkAboutIt>
+Karpathy souligne que la rétropropagation est « simplement l'application récursive de la règle de la chaîne ». Si vous comprenez la règle de la chaîne et les graphes de calcul, vous comprenez la rétropropagation. Quels autres systèmes complexes pourrait-on comprendre en les décomposant en éléments simples et composables ?
+</ThinkAboutIt>
+
+## Points clés à retenir
+
+- La **rétropropagation** calcule les gradients en parcourant le graphe de calcul en sens inverse.
+- La **règle de la chaîne** multiplie les dérivées locales le long de chaque chemin.
+- Les **gradients évanescents** ralentissent l'apprentissage ; les **gradients explosifs** le déstabilisent.
+- Les techniques modernes (ReLU, connexions résiduelles, écrêtage des gradients) maintiennent un flux de gradients sain.
+- Rétropropagation + optimiseur = le moteur d'apprentissage de tout l'apprentissage profond moderne.
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Andrej Karpathy — nn-zero-to-hero (micrograd)](https://karpathy.ai/zero-to-hero.html) — Construire la rétropropagation à partir de zéro en Python
+- [3Blue1Brown — Backpropagation Calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus) — Magnifique explication visuelle de la règle de la chaîne dans les réseaux de neurones
+- [CS231n Backprop Notes](https://cs231n.github.io/optimization-2/) — Référence concise de Stanford sur les graphes de calcul et le flux des gradients

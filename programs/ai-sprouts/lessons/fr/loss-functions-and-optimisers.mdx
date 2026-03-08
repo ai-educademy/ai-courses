@@ -1,0 +1,139 @@
+---
+title: "Fonctions de perte et optimiseurs — Comment l'IA apprend de ses erreurs"
+description: "Découvrez comment les fonctions de perte mesurent les erreurs d'un modèle et comment les optimiseurs utilisent les gradients pour les réduire systématiquement."
+order: 7
+difficulty: "intermediate"
+duration: 15
+icon: "📉"
+published: true
+---
+
+# Fonctions de perte et optimiseurs
+
+La rétropropagation nous donne des gradients — mais des gradients *de quoi* ? Avant que la rétropropagation puisse s'exécuter, nous avons besoin d'un seul nombre qui capture à quel point le modèle se trompe. Ce nombre provient d'une **fonction de perte**. Une fois que nous avons les gradients, un **optimiseur** décide comment mettre à jour les poids. Ensemble, ils forment la boucle d'apprentissage.
+
+## Qu'est-ce qu'une fonction de perte ?
+
+Une fonction de perte (également appelée fonction de coût) prend la prédiction du modèle et la vraie réponse, et renvoie un nombre mesurant le « degré d'erreur ». L'objectif de l'entraînement est de **minimiser** ce nombre.
+
+Pensez-y comme un score au golf — plus c'est bas, mieux c'est. Une perte de 0 signifie une prédiction parfaite.
+
+<Illustration src="/images/lessons/loss-functions-and-optimisers.svg" alt="Une courbe en U montrant la perte sur l'axe des ordonnées et la valeur du poids sur l'axe des abscisses, avec une balle roulant vers le minimum" caption="L'entraînement est comme faire rouler une balle en descente sur le paysage de la perte, à la recherche du point le plus bas." />
+
+## Fonctions de perte pour la régression — MSE
+
+Lorsqu'on prédit des valeurs continues (prix immobiliers, température), on utilise l'**erreur quadratique moyenne (MSE)** :
+
+```
+MSE = (1/n) × Σ(prédit - réel)²
+```
+
+Élever au carré fait deux choses : cela rend toutes les erreurs positives, et cela pénalise de manière disproportionnée les grandes erreurs. Prédire un prix immobilier avec 100 000 € d'écart produit une erreur au carré 100 fois pire qu'un écart de 10 000 €.
+
+<FunFact>
+MSE remonte à Carl Friedrich Gauss en 1795 — plus de deux siècles avant les réseaux de neurones. Il l'a utilisée pour suivre l'orbite de l'astéroïde Cérès.
+</FunFact>
+
+## Fonctions de perte pour la classification — Entropie croisée
+
+Lorsqu'on prédit des catégories (spam ou non, chat vs chien), on utilise la **perte d'entropie croisée**. Elle mesure à quel point les probabilités prédites par le modèle sont éloignées des vraies étiquettes.
+
+Si la bonne réponse est « chat » et que le modèle dit 99 % chat, la perte est minuscule. S'il dit 10 % chat, la perte est énorme. L'entropie croisée a une propriété utile : elle devient *infiniment* mécontente lorsque le modèle se trompe avec confiance, créant un gradient fort pour corriger l'erreur.
+
+L'**entropie croisée binaire** est destinée aux problèmes à deux classes. L'**entropie croisée catégorielle** gère plusieurs classes en comparant les distributions de probabilités.
+
+<Quiz question="Pourquoi MSE est-elle un mauvais choix pour les tâches de classification ?" options="Elle est trop lente à calculer|Elle ne pénalise pas assez sévèrement les réponses erronées données avec confiance|Elle nécessite trop de mémoire|Elle ne fonctionne qu'avec les images" answer="1" explanation="MSE traite une probabilité de 0,4 vs 0,6 comme une petite erreur, mais en classification cela pourrait signifier prédire la mauvaise classe. L'entropie croisée pénalise les prédictions erronées faites avec confiance beaucoup plus sévèrement, créant des gradients plus forts pour l'apprentissage." />
+
+## Descente de gradient — Rouler vers le bas
+
+Avec une fonction de perte définie, nous pouvons visualiser le **paysage de la perte** — une surface où chaque point représente un ensemble de poids et la hauteur correspond à la perte. Entraîner le modèle revient à trouver la vallée la plus profonde.
+
+La **descente de gradient** est l'algorithme qui nous y mène :
+
+1. Calculer le gradient (la pente) à la position actuelle.
+2. Faire un pas dans la direction opposée (en descente).
+3. Répéter.
+
+La taille de chaque pas est contrôlée par le **taux d'apprentissage** — sans doute l'hyperparamètre le plus important de l'apprentissage profond.
+
+### Le dilemme du taux d'apprentissage
+
+- **Trop élevé :** Vous dépassez la vallée, rebondissant d'un côté à l'autre ou divergeant complètement.
+- **Trop faible :** Vous avancez péniblement et risquez de rester coincé dans un minimum local peu profond.
+- **Juste bien :** Vous convergez régulièrement vers une bonne solution.
+
+<ThinkAboutIt>
+Imaginez que vous descendiez une montagne dans le brouillard et que vous ne puissiez sentir que la pente directement sous vos pieds. Vous faites des pas vers le bas, mais vous ne voyez pas l'ensemble du paysage. Comment pourriez-vous vous retrouver dans un petit creux qui n'est pas la vallée la plus profonde ? C'est le problème du minimum local.
+</ThinkAboutIt>
+
+## Variantes de la descente de gradient
+
+### Descente de gradient par lots (Batch)
+
+Calcule le gradient en utilisant l'**ensemble du jeu de données** avant chaque mise à jour. Précis mais terriblement lent pour les grands ensembles de données — imaginez relire chaque livre d'une bibliothèque avant de corriger une seule faute d'orthographe.
+
+### Descente de gradient stochastique (SGD)
+
+Met à jour les poids après chaque **exemple individuel**. Rapide mais bruitée — le chemin zigzague fortement. Le bruit peut en fait aider à s'échapper des minima locaux, ce qui est un avantage surprenant.
+
+### Descente de gradient par mini-lots
+
+Le compromis idéal en pratique. Calcule les gradients sur un petit **lot** (généralement 32 à 512 exemples). Offre un équilibre entre vitesse et stabilité, et c'est ce que la quasi-totalité des entraînements modernes utilise.
+
+## Optimiseurs modernes
+
+La SGD simple a des limites. Les chercheurs ont développé des optimiseurs plus intelligents qui s'adaptent au fil de l'entraînement.
+
+### SGD avec momentum
+
+Comme une lourde balle roulant en descente, le momentum accumule de la vitesse dans les directions cohérentes et amortit les oscillations. Si le gradient pointe constamment dans la même direction, le momentum accélère. S'il change constamment de direction, le momentum le lisse.
+
+### AdaGrad
+
+Adapte le taux d'apprentissage **par paramètre**. Les poids fréquemment mis à jour reçoivent des pas plus petits ; les poids rarement mis à jour reçoivent des pas plus grands. Excellent pour les données éparses (comme le texte), mais le taux d'apprentissage peut diminuer jusqu'à zéro au fil du temps.
+
+### Adam (Adaptive Moment Estimation)
+
+Combine le momentum *et* les taux adaptatifs par paramètre. Il maintient des moyennes glissantes du gradient (premier moment) et du gradient au carré (second moment). Adam est le **choix par défaut** pour la plupart des praticiens aujourd'hui.
+
+<Quiz question="Quel avantage Adam a-t-il par rapport à la SGD de base ?" options="Il trouve toujours le minimum global|Il adapte les taux d'apprentissage par paramètre et utilise le momentum|Il ne nécessite aucun taux d'apprentissage|Il utilise moins de mémoire" answer="1" explanation="Adam combine le momentum (direction lissée du gradient) avec des taux d'apprentissage adaptatifs par paramètre (à partir des estimations du gradient au carré), le rendant robuste sur une large gamme de problèmes sans ajustement intensif." />
+
+## Planification du taux d'apprentissage
+
+Plutôt que de fixer le taux d'apprentissage, l'entraînement moderne le **planifie** souvent :
+
+- **Décroissance par paliers :** Diviser le taux par deux tous les N epochs.
+- **Recuit cosinus :** Diminuer progressivement selon une courbe cosinus, parfois avec des redémarrages.
+- **Échauffement (warmup) :** Commencer avec un taux minuscule, l'augmenter progressivement, puis le faire décroître. Utilisé dans l'entraînement des Transformers.
+
+L'intuition : faire de grands pas au début pour explorer largement, puis de petits pas ensuite pour affiner.
+
+## Écrêtage des gradients — Les garde-fous
+
+Parfois, les gradients explosent (comme nous l'avons vu dans la leçon sur la rétropropagation). L'**écrêtage des gradients** plafonne la magnitude du gradient avant l'étape de mise à jour. Si le gradient dépasse un seuil, il est réduit proportionnellement. C'est une pratique standard lors de l'entraînement des RNN et des Transformers.
+
+<Quiz question="Que prévient l'écrêtage des gradients ?" options="Les gradients évanescents|Le surapprentissage|Les gradients explosifs causant des mises à jour instables|La convergence lente" answer="2" explanation="L'écrêtage des gradients plafonne la magnitude des gradients à un seuil maximum, empêchant les énormes mises à jour de poids qui causent l'instabilité de l'entraînement — le problème des gradients explosifs." />
+
+<FunFact>
+L'article sur l'optimiseur Adam (Kingma & Ba, 2014) compte plus de 150 000 citations, ce qui en fait l'un des articles les plus cités de toute l'informatique.
+</FunFact>
+
+## Points clés à retenir
+
+- Les **fonctions de perte** quantifient à quel point un modèle se trompe — MSE pour la régression, entropie croisée pour la classification.
+- La **descente de gradient** minimise la perte en faisant des pas répétés dans la direction opposée au gradient.
+- Le **taux d'apprentissage** contrôle la taille des pas et son réglage est crucial.
+- **Adam** est l'optimiseur de référence, combinant momentum et taux adaptatifs.
+- La **planification du taux d'apprentissage** et l'**écrêtage des gradients** sont des stabilisateurs essentiels de l'entraînement.
+
+<ThinkAboutIt>
+Si vous entraîniez un modèle et que la perte cessait de diminuer après quelques epochs, qu'examineriez-vous en premier — le taux d'apprentissage, la fonction de perte ou les données ? Pourquoi ?
+</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Andrej Karpathy — A Recipe for Training Neural Networks](https://karpathy.github.io/2019/04/25/recipe/) — Conseils pratiques sur le débogage de la perte et le choix de l'optimiseur
+- [3Blue1Brown — Gradient Descent](https://www.3blue1brown.com/lessons/gradient-descent) — Intuition visuelle remarquable sur la façon dont la descente de gradient navigue dans les paysages de perte
+- [An Overview of Gradient Descent Optimisation Algorithms (Ruder, 2016)](https://ruder.io/optimizing-gradient-descent/) — Comparaison complète de SGD, Adam et consorts

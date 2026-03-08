@@ -1,0 +1,137 @@
+---
+title: "Tokenisatie — Hoe AI Tekst Leest"
+description: "Leer hoe taalmodellen tekst opdelen in tokens met BPE en andere algoritmen, en waarom tokenisatie alles beïnvloedt, van kosten tot mogelijkheden."
+order: 8
+difficulty: "intermediate"
+duration: 14
+icon: "🔤"
+published: true
+---
+
+# Tokenisatie — Hoe AI Tekst Leest
+
+Neurale netwerken werken met getallen. Ze kunnen het woord "hallo" niet lezen zoals jij dat doet. Voordat een taalmodel tekst kan verwerken, moet deze worden opgesplitst in kleine numerieke eenheden die **tokens** worden genoemd. Deze ogenschijnlijk eenvoudige stap heeft diepgaande gevolgen voor hoe AI taal begrijpt — en misverstaat.
+
+## Waarom Kan AI Niet Gewoon Tekens Lezen?
+
+De eenvoudigste aanpak: behandel elk teken als een token. "Hallo" wordt `['H', 'a', 'l', 'l', 'o']` — vijf tokens.
+
+Het probleem? Woorden worden absurd lange reeksen. Een essay van 500 woorden kan 2.500+ tekentokens worden. Aangezien Transformer-modellen kwadratisch schalen met de reekslengte, is dit rekenkundig genadeloos. Erger nog, individuele tekens dragen nauwelijks betekenis — het model moet leren dat 'k', 'a', 't' samen een harig dier betekenen.
+
+## Woordniveau-Tokenisatie
+
+Het andere uiterste: elk woord is één token. "De kat zat" wordt `['De', 'kat', 'zat']` — compact en betekenisvol.
+
+Maar dit creëert een ander probleem: de **vocabulaire-explosie**. Alleen al het Engels heeft honderdduizenden woorden. Tel daarbij spelfouten, technisch jargon en code op, en het vocabulaire wordt onbeheersbaar. Elk woord dat niet in het vocabulaire zit, wordt een onbekend `[UNK]`-token — een doodlopend spoor voor begrip.
+
+<ThinkAboutIt>
+Als een model met woordniveau-tokens voor het eerst "ChatGPT" tegenkomt en het staat niet in het vocabulaire, wordt het `[UNK]`. Hoe zou dit het vermogen van het model om over nieuwe technologie te praten kunnen beïnvloeden?
+</ThinkAboutIt>
+
+## De Gulden Middenweg — Subwoord-Tokenisatie
+
+Moderne taalmodellen gebruiken **subwoord-tokenisatie**, die zich bevindt tussen tekens en woorden. Veelvoorkomende woorden blijven intact ("de", "en"), terwijl zeldzame woorden worden opgesplitst in betekenisvolle stukken ("on" + "geloof" + "lijk").
+
+Dit geeft ons een beheersbaar vocabulaire (doorgaans 32.000–100.000 tokens) terwijl elke tekst verwerkt kan worden — zelfs woorden die het model nog nooit heeft gezien.
+
+<Illustration src="/images/lessons/tokenisation.svg" alt="Het woord 'ongelooflijk' opgesplitst in drie subwoordtokens: 'on', 'geloof' en 'lijk', met pijlen die laten zien hoe ze opnieuw worden gecombineerd" caption="Subwoord-tokenisatie splitst zeldzame woorden op in herbruikbare stukken, terwijl veelvoorkomende woorden heel blijven." />
+
+## Byte Pair Encoding (BPE) — Stap voor Stap
+
+**BPE** is het algoritme achter GPT-modellen. Zo bouwt het een vocabulaire op:
+
+1. **Begin** met individuele tekens: `{'h', 'e', 'l', 'o', 'w', 'r', 'd', ' '}`.
+2. **Tel** welke paren van aangrenzende tokens het vaakst voorkomen in de trainingstekst.
+3. **Voeg samen** het meest frequente paar tot een nieuw token. Als 'l' + 'o' het vaakst voorkomt, maak dan 'lo'.
+4. **Herhaal** stappen 2–3 totdat je de gewenste vocabulairegrootte bereikt.
+
+**Uitgewerkt voorbeeld** met de tekst "low lower lowest":
+
+| Stap | Meest frequente paar | Nieuw token | Vocabulaire groeit |
+|------|----------------------|-------------|-------------------|
+| 1 | l + o | lo | ...lo... |
+| 2 | lo + w | low | ...low... |
+| 3 | e + r | er | ...er... |
+| 4 | low + e | lowe | ...lowe... |
+
+Na genoeg samenvoegingen ontstaan veelvoorkomende woorden en woordfragmenten op natuurlijke wijze uit de data.
+
+<FunFact>
+BPE werd oorspronkelijk uitgevonden in 1994 als een datacompressie-algoritme. Het werd in 2015 door Sennrich et al. hergebruikt voor NLP — een prachtig voorbeeld van ideeën die disciplines overstijgen.
+</FunFact>
+
+## Andere Tokenisatiemethoden
+
+### WordPiece
+
+Gebruikt door BERT en verwante modellen. Vergelijkbaar met BPE, maar in plaats van het meest frequente paar samen te voegen, wordt het paar samengevoegd dat de **aannemelijkheid** van de trainingsdata maximaliseert. Subwoordstukken krijgen het voorvoegsel `##` (bijv. "playing" → `['play', '##ing']`).
+
+### SentencePiece
+
+Behandelt de invoer als een ruwe bytestroom — geen pre-tokenisatie door spaties. Dit is cruciaal voor talen zoals Japans en Chinees die geen spaties tussen woorden gebruiken. GPT-4 en LLaMA gebruiken SentencePiece-achtige benaderingen.
+
+## Hoe GPT-4 Tekst Tokeniseert
+
+GPT-4 gebruikt een BPE-variant genaamd **cl100k_base** met ruwweg 100.000 tokens in zijn vocabulaire. Enkele verrassende gedragingen:
+
+- "Hello world" → 2 tokens (`Hello`, ` world` — let op: de spatie is bijgevoegd).
+- "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` — het splitst zeldzame woorden).
+- Een enkele emoji 🎉 → vaak 1–3 tokens.
+- Python-code `def hello():` → elk trefwoord en symbool is doorgaans een eigen token.
+
+<Quiz question="Waarom gebruiken taalmodellen subwoord-tokenisatie in plaats van hele woorden?" options="Het maakt het model sneller bij inferentie|Het houdt het vocabulaire beheersbaar terwijl elke tekst verwerkt kan worden, inclusief onbekende woorden|Het verbetert beeldherkenning|Het vermindert de behoefte aan GPU's" answer="1" explanation="Subwoord-tokenisatie brengt vocabulairegrootte in balans (praktisch gehouden op 32k–100k tokens) met dekking — zeldzame of nieuwe woorden worden opgesplitst in bekende subwoordstukken in plaats van weggegooid als onbekend." />
+
+## De Afweging bij Vocabulairegrootte
+
+| Vocabulairegrootte | Voordelen | Nadelen |
+|-------------------|-----------|---------|
+| Klein (8k) | Kleiner model, minder embeddings | Langere reeksen, langzamere verwerking |
+| Groot (100k+) | Kortere reeksen, rijkere tokens | Grotere embeddingstabel, meer geheugen |
+
+De juiste balans vinden is een technische beslissing die de snelheid, het geheugen en de mogelijkheden van het model beïnvloedt.
+
+## Meertalige Uitdagingen
+
+Tokenizers die voornamelijk op Engelse tekst zijn getraind, zijn **bevooroordeeld**. Dezelfde zin in het Hindi of Arabisch kan 3–5× meer tokens vereisen dan het Engelse equivalent, omdat die schriften ondervertegenwoordigd waren in de trainingsdata. Dit betekent:
+
+- Niet-Engelstalige gebruikers bereiken sneller contextlimieten.
+- API-kosten zijn hoger per woord voor niet-Engelse tekst.
+- Het model heeft minder "denkruimte" voor niet-Engels redeneren.
+
+<Quiz question="Waarom kan dezelfde zin meer API-tokens kosten in het Hindi dan in het Engels?" options="Hindi heeft meer letters|De tokenizer is op meer Engels getraind, waardoor Engelse woorden efficiënter worden gecodeerd|Hindi is een moeilijkere taal|API-aanbieders rekenen meer voor Hindi" answer="1" explanation="Tokenizers die zijn getraind op voornamelijk Engelstalige corpora coderen Engelse woorden als enkele tokens, maar splitsen Hindi-woorden in veel subwoordstukken, wat het tokenaantal en daarmee de kosten opdrijft." />
+
+## Tokens Tellen en Kostenimplicaties
+
+Elke API-aanroep naar GPT-4, Claude of Gemini wordt per token gefactureerd. Het begrijpen van tokenisatie helpt je om:
+
+- **Kosten in te schatten** voordat je grote taken uitvoert.
+- **Prompts te optimaliseren** — kortere prompts met dezelfde betekenis besparen geld.
+- **Contextvensters te respecteren** — GPT-4 Turbo accepteert 128k tokens; overschrijding hiervan kapt je invoer stilzwijgend af.
+
+Een vuistregel voor Engels: **1 token ≈ ¾ woord**, oftewel ongeveer 4 tekens.
+
+<Quiz question="Hoeveel tokens is een Engels essay van 1.000 woorden bij benadering?" options="500 tokens|750 tokens|1.333 tokens|3.000 tokens" answer="2" explanation="De veelgebruikte benadering is 1 token per ¾ woord voor Engels, dus 1.000 woorden ÷ 0,75 ≈ 1.333 tokens. Het dichtstbijzijnde antwoord hier is 1.333 tokens." />
+
+<FunFact>
+OpenAI's open-source `tiktoken`-bibliotheek laat je tekst lokaal tokeniseren met exact hetzelfde algoritme dat GPT-4 gebruikt. Probeer het op je eigen teksten om te zien hoeveel tokens je berichten echt kosten.
+</FunFact>
+
+<ThinkAboutIt>
+Als je een taalmodel zou bouwen voor een taal met weinig beschikbare data, zoals het Welsh, hoe zou je dan tokenisatie aanpakken om een eerlijke en efficiënte codering te garanderen?
+</ThinkAboutIt>
+
+## Belangrijkste Punten
+
+- Tokenisatie zet ruwe tekst om in numerieke tokens die modellen kunnen verwerken.
+- **BPE** bouwt een vocabulaire op door iteratief de meest frequente tekenparen samen te voegen.
+- Subwoord-tokenisatie brengt vocabulairegrootte in balans met het vermogen om elke tekst te verwerken.
+- Tokenizer-bias benadeelt niet-Engelse talen in kosten en mogelijkheden.
+- Het begrijpen van tokens helpt je kosten in te schatten en prompts te optimaliseren.
+
+---
+
+## 📚 Verder Lezen
+
+- [Andrej Karpathy — nn-zero-to-hero (Tokenizer lecture)](https://karpathy.ai/zero-to-hero.html) — Bouw een BPE-tokenizer helemaal zelf samen met Karpathy
+- [OpenAI Tokenizer Tool](https://platform.openai.com/tokenizer) — Interactieve tool om te zien hoe GPT-modellen jouw tekst tokeniseren
+- [Hugging Face — Summary of Tokenizers](https://huggingface.co/docs/transformers/tokenizer_summary) — Duidelijke vergelijking van BPE, WordPiece en SentencePiece

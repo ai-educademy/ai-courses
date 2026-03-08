@@ -1,0 +1,194 @@
+---
+title: "Trees మరియు Graphs — AI సంబంధాలను ఎలా Map చేస్తుంది"
+description: "AI నిర్ణయాలు మరియు recommendations కి శక్తినిచ్చే hierarchical మరియు interconnected data ను trees మరియు graphs ఎలా represent చేస్తాయో చూడండి."
+order: 5
+difficulty: "intermediate"
+duration: 18
+icon: "🌳"
+published: true
+---
+
+## సంబంధాలున్న Data
+
+ఇప్పటివరకు data ను lines లో చూశాం — arrays, linked lists, stacks, queues అన్నీ items ను sequence లో arrange చేస్తాయి. కానీ నిజ ప్రపంచం linear కాదు. Family trees శాఖలుగా విస్తరిస్తాయి. Social networks webs ఏర్పరుస్తాయి. Road maps interconnected routes create చేస్తాయి.
+
+**Trees** మరియు **graphs** ఈ సంబంధాలను capture చేస్తాయి — AI యొక్క అత్యంత శక్తివంతమైన techniques కి వీటే హృదయం.
+
+## Trees — Hierarchical Data
+
+**Tree** లో ప్రతి item (**node**) child nodes కలిగి ఉండవచ్చు, hierarchy ఏర్పరుస్తూ. పై భాగంలో **root** అనే special node, children లేని nodes ను **leaves** అంటారు.
+
+```
+         CEO
+        /    \
+      CTO    CFO
+     /   \      \
+   Dev1  Dev2   Accountant
+```
+
+<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="Root node నుండి మూడు levels లో child nodes కి branch అవుతున్న tree structure, interconnected nodes ఉన్న graph పక్కన" caption="Trees root నుండి కిందకి flow అవుతాయి; graphs nodes ను ఏ direction లోనైనా connect చేస్తాయి." />
+
+### Trees ఎక్కడైనా ఉన్నాయి
+
+- **File systems**: Folders లో subfolders, వాటిలో files — tree.
+- **HTML/DOM**: ప్రతి web page nested elements tree.
+- **Organisation charts**: Managers కి reports, వారికి వారి reports.
+- **JSON data**: JSON nested structure ప్రాథమికంగా tree.
+
+### Binary Trees
+
+**Binary tree** ప్రతి node ని గరిష్టంగా రెండు children కి restrict చేస్తుంది — left child మరియు right child. ఈ సరళ constraint శక్తివంతమైన algorithms enable చేస్తుంది.
+
+```
+        8
+       / \
+      3   10
+     / \    \
+    1   6    14
+```
+
+### Binary Search Trees (BSTs)
+
+**Binary search tree** ఒక rule add చేస్తుంది: ప్రతి node కి, left subtree లో అన్ని values చిన్నవి, right subtree లో అన్ని values పెద్దవి.
+
+ఇది searching వేగవంతం చేస్తుంది — ప్రతి node వద్ద, left కి వెళ్ళాలో right కి వెళ్ళాలో తెలుస్తుంది:
+
+```
+Find 6 in the BST above:
+  Start at 8 → 6 < 8, go left
+  At 3 → 6 > 3, go right
+  At 6 → Found it!
+```
+
+**Time complexity**: balanced tree కి O(log n) — sorted array పై binary search అదే logarithmic magic.
+
+<Quiz question="10,00,000 nodes ఉన్న balanced binary search tree లో value కనుగొనడానికి సుమారు ఎన్ని comparisons అవసరం?" options="10,00,000|5,00,000|సుమారు 20|సుమారు 100" answer="2" explanation="Balanced BST depth log₂(1,000,000) ≈ 20. ప్రతి level కి ఒక comparison, కాబట్టి ఏ value నైనా కనుగొనడానికి సుమారు 20 steps — sorted array పై binary search తో identical." />
+
+## Graphs — అంతా Connected
+
+**Graph** hierarchy constraint తీసివేసి trees ను generalize చేస్తుంది. **Nodes** (vertices) మరియు **edges** (nodes మధ్య connections) తో ఉంటుంది. Edges:
+
+- **Directed** (one-way: A → B) లేదా **undirected** (two-way: A ↔ B)
+- **Weighted** (ప్రతి edge కి cost/distance) లేదా **unweighted**
+
+```
+Social network (undirected):
+  Alice — Bob — Charlie
+    \       |
+     Diana — Eve
+
+Road map (weighted, directed):
+  London →(2h)→ Birmingham →(1.5h)→ Manchester
+```
+
+### Graphs ఎక్కడైనా ఉన్నాయి
+
+- **Social networks**: People nodes; friendships edges.
+- **Internet**: Web pages nodes; hyperlinks edges.
+- **Road maps**: Intersections nodes; roads weighted edges.
+- **Recommendation systems**: Users మరియు products nodes; interactions edges.
+
+<FunFact>
+Facebook social graph లో 3 billion nodes (users) మరియు వందల billions edges (friendships) ఉన్నాయి. Graph algorithms News Feed, friend suggestions, మరియు ad targeting నిర్ణయిస్తాయి — ఇప్పటివరకు నిర్మించిన అతిపెద్ద graphs లో ఒకటిపై run అవుతాయి.
+</FunFact>
+
+## AI Trees ఎలా వాడుతుంది
+
+### Decision Trees
+
+అత్యంత interpretable AI models లో ఒకటి **decision tree**. Data classify చేయడానికి yes/no ప్రశ్నల series అడుగుతుంది:
+
+```
+Is temperature > 30°C?
+├── Yes: Is humidity > 70%?
+│   ├── Yes: "Don't play tennis"
+│   └── No: "Play tennis"
+└── No: Is it windy?
+    ├── Yes: "Don't play tennis"
+    └── No: "Play tennis"
+```
+
+Decision trees popular ఎందుకంటే మానవులు చదివి అర్థం చేసుకోగలరు — healthcare, finance, legal AI లో explainability ముఖ్యమైన చోట crucial.
+
+<ThinkAboutIt>
+Hospital AI తో patient risk predict చేస్తుంది. Regulators AI తన decisions explain చేయమని require చేస్తారు. Neural network slightly more accurate అయినా decision tree ఎందుకు prefer చేయవచ్చు?
+</ThinkAboutIt>
+
+### Random Forests
+
+**Random forest** వందల decision trees build చేస్తుంది, ప్రతిదాన్ని data subset పై train చేసి, తర్వాత vote తీసుకుంటుంది. ఈ ensemble approach ఒకే tree కంటే accurate మరియు robust.
+
+## AI Graphs ఎలా వాడుతుంది
+
+### Knowledge Graphs
+
+**Knowledge graph** entities మధ్య relationships గా facts store చేస్తుంది:
+
+```
+(London) --[capital_of]--> (United Kingdom)
+(London) --[located_in]--> (England)
+(Big Ben) --[located_in]--> (London)
+```
+
+Google Knowledge Graph search results లో information panels power చేస్తుంది.
+
+### Recommendation Graphs
+
+Netflix, Spotify, Amazon users మరియు items ను graph గా model చేస్తాయి. Users A మరియు B items X, Y like చేసి, user A item Z కూడా like చేస్తే, graph Z ని user B కి suggest చేస్తుంది — **collaborative filtering**.
+
+<Quiz question="Social networks model చేయడానికి simple lists కంటే graphs ఎందుకు మెరుగు?" options="Graphs తక్కువ memory వాడతాయి|Graphs people మధ్య complex many-to-many relationships represent చేయగలవు|Graphs ఎల్లప్పుడూ search చేయడానికి faster|Graphs data ను automatically sort చేస్తాయి" answer="1" explanation="Social networks లో complex many-to-many relationships ఉంటాయి — ఒక person కి వందల friends, వారికి వారి connections. Graphs ఈ interconnected relationships ను naturally model చేస్తాయి." />
+
+## Traversal — Trees మరియు Graphs గుండా నడవడం
+
+### Depth-First Search (DFS)
+
+DFS ఒక path వెంట సాధ్యమైనంత దూరం explore చేసి, తర్వాత backtrack చేస్తుంది. Maze లో ఎల్లప్పుడూ ఎడమ turn తీసుకోవడం లాగా — dead end వచ్చే వరకు, తర్వాత వెనక్కి.
+
+```
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+
+DFS order: A → B → D → E → C → F
+```
+
+DFS **stack** వాడుతుంది (recursion ద్వారా naturally, లేదా explicitly).
+
+### Breadth-First Search (BFS)
+
+BFS ప్రస్తుత depth లో అన్ని neighbours explore చేసి, తర్వాత deeper కి వెళ్తుంది. నీటిలో రాయి వేసినప్పుడు ripples ఎలా బయటికి spread అవుతాయో అలాగే.
+
+```
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+
+BFS order: A → B → C → D → E → F
+```
+
+BFS **queue** వాడుతుంది. Shortest path, social network analysis, web crawling కి ideal.
+
+<Callout>
+గమనించారా — గత lesson నుండి stacks మరియు queues tree మరియు graph traversal కి ఎలా connect అవుతాయో? DFS stack వాడుతుంది; BFS queue వాడుతుంది. Data structures ఒకదానిపై ఒకటి build అవుతాయి.
+</Callout>
+
+<Quiz question="అన్ని roads ఒకే పొడవు ఉన్న map లో రెండు cities మధ్య shortest route కనుగొనాలి. ఏ traversal వాడాలి?" options="Depth-first search — deeper paths ముందు explore చేస్తుంది|Breadth-first search — unweighted graphs లో shortest path కనుగొంటుంది|Binary search — sorted data పై పని చేస్తుంది|Random search — paths randomly try చేస్తుంది" answer="1" explanation="BFS nodes ను level by level explore చేస్తుంది, destination మొదటిసారి reach అయినప్పుడు shortest path guarantee (edges సంఖ్య ప్రకారం). DFS longer path ముందు కనుగొనవచ్చు." />
+
+<ThinkAboutIt>
+Social media platforms "degrees of separation" measure చేస్తాయి — ఇద్దరిని connect చేసే friend-of-friend hops ఎన్ని. తక్కువ hops efficiently కనుగొనడానికి ఏ traversal algorithm వాడాలి?
+</ThinkAboutIt>
+
+<FunFact>
+Google PageRank algorithm — Google ను dominant చేసిన original breakthrough — web ను graph గా model చేస్తుంది. ప్రతి web page node, ప్రతి hyperlink directed edge, page importance ఎన్ని important pages link చేస్తాయో ద్వారా నిర్ణయమవుతుంది.
+</FunFact>
+
+## ముఖ్య అంశాలు
+
+- **Trees** hierarchical data model చేస్తాయి — file systems, HTML, AI decision trees అన్నీ tree structures.
+- **Binary search trees** sorted hierarchy maintain చేసి O(log n) lookups enable చేస్తాయి.
+- **Graphs** interconnected data model చేస్తాయి — social networks, knowledge bases, recommendation engines.
+- **DFS** (stack-based) deep కి వెళ్తుంది; **BFS** (queue-based) wide కి — రెండూ PageRank మరియు recommendations లాంటి core AI algorithms power చేస్తాయి.

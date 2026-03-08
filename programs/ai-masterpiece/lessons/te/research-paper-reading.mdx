@@ -1,0 +1,172 @@
+---
+title: "Research Papers చదవడం — AI Papers ను ఎలా అర్థం చేసుకోవాలి మరియు Implement చేయాలి"
+description: "AI research papers చదవడం, అర్థం చేసుకోవడం మరియు implement చేయడం కోసం ఆచరణాత్మక framework — గణిత సంకేతాలను అర్థం చేసుకోవడం నుండి algorithms ను పనిచేసే code గా మార్చడం వరకు."
+order: 8
+difficulty: "advanced"
+duration: 20
+icon: "📄"
+published: true
+---
+
+# Research Papers చదవడం — AI Papers ను ఎలా అర్థం చేసుకోవాలి మరియు Implement చేయాలి
+
+"నేను AI ఉపయోగిస్తాను" మరియు "నేను AI నిర్మిస్తాను" మధ్య గ్యాప్‌ను research papers చదవడం ద్వారా bridge చేయవచ్చు. ప్రతి breakthrough — transformers, diffusion models, RLHF — ఒక paper గా మొదలైంది. Papers చదివే ఇంజనీర్లు trends ను అనుసరించడం మాత్రమే కాదు; వారు వాటిని **ముందుగానే గుర్తిస్తారు**.
+
+## 🤔 Papers ఎందుకు చదవాలి?
+
+- **తాజాగా ఉండండి** — blog posts papers కంటే నెలల తర్వాత వస్తాయి
+- **మూలాధారాలు అర్థం చేసుకోండి** — tutorials సరళీకృతం చేస్తాయి; papers *ఎందుకు* అని వివరిస్తాయి
+- **మెరుగ్గా debug చేయండి** — మీ model విఫలమైనప్పుడు, paper edge cases వెల్లడిస్తుంది
+- **కెరీర్ leverage** — paper-literate ఇంజనీర్లు అరుదు మరియు విలువైనవారు
+
+<Illustration src="/images/lessons/research-paper-reading.svg" alt="స్కిమ్, అర్థం చేసుకోవడం మరియు విమర్శ దశలను చూపించే three-pass paper reading విధానం" caption="Three-pass method సాంద్రమైన 12-page paper ను structured అవగాహనగా మారుస్తుంది." />
+
+## 📐 ML Paper యొక్క నిర్మాణం
+
+ప్రతి ML paper ఊహించదగిన నిర్మాణాన్ని అనుసరిస్తుంది. Blueprint తెలిస్తే చదవడం వేగవంతమవుతుంది:
+
+| విభాగం | ఉద్దేశ్యం | వెచ్చించాల్సిన సమయం |
+|---------|----------|-------------------|
+| **Abstract** | మొత్తం contribution యొక్క 200-పదాల సారాంశం | 2 నిమిషాలు |
+| **Introduction** | సమస్య ప్రేరణ, ప్రస్తుత పరిష్కారాలు ఎందుకు విఫలమవుతాయి | 5 నిమిషాలు |
+| **Related Work** | ముందు ఏమి వచ్చింది, ఈ paper ఎలా భిన్నమైనది | మొదటి pass లో skim చేయండి |
+| **Method** | ప్రధాన contribution — architecture, algorithm, గణితం | మీ సమయంలో 60% |
+| **Experiments** | పనిచేస్తుందని రుజువు — datasets, baselines, ablations | మీ సమయంలో 20% |
+| **Conclusion** | సారాంశం మరియు భవిష్యత్తు దిశలు | 2 నిమిషాలు |
+
+<FunFact>అసలు "Attention Is All You Need" paper (2017) 130,000 కంటే ఎక్కువ సార్లు cite చేయబడింది, ఇది ఎప్పటికీ అత్యంత ప్రభావవంతమైన computer science papers లో ఒకటిగా నిలిచింది. దాని title తదుపరి paper titles లో అనేక parodies కు ప్రేరణ ఇచ్చింది.</FunFact>
+
+## 📖 Three-Pass విధానం
+
+### Pass 1: Skim (15 నిమిషాలు)
+
+**Abstract**, **introduction**, **section headings**, **figures**, మరియు **conclusion** చదవండి. ఈ pass తర్వాత, మీరు ఈ ప్రశ్నలకు సమాధానం చెప్పగలగాలి:
+
+- ఈ paper ఏ సమస్యను పరిష్కరిస్తుంది?
+- ఒక్క వాక్యంలో కీలక ఆలోచన ఏమిటి?
+- ఈ paper నా పనికి సంబంధించినదా?
+
+మూడవ ప్రశ్నకు సమాధానం కాదు అయితే, ఇక్కడ ఆపండి. ప్రతి paper లోతుగా చదవడం అవసరం లేదు.
+
+### Pass 2: అర్థం చేసుకోండి (1–2 గంటలు)
+
+పూర్తి paper చదవండి, మొదటి సారి సాంద్రమైన proofs ను skip చేయండి. దీనిపై దృష్టి పెట్టండి:
+
+- **Figures మరియు tables** — రచయితలు తమ ఉత్తమ ఆలోచనలను visuals లో సంగ్రహిస్తారు
+- **Method section** — input నుండి output వరకు data flow ను trace చేయండి
+- **Ablation studies** — ఏ components నిజంగా ముఖ్యమో ఇవి వెల్లడిస్తాయి
+
+అర్థం కాని విభాగాలను mark చేయండి. ముందుకు సాగి experiments చదివిన తర్వాత వాటి దగ్గరికి తిరిగి రండి — ఫలితాలు తరచుగా method ను స్పష్టం చేస్తాయి.
+
+### Pass 3: విమర్శ (1–2 గంటలు)
+
+ఇప్పుడు reviewer గా చదవండి. అడగండి:
+
+- ఈ paper ఏ ఊహలు చేస్తుంది? అవి సమంజసమా?
+- Experiments లో ఏమి missing? ఏ baselines లేవు?
+- ఈ విధానం ఎక్కడ విఫలమవుతుంది? దీని పరిమితులు ఏమిటి?
+- అందించిన సమాచారంతో ఈ ఫలితాలను reproduce చేయగలనా?
+
+<Quiz question="Paper చదివే Pass 2 లో, మీకు అర్థం కాని mathematical derivation ఎదురవుతుంది. తదుపరి ఉత్తమ అడుగు ఏమిటి?" options="ఆగి ప్రతి equation అర్థం చేసుకోవడానికి గంటలు గడపండి|దానిని పూర్తిగా skip చేసి ఎప్పుడూ తిరిగి రాకండి|Mark చేసి, experiments section కు కొనసాగించి, తర్వాత మరింత context తో తిరిగి రండి|Paper ను వివరించే blog post కోసం వెతకండి" answer="2" explanation="Experiments section తరచుగా గణితం ఏమి వివరిస్తుందో దానికి intuition అందిస్తుంది. ముందుగా results చదవడం మీకు context ఇస్తుంది, రెండవ ప్రయత్నంలో derivation చాలా సులభంగా అర్థమవుతుంది." />
+
+## 📚 ప్రతి AI ఇంజనీర్ చదవాల్సిన తప్పనిసరి Papers
+
+ఈ papers ఆధునిక AI యొక్క పునాది — వీటిని చదవడం అనివార్యం:
+
+**Architectures:**
+- *Attention Is All You Need* (Vaswani et al., 2017) — transformer
+- *Deep Residual Learning for Image Recognition* (He et al., 2015) — ResNet మరియు skip connections
+
+**Language Models:**
+- *BERT: Pre-training of Deep Bidirectional Transformers* (Devlin et al., 2018) — bidirectional pre-training
+- *Language Models are Few-Shot Learners* (Brown et al., 2020) — GPT-3 మరియు in-context learning
+
+**Training Techniques:**
+- *Adam: A Method for Stochastic Optimisation* (Kingma & Ba, 2014) — default optimiser
+- *Dropout: A Simple Way to Prevent Neural Networks from Overfitting* (Srivastava et al., 2014)
+
+<ThinkAboutIt>పై జాబితా నుండి మీరు కేవలం మూడు papers మాత్రమే చదవగలిగితే, ఆధునిక AI గురించి విస్తృత అవగాహన ఇచ్చే మూడు ఏవి? ఆ మూడు ఎందుకు?</ThinkAboutIt>
+
+## 🔢 గణిత సంకేతాలు చదవడం
+
+Mathematical notation ఒక భాష. ML papers కోసం మీ phrasebook:
+
+```
+θ (theta)      — model parameters (weights)
+∇ (nabla)      — gradient operator
+𝔼 (E)          — expected value (distribution పై average)
+argmax          — function ను maximize చేసే input
+∑ (sigma)      — summation
+∏ (pi)         — product
+‖x‖            — vector x యొక్క norm (magnitude)
+softmax(z_i)   — e^(z_i) / Σ e^(z_j) — logits ను probabilities గా మారుస్తుంది
+```
+
+**Pro tip**: సంక్లిష్టమైన equation చూసినప్పుడు, నిజమైన సంఖ్యలు substitute చేయండి. Paper `L = -Σ y_i log(ŷ_i)` అంటే, `y = [1, 0]` మరియు `ŷ = [0.9, 0.1]` పెట్టి చేతితో calculate చేయండి. Abstraction వెంటనే concrete అవుతుంది.
+
+## 💻 Paper నుండి Code కు
+
+అర్థం చేసుకున్నారో లేదో చివరి పరీక్ష: implement చేయడం. ఆచరణాత్మక workflow:
+
+```python
+# Step 1: ప్రధాన mechanism ను isolation లో implement చేయండి
+import torch
+import torch.nn as nn
+
+class SelfAttention(nn.Module):
+    """Scaled dot-product attention from 'Attention Is All You Need'"""
+    def __init__(self, d_model: int, n_heads: int):
+        super().__init__()
+        self.d_k = d_model // n_heads
+        self.n_heads = n_heads
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+
+    def forward(self, x):
+        B, T, C = x.shape
+        q = self.W_q(x).view(B, T, self.n_heads, self.d_k).transpose(1, 2)
+        k = self.W_k(x).view(B, T, self.n_heads, self.d_k).transpose(1, 2)
+        v = self.W_v(x).view(B, T, self.n_heads, self.d_k).transpose(1, 2)
+
+        # Scaled dot-product attention (Paper లో Equation 1)
+        attn = (q @ k.transpose(-2, -1)) / (self.d_k ** 0.5)
+        attn = torch.softmax(attn, dim=-1)
+        return (attn @ v).transpose(1, 2).contiguous().view(B, T, C)
+```
+
+**Paper తో verify చేయండి**: ప్రతి step లో tensor shapes తనిఖీ చేయండి. Paper output `(batch, seq_len, d_model)` అని చెబితే, assert చేయండి.
+
+<Quiz question="మీ paper implementation సరైనదో verify చేయడానికి ఉత్తమ మార్గం ఏమిటి?" options="Errors లేకుండా compile అవుతుందో తనిఖీ చేయండి|ఒకే inputs పై reference implementation తో మీ output tensors ను compare చేయండి|Convergence వరకు train చేసి చివరి accuracy తనిఖీ చేయండి|Code ను visual గా చదివి review చేయండి" answer="1" explanation="ఒకే inputs పై trusted reference implementation (ఉదా., authors యొక్క official code లేదా Hugging Face) తో numerical comparison compilation మరియు visual review miss అయ్యే సూక్ష్మ bugs ను పట్టుకుంటుంది." />
+
+## 🔍 Papers కనుగొనడం
+
+| మూలం | దేనికి అనువైనది |
+|-------|-----------------|
+| **arXiv** (arxiv.org) | తాజా preprints, అత్యంత వేగవంతమైన access |
+| **Semantic Scholar** | Citation graphs, సంబంధిత పని కనుగొనడం |
+| **Papers With Code** | Implementations మరియు benchmarks తో link చేసిన papers |
+| **Connected Papers** | Paper సంబంధాల visual exploration |
+| **Twitter/X** | కొత్త papers పై real-time చర్చ |
+
+<FunFact>arXiv అన్ని రంగాలలో రోజుకు 2,000 కంటే ఎక్కువ కొత్త submissions స్వీకరిస్తుంది. cs.LG (Machine Learning) మరియు cs.CL (Computation and Language) categories మాత్రమే రోజూ వందల papers account చేస్తాయి.</FunFact>
+
+<Quiz question="Paper యొక్క method కు ఇప్పటికే ఉన్న code implementation కనుగొనాలంటే ఏ resource అత్యంత ఉపయోగకరం?" options="arXiv|Google Scholar|Papers With Code|Wikipedia" answer="2" explanation="Papers With Code research papers ను నేరుగా వాటి GitHub implementations మరియు benchmark results కు link చేస్తుంది, paper చదవడం నుండి దాని code run చేయడం వరకు అత్యంత వేగవంతమైన మార్గం." />
+
+<ThinkAboutIt>Paper reading అలవాటు మొదలుపెట్టండి: వారానికి ఒక paper, మూడు వాక్యాలలో సంగ్రహించండి (సమస్య, method, ఫలితం). 12 వారాల తర్వాత, చాలా మంది working ML ఇంజనీర్లు ఒక సంవత్సరంలో చదివే దానికంటే ఎక్కువ papers చదివి ఉంటారు.</ThinkAboutIt>
+
+## 🎯 ముఖ్య విషయాలు
+
+- Three-pass method ఉపయోగించండి: skim, అర్థం చేసుకోండి, విమర్శ చేయండి
+- మీ చదవడం సమయంలో 60% method section పై దృష్టి పెట్టండి
+- Intuition నిర్మించడానికి equations లో నిజమైన సంఖ్యలు substitute చేయండి
+- నిజంగా అర్థం చేసుకోవడానికి core mechanism ను implement చేయండి
+- వారానికి ఒక paper నైపుణ్యంగా compound అవుతుంది
+
+---
+
+## 📚 తదుపరి చదవడానికి
+
+- [How to Read a Paper by S. Keshav](http://ccr.sigcomm.org/online/files/p83-keshavA.pdf) — అసలు three-pass method paper, academia లో విస్తృతంగా cite చేయబడింది
+- [Papers With Code](https://paperswithcode.com/) — Linked implementations మరియు leaderboards తో papers browse చేయండి
+- [The Illustrated Transformer by Jay Alammar](https://jalammar.github.io/illustrated-transformer/) — Transformer architecture యొక్క visual walkthrough

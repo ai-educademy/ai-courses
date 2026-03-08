@@ -1,0 +1,166 @@
+---
+title: "Evaluatiemetrieken — Is Jouw AI Eigenlijk Goed?"
+description: "Leer waarom nauwkeurigheid alleen misleidend is, en beheers de metrieken — precisie, recall, F1, ROC-AUC, BLEU en perplexiteit — die AI-prestaties écht meten."
+order: 10
+difficulty: "intermediate"
+duration: 15
+icon: "📊"
+published: true
+---
+
+# Evaluatiemetrieken — Is Jouw AI Eigenlijk Goed?
+
+Je hebt een model getraind. Het verlies daalde. Maar is het eigenlijk *goed*? Het antwoord hangt volledig af van hoe je het meet — en het kiezen van de verkeerde metriek kan je gevaarlijk misleidend vertrouwen geven. Deze les behandelt de metrieken die elke AI-beoefenaar moet begrijpen.
+
+## De Nauwkeurigheidsval
+
+**Nauwkeurigheid** = correcte voorspellingen ÷ totaal aantal voorspellingen. Klinkt redelijk — totdat je **klasse-onbalans** tegenkomt.
+
+Stel je een fraudedetectiemodel voor. Van 10.000 transacties zijn er slechts 50 frauduleus. Een model dat simpelweg "geen fraude" voorspelt voor elke transactie behaalt **99,5% nauwkeurigheid** — terwijl het nul fraude opspoort. Volslagen nutteloos, maar de nauwkeurigheid ziet er schitterend uit.
+
+Dit is waarom nauwkeurigheid alleen nooit voldoende is voor AI in de praktijk.
+
+<FunFact>
+Bij medische screening op zeldzame ziekten kan een model dat altijd "gezond" voorspelt meer dan 99,9% nauwkeurigheid behalen. Dit is waarom artsen en datawetenschappers vertrouwen op sensitiviteit (recall) als de primaire metriek voor screeningtests.
+</FunFact>
+
+## De Verwarringsmatrix
+
+Voordat we betere metrieken bespreken, hebben we de **verwarringsmatrix** nodig — een 2×2-tabel die elke voorspelling uitsplitst:
+
+|  | Voorspeld Positief | Voorspeld Negatief |
+|---|---|---|
+| **Werkelijk Positief** | True Positive (TP) | False Negative (FN) |
+| **Werkelijk Negatief** | False Positive (FP) | True Negative (TN) |
+
+**Concreet voorbeeld — e-mail spamfilter op 1.000 e-mails (100 spam, 900 legitiem):**
+
+|  | Voorspeld Spam | Voorspeld Legitiem |
+|---|---|---|
+| **Werkelijk Spam** | 80 (TP) | 20 (FN) |
+| **Werkelijk Legitiem** | 30 (FP) | 870 (TN) |
+
+Uit deze enkele tabel kunnen we elke classificatiemetriek afleiden.
+
+<Illustration src="/images/lessons/evaluation-metrics.svg" alt="Een verwarringsmatrix voor een spamfilter met de vier kwadranten kleurgecodeerd: groen voor TP en TN, rood voor FP en FN, met precisie- en recall-formules ernaast" caption="De verwarringsmatrix is het fundament van alle classificatiemetrieken." />
+
+## Precisie — "Van Alles Wat Ik Markeerde, Hoeveel Was Correct?"
+
+```
+Precisie = TP ÷ (TP + FP) = 80 ÷ (80 + 30) = 72,7%
+```
+
+In ons spamfilter: van alle e-mails die als spam werden gemarkeerd, was 72,7% daadwerkelijk spam. De overige 27,3% waren legitieme e-mails die onterecht werden onderschept — **false positives**.
+
+**Wanneer precisie het belangrijkst is:** Wanneer false positives kostbaar zijn. Een spamfilter dat belangrijke klant-e-mails naar de prullenbak stuurt, is een serieus probleem.
+
+## Recall — "Van Alles Wat Positief Was, Hoeveel Heb Ik Gevonden?"
+
+```
+Recall = TP ÷ (TP + FN) = 80 ÷ (80 + 20) = 80%
+```
+
+Het model ving 80 van de 100 werkelijke spam-e-mails op — het *herinnerde* 80% ervan. De overige 20 glitten erdoor als **false negatives**.
+
+**Wanneer recall het belangrijkst is:** Wanneer het missen van een positief geval gevaarlijk is. Bij kankerscreening kan het niet detecteren van een tumor (false negative) een leven kosten.
+
+<Quiz question="Een ziekenhuis wil een model om te screenen op een gevaarlijke ziekte. Welke metriek moeten ze prioriteren?" options="Precisie — vals alarm vermijden|Recall — elk geval opsporen, zelfs ten koste van enkele valse alarmen|Nauwkeurigheid — de meeste voorspellingen juist krijgen|F1 — alles gelijk in balans brengen" answer="1" explanation="Bij medische screening is het missen van een echt geval (false negative) veel gevaarlijker dan een vals alarm. Hoge recall zorgt ervoor dat vrijwel elk positief geval wordt gedetecteerd, zelfs als sommige gezonde patiënten vervolgonderzoek nodig hebben." />
+
+## De Precisie-Recall Afweging
+
+Precisie en recall trekken in tegengestelde richtingen. Het aanscherpen van de spamdrempel vangt minder legitieme e-mails op (precisie stijgt), maar laat meer spam door (recall daalt). Het versoepelen ervan vangt meer spam (recall stijgt), maar onderschept meer goede e-mails (precisie daalt).
+
+Er is geen gratis lunch — je moet beslissen welke fouten kostbaarder zijn voor jouw specifieke toepassing.
+
+## F1-Score — Het Harmonisch Gemiddelde
+
+Wanneer je één getal nodig hebt dat precisie en recall in balans brengt, gebruik dan de **F1-score**:
+
+```
+F1 = 2 × (Precisie × Recall) ÷ (Precisie + Recall)
+```
+
+Voor ons spamfilter: `F1 = 2 × (0,727 × 0,80) ÷ (0,727 + 0,80) = 0,762` — ongeveer 76,2%.
+
+Het harmonisch gemiddelde bestraft extreme onbalansen. Als precisie of recall zeer laag is, daalt de F1 scherp.
+
+<ThinkAboutIt>
+Een contentmoderatiesysteem heeft 95% precisie maar slechts 30% recall. De F1-score is slechts 46%. Wat zegt dit over het gedrag van het systeem in de praktijk, en zou je het implementeren?
+</ThinkAboutIt>
+
+## ROC-Curves en AUC
+
+De **ROC-curve** (Receiver Operating Characteristic) plot de True Positive Rate tegen de False Positive Rate bij elke mogelijke classificatiedrempel. Het toont hoe goed een model klassen scheidt over alle drempels, niet slechts één.
+
+**AUC** (Area Under the Curve) vat dit samen in één getal:
+
+- **AUC = 1,0** — perfecte scheiding.
+- **AUC = 0,5** — niet beter dan willekeurig raden (de diagonale lijn).
+- **AUC < 0,5** — slechter dan willekeurig (je labels zijn mogelijk omgedraaid!).
+
+AUC is drempelonafhankelijk, waardoor het uitstekend is voor het vergelijken van modellen voordat je een specifiek werkpunt hebt gekozen.
+
+<Quiz question="Wat betekent een AUC van 0,5?" options="Het model is perfect|Het model presteert niet beter dan willekeurig raden|Het model heeft 50% nauwkeurigheid|Het model heeft hoge recall" answer="1" explanation="Een AUC van 0,5 komt overeen met de diagonaal op de ROC-curve — het model heeft geen vermogen om klassen te onderscheiden. Het is equivalent aan het opgooien van een munt." />
+
+## Metrieken voor Tekstgeneratie
+
+Classificatiemetrieken zijn niet van toepassing op taalmodellen die tekst genereren. Verschillende taken vereisen verschillende maatstaven.
+
+### BLEU-Score
+
+**BLEU** (Bilingual Evaluation Understudy) meet hoeveel een gegenereerde vertaling overlapt met referentievertalingen, door overeenkomende n-grammen (woordreeksen) te tellen. Scores variëren van 0 tot 1.
+
+BLEU wordt veel gebruikt bij machinevertaling, maar heeft aanzienlijke beperkingen: het beloont woordoverlap, niet betekenis. "De kat zat op de mat" en "Een katachtige rustte op het tapijt" scoren slecht ten opzichte van elkaar, ondanks vergelijkbare betekenis.
+
+### Perplexiteit
+
+**Perplexiteit** meet hoe verrast een taalmodel is door nieuwe tekst. Lager is beter — een perplexiteit van 20 betekent dat het model gemiddeld kiest uit 20 even waarschijnlijke volgende woorden. Een goed model heeft lage perplexiteit omdat het tekst goed voorspelt.
+
+GPT-4 behaalt opmerkelijk lage perplexiteit op Engelse tekst, wat zijn sterke taalbegrip weerspiegelt.
+
+<FunFact>
+De BLEU-metriek werd in 2002 geïntroduceerd en werd snel de standaard voor evaluatie van machinevertaling. Ondanks bekende tekortkomingen bleef het bijna twee decennia dominant omdat geen eenvoudig alternatief consistent beter correleerde met menselijk oordeel.
+</FunFact>
+
+## A/B-Testen in Productie
+
+Offline metrieken zijn noodzakelijk maar niet voldoende. De ultieme test is **A/B-testen**: implementeer twee modelversies bij verschillende gebruikersgroepen en meet echte resultaten.
+
+- Verhoogt het nieuwe aanbevelingsmodel de doorklikratio?
+- Vermindert de verbeterde chatbot het aantal geëscaleerde supporttickets?
+- Ontvangt het bijgewerkte spamfilter minder "geen spam"-correcties?
+
+Productiemetrieken wijken vaak af van offline metrieken omdat gebruikers zich onvoorspelbaar gedragen.
+
+<Quiz question="Waarom zou een model met uitstekende offline metrieken slecht presteren in A/B-testen?" options="De testset was te groot|Offline metrieken kunnen echt gebruikersgedrag, randgevallen en distributieverschuivingen niet vastleggen|A/B-testen zijn minder nauwkeurig dan offline evaluatie|Het model was overfit op de A/B-test" answer="1" explanation="Offline evaluatie gebruikt statische datasets die mogelijk niet de echte omstandigheden weerspiegelen — gebruikersgedrag verandert, datadistributies verschuiven en randgevallen ontstaan die testsets nooit hadden voorzien. A/B-testen onthullen hoe het model presteert waar het er echt toe doet." />
+
+## Wanneer Welke Metriek Gebruiken
+
+| Scenario | Primaire metriek |
+|----------|-----------------|
+| Gebalanceerde classificatie | Nauwkeurigheid, F1 |
+| Ongebalanceerde klassen | Precisie, Recall, AUC |
+| Medische screening | Recall (sensitiviteit) |
+| Spamfiltering | Precisie + Recall balans |
+| Machinevertaling | BLEU, METEOR |
+| Taalmodelkwaliteit | Perplexiteit |
+| Productie-impact | A/B-testresultaten |
+
+<ThinkAboutIt>
+Je bouwt een voetgangersdetectiesysteem voor een zelfrijdende auto. Een false negative betekent een voetganger niet zien; een false positive betekent remmen voor een schaduw. Welke metriek optimaliseer je, en welke afweging ben je bereid te accepteren?
+</ThinkAboutIt>
+
+## Belangrijkste Punten
+
+- **Nauwkeurigheid** is misleidend bij ongebalanceerde data — controleer altijd de verwarringsmatrix.
+- **Precisie** meet de correctheid van positieve voorspellingen; **recall** meet de volledigheid.
+- **F1** brengt beide in balans; **AUC** evalueert over alle drempels.
+- Tekstgeneratie gebruikt **BLEU** en **perplexiteit** in plaats van classificatiemetrieken.
+- **A/B-testen** is de gouden standaard voor het meten van de impact van modellen in de echte wereld.
+
+---
+
+## 📚 Verder Lezen
+
+- [Google ML Crash Course — Classification Metrics](https://developers.google.com/machine-learning/crash-course/classification/accuracy) — Interactieve uitleg van precisie, recall en ROC-curves
+- [Towards Data Science — Beyond Accuracy](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c/) — Praktische gids met voorbeelden uit de praktijk over het kiezen van metrieken

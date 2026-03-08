@@ -1,0 +1,132 @@
+---
+title: "Heaps మరియు Priority Queues — ఇంటర్వ్యూల Swiss Army Knife"
+description: "Heaps, priority queue abstraction, మరియు top-K సమస్యలు, sorted lists merge చేయడం వంటి క్లాసిక్ పాటర్న్‌లను నేర్చుకోండి."
+order: 6
+difficulty: "intermediate"
+duration: 18
+icon: "⛰️"
+published: true
+---
+
+## Heap అంటే ఏమిటి?
+
+**Heap** అనేది ప్రతి parent **heap property** ని సంతృప్తిపరిచే complete binary tree — ఎల్లప్పుడూ children కంటే చిన్నది (min-heap) లేదా పెద్దది (max-heap). "Complete" అంటే చివరి level తప్ప ప్రతి level నిండి ఉంటుంది, చివరిది ఎడమ నుండి కుడికి నిండుతుంది.
+
+```
+       1            Min-heap
+      / \
+     3   5
+    / \
+   7   4
+```
+
+ఇది complete కాబట్టి, **flat array** లో నిల్వ చేస్తాం — pointers అవసరం లేదు. Index `i` కోసం: left child = `2i + 1`, right child = `2i + 2`, parent = `(i - 1) // 2`.
+
+## Min-Heap vs Max-Heap
+
+| లక్షణం | Min-Heap | Max-Heap |
+|----------|----------|----------|
+| Root | అతి చిన్న element | అతి పెద్ద element |
+| Parent ≤ Children? | ✅ అవును | ❌ కాదు (≥) |
+| Extract ఇస్తుంది | Minimum | Maximum |
+
+Python `heapq` డిఫాల్ట్‌గా **min-heap**. Max-heap కోసం, insert చేసేటప్పుడు విలువలను negate చేసి, extract చేసేటప్పుడు మళ్ళీ negate చేయండి.
+
+## Insert మరియు Extract — అడుగు అడుగునా
+
+**Insert** — చివరికి push చేసి, **bubble up** చేయండి (చిన్నదైనంత వరకు parent తో swap):
+
+```python
+import heapq
+h = [1, 3, 5, 7]
+heapq.heappush(h, 2)  # h [1, 2, 5, 7, 3] అవుతుంది
+```
+
+**Extract min** — root ను చివరి element తో swap చేసి, చివరిది తొలగించి, **sift down** చేయండి (చిన్న child తో swap):
+
+```python
+smallest = heapq.heappop(h)  # 1 రిటర్న్ చేస్తుంది
+```
+
+రెండు operations **O(log n)** లో నడుస్తాయి ఎందుకంటే tree ఎత్తు log n.
+
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Min-heap పై insert bubble-up మరియు extract sift-down చూపే diagram" caption="Insert పైకి bubble అవుతుంది; extract-min కిందకు sift అవుతుంది." />
+
+## Heapify — O(n) లో Heap నిర్మించడం
+
+`heapq.heapify(arr)` ను call చేయడం list ను **in-place** O(n) లో heap గా మారుస్తుంది, O(n log n) కాదు. ఇది bottom-up పనిచేస్తుంది, ప్రతి non-leaf node ను కిందకు sift చేస్తుంది. CS లో అత్యంత ఆశ్చర్యకరమైన complexity ఫలితాలలో ఇది ఒకటి.
+
+<FunFact>Heap నిర్మించడం O(n), O(n log n) కాదు. చాలా nodes అడుగున ఉంటాయి మరియు కింద sift అవ్వాల్సిన అవసరం చాలా తక్కువ — గణితం linear time ఇస్తుంది.</FunFact>
+
+## Priority Queue Abstraction
+
+**Priority queue** మీకు ఎల్లప్పుడూ అత్యధిక-ప్రాధాన్యత item కు ప్రాప్యత ఇస్తుంది. Insert మరియు extract రెండూ O(log n) కాబట్టి Heaps ఉత్తమ implementation. "ఇప్పటివరకు ఉత్తమ item ఇవ్వు" అనే అవసరం ఉన్నప్పుడల్లా ఉపయోగించండి.
+
+## పాటర్న్: Top-K సమస్యలు
+
+> "Unsorted array లో K అతిపెద్ద elements కనుగొనండి."
+
+**K పరిమాణం min-heap** ఉంచండి. ప్రతి element కోసం push చేయండి; heap K కంటే పెరిగితే, అతి చిన్నదాన్ని pop చేయండి. మిగిలేవి K అతిపెద్దవి.
+
+```python
+import heapq
+def top_k(nums, k):
+    return heapq.nlargest(k, nums)
+```
+
+సమయం: **O(n log k)** — k ≪ n అయినప్పుడు sorting కంటే చాలా మెరుగు.
+
+<Quiz question="1 మిలియన్ entries నుండి అత్యధిక 5 scores కావాలి. ఏ heap రకం మరియు పరిమాణం?" options="1,000,000 పరిమాణ Max-heap|5 పరిమాణ Min-heap|5 పరిమాణ Max-heap|1,000,000 పరిమాణ Min-heap" answer="1" explanation="5 పరిమాణ min-heap ఇప్పటివరకు చూసిన 5 అతిపెద్దవాటిని ఉంచుతుంది. Root (5 లో minimum) gatekeeper — దాని కంటే చిన్నది ఏదైనా తిరస్కరించబడుతుంది." />
+
+## పాటర్న్: K Sorted Lists Merge చేయడం
+
+ప్రతి list head ను min-heap లో push చేయండి. అతి చిన్నదాన్ని pop చేసి, ఆ list నుండి తదుపరి element ను push చేయండి. అన్ని lists అయిపోయే వరకు పునరావృతం చేయండి. సమయం: **O(N log K)** ఇక్కడ N మొత్తం elements.
+
+## పాటర్న్: Data Stream నుండి Median
+
+రెండు heaps నిర్వహించండి: దిగువ సగానికి **max-heap** మరియు ఎగువ సగానికి **min-heap**. వాటి పరిమాణాలు గరిష్టంగా 1 తేడా ఉండేలా balance చేయండి. Median ఎల్లప్పుడూ ఒకటి లేదా రెండు roots వద్ద ఉంటుంది.
+
+```
+దిగువ సగం (max-heap): [1, 2, 3]  ← max = 3
+ఎగువ సగం (min-heap): [4, 5, 6]  ← min = 4
+Median = (3 + 4) / 2 = 3.5
+```
+
+<Quiz question="రెండు-heap median విధానంలో, కొత్త element ముందు ఎక్కడికి వెళ్తుంది?" options="ఎల్లప్పుడూ min-heap కి|ఎల్లప్పుడూ max-heap కి|ఏ heap చిన్నదో దానికి|ముందు max-heap root తో పోల్చి, తర్వాత rebalance" answer="3" explanation="ముందు max-heap (దిగువ సగం) కి push చేయండి, అవసరమైతే దాని root ను min-heap కి తరలించండి, మరియు పరిమాణాలను rebalance చేయండి. ఇది heap property నిర్వహించబడుతుందని హామీ ఇస్తుంది." />
+
+## Scheduling సమస్యలు
+
+Scheduling లో heaps రాణిస్తాయి: meeting rooms (ముందుగా ముగిసే సమయం track చేయడం), cooldowns తో task scheduling, లేదా CPU job queues. కీలక అంతర్దృష్టి — heap "తర్వాత ఏది ముగుస్తుంది" అనేదాన్ని సమర్థవంతంగా track చేస్తుంది.
+
+<ThinkAboutIt>మీకు minimum మరియు maximum రెండూ సమర్థవంతంగా కావాలంటే, ఒకే heap సరిపోదు. ఏ data structure combination ఉపయోగిస్తారు?</ThinkAboutIt>
+
+## Heap vs Sorted Array vs BST ఎప్పుడు
+
+| అవసరం | ఉత్తమ ఎంపిక | ఎందుకు |
+|--------|-------------|--------|
+| పునరావృత min/max extraction | Heap | O(log n) insert + extract |
+| Static data, ఒకసారి sort | Sorted array | O(n log n) ఒకసారి, O(1) ప్రాప్యత |
+| Range queries + order stats | Balanced BST | అన్నింటికీ O(log n) |
+| Stream నుండి Top-K | K పరిమాణ Heap | O(n log k) మొత్తం |
+
+<Quiz question="Min-heap లో ఏ operation O(1)?" options="Minimum కనుగొనడం|Minimum తొలగించడం|Maximum కనుగొనడం|Median కనుగొనడం" answer="0" explanation="Minimum min-heap root (index 0) వద్ద ఉంటుంది, కాబట్టి peek O(1). తొలగించడం O(log n) ఎందుకంటే sift down చేయాలి." />
+
+## Complexity సంగ్రహం
+
+| Operation | సమయం |
+|-----------|------|
+| Insert | O(log n) |
+| Extract min/max | O(log n) |
+| Peek min/max | O(1) |
+| Heapify | O(n) |
+| n items నుండి Top-K | O(n log k) |
+
+<ThinkAboutIt>Heap array లో store అయినా binary search ఎందుకు చేయలేరు? Heap property నిజంగా ఏ sorted order ను guarantee చేస్తుందో ఆలోచించండి.</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+
+- [NeetCode — Heap / Priority Queue](https://neetcode.io/roadmap) — heap సమస్యలతో visual roadmap
+- [Tech Interview Handbook — Heap](https://www.techinterviewhandbook.org/algorithms/heap/) — సంక్షిప్త పాటర్న్‌లు మరియు చిట్కాలు
+- [Python heapq docs](https://docs.python.org/3/library/heapq.html) — ఉదాహరణలతో అధికారిక module reference

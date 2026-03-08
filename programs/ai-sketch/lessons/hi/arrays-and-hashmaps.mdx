@@ -1,0 +1,130 @@
+---
+title: "Arrays और Hash Maps — AI डेटा कैसे स्टोर और एक्सेस करता है"
+description: "जानिए कैसे arrays और hash maps AI systems में feature vectors से लेकर embedding lookups तक सब कुछ पावर करते हैं।"
+order: 1
+difficulty: "intermediate"
+duration: 15
+icon: "📦"
+published: true
+---
+
+## AI में डेटा स्टोरेज क्यों ज़रूरी है
+
+हर AI system को डेटा स्टोर और तेज़ी से एक्सेस करना होता है। चाहे एक image के pixel values हों, 50,000 शब्दों की vocabulary हो, या लाखों users की preferences — सही data structure चुनना तय करता है कि AI कितनी तेज़ी से काम करेगा।
+
+दो structures सबसे ज़्यादा इस्तेमाल होते हैं: **arrays** और **hash maps**। इन्हें समझ लिया तो AI pipeline की नींव पक्की।
+
+## Arrays — क्रम में रखी गई लिस्ट
+
+Array एक नंबर वाली लिस्ट है जहाँ items मेमोरी में एक साथ रखे जाते हैं। हर item का एक **index** होता है — जो zero से शुरू होता है।
+
+```
+index:   0       1       2       3       4
+value: ["cat", "dog", "bird", "fish", "frog"]
+```
+
+चूँकि items साथ-साथ बैठे हैं, किसी भी position पर सीधे पहुँच सकते हैं। Item 3 चाहिए? बस — कोई searching नहीं। यही **O(1)** access है — 10 items हों या 10 million, समय बराबर लगता है।
+
+<Illustration src="/images/lessons/arrays-and-hashmaps.svg" alt="पाँच elements का array जिसमें index 0 से 4 तक हैं, index 3 पर direct access दिखा रहा है" caption="Array में index के ज़रिए किसी भी position पर सीधे पहुँचा जा सकता है।" />
+
+### Arrays कहाँ चमकते हैं
+
+- **Feature vectors**: एक image को 784 numbers के array (28×28 pixels) से represent किया जाता है।
+- **Embeddings**: Language models शब्दों के मतलब सैकड़ों floating-point numbers के arrays में स्टोर करते हैं।
+- **Batch processing**: Training data arrays में लोड होता है ताकि GPU हज़ारों examples एक साथ process कर सके।
+
+### कमज़ोरी
+
+बीच में item insert या delete करना महंगा है — बाद के सारे items को शिफ्ट करना पड़ता है। यह **O(n)** है — जितने ज़्यादा items, उतना ज़्यादा समय।
+
+<ThinkAboutIt>
+अगर 10,000 गानों की playlist में position 5 पर नया गाना डालना हो, तो position 5 के बाद के हर गाने को शिफ्ट करना पड़ेगा। कोई streaming service इसे बिना slow हुए कैसे handle करेगी?
+</ThinkAboutIt>
+
+## Hash Maps — नाम से तुरंत ढूँढो
+
+Hash map (जिसे dictionary या hash table भी कहते हैं) डेटा को **key-value pairs** में स्टोर करता है। Index number की जगह एक meaningful key से access करते हैं।
+
+```
+word_counts = {
+  "hello": 42,
+  "world": 37,
+  "AI": 156
+}
+```
+
+"AI" का count चाहिए? Hash map एक **hash function** से key को internally index में बदलता है। नतीजा? औसतन **O(1)** lookup — arrays जैसा, बस numbers की जगह names से।
+
+<FunFact>
+Python की dictionaries hash maps हैं। जब ChatGPT training के दौरान word frequencies गिनता है, तो hash-map जैसी structures से पूरे internet के text में अरबों शब्दों को track करता है।
+</FunFact>
+
+### AI में Hash Maps के उपयोग
+
+- **Vocabulary mapping**: "brilliant" जैसे शब्द को token ID 8921 में बदलना।
+- **Frequency counting**: Dataset में हर शब्द कितनी बार आया? Hash map एक ही pass में जवाब दे देता है।
+- **Caching**: अगर AI ने input X के लिए prediction पहले ही calculate कर लिया है, तो उसे स्टोर कर लो — दोबारा compute नहीं करना पड़ेगा।
+
+## Time Complexity — सरल भाषा में
+
+| Operation | Array | Hash Map |
+|-----------|-------|----------|
+| Index से access | O(1) ⚡ | N/A |
+| Key से access | O(n) 🐢 | O(1) ⚡ |
+| End में insert | O(1) ⚡ | O(1) ⚡ |
+| बीच में insert | O(n) 🐢 | N/A |
+| Value ढूँढना | O(n) 🐢 | O(1) ⚡ |
+
+**O(1)** का मतलब "साइज़ कितना भी हो, instant" और **O(n)** का मतलब "डेटा बड़ा तो slow।"
+
+<Quiz question="आपके पास 100,000 user profiles हैं और username से user ढूँढना है। कौन सा structure सबसे तेज़ होगा?" options="Alphabetically sorted array|Hash map जिसमें usernames keys हैं|Plain unsorted array|कोई फ़र्क नहीं — सब बराबर हैं" answer="1" explanation="Hash map key से O(1) average lookup देता है, जो username जैसे unique identifier से ढूँढने के लिए ideal है।" />
+
+## Common Pattern: Frequency Counting
+
+Interviews और AI दोनों में सबसे उपयोगी patterns में से एक — occurrences गिनना:
+
+```
+counts = {}
+for each word in text:
+    if word in counts:
+        counts[word] = counts[word] + 1
+    else:
+        counts[word] = 1
+```
+
+Text का एक ही pass — और हर शब्द की frequency मिल गई। Language models भी बड़े scale पर यही approach इस्तेमाल करते हैं।
+
+## Common Pattern: Two-Sum Problem
+
+एक array of numbers और एक target दिया है — दो numbers ढूँढो जिनका जोड़ target बने। Naive तरीका हर pair check करता है — O(n²)। Smart तरीका hash map इस्तेमाल करता है:
+
+```
+seen = {}
+for each number in array:
+    complement = target - number
+    if complement in seen:
+        return [seen[complement], current_index]
+    seen[number] = current_index
+```
+
+एक pass, O(n) time। Hash map याद रखता है कि पहले क्या-क्या देखा है।
+
+<Quiz question="Two-sum में hash map वाला approach हर pair check करने से तेज़ क्यों है?" options="Hash maps कम memory इस्तेमाल करते हैं|Hash maps 'यह number पहले देखा?' O(1) में check कर लेते हैं|Hash maps data automatically sort करते हैं|Hash maps सिर्फ छोटे arrays पर काम करते हैं" answer="1" explanation="Hash map में हर lookup O(1) है, तो हर pair compare करने (O(n²)) की जगह एक pass में O(1) lookups — कुल O(n) time।" />
+
+## कब कौन सा चुनें
+
+- **Arrays** जब order मायने रखे, position से access करना हो, या सब कुछ sequentially process करना हो (जैसे image के pixels)।
+- **Hash maps** जब key से तेज़ lookup चाहिए, occurrences गिनने हों, या कुछ exist करता है ये जल्दी check करना हो।
+
+<ThinkAboutIt>
+एक recommendation engine को suggest करने से पहले check करना है कि user ने film पहले देखी है या नहीं। Watch history array में रखोगे या hash map में? क्या trade-offs हो सकते हैं?
+</ThinkAboutIt>
+
+<Quiz question="AI model word embeddings को 300 numbers के arrays में स्टोर करता है। Arrays यहाँ अच्छा choice क्यों हैं?" options="Arrays random key-based access देते हैं|Arrays ordered, fixed-size numerical data efficiently स्टोर करते हैं और GPUs उन्हें parallel process करते हैं|Arrays numbers automatically sort करते हैं|Arrays किसी भी structure से कम memory इस्तेमाल करते हैं" answer="1" explanation="Embeddings fixed-length number sequences हैं जहाँ order मायने रखता है — position 0 'gender' और position 1 'royalty' represent कर सकता है। Arrays इन्हें compactly store करते हैं और GPUs array operations के लिए optimised हैं।" />
+
+## मुख्य बातें
+
+- **Arrays** index से O(1) access देते हैं और numerical AI (images, embeddings, tensors) की रीढ़ हैं।
+- **Hash maps** key से O(1) access देते हैं और lookups, counting, caching के लिए ज़रूरी हैं।
+- सही structure चुनना O(n²) algorithm को O(n) बना सकता है — लाखों data points पर यह बहुत बड़ा फ़र्क है।
+- असल में ज़्यादातर AI pipelines दोनों इस्तेमाल करते हैं: numerical computation के लिए arrays, metadata lookups के लिए hash maps।

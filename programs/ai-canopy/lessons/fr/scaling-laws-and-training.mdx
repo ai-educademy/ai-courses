@@ -1,0 +1,118 @@
+---
+title: "Scaling laws et entraînement à grande échelle — Pourquoi les modèles plus grands deviennent plus intelligents"
+description: "Explorez les lois d'échelle empiriques qui gouvernent les performances des modèles, les stratégies d'entraînement compute-optimal, et l'ingénierie des systèmes distribués derrière l'entraînement des modèles de pointe."
+order: 7
+difficulty: "advanced"
+duration: 18
+icon: "📈"
+published: true
+---
+
+# Scaling laws et entraînement à grande échelle — Pourquoi les modèles plus grands deviennent plus intelligents
+
+La révolution moderne de l'IA n'est pas seulement une histoire d'algorithmes — c'est une histoire d'**ingénierie et de passage à l'échelle**. Les chercheurs ont découvert que les performances des modèles suivent des lois de puissance prévisibles en fonction des paramètres, des données et du calcul, et l'exploitation de ces lois a nécessité l'invention de paradigmes d'entraînement distribué entièrement nouveaux.
+
+## Les scaling laws de Kaplan
+
+En 2020, des chercheurs d'OpenAI (Kaplan et al.) ont publié une découverte majeure : la perte des Transformers suit des **relations en loi de puissance régulières** avec trois variables :
+
+- **N** — Nombre de paramètres du modèle
+- **D** — Taille du jeu de données (en tokens)
+- **C** — Budget de calcul (en FLOPs)
+
+Le résultat clé : `L(N) ∝ N^(-0.076)` — la perte décroît selon une loi de puissance du nombre de paramètres. Doublez les paramètres, et la perte diminue de manière prévisible. Ces courbes ne montraient aucun signe de plateau sur six ordres de grandeur, suggérant que le passage à l'échelle était une voie fiable vers de meilleures performances.
+
+La recommandation de Kaplan : lorsque le calcul est limité, il est plus efficient d'**entraîner un modèle plus grand pendant moins d'étapes** qu'un modèle plus petit pendant plus d'étapes. C'est ce qui a guidé la décision de porter GPT-3 à 175 milliards de paramètres.
+
+<Illustration src="/images/lessons/scaling-laws-and-training.svg" alt="Graphique log-log montrant la décroissance régulière de la perte en loi de puissance à mesure que les paramètres, données et calcul augmentent" caption="Les scaling laws montrent que la perte décroît de manière prévisible en loi de puissance des paramètres, données et calcul." />
+
+## Chinchilla et l'entraînement compute-optimal
+
+En 2022, l'article **Chinchilla** de DeepMind a remis en question les conclusions de Kaplan. Son insight clé : l'allocation optimale entre paramètres et tokens d'entraînement est d'environ **1:20** — pour chaque paramètre, il faudrait s'entraîner sur environ 20 tokens.
+
+| Modèle | Paramètres | Tokens d'entraînement | Ratio |
+|--------|-----------|----------------------|-------|
+| GPT-3 | 175 Md | 300 Md | 1,7:1 |
+| Chinchilla | 70 Md | 1,4 T | 20:1 |
+| LLaMA 2 70B | 70 Md | 2 T | 28:1 |
+
+Chinchilla (70 milliards de paramètres) a **surpassé** le bien plus grand Gopher (280 milliards) en s'entraînant sur 4× plus de données. La leçon était profonde : la plupart des grands modèles étaient massivement **sur-paramétrés et sous-entraînés**.
+
+<Quiz question="Selon les scaling laws de Chinchilla, quel est le ratio compute-optimal approximatif entre tokens d'entraînement et paramètres ?" options="1:1 — autant de tokens que de paramètres|1:20 — environ 20 tokens par paramètre|100:1 — 100 tokens par paramètre|Cela dépend entièrement de l'architecture du modèle, pas du nombre de paramètres" answer="1" explanation="La découverte clé de Chinchilla est que l'entraînement compute-optimal nécessite environ 20 tokens par paramètre. Les modèles comme GPT-3 (1,7 tokens par paramètre) étaient sévèrement sous-entraînés par rapport à leur taille, gaspillant du calcul en excès de paramètres plutôt qu'en données suffisantes." />
+
+## Pourquoi le nombre de paramètres ne fait pas tout
+
+La capacité d'un modèle dépend de l'interaction entre architecture, données et entraînement. Considérons :
+
+- La **qualité des données** importe plus que le volume brut. Les modèles entraînés sur du texte curé, dédupliqué et de haute qualité surpassent systématiquement ceux entraînés sur des jeux de données plus grands mais plus bruités. LLaMA de Meta a montré qu'un modèle de 13 milliards de paramètres entraîné sur des données soigneusement curées pouvait égaler GPT-3 (175 Md) sur de nombreux benchmarks.
+- Les **choix architecturaux** — patrons d'attention, fonctions d'activation (SwiGLU vs ReLU), placement de la normalisation (pre-norm vs post-norm) — décalent tous les courbes de scaling.
+- La **tokenisation** affecte le volume effectif de données. Un meilleur tokeniser compresse plus d'information par token, modifiant le ratio paramètres-tokens.
+
+<FunFact>
+L'entraînement de GPT-4 aurait coûté plus de 100 millions de dollars en calcul seul. L'électricité consommée durant un seul entraînement de modèle de pointe peut dépasser la consommation annuelle d'une petite ville — soulevant de sérieuses questions sur la durabilité environnementale du passage à l'échelle.
+</FunFact>
+
+## Stratégies d'entraînement distribué
+
+Aucun GPU seul ne peut contenir un modèle de pointe. L'entraînement exige de répartir le travail sur des milliers d'accélérateurs grâce à plusieurs stratégies complémentaires :
+
+**Data Parallelism** — L'approche la plus simple : répliquer le modèle entier sur chaque GPU, répartir le batch d'entraînement entre les dispositifs et moyenner les gradients après chaque étape. Fonctionne bien lorsque le modèle tient dans la mémoire d'un seul GPU.
+
+**Model Parallelism (Tensor Parallelism)** — Découper les couches individuelles sur plusieurs GPU. Une seule multiplication matricielle est divisée pour que chaque GPU calcule une tranche de la sortie. Nécessite des interconnexions à haute bande passante (NVLink, InfiniBand) car les GPU doivent communiquer à chaque passe forward/backward.
+
+**Pipeline Parallelism** — Assigner différentes couches à différents GPU, en propageant les activations vers l'avant et les gradients vers l'arrière à travers le pipeline. Introduit des **bulles de pipeline** (temps d'inactivité en attendant les autres étages), atténuées par le micro-batching.
+
+Les systèmes modernes combinent les trois : tensor parallelism au sein d'un nœud (NVLink rapide), pipeline parallelism entre nœuds, et data parallelism entre groupes de nœuds.
+
+<ThinkAboutIt>
+Le pipeline parallelism introduit un temps d'inactivité « bulle » quand les GPU attendent les activations des autres étages. Plus le pipeline est grand, plus la perte en bulle est importante. Comment pourriez-vous minimiser ce gaspillage — et quels compromis votre solution introduirait-elle ?
+</ThinkAboutIt>
+
+## Précision mixte et accumulation de gradients
+
+L'**entraînement en précision mixte** utilise des flottants en demi-précision (FP16 ou BF16) pour la plupart des calculs tout en conservant une copie maîtresse des poids en FP32. Avantages :
+
+- **Réduction de 2× de la mémoire** pour les activations et les gradients
+- **Gain de débit de 2 à 8×** sur les GPU modernes avec tensor cores
+- Le BF16 (Brain Float 16) est préféré au FP16 car sa plage d'exposant plus large évite les problèmes de débordement courants en entraînement FP16
+
+L'**accumulation de gradients** simule de grands batchs sans coût mémoire proportionnel : exécuter plusieurs passes forward/backward, accumuler les gradients, et ne mettre à jour les poids qu'après N micro-étapes. Cela permet d'atteindre des tailles de batch effectives de millions de tokens même sur du matériel limité.
+
+## DeepSpeed et FSDP
+
+Deux frameworks dominent l'entraînement distribué :
+
+- **DeepSpeed (Microsoft)** — Implémente les étages 1 à 3 de ZeRO (Zero Redundancy Optimiser), partitionnant progressivement les états de l'optimiseur, les gradients et les paramètres sur les GPU. ZeRO-3 peut entraîner des modèles à mille milliards de paramètres en garantissant qu'aucun GPU ne détient une copie complète de quoi que ce soit.
+- **FSDP (PyTorch)** — Fully Sharded Data Parallel, l'équivalent natif PyTorch de ZeRO-3. Intégré directement dans l'écosystème PyTorch, le rendant plus accessible aux chercheurs.
+
+<Quiz question="Que partitionne ZeRO Stage 3 sur les GPU pour permettre l'entraînement de modèles extrêmement grands ?" options="Uniquement les états de l'optimiseur (ex. les moments d'Adam)|Les états de l'optimiseur et les gradients, mais conserve les paramètres complets sur chaque GPU|Les états de l'optimiseur, les gradients ET les paramètres du modèle — rien n'est entièrement répliqué|Uniquement les batchs de données d'entraînement" answer="2" explanation="ZeRO Stage 3 élimine toute redondance en partitionnant les états de l'optimiseur, les gradients et les paramètres sur les GPU. Chaque GPU ne détient qu'une fraction de chaque composant et rassemble les paramètres complets à la demande durant les passes forward/backward, permettant des modèles bien plus grands que la mémoire d'un seul GPU." />
+
+## Capacités émergentes et rendements décroissants
+
+À mesure que les modèles grandissent, certaines capacités semblent **émerger soudainement** plutôt que de s'améliorer graduellement. Exemples :
+
+- L'arithmétique multi-étapes apparaissant autour de 100 milliards de paramètres
+- Le raisonnement chain-of-thought s'améliorant considérablement avec la taille
+- L'apprentissage few-shot ne devenant fiable qu'au-dessus de certains seuils
+
+Cependant, des recherches récentes débattent de la réalité de l'émergence ou de son caractère d'artefact de **métriques d'évaluation discontinues**. Avec des métriques continues (comme la log-probabilité par token), les performances s'améliorent souvent de manière régulière — le « saut soudain » est une illusion de la mesure, pas du modèle.
+
+Le **débat sur les rendements décroissants** s'intensifie également. Chaque ordre de grandeur en calcul produit des améliorations décroissantes sur les benchmarks, amenant certains chercheurs à argumenter que le scaling seul n'atteindra pas l'intelligence artificielle générale sans innovations architecturales fondamentales.
+
+<Quiz question="Pourquoi certains chercheurs considèrent-ils que les « capacités émergentes » des grands modèles de langage pourraient être une illusion ?" options="Parce que les modèles plus grands sont toujours entraînés sur des données différentes|Parce que ces capacités ont été secrètement programmées par les chercheurs|Parce que des métriques d'évaluation discontinues (comme l'exactitude en correspondance exacte) peuvent faire apparaître des améliorations sous-jacentes régulières comme des sauts soudains|Parce que l'émergence ne se produit que dans les modèles encoder-decoder" answer="2" explanation="Schaeffer et al. (2023) ont montré que lorsqu'on utilise des métriques lisses et continues (ex. log-vraisemblance par token), les performances s'améliorent de façon prévisible avec la taille. L'émergence apparente est souvent un artefact de métriques qui basculent brusquement de 0 à 1 (ex. correspondance exacte en arithmétique) à un seuil de capacité sous-jacente." />
+
+<FunFact>
+L'entraînement de PaLM par Google a utilisé 6 144 puces TPU v4 simultanément — connectées par un réseau optique dédié couvrant un data center entier. Une seule panne réseau pouvait gaspiller des millions de dollars en calcul, d'où la mise en place d'un checkpointing automatisé sauvegardant l'état du modèle toutes les quelques minutes.
+</FunFact>
+
+<ThinkAboutIt>
+Si les scaling laws prédisent que 10× plus de calcul produit une amélioration prévisible, comment les laboratoires d'IA devraient-ils répartir leur investissement entre le scaling des architectures existantes et la recherche d'approches fondamentalement nouvelles ? Que se passe-t-il quand le coût du prochain facteur 10× dépasse le milliard de dollars ?
+</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Scaling Laws for Neural Language Models (Kaplan et al., 2020)](https://arxiv.org/abs/2001.08361) — L'article original sur les scaling laws par OpenAI
+- [Training Compute-Optimal Large Language Models (Hoffmann et al., 2022)](https://arxiv.org/abs/2203.15556) — L'article Chinchilla qui a redéfini le dimensionnement et l'entraînement des modèles
+- [ZeRO: Memory Optimizations Toward Training Trillion Parameter Models](https://arxiv.org/abs/1910.02054) — L'article DeepSpeed ZeRO de Microsoft sur l'efficacité de l'entraînement distribué

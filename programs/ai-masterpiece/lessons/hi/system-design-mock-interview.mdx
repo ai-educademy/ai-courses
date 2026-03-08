@@ -1,0 +1,189 @@
+---
+title: "System Design Mock Interview — 45 मिनट का Senior Engineer सिमुलेशन"
+description: "Food delivery platform का complete system design walkthrough — requirements, API design, architecture, deep dives, और scaling — ठीक वैसे ही structured जैसे असली senior engineer interview।"
+order: 9
+difficulty: "advanced"
+duration: 25
+icon: "🏗️"
+published: true
+---
+
+# System Design Mock Interview — 45 मिनट का Senior Engineer सिमुलेशन
+
+System design interviews senior engineers को बाकियों से अलग करते हैं। कोई एक सही जवाब नहीं होता — interviewers आपकी **structured thinking**, trade-off analysis, और ambiguity navigate करने की क्षमता evaluate करते हैं। यह lesson एक पूरा 45 मिनट का simulation है।
+
+## 🎯 Problem: Food Delivery System Design करें
+
+*"Uber Eats या Deliveroo जैसा food delivery platform design करें जो customers, restaurants, और delivery drivers को connect करे।"*
+
+<Illustration src="/images/lessons/system-design-mock-interview.svg" alt="Food delivery system का high-level architecture — user, restaurant, order, और driver services" caption="Food delivery platform के चार core domains — हर एक अपनी service वाला bounded context है।" />
+
+## Phase 1: Requirements Gathering (5 मिनट)
+
+**तुरंत boxes बनाना शुरू न करें।** पहले clarifying questions पूछें:
+
+**Functional requirements:**
+- Customers restaurants browse करें, menus देखें, orders place करें, real-time delivery track करें
+- Restaurants menus manage करें, orders accept/reject करें, preparation status update करें
+- Drivers delivery requests receive करें, pickup/dropoff तक navigate करें, delivery confirm करें
+- पूरे order lifecycle में real-time estimated delivery time (EDT) दिखे
+
+**Non-functional requirements:**
+- **Availability**: 99.99% uptime (≈52 मिनट downtime प्रति वर्ष)
+- **Latency**: search < 200ms, order placement < 500ms, location updates < 1s
+- **Scale**: 50M monthly active users, 5M orders प्रति दिन, peak पर 500K concurrent users
+- **Consistency**: search के लिए eventual consistency ठीक; payments के लिए strong consistency
+
+<Quiz question="Restaurant search के लिए eventual consistency क्यों acceptable है लेकिन payment processing के लिए नहीं?" options="Search payments से कम important है|थोड़ा पुराना menu दिखना चलता है; user को दो बार charge करना नहीं|Eventual consistency हमेशा faster होती है|Payment APIs eventual consistency support नहीं करतीं" answer="1" explanation="User को एक restaurant दिखना जो अभी बंद हुआ है — minor inconvenience है, retry से ठीक हो जाता है। लेकिन payment दो बार process करना real financial नुकसान करता है। Inconsistency की cost consistency model तय करती है।" />
+
+## Phase 2: API Design (5 मिनट)
+
+Architecture से पहले core contracts define करें:
+
+```
+# Customer APIs
+GET    /api/v1/restaurants?lat={}&lng={}&cuisine={}  → Restaurant[]
+GET    /api/v1/restaurants/{id}/menu                  → Menu
+POST   /api/v1/orders                                 → Order
+GET    /api/v1/orders/{id}/track                      → OrderStatus + DriverLocation
+
+# Restaurant APIs
+PATCH  /api/v1/restaurants/{id}/menu/items/{itemId}   → MenuItem
+POST   /api/v1/orders/{id}/accept                     → Order
+POST   /api/v1/orders/{id}/ready                      → Order
+
+# Driver APIs
+POST   /api/v1/drivers/{id}/location                  → void (fire-and-forget)
+POST   /api/v1/deliveries/{id}/accept                 → Delivery
+POST   /api/v1/deliveries/{id}/complete               → Delivery
+```
+
+**Key decision**: Real-time driver tracking के लिए WebSockets, बाकी सब के लिए REST।
+
+## Phase 3: High-Level Architecture (10 मिनट)
+
+### Core Services
+
+| Service | ज़िम्मेदारी | Database |
+|---------|------------|----------|
+| **User Service** | Authentication, profiles, addresses | PostgreSQL |
+| **Restaurant Service** | Menus, availability, hours | PostgreSQL + Elasticsearch |
+| **Order Service** | Order lifecycle, state machine | PostgreSQL (strong consistency) |
+| **Driver Service** | Driver location, availability, matching | Redis (location) + PostgreSQL |
+| **Payment Service** | Charges, refunds, restaurant payouts | PostgreSQL (ACID required) |
+| **Notification Service** | Push, SMS, email notifications | Message queue consumer |
+
+### Communication Patterns
+
+- **Synchronous**: API Gateway → individual services (REST/gRPC)
+- **Asynchronous**: Order events **Kafka** पर publish — Payment, Notification, और Analytics services consume करते हैं
+- **Real-time**: Driver location updates WebSocket → **Redis** में geospatial indexing के साथ store
+
+<FunFact>Uber globally हर सेकंड 1 million से ज़्यादा location updates process करता है। उन्होंने अपना geospatial indexing system (H3) hexagonal hierarchical grids से बनाया क्योंकि traditional latitude/longitude queries इतने scale पर काम नहीं कर पा रहीं थीं।</FunFact>
+
+## Phase 4: Deep Dive — Critical Components (15 मिनट)
+
+### Driver Matching Algorithm
+
+जब order pickup के लिए ready हो, matching service को optimal driver assign करना होता है:
+
+```
+Score(driver) = w1 × (1 / distance_to_restaurant)
+              + w2 × driver_rating
+              + w3 × (1 / current_active_orders)
+              + w4 × acceptance_rate
+```
+
+**Implementation**: Redis `GEORADIUS` से restaurant के 5km के अंदर drivers query करें, हर candidate को score करें, सबसे high-scoring available driver assign करें। Decline हो तो 30-second timeout के साथ अगले driver को offer।
+
+### Real-Time Order Tracking
+
+```
+Client ←→ WebSocket Gateway ←→ Driver Service
+                                    ↑
+                              Redis GEO Store
+                            (GEOADD, GEOPOS)
+```
+
+Drivers हर 4 सेकंड GPS coordinates publish करते हैं। WebSocket gateway active orders के location updates subscribe करता है और customer के device पर push करता है। **Redis Pub/Sub** efficiently fan-out handle करता है।
+
+### Estimated Delivery Time
+
+EDT एक **multi-stage prediction** है:
+
+```
+EDT = restaurant_prep_time + driver_pickup_travel + dropoff_travel + buffer
+
+जहाँ:
+- restaurant_prep_time  → per restaurant historical order data पर trained ML model
+- driver_pickup_travel  → distance/traffic API (Google Maps, Mapbox)
+- dropoff_travel        → same routing API
+- buffer                → dynamic, बारिश/peak hours में बढ़ता है
+```
+
+<ThinkAboutIt>ऊपर दिया matching algorithm fixed weights (w1–w4) use करता है। इसे एक learning system में कैसे evolve करेंगे जो delivery speed और driver satisfaction दोनों को simultaneously optimise करे?</ThinkAboutIt>
+
+### Payment Processing
+
+Payments एक **two-phase pattern** follow करते हैं:
+
+1. **Authorise** — order place होने पर funds reserve करें (hold करें, charge नहीं)
+2. **Capture** — delivery confirm होने के बाद actual amount charge करें
+
+यह order modifications, cancellations, और partial refunds gracefully handle करता है। Double-charging रोकने के लिए हर payment request पर **idempotency key** use करें।
+
+<Quiz question="तुरंत charge करने की जगह two-phase payment pattern (authorise then capture) क्यों use करें?" options="Single charge से faster है|Cancellations, modifications, और refunds complex reversal logic बिना handle करता है|Payment providers इसे require करते हैं|Transaction fees कम करता है" answer="1" explanation="Authorise-then-capture funds hold करता है बिना commit किए। अगर restaurant cancel करे या order बदले, तो बस authorisation release करें — कोई refund processing नहीं। यह edge cases को dramatically simplify करता है।" />
+
+## Phase 5: Scaling और Bottlenecks (10 मिनट)
+
+### Database Scaling
+
+- **Order Service**: `order_id` से shard करें — orders independent हैं, horizontal scaling straightforward
+- **Restaurant Service**: Search queries के लिए read replicas, full-text और geospatial search के लिए Elasticsearch
+- **Driver Location**: Geospatial indexing के साथ Redis Cluster — pure in-memory, sub-millisecond reads
+
+### Peak Load Handle करना (Surge)
+
+Peak times (Friday शाम 7 बजे, बड़े sporting events) पर order volume 10× spike हो सकता है:
+
+- Queue depth पर based application pods का **auto-scaling**, CPU पर नहीं
+- Supply और demand balance करने के लिए **surge pricing** — driver supply कम हो तो delivery fees बढ़ाएँ
+- Peak में abuse रोकने के लिए per user **rate limiting**
+- Downstream services पर **circuit breakers** — cascading failure की जगह graceful degradation
+
+### Single Points of Failure
+
+| Component | Mitigation |
+|-----------|-----------|
+| API Gateway | Load balancer के पीछे multiple instances, health checks |
+| Kafka | Replication factor 3 के साथ multi-broker cluster |
+| Redis | Automatic failover के लिए Redis Sentinel |
+| Payment provider | Automatic fallback के साथ secondary provider |
+
+<Quiz question="Order Service scale कर रहे हैं। कौन सी sharding key सबसे अच्छा write distribution देगी?" options="restaurant_id — एक restaurant के सभी orders एक shard पर|user_id — एक user के सभी orders एक shard पर|order_id — orders randomly shards पर distribute|city_id — एक city के सभी orders एक shard पर" answer="2" explanation="order_id से sharding writes uniformly distribute करती है क्योंकि order IDs randomly generate होती हैं (UUIDs या snowflake IDs)। restaurant_id या city_id से sharding hot spots बनाती है — popular restaurants और cities को disproportionate traffic मिलता है।" />
+
+<ThinkAboutIt>Interviewer पूछता है: "Peak period में payment service 30 सेकंड के लिए down हो जाए तो क्या होगा?" Exact failure mode, orders पर कैसे असर पड़ेगा, और recovery कैसी दिखेगी — सब walk through करें।</ThinkAboutIt>
+
+## 💡 Interview Tips
+
+1. **समय structure करें** — requirements पर 30 मिनट मत लगाएँ
+2. **Trade-offs explicitly बताएँ** — "मैंने X चुना Y की जगह क्योंकि..."
+3. **Simple शुरू करें, फिर scale करें** — पहले 1× load के लिए design, फिर 100× address करें
+4. **बोलते हुए draw करें** — visual communication evaluation का आधा हिस्सा है
+5. **Unknowns acknowledge करें** — "इसे benchmark करना होगा, लेकिन मेरा hypothesis है..."
+
+## 🎯 मुख्य बातें
+
+- हमेशा requirements से शुरू करें — functional और non-functional
+- Architecture diagrams से पहले API contracts design करें
+- 2–3 components में deep dive करें, सब में superficially नहीं
+- हर architectural choice में trade-offs होते हैं — उन्हें name करें
+- Timer के साथ practice करें: 45 मिनट, कोई extension नहीं
+
+---
+
+## 📚 आगे पढ़ें
+
+- [System Design Interview by Alex Xu](https://www.amazon.co.uk/System-Design-Interview-insiders-guide/dp/B08CMF2CQF) — सबसे practical system design interview preparation book
+- [Uber Engineering Blog](https://www.uber.com/en-GB/blog/engineering/) — Massive scale पर real-world systems के deep dives
+- [Designing Data-Intensive Applications by Martin Kleppmann](https://dataintensive.net/) — Distributed systems fundamentals की definitive reference

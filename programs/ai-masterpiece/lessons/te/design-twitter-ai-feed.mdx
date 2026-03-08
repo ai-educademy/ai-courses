@@ -1,0 +1,158 @@
+---
+title: "Twitter యొక్క AI Feed ని Design చేయండి — ఒక End-to-End Case Study"
+description: "వందల కోట్ల tweets ను కోట్ల users కి అందించే personalised timeline వెనుక ఉన్న architecture ని విశ్లేషించండి."
+order: 3
+difficulty: "advanced"
+duration: 30
+icon: "🐦"
+published: true
+---
+
+# Twitter యొక్క AI Feed ని Design చేయండి
+
+ఊహించుకోండి, మీకు ఒకే ఒక task ఇచ్చారు: user app తెరిచిన ప్రతిసారి, వందల కోట్ల tweets లో నుండి వారికి అత్యంత విలువైనవి — 200 milliseconds లోపు — చూపించాలి.
+
+ఇది industry లో అత్యంత కఠినమైన recommendation సమస్యలలో ఒకటి. దీన్ని మొదటి నుండి design చేద్దాం.
+
+<Illustration src="/images/lessons/design-twitter-ai-feed.svg" alt="Tweet candidates ranking మరియు filtering దశల ద్వారా personalised feed గా మారే pipeline రేఖాచిత్రం" caption="ఒక tweet సృష్టి నుండి మీ timeline వరకు ప్రయాణం" />
+
+## Scale వద్ద సమస్య
+
+Twitter (ఇప్పుడు X) రోజుకు సుమారు 500 మిలియన్ tweets ని handle చేస్తుంది. 350+ మిలియన్ monthly active users లో ప్రతి ఒక్కరూ **వ్యక్తిగతంగా curate చేసినట్లు** — relevant, timely, engaging గా అనిపించే feed ని expect చేస్తారు.
+
+ఈ scale లో chronological feed పనిచేయదు. మీరు 500 accounts follow చేస్తే, 10,000 చదవని tweets ఉండవచ్చు. చాలా వరకు irrelevant. AI feed పని **మీకు** అత్యంత ముఖ్యమైన 50 ని surface చేయడం.
+
+<Callout>
+ఇది కేవలం ranking సమస్య కాదు — candidate generation, feature engineering, real-time scoring, content safety, మరియు massive-scale serving ని కలిగిన multi-stage system.
+</Callout>
+
+## Stage 1: Candidate Generation
+
+ప్రతి user కోసం 500 మిలియన్ tweets అన్నింటినీ score చేయడం సాధ్యం కాదు. కాబట్టి ముందుగా **field ని narrow** చేస్తారు.
+
+### Candidates యొక్క sources:
+- **In-network**: మీరు follow చేసే accounts tweets (అధిక recall, మోస్తరు relevance).
+- **Out-of-network**: మీరు follow చేసే వ్యక్తులు like/retweet చేసిన tweets, లేదా మీ interest graph లో trending.
+- **Topic-based**: మీరు ఇటీవల engage అయిన topics కి match అయ్యే tweets.
+
+### ఇది ఎలా పనిచేస్తుంది:
+ఒక lightweight retrieval model (సాధారణంగా embedding-based) user కి సుమారు 1,000–5,000 tweets యొక్క candidate set generate చేస్తుంది. ఇది schedule ప్రకారం లేదా user app తెరిచినప్పుడు trigger అవుతుంది.
+
+<Quiz question="Twitter ప్రతి tweet ని score చేయడానికి బదులు candidate generation ఎందుకు వాడుతుంది?" options="ప్రతి tweet ని score చేయడం చాలా వేగంగా ఉంటుంది కాబట్టి|ప్రతి user request కి billions tweets పై heavy ranking model run చేయడం computationally అసాధ్యం కాబట్టి|Users random tweets prefer చేస్తారు కాబట్టి|Ranking model చిన్న datasets పైనే పనిచేస్తుంది కాబట్టి" answer="1" explanation="రోజుకు 500 మిలియన్ tweets, 350 మిలియన్ users — ప్రతి user కోసం ప్రతి tweet ని score చేయడానికి అపారమైన compute అవసరం. Expensive ranking model run చేయడానికి ముందు candidate generation set ని manageable size కి తగ్గిస్తుంది." />
+
+## Stage 2: Ranking Model
+
+కొన్ని వేల candidates ఉన్న తర్వాత, ఒక **heavy ranking model** ప్రతి దాన్ని score చేస్తుంది. నిజమైన intelligence ఇక్కడ ఉంటుంది.
+
+### Model వాడే features:
+
+**User features:**
+- గత engagement నుండి infer చేసిన interests (likes, retweets, replies, dwell time).
+- Social graph: మీరు ఎవరితో ఎక్కువగా interact అవుతారు.
+- Demographics మరియు language preferences.
+
+**Tweet features:**
+- Content: text embeddings, media type, hashtags.
+- Author: follower count, engagement rate, trust score.
+- Freshness: tweet వయస్సు నిమిషాల్లో.
+
+**Cross features:**
+- User-author affinity: ఈ author తో మీరు ఎంత తరచుగా engage అవుతారు.
+- User-topic affinity: tweet topic మీ interest profile కి match అవుతుందా.
+- Social proof: మీలాంటి వ్యక్తులు ఈ tweet తో engage అయ్యారా.
+
+### Model architecture:
+Deep neural network (తరచుగా multi-task model) ఏకకాలంలో అనేక engagement types ని predict చేస్తుంది:
+
+- Like చేసే probability.
+- Retweet చేసే probability.
+- Reply ఇచ్చే probability.
+- Extended dwell time probability (రెండు సెకన్ల కంటే ఎక్కువ చదవడం).
+
+Final score ఈ predictions యొక్క **weighted combination** — "healthy engagement" లాంటి platform-level objective ని optimize చేయడానికి tune చేస్తారు.
+
+<ThinkAboutIt>
+కేవలం clicks మరియు likes కోసం optimize చేస్తే, sensational లేదా outrage-driven content promote అయ్యే ప్రమాదం ఉంది. Engagement తో content quality ని balance చేయడానికి scoring formula ని మీరు ఎలా design చేస్తారు?
+</ThinkAboutIt>
+
+## Stage 3: Real-Time Features
+
+Static features సరిపోవు. **ఇప్పుడు** జరుగుతున్నదానికి feed respond అవ్వాలి.
+
+- **Recency decay**: 30 సెకన్ల క్రితం tweet కి మూడు గంటల క్రితం tweet కంటే boost వస్తుంది.
+- **Trending topics**: పెద్ద event జరుగుతుంటే, user యొక్క regular interests బయట నుండి కూడా related tweets surface అవుతాయి.
+- **Session context**: User పది నిమిషాలుగా scroll చేస్తుంటే, fatigue తగ్గించడానికి content diversify చేస్తారు.
+- **Real-time engagement signals**: గత ఐదు నిమిషాల్లో viral అవుతున్న tweet కి temporary boost వస్తుంది.
+
+ఈ features కి **streaming infrastructure** అవసరం — సాధారణంగా Apache Kafka Redis లేదా Feast లాంటి feature store కి feed చేస్తుంది — near real-time లో update అవుతుంది.
+
+<FunFact>
+Twitter engineering team ప్రకారం ranking model కి real-time features జోడించడం వల్ల user engagement 8% పెరిగింది — వారి scale లో ఇది భారీ మెరుగుదల, రోజుకు మిలియన్ల అదనపు interactions.
+</FunFact>
+
+## "For You" Algorithm: Explore vs Exploit
+
+Feed ఒక classic **exploration-exploitation dilemma** ని ఎదుర్కొంటుంది:
+
+- **Exploit**: User ఇంతకు ముందు engage అయిన content లాంటిది చూపించడం. సురక్షితం, predictable, అధిక short-term engagement.
+- **Explore**: కొత్త topics, కొత్త authors, కొత్త formats పరిచయం చేయడం. ప్రమాదకరం, కానీ long-term retention మరియు content diversity కి అత్యవసరం.
+
+Twitter రెండింటినీ blend చేస్తుంది:
+- Feed లో సుమారు 80% exploitation — model confident గా ఉన్న content.
+- సుమారు 20% exploration — user యొక్క evolving interests test చేయడానికి inject చేసిన కొత్త content.
+
+Exploration ratio itself మిలియన్ల users తో A/B testing ద్వారా tune చేసే parameter.
+
+<Quiz question="కేవలం 'exploit' చేసి ఎప్పుడూ 'explore' చేయని feed యొక్క ప్రధాన ప్రమాదం ఏమిటి?" options="Feed చాలా diverse గా మారి confusing అవుతుంది|User filter bubble లో చిక్కుకుంటారు, platform వారి evolving interests కనుగొనలేదు|System చాలా ఎక్కువ compute వాడుతుంది|Feed చాలా నెమ్మదిగా load అవుతుంది" answer="1" explanation="Pure exploitation filter bubbles సృష్టిస్తుంది — user ఇప్పటికే ఇష్టపడేది మాత్రమే చూస్తారు, platform మారుతున్న అభిరుచులకు adapt కాలేదు, content diversity కూలిపోతుంది. Long-term ఆరోగ్యానికి exploration అత్యవసరం." />
+
+## Content Moderation మరియు Safety
+
+ఏ tweet అయినా feed కి చేరడానికి ముందు **safety layer** ద్వారా వెళ్తుంది:
+
+1. **Pre-ranking filter**: తెలిసిన spam, harassment, policy-violating content ranking కి ముందే తొలగిస్తారు.
+2. **Post-ranking filter**: Ranking తర్వాత secondary check edge cases ని పట్టుకుంటుంది — ఉదాహరణకు, ఒక్కటిగా acceptable అయిన tweet similar content తో cluster అయినప్పుడు harmful అయ్యేది.
+3. **User-level controls**: Users topics mute చేయవచ్చు, accounts block చేయవచ్చు, "not interested" గా mark చేయవచ్చు — ఇవన్నీ personalisation model లోకి feedback అవుతాయి.
+
+Safety layer **వేగంగా** (10–20ms కంటే ఎక్కువ latency జోడించకుండా) మరియు **conservative** గా (సందేహం ఉంటే filter out చేసి human review కి route చేయాలి) ఉండాలి.
+
+<Callout>
+Content moderation తర్వాత జోడించిన వేరే system కాదు. ఇది ranking pipeline లో లోతుగా integrate అయి, ప్రతి దశలో scores ని ప్రభావితం చేస్తూ filter చేస్తుంది.
+</Callout>
+
+## Scaling: Fan-Out on Read vs Fan-Out on Write
+
+Twitter infrastructure ని నిర్వచించే architectural నిర్ణయం ఇది.
+
+### Fan-out on write:
+User tweet చేసినప్పుడు, ప్రతి follower యొక్క feed cache లోకి ఆ tweet ని **push** చేయడం. వేగమైన reads, కానీ ఖరీదైన writes — ముఖ్యంగా మిలియన్ల followers ఉన్న accounts కి.
+
+### Fan-out on read:
+User app తెరిచినప్పుడు, follow చేసే అన్ని accounts నుండి తాజా tweets **pull** చేసి on the fly rank చేయడం. చవకైన writes, కానీ ఖరీదైన reads.
+
+### Twitter యొక్క hybrid approach:
+- చాలా users (10,000 కంటే తక్కువ followers): fan-out on write. Feed pre-compute చేసి cache చేయడం.
+- Celebrity accounts (మిలియన్ల followers): fan-out on read. Request సమయంలో feed compute చేయడం — మిలియన్ల caches flood అవ్వకుండా.
+
+ఈ hybrid strategy write amplification ని read latency తో balance చేస్తుంది — సాధారణ user tweet మరియు pop star viral post రెండింటినీ efficiently handle చేస్తుంది.
+
+<FunFact>
+50 మిలియన్ followers ఉన్న celebrity tweet చేసినప్పుడు, fan-out on write కి 50 మిలియన్ cache insertions అవసరం — నిమిషాలు పడుతుంది, భారీ bandwidth వాడుతుంది. Hybrid approach ఈ పనిని read time కి defer చేసి milliseconds లో handle చేస్తుంది.
+</FunFact>
+
+## అంతా కలిపి చూస్తే
+
+ఒక feed request కోసం పూర్తి pipeline:
+
+1. User app తెరుస్తారు → request feed service కి చేరుతుంది.
+2. Candidate generation in-network మరియు out-of-network sources నుండి ~3,000 tweets retrieve చేస్తుంది.
+3. Feature store ప్రతి candidate కి real-time మరియు batch features అందిస్తుంది.
+4. Ranking model అన్ని candidates ని ఒకే batched inference call లో score చేస్తుంది.
+5. Safety filters policy-violating content తొలగిస్తాయి.
+6. Exploration logic 20% diverse content inject చేస్తుంది.
+7. Final ranked list 200ms లోపు client కి return అవుతుంది.
+
+<ThinkAboutIt>
+Interview లో మిమ్మల్ని అడుగుతారు: "Feed మెరుగుపరచడానికి మీరు ఒక కొత్త signal జోడించగలిగితే, అది ఏమిటి, ఎందుకు?" సాధారణంగా చర్చించని signals గురించి ఆలోచించండి — బహుశా user wellbeing లేదా content credibility కి సంబంధించినది.
+</ThinkAboutIt>
+
+<Quiz question="Twitter hybrid fan-out strategy లో celebrity accounts tweets ఎలా handle చేస్తారు?" options="ప్రతి follower cache లోకి వెంటనే push చేస్తారు|Follower feed తెరిచినప్పుడు read time లో compute చేస్తారు|AI feed నుండి పూర్తిగా exclude చేస్తారు|కేవలం verified users కి మాత్రమే చూపిస్తారు" answer="1" explanation="Celebrity tweets fan-out on read వాడతాయి — follower request చేసినప్పుడు feed compute అవుతుంది, ఒక tweet ని మిలియన్ల caches లోకి push చేసే భారీ ఖర్చును నివారిస్తుంది." />

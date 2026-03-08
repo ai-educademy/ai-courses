@@ -1,0 +1,130 @@
+---
+title: "Traitement du langage naturel — Comment l'IA comprend le langage humain"
+description: "Découvrez comment les machines lisent, écrivent et interprètent la complexité désordonnée du langage humain."
+order: 2
+difficulty: "intermediate"
+duration: 18
+icon: "💬"
+published: true
+---
+
+# Traitement du langage naturel — Comment l'IA comprend le langage humain
+
+Vous avez probablement déjà posé une question à un assistant vocal, utilisé Google Translate ou regardé les sous-titres automatiques de YouTube apparaître en temps réel. Derrière chacune de ces expériences se trouve le **traitement du langage naturel (NLP)** — la branche de l'IA qui aide les machines à travailler avec le langage humain.
+
+## Pourquoi le langage est difficile pour les machines
+
+Le langage nous semble naturel, pourtant il est spectaculairement complexe pour les ordinateurs :
+
+- **Ambiguïté** — « I saw her duck » — s'est-elle baissée, ou avez-vous vu son canard ?
+- **Contexte** — « That's sick! » peut signifier que quelque chose est dégoûtant ou que c'est
+  génial, selon entièrement qui parle et quand.
+- **Sarcasme** — « Oh great, another Monday » porte le sens opposé de sa signification littérale,
+  mais il n'y a aucun marqueur explicite pour le signaler.
+- **Structure** — les mêmes mots réarrangés peuvent changer entièrement le sens : « Dog bites man »
+  versus « Man bites dog. »
+- **Argot évolutif** — de nouveaux mots et sens émergent constamment, rendant les dictionnaires
+  statiques insuffisants.
+
+Les machines ne peuvent pas s'appuyer sur l'intuition ou l'expérience de vie comme les humains. Les systèmes NLP doivent apprendre
+des modèles à partir d'énormes volumes de texte, souvent des milliards de phrases.
+
+<Illustration src="/images/lessons/natural-language-processing.svg" alt="Pipeline montrant le texte passant par les étapes de tokenisation, d'embedding et de modèle" caption="Le NLP transforme le texte brut à travers plusieurs étapes avant que l'IA puisse le comprendre." />
+
+## Tâches fondamentales du NLP
+
+| Tâche | Ce qu'elle fait | Exemple |
+|------|-------------|---------|
+| **Tokenisation** | Découpe le texte en mots ou sous-mots | "I'm learning" → ["I", "'m", "learning"] |
+| **Analyse de sentiment** | Détecte l'émotion ou l'opinion | "This film was brilliant!" → Positif |
+| **Reconnaissance d'entités nommées** | Identifie les noms, lieux, dates | "Marie Curie worked in Paris" → Personne, Lieu |
+| **Traduction automatique** | Convertit entre les langues | Anglais → Français |
+| **Résumé automatique** | Condense un texte long | Un rapport de 10 pages → un court paragraphe |
+
+<Quiz question="Quelle tâche NLP permettrait d'identifier que « London » est un lieu dans une phrase ?" options="Tokenisation|Analyse de sentiment|Reconnaissance d'entités nommées|Résumé automatique" answer="2" explanation="La reconnaissance d'entités nommées (NER) identifie et classifie les entités telles que les personnes, les organisations et les lieux dans un texte." />
+
+## Transformer les mots en nombres
+
+Les machines travaillent avec des nombres, pas des mots. Alors comment représenter la richesse du langage
+de manière mathématique ? L'idée révolutionnaire a été de représenter les mots sous forme de **vecteurs** — des listes de nombres
+qui capturent le sens et les relations.
+
+**Word2Vec** (2013) a montré que les mots utilisés dans des contextes similaires obtiennent des vecteurs similaires. De manière célèbre, les mathématiques fonctionnaient ainsi :
+
+> *king* − *man* + *woman* ≈ *queen*
+
+Cela a prouvé que les embeddings de mots capturent de véritables relations sémantiques.
+
+**BERT** (2018) est allé plus loin en rendant les embeddings **contextuels** — le vecteur de « bank » change selon que la phrase parle de rivières ou de finance.
+
+<FunFact>
+BERT a été entraîné sur l'intégralité de Wikipédia en anglais et le BookCorpus — environ 3,3 milliards de mots. Pourtant, le modèle lui-même ne compte « que » 340 millions de paramètres, ce qui signifie qu'il compresse une vaste bibliothèque de connaissances humaines en motifs bien plus petits que le texte original.
+</FunFact>
+
+## Comment fonctionne ChatGPT (la version courte)
+
+ChatGPT est construit sur une architecture **transformer** — la même famille de modèles derrière Google
+Translate, GitHub Copilot et de nombreux autres outils d'IA. Voici le pipeline simplifié :
+
+1. **Tokeniser** votre message en morceaux de sous-mots.
+2. Utiliser des **mécanismes d'attention** pour déterminer quels mots sont liés à quels autres — même sur
+   de très longs passages contenant des milliers de tokens.
+3. Prédire le mot suivant, un token à la fois, en se basant sur tout ce qui précède.
+4. Le modèle a été affiné grâce au **Reinforcement Learning from Human Feedback (RLHF)** — de vraies
+   personnes ont évalué les résultats pour enseigner au modèle l'utilité, la précision et la sécurité.
+
+L'idée de l'« attention » est l'ingrédient magique. Elle permet au modèle de se concentrer sur les parties
+les plus pertinentes de l'entrée, peu importe leur distance dans le texte. Avant les transformers, les modèles
+peinaient avec les longs documents car les premiers mots s'effaçaient de la mémoire.
+
+<ThinkAboutIt>
+Quand ChatGPT rédige un paragraphe, il génère un mot à la fois, prédisant toujours le mot suivant le plus probable. Cela signifie-t-il qu'il « comprend » véritablement ce qu'il dit, ou exécute-t-il une forme incroyablement sophistiquée de reconnaissance de motifs ? Où traceriez-vous la limite ?
+</ThinkAboutIt>
+
+## Applications dans le monde réel
+
+- **Filtres anti-spam** — Gmail utilise le NLP pour bloquer plus de 10 millions d'e-mails indésirables chaque minute.
+- **Chatbots** — les bots de service client gèrent les demandes courantes, libérant les agents humains pour les problèmes complexes.
+- **Moteurs de recherche** — la recherche Google comprend désormais des questions complètes, pas seulement des correspondances de mots-clés.
+- **Technologies juridiques** — l'IA examine des milliers de documents juridiques en quelques heures, une tâche qui prenait des semaines aux avocats.
+- **Accessibilité** — le sous-titrage en temps réel aide les personnes sourdes et malentendantes à suivre les événements en direct.
+
+<FunFact>
+Google Translate traite plus de 100 milliards de mots par jour dans 133 langues. Avant le NLP neuronal, il reposait sur des tables de correspondance de phrases et produisait des traductions notoirement maladroites. La traduction moderne basée sur les transformers est remarquablement fluide.
+</FunFact>
+
+<Quiz question="Quelle est l'innovation clé de l'architecture transformer utilisée dans des modèles comme ChatGPT ?" options="Elle utilise la reconnaissance d'images basée sur les pixels|Elle emploie des mécanismes d'attention pour relier les mots sur de longs passages|Elle convertit d'abord tout le texte en code binaire|Elle ne nécessite aucune donnée d'entraînement" answer="1" explanation="Le mécanisme d'attention permet aux transformers de pondérer la pertinence de chaque mot par rapport à tous les autres, capturant des dépendances à longue portée que les modèles précédents peinaient à saisir." />
+
+## Limites et défis
+
+Malgré des progrès remarquables, le NLP est loin d'être un problème résolu :
+
+- **Hallucinations** — les modèles de langage peuvent générer du texte qui semble assuré mais qui est factuellement
+  faux. Ils n'ont aucun moyen intégré de vérifier la véracité.
+- **Biais** — les modèles entraînés sur du texte issu d'Internet absorbent les biais sociétaux présents dans ces données,
+  produisant parfois des résultats sexistes, racistes ou autrement nuisibles.
+- **Langues à faibles ressources** — le NLP fonctionne mieux pour l'anglais ; beaucoup des 7 000+ langues du monde
+  disposent de très peu de texte numérique pour l'entraînement.
+- **Vie privée** — le traitement de messages personnels, d'e-mails et de documents soulève de graves préoccupations
+  en matière de protection des données dans le cadre de réglementations comme le GDPR.
+- **Coût énergétique** — l'entraînement de grands modèles de langage nécessite d'énormes ressources computationnelles,
+  soulevant des questions de durabilité environnementale.
+
+<ThinkAboutIt>
+Si une IA rédige un article de presse contenant une erreur factuelle et que des milliers de personnes le lisent, qui est responsable — l'entreprise d'IA, l'éditeur, ou le lecteur qui n'a pas vérifié les faits ?
+</ThinkAboutIt>
+
+## Points clés à retenir
+
+- Le langage humain est rempli d'ambiguïté, de contexte, d'argot et de nuances — ce qui en fait l'un des défis
+  les plus difficiles de l'IA.
+- Les embeddings de mots convertissent le langage en vecteurs mathématiques qui capturent de véritables relations
+  sémantiques entre les mots.
+- Les transformers et les mécanismes d'attention alimentent les modèles de langage les plus performants d'aujourd'hui,
+  de ChatGPT à Google Search.
+- Le NLP alimente des outils du quotidien, notamment les moteurs de recherche, les filtres anti-spam, les chatbots
+  et les services de traduction.
+- Les hallucinations, les biais, les coûts énergétiques et la protection de la vie privée restent des problèmes
+  ouverts importants que les chercheurs et les entreprises s'efforcent activement de résoudre.
+
+<Quiz question="Que démontre l'équation king − man + woman ≈ queen à propos des embeddings de mots ?" options="Les mots sont stockés sous forme d'images|Les embeddings capturent les relations sémantiques entre les mots|Tous les mots ont le même vecteur|La traduction se fait automatiquement" answer="1" explanation="Cet exemple célèbre montre que les vecteurs de mots encodent des relations significatives — la direction de « man » à « woman » est similaire à la direction de « king » à « queen », prouvant que le modèle a appris une véritable structure sémantique." />

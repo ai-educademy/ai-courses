@@ -1,0 +1,165 @@
+---
+title: "Matrix और Grid Problems — Grids पर BFS और Island Counting"
+description: "2D grid traversal master करो: BFS, DFS, flood fill, multi-source BFS, spiral traversal, और grids पर dynamic programming।"
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+---
+
+## 2D Arrays as Grids
+
+Matrix बस एक 2D array है, लेकिन interviews में यह अक्सर **grid** represent करता है — map, board, या maze। हर cell `grid[r][c]` एक node है, और उसके neighbours adjacent cells हैं।
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Row `r`, column `c`, dimensions `m × n`। Simple — लेकिन इस पर बने patterns बहुत powerful हैं।
+
+## Directional Arrays
+
+चार अलग if-statements लिखने की जगह **direction array** इस्तेमाल करो:
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+Grid problems में यह सबसे reusable snippet है।
+
+<FunFact>Direction array trick को "delta encoding" भी कहते हैं। Game development, image processing, और competitive programming में — जहाँ भी grids हों, यह दिखता है।</FunFact>
+
+## Grid पर BFS — Maze में Shortest Path
+
+BFS unweighted grid में **shortest path** ढूँढता है। Source से शुरू करो, पहले distance 1 के सब neighbours explore करो, फिर distance 2, और आगे।
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS grid maze में level by level expand हो रहा है" caption="BFS cells को level by level explore करता है, shortest path guarantee करता है।" />
+
+## Grid पर DFS — Flood Fill और Number of Islands
+
+**Flood fill** (paint bucket tool जैसा): starting cell से सभी connected same-colour cells बदलो। DFS या BFS दोनों काम करते हैं।
+
+**Number of Islands:** grid scan करो; `1` मिले तो DFS/BFS चलाकर पूरा island visited mark करो, फिर count बढ़ाओ।
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="'Number of Islands' में DFS के दौरान cells को visited क्यों mark करते हैं?" options="Accuracy के लिए दो बार count करना|Same island को multiple बार count करने से बचना|Islands sort करना|सबसे बड़ा island ढूँढना" answer="1" explanation="Visited mark करने से outer loop उसी island पर नया DFS शुरू नहीं करता, जो overcount रोकता है।" />
+
+## Rotting Oranges — Multi-Source BFS
+
+सभी शुरू से rotten oranges sources हैं। सबको time 0 पर queue में डालो, फिर BFS। हर level एक minute। Queue खाली होने पर check करो कोई fresh orange बचा तो नहीं। **Multi-source BFS** कई nodes से simultaneously शुरू होता है।
+
+<Quiz question="'Rotting Oranges' standard BFS से कैसे अलग है?" options="यह DFS इस्तेमाल करता है|Multiple starting points एक साथ enqueue होते हैं|Dijkstra's algorithm चाहिए|Grid में weighted edges हैं" answer="1" explanation="Multi-source BFS सभी rotten oranges को एक साथ starting 'frontier' के रूप में enqueue करता है, तो rotting हर source से parallel फैलती है।" />
+
+## Spiral Matrix Traversal
+
+Matrix को spiral order में walk करो: right → down → left → up, हर pass के बाद boundaries shrink करो।
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Matrix Rotation (90°)
+
+N×N matrix clockwise in-place rotate: **transpose** (swap `[r][c]` with `[c][r]`), फिर **हर row reverse**।
+
+<ThinkAboutIt>Anti-clockwise rotate करने के लिए पहले rows reverse करोगे फिर transpose, या transpose करके columns reverse? कागज़ पर try करो।</ThinkAboutIt>
+
+## Sorted 2D Matrix में Search
+
+दो common variants:
+- **Rows और columns independently sorted** — top-right corner से शुरू। Target छोटा हो तो left जाओ; बड़ा हो तो down। O(m + n)।
+- **Fully sorted** (हर row पिछली के बाद शुरू) — flat sorted array मानकर binary search। O(log(m × n))।
+
+## Grids पर Dynamic Programming
+
+**Unique Paths:** top-left से bottom-right तक paths count करो, सिर्फ right या down move। `dp[r][c] = dp[r-1][c] + dp[r][c-1]`।
+
+**Minimum Path Sum:** same idea लेकिन minimum incoming path चुनो।
+
+<Quiz question="Unique Paths problem में किसी भी column c के लिए dp[0][c] क्या है?" options="0|1|c|c + 1" answer="1" explanation="First row तक सिर्फ right move से पहुँच सकते हैं, तो first row की हर cell तक exactly एक path है। dp[0][c] = 1।" />
+
+## Grid Patterns Cheat Sheet
+
+| Pattern | Technique | Key Problem |
+|---------|-----------|-------------|
+| Shortest path (unweighted) | BFS | Maze shortest path |
+| Connected components | DFS / BFS | Number of Islands |
+| Multi-source spread | Multi-source BFS | Rotting Oranges |
+| Traversal order | Boundary pointers | Spiral Matrix |
+| In-place transform | Transpose + reverse | Rotate Image |
+| Counting paths | DP | Unique Paths |
+| Sorted grid में search | Staircase / binary search | Search 2D Matrix |
+
+<ThinkAboutIt>कई grid problems असल में disguised graph problems हैं। Grid पर DFS कब prefer करोगे BFS के ऊपर, और कब उल्टा?</ThinkAboutIt>
+
+---
+
+## 📚 और पढ़ें
+
+- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — grid DP problems with visual explanations
+- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — common patterns और techniques
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — सैकड़ों practice problems

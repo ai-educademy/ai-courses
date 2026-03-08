@@ -1,0 +1,147 @@
+---
+title: "Concevoir un système de notifications — Push, Email et SMS à l'échelle du milliard"
+description: "Concevez un système de notifications multi-canal scalable gérant push, email, SMS et notifications in-app avec des message queues, de la deduplication et la gestion des préférences utilisateur."
+order: 7
+difficulty: "advanced"
+duration: 22
+icon: "🔔"
+published: true
+---
+
+# Concevoir un système de notifications — Push, Email et SMS à l'échelle du milliard
+
+Les applications modernes envoient des milliards de notifications par jour sur plusieurs canaux. Concevoir ce système vous apprend à maîtriser les message queues, les intégrations tierces et la gestion élégante des défaillances à grande échelle.
+
+## Étape 1 — Recueil des exigences
+
+### Exigences fonctionnelles
+- Support de plusieurs canaux : push notifications, email, SMS et in-app
+- Les utilisateurs peuvent configurer leurs préférences de notification et se désinscrire par canal
+- Messages avec templates et personnalisation (ex. : « Bonjour {name}, votre commande a été expédiée »)
+- Support des notifications planifiées et immédiates
+
+### Exigences non fonctionnelles
+- **Scalabilité** — gérer plus de 10 millions de notifications par jour
+- **Fiabilité** — aucune notification perdue ; livraison at-least-once
+- **Faible latence** — notifications urgentes livrées en quelques secondes
+- **Extensibilité** — ajout facile de nouveaux canaux (WhatsApp, Slack)
+
+<ThinkAboutIt>La livraison des notifications doit-elle être exactly-once ou at-least-once ? Considérez l'expérience utilisateur : recevoir un SMS en double vs manquer une alerte de sécurité critique.</ThinkAboutIt>
+
+## Étape 2 — Architecture de haut niveau
+
+```
+Caller Services → Notification Service → Validation + Preference Check
+                                              ↓
+                                    Message Queue (Kafka)
+                                    ↓       ↓       ↓       ↓
+                                 Push    Email    SMS    In-App
+                                Worker   Worker  Worker  Worker
+                                  ↓        ↓       ↓       ↓
+                                 FCM   SendGrid  Twilio  WebSocket
+```
+
+<Illustration src="/images/lessons/design-notification-system.svg" alt="Architecture du système de notifications avec caller services, notification service, Kafka message queues, workers par canal et fournisseurs tiers" caption="Les message queues découplent le service de notifications des workers de livraison, permettant un scaling indépendant par canal" />
+
+### Composants principaux
+1. **Notification Service** — valide les requêtes, vérifie les préférences utilisateur, génère les templates et met les messages en file d'attente
+2. **Message Queues** — files séparées par canal pour un scaling indépendant et une isolation des défaillances
+3. **Delivery Workers** — workers spécifiques par canal qui gèrent les appels aux API tierces
+4. **Template Service** — stocke et génère les templates de notification avec substitution de variables
+
+## Étape 3 — Approfondissement : composants clés
+
+### Préférences utilisateur et désinscription
+Stockez les préférences par utilisateur et par type de notification :
+
+```
+user_preferences:
+  user_id: "u123"
+  channels:
+    email: { enabled: true, quiet_hours: "22:00-08:00" }
+    push: { enabled: true }
+    sms: { enabled: false }
+  categories:
+    marketing: { enabled: false }
+    security: { enabled: true, override_quiet_hours: true }
+```
+
+Le notification service vérifie les préférences **avant** la mise en file d'attente — n'envoyez jamais ce que l'utilisateur ne souhaite pas recevoir.
+
+### Priority Queues
+Toutes les notifications ne se valent pas. Utilisez des niveaux de priorité :
+- **Critique** — alertes de sécurité, codes OTP → traitement immédiat
+- **Haute** — confirmations de commande, reçus de paiement → quelques secondes
+- **Moyenne** — interactions sociales, commentaires → quelques minutes acceptables
+- **Basse** — marketing, recommandations → peut être regroupé en batch
+
+<Quiz question="Pourquoi le système de notifications devrait-il utiliser des message queues séparées par canal plutôt qu'une seule file partagée ?" options="Pour réduire les coûts de stockage|Pour permettre un scaling indépendant et empêcher un canal lent de bloquer les autres|Parce que Kafka nécessite des topics séparés par consumer|Pour simplifier le système" answer="1" explanation="Si la livraison SMS ralentit à cause d'une panne Twilio, une file partagée créerait un backlog qui retarderait aussi les livraisons push et email. Des files séparées par canal offrent une isolation des défaillances et permettent à chaque canal de scaler indépendamment." />
+
+## Étape 4 — Fiabilité et gestion des défaillances
+
+### Deduplication
+Empêchez les notifications en double avec une idempotency key. Avant le traitement, vérifiez si l'ID de notification existe dans un store de deduplication (Redis avec TTL) :
+
+```
+Key: "dedup:{notification_id}" → TTL: 24 hours
+If key exists → skip (already sent)
+If not → process and set key
+```
+
+### Retry avec Exponential Backoff
+Les services tiers tombent en panne. Implémentez des retries avec des délais croissants :
+
+```
+Attempt 1: immediate
+Attempt 2: wait 1 second
+Attempt 3: wait 4 seconds
+Attempt 4: wait 16 seconds
+Attempt 5: move to dead-letter queue
+```
+
+### Rate Limiting par utilisateur
+Protégez les utilisateurs contre la fatigue de notifications :
+- Maximum 3 push notifications par heure par utilisateur
+- Maximum 1 email marketing par jour
+- Les notifications de sécurité contournent les rate limits
+
+<FunFact>Facebook envoie plus de 10 milliards de push notifications par jour. Pour gérer cela, ils ont construit un pipeline de notifications personnalisé capable de traiter des millions de messages par seconde, avec des chemins de livraison séparés pour iOS (APNs) et Android (FCM).</FunFact>
+
+## Étape 5 — Intégration tierce
+
+| Canal | Fournisseur | Protocole | Défis |
+|-------|-------------|-----------|-------|
+| Push (iOS) | APNs | HTTP/2 | Gestion des tokens, limites de silent push |
+| Push (Android) | FCM | HTTP | Broadcasting par topic |
+| Email | SendGrid/SES | SMTP/API | Délivrabilité, filtres anti-spam |
+| SMS | Twilio | REST API | Coût par message, conformité régionale |
+| In-App | WebSocket | WS | Gestion des connexions, buffering hors ligne |
+
+### Pipeline d'analytics
+Suivez le cycle de vie de chaque notification :
+- **Created** → **Queued** → **Sent** → **Delivered** → **Opened** → **Clicked**
+
+Stockez les événements dans une base de données time-series ou un event stream pour les tableaux de bord : taux de livraison, taux d'ouverture et taux de clics par canal et type de notification.
+
+<Quiz question="Un système de notifications retente 3 fois la livraison d'un SMS échoué. Sans deduplication, que pourrait-il se passer si la première tentative a réussi mais que l'acknowledgement a été perdu ?" options="Le message est perdu définitivement|L'utilisateur reçoit jusqu'à 4 copies du même SMS|Le système détecte automatiquement le doublon|Le mécanisme de retry empêche ce scénario" answer="1" explanation="Si le fournisseur a traité la requête mais que l'acknowledgement a été perdu, le système pense que l'envoi a échoué et retente. Sans deduplication côté fournisseur ou idempotency keys, l'utilisateur pourrait recevoir le même SMS plusieurs fois." />
+
+## Étape 6 — Goulots d'étranglement et optimisations
+
+| Goulot d'étranglement | Solution |
+|-----------------------|----------|
+| Rate limits tiers | File d'attente avec débit contrôlé par fournisseur |
+| Rendu de templates à grande échelle | Pré-rendu et mise en cache des templates fréquents |
+| Vérification des préférences par message | Cache des préférences utilisateur dans Redis |
+| Pics de trafic | Auto-scaling des workers basé sur la profondeur de la file |
+| Livraison inter-régions | Déploiement des workers proches des endpoints fournisseurs |
+
+<ThinkAboutIt>Comment concevriez-vous un système de notifications capable d'envoyer 50 millions d'emails personnalisés pour une vente Black Friday en 2 heures, tout en livrant des alertes de sécurité en temps réel avec une latence inférieure à la seconde ?</ThinkAboutIt>
+
+<Quiz question="Quel composant devrait vérifier les préférences de notification de l'utilisateur ?" options="Le delivery worker, juste avant l'appel à l'API tierce|Le caller service, avant d'envoyer au notification service|Le notification service, avant la mise en file d'attente du message|La message queue, pendant le routage" answer="2" explanation="Vérifier les préférences dans le notification service avant la mise en file d'attente évite de gaspiller la capacité de la queue et le traitement des workers pour des notifications que l'utilisateur ne souhaite pas. C'est le point le plus en amont où la logique centralisée de préférences peut être appliquée." />
+
+---
+
+## 📚 Pour aller plus loin
+- [Notification System — System Design Interview Vol. 1, Ch. 10](https://bytebytego.com/) — la conception complète d'un système de notifications par Alex Xu
+- [How Airbnb Built a Notification Platform](https://medium.com/airbnb-engineering) — architecture réelle de notifications multi-canal
+- [Firebase Cloud Messaging Docs](https://firebase.google.com/docs/cloud-messaging) — comprendre les mécanismes de livraison des push notifications

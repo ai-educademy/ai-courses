@@ -1,0 +1,176 @@
+---
+title: "AI API Platform डिज़ाइन करें — करोड़ों Users को Models सर्व करना"
+description: "OpenAI जैसा एक platform architect करें जो multiple AI models को authentication, rate limiting और auto-scaling के साथ serve करता है।"
+order: 5
+difficulty: "advanced"
+duration: 25
+icon: "🚀"
+published: true
+---
+
+## Interview Prompt
+
+*"एक AI API platform डिज़ाइन करें जो multiple machine learning models को developers को REST API के ज़रिए serve करे — बिल्कुल वैसे जैसे OpenAI या Hugging Face scale पर models serve करते हैं।"*
+
+यह सवाल interviews में काफ़ी popular हो रहा है क्योंकि इसमें **API platform design** और **GPU infrastructure challenges** दोनों combine होते हैं जो AI workloads के लिए unique हैं।
+
+## Step 1: Requirements Gathering
+
+**Functional requirements:**
+- Multiple AI models (text generation, image classification, embeddings) को REST API से serve करना
+- API key authentication with per-key usage quotas
+- हर API call पर usage tracking और billing
+- Multiple model versions को A/B testing के साथ support करना
+- Long-running generation tasks के लिए streaming responses
+
+**Non-functional requirements:**
+- Latency: embedding models के लिए p50 500ms से कम, generative models के लिए p50 2s से कम
+- Throughput: सभी models पर 10,000 requests per second
+- Availability: graceful degradation के साथ 99.9% uptime
+- Cost efficiency: GPUs महँगे हैं — utilisation maximise करना ज़रूरी है
+
+<Callout>
+AI platforms की latency बहुत variable होती है। एक text completion request 200ms या 30 seconds भी ले सकता है — output length पर depend करता है। हमेशा discuss करें कि आपका design इस variance को कैसे handle करता है।
+</Callout>
+
+## Step 2: API Design
+
+```
+POST /v1/completions
+Headers: Authorization: Bearer sk-abc123
+Body: { "model": "gpt-4", "prompt": "Explain caching", "max_tokens": 200 }
+
+POST /v1/embeddings
+Headers: Authorization: Bearer sk-abc123
+Body: { "model": "text-embedding-3", "input": "Hello world" }
+
+GET  /v1/models                    — available models की list
+GET  /v1/usage?start=2024-01-01    — usage और billing data
+
+SSE: POST /v1/completions (stream: true)
+     → returns Server-Sent Events with incremental tokens
+```
+
+Generative models के लिए **Server-Sent Events (SSE)** से streaming बहुत critical है — users को tokens progressively दिखते हैं बजाय पूरा response आने का wait करने के।
+
+## Step 3: API Gateway और Authentication
+
+API gateway platform का front door है:
+
+- **Authentication** — API keys को key store से validate करें (speed के लिए Redis, persistence के लिए database)
+- **Rate limiting** — per-key limits enforce करें (जैसे free tier के लिए 60 requests/minute)
+- **Request routing** — requests को सही model-serving cluster पर direct करें
+- **Request validation** — payload schema, model availability, token limits check करें
+
+**Rate limiting implementation:**
+Redis में **sliding window counter** use करें:
+```
+Key:   rate:{api_key}:{window_minute}
+Value: request count
+TTL:   120 seconds
+```
+
+हर request counter increment करती है। Limit exceed होने पर HTTP 429 return करें।
+
+<Quiz question="एक customer की API key 100 requests per minute तक rate-limited है। वो पहले 30 seconds में 80 requests भेजता है, फिर अगले 30 seconds में 40 और। Fixed-window approach में क्या होगा?" options="सभी 120 requests succeed होंगी — वो per-minute limit के अंदर हैं|आख़िरी 20 requests reject होंगी — 100 per minute exceed हो गया|पहली window में सभी 120 succeed होंगी, लेकिन अगले minute का quota कम हो जाएगा|Capacity exceed होने से system crash हो जाएगा" answer="1" explanation="Fixed-window rate limiting minute boundaries पर reset होती है। अगर minute 1 के दूसरे half में 80 और minute 2 के पहले half में 40 आएँ, तो सब succeed होती हैं — भले ही 60-second span में 120 requests आई हों। इसीलिए sliding window algorithms prefer किए जाते हैं।" />
+
+<Illustration src="/images/lessons/design-ai-api-platform.svg" alt="AI API platform architecture — gateway, routing, GPU clusters और monitoring दिखाते हुए" caption="Requests gateway से होकर model-specific GPU clusters तक जाती हैं, हर layer पर monitoring और billing होती है।" />
+
+## Step 4: Model Serving और GPU Allocation
+
+यहाँ AI platforms traditional web services से fundamentally अलग हैं। GPUs scarce हैं, महँगे हैं और specialised orchestration चाहिए।
+
+**Model serving layer:**
+- Models को **Triton Inference Server** या **vLLM** जैसे frameworks से GPU memory में load किया जाता है
+- हर model version एक dedicated GPU instances pool पर run करता है
+- Large language models (LLMs) को multiple GPUs पर **model parallelism** की ज़रूरत हो सकती है
+
+**Request batching:**
+GPUs पर individual inference requests inefficient होते हैं। **Dynamic batching** multiple requests को group करके एक साथ process करता है:
+- 10ms तक या 32 requests तक collect करें
+- पूरे batch को एक GPU forward pass में process करें
+- हर caller को individual response return करें
+
+Individually process करने की तुलना में यह throughput को 5-10x improve कर सकता है।
+
+<FunFact>
+एक NVIDIA H100 GPU की कीमत लगभग £25,000 है और यह 700 watts power consume करता है। Model serving के लिए 1,000 GPUs का cluster चलाने में सिर्फ़ electricity और hardware में £2 million per month से ज़्यादा खर्च होता है — इसीलिए efficient batching और utilisation बहुत मायने रखती है।
+</FunFact>
+
+## Step 5: Model Versions के बीच A/B Testing
+
+नया model version deploy करते वक़्त controlled rollout ज़रूरी है:
+
+- **Traffic splitting** — 5% requests नए model पर, 95% current पर route करें
+- **Shadow mode** — production traffic पर नया model run करें बिना users को results return किए
+- **Metrics comparison** — latency, output quality scores, error rates, cost per request
+- **Gradual rollout** — confidence बढ़ने पर नए version पर traffic बढ़ाएँ
+
+Routing logic API gateway में रहती है:
+```
+model: "gpt-4"  →  95% → gpt-4-v2.1 (current)
+                →   5% → gpt-4-v2.2 (candidate)
+```
+
+<ThinkAboutIt>
+नए LLM version को "better" evaluate करना surprisingly मुश्किल है — classification models के विपरीत, कोई simple accuracy metric नहीं है। Generative AI models के लिए automated quality evaluation system आप कैसे design करेंगे?
+</ThinkAboutIt>
+
+## Step 6: Usage Tracking और Billing
+
+AI APIs आमतौर पर per token bill करती हैं (LLMs के लिए input + output tokens, बाकी models के लिए per request)।
+
+**Event-driven billing pipeline:**
+1. हर API response में usage header होता है: `x-usage-tokens: 847`
+2. Kafka पर billing event publish होता है: `{ api_key, model, input_tokens, output_tokens, timestamp }`
+3. Billing aggregation service events consume करके running totals update करती है
+4. Usage dashboards time-series database से aggregated data query करते हैं
+
+**Kafka क्यों?** Billing reliable होनी चाहिए लेकिन synchronous होना ज़रूरी नहीं। अगर billing service temporarily down है, events Kafka में queue होते हैं और recover होने पर process होते हैं — कोई usage data lost नहीं होता।
+
+<Quiz question="आपकी billing pipeline Kafka से asynchronously usage events process करती है। एक customer अपना usage dashboard check करता है और expected से कम number दिखता है। सबसे likely कारण क्या है?" options="Kafka partition failure से events lost हो गए|Aggregation service में processing lag है — events अभी consume नहीं हुए|API gateway ने usage events emit नहीं किए|Customer की API key rate-limited थी" answer="1" explanation="Asynchronous pipelines में inherently lag होता है। Kafka पर publish किए events को consume और aggregate होने में seconds या minutes लग सकते हैं, इसलिए dashboard usage का slightly delayed view दिखाता है।" />
+
+## Step 7: Monitoring और Observability
+
+AI platforms को standard web services से ज़्यादा monitoring चाहिए:
+
+| Metric | क्यों ज़रूरी है |
+|--------|----------------|
+| Inference latency (p50, p95, p99) | User experience और SLA compliance |
+| GPU utilisation | Cost efficiency — idle GPUs पैसे बर्बाद करते हैं |
+| Tokens per second | Throughput capacity और scaling signals |
+| Error rate by model | Model-specific failures detect करना |
+| Queue depth | Scaling trigger — deep queues मतलब demand capacity से ज़्यादा है |
+| Output quality scores | Model degradation detect करना (automated eval से) |
+
+**Alerting thresholds:** GPU utilisation 40% से नीचे जाए तो scale-down trigger; queue depth 100 से ऊपर जाए तो scale-up trigger।
+
+## Step 8: Auto-Scaling
+
+AI workloads की demand बहुत variable होती है। Auto-scaling को responsiveness और cost balance करना होता है:
+
+- **Horizontal scaling** — queue depth या latency thresholds exceed होने पर और GPU instances add करें
+- **Predictive scaling** — historical traffic patterns से expected peaks से पहले capacity pre-provision करें
+- **Scale-to-zero** — rarely used models के लिए सब instances बंद करें और demand पर cold-start करें
+- **Warm pools** — cold-start latency से बचने के लिए कुछ instances models pre-loaded रखें
+
+Scale-to-zero strategy उन platforms के लिए ख़ास ज़रूरी है जो सैकड़ों models host करते हैं — हर model को हर वक़्त GPU memory में loaded नहीं रख सकते।
+
+<Quiz question="एक model जिसे 2 requests per hour मिलती हैं, अभी एक always-on GPU instance पर run करता है जिसकी cost £3/hour है। Zero से cold-start में 45 seconds लगते हैं। Best scaling strategy क्या है?" options="Instance always on रखें — 45 seconds wait बहुत ज़्यादा है|Scale to zero करें और पहली request के लिए 45-second cold start accept करें|एक warm pool CPU instance रखें जो demand पर GPU को offload करे|दोनों requests को एक scheduled job में batch करें" answer="1" explanation="2 requests per hour पर GPU 99.9% time idle रहता है। Scale to zero करके 45-second cold start accept करने से per model लगभग £2,100/month बचते हैं — low-traffic model के लिए occasional delay पूरी तरह worth है।" />
+
+<ThinkAboutIt>
+OpenAI का platform fast embedding models से लेकर slow reasoning models तक serve करता है। हर model की अलग latency characteristics, GPU requirements और pricing है। इतने different profiles वाले models के बीच एक finite GPU cluster efficiently share करने के लिए आप routing layer कैसे design करेंगे?
+</ThinkAboutIt>
+
+<FunFact>
+OpenAI reportedly रोज़ाना 100 million से ज़्यादा API requests process करता है। Average 500 tokens per request मानें तो यह 50 billion tokens per day है — जिसके लिए हज़ारों GPUs continuously चलने चाहिए।
+</FunFact>
+
+## मुख्य Takeaways
+
+- AI API platforms traditional API design को GPU-specific infrastructure challenges के साथ combine करते हैं
+- Request batching GPU throughput और cost efficiency को dramatically improve करता है
+- Rate limiting platform और customers दोनों को runaway costs से protect करता है
+- Kafka से asynchronous billing requests block किए बिना reliable usage tracking ensure करती है
+- Auto-scaling को responsiveness और cost balance करना होता है — low-traffic models के लिए scale-to-zero
+- GPU utilisation और queue depth monitor करना intelligent scaling decisions drive करता है

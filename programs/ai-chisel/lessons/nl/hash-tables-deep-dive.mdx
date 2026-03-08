@@ -1,0 +1,152 @@
+---
+title: "Hash Tables Deep Dive — De motor achter snelle AI-lookups"
+description: "Begrijp hashing, collision handling en de probabilistische structuren die AI-systemen versnellen."
+order: 5
+difficulty: "intermediate"
+duration: 15
+icon: "🗄️"
+published: true
+---
+
+## Waarom hashing belangrijk is
+
+Wanneer een aanbevelingssysteem moet controleren of je een film al hebt gezien — uit miljoenen in de catalogus — kan het zich niet veroorloven om een lijst te doorlopen. Een **hash table** beantwoordt die vraag in gemiddeld O(1) tijd.
+
+Hash tables zijn de meest gebruikte datastructuur in productiesoftware, en AI-systemen leunen er zwaar op voor feature lookups, caching en deduplicatie.
+
+<Illustration src="/images/lessons/hash-tables-deep-dive.svg" alt="A hash function mapping keys to bucket indices in an array, with one bucket showing a chain of colliding entries" caption="Een hash function zet keys om naar array-indices; collisions worden afgehandeld door chaining of probing." />
+
+## Hoe hashing werkt
+
+Een **hash function** neemt een invoer (een string, getal of object) en geeft een geheel getal terug — de **hash code**. Die code wordt via modulo naar een **bucket index** gemapped:
+
+```
+index = hashFunction(key) % numberOfBuckets
+```
+
+Een goede hash function is:
+- **Deterministisch** — dezelfde invoer levert altijd dezelfde uitvoer.
+- **Uniform** — verdeelt keys gelijkmatig over buckets.
+- **Snel** — berekenbaar in O(1) ten opzichte van de key-grootte.
+
+### Voorbeeld
+
+```
+function simpleHash(key, size):
+    total = 0
+    for char in key:
+        total += charCode(char)
+    return total % size
+```
+
+Dit is bewust naïef — hash functions in productie zoals MurmurHash3 of xxHash gebruiken bit-mixing voor een veel betere verdeling.
+
+<Quiz question="Wat gebeurt er als een hash function veel verschillende keys naar dezelfde bucket index mapt?" options="De hash table wordt automatisch vergroot|Er treedt een collision op die opgelost moet worden|De dubbele keys worden stilletjes verwijderd|Het programma crasht" answer="1" explanation="Wanneer twee keys in dezelfde bucket terechtkomen, treedt er een collision op. De hash table moet dit oplossen — meestal via chaining of open addressing." />
+
+## Collision Handling
+
+Collisions zijn onvermijdelijk (duivenhokprincipe). Twee hoofdstrategieën:
+
+### Chaining
+
+Elke bucket bevat een gelinkte lijst (of kleine array) van entries. Keys die botsen worden aan de lijst toegevoegd.
+
+```
+function insert(table, key, value):
+    idx = hash(key) % table.size
+    for entry in table[idx]:
+        if entry.key == key:
+            entry.value = value
+            return
+    table[idx].append((key, value))
+```
+
+**Voordelen:** Eenvoudig, werkt goed bij gematigde belasting.
+**Nadelen:** Cache-onvriendelijk door het volgen van pointers.
+
+### Open Addressing
+
+Alle entries bevinden zich direct in de array. Bij een collision wordt de volgende vrije plek **geprobed**.
+
+- **Linear probing:** controleer index+1, index+2, …
+- **Quadratic probing:** controleer index+1², index+2², …
+- **Double hashing:** gebruik een tweede hash function om de stapgrootte te bepalen.
+
+**Voordelen:** Betere cache-prestaties, geen extra pointers.
+**Nadelen:** Clustering kan prestaties verslechteren; verwijderen is lastig (vereist tombstones).
+
+<FunFact>Python-dictionaries gebruiken open addressing met een aangepaste probing-sequentie. De dict-implementatie van CPython is zo sterk geoptimaliseerd dat het meer dan 50 miljoen lookups per seconde verwerkt op moderne hardware.</FunFact>
+
+## Load Factor en Rehashing
+
+De **load factor** α = aantal entries / aantal buckets. Naarmate α groeit, nemen collisions toe en verslechteren de prestaties.
+
+| Load Factor | Verwachte lookups (chaining) |
+|------------|------------------------------|
+| 0.5 | ~1.25 |
+| 0.75 | ~1.375 |
+| 1.0 | ~1.5 |
+| 2.0 | ~2.0 |
+
+De meeste implementaties voeren een **rehash** uit wanneer α een drempelwaarde overschrijdt (meestal 0.75): een grotere array toewijzen, de index van elke key herberekenen en opnieuw invoegen.
+
+Rehashing is O(n) maar komt zelden voor, dus de **geamortiseerde** kosten van invoegen blijven O(1).
+
+<ThinkAboutIt>Rehashing verdubbelt de tabelgrootte en voegt elk element opnieuw in. Als je AI-systeem een live stroom van verzoeken verwerkt, kan deze pauze een latency-piek veroorzaken. Hoe zou je de rehashing-kosten kunnen spreiden over meerdere invoegingen in plaats van alles in één keer te doen?</ThinkAboutIt>
+
+## Praktische AI-toepassingen
+
+| Use Case | Hoe hash tables helpen |
+|----------|------------------------|
+| **Embedding tables** | Token-ID's in O(1) koppelen aan dichte vectorrepresentaties |
+| **Feature hashing** | Categorische features met hoge kardinaliteit hashen naar een vector van vaste grootte (de "hashing trick") |
+| **Deduplicatie** | Dubbele documenten of afbeeldingen detecteren door hun content-fingerprints te hashen |
+| **Caching-lagen** | Vooraf berekende modelvoorspellingen opslaan, geïndexeerd op input-hash |
+| **Count-min sketch** | Benaderde frequentietellingen in streamingdata met meerdere hash functions |
+
+<Quiz question="Waarom sta je bij de 'hashing trick' in machine learning bewust collisions toe?" options="Collisions verbeteren de nauwkeurigheid van het model|Het elimineert de noodzaak van een vast vocabulaire en bespaart geheugen|Hash collisions zijn sowieso onmogelijk te vermijden|Het versnelt de hash function" answer="1" explanation="Feature hashing mapt bewust een onbegrensde set features naar een array van vaste grootte, waarbij wat collision-ruis wordt geaccepteerd in ruil voor een constant geheugengebruik — geen vocabulaire-woordenboek nodig." />
+
+## Bloom Filters: probabilistisch lidmaatschap
+
+Een **Bloom filter** beantwoordt de vraag "Zit dit element in de verzameling?" met:
+- **Zeker nee** — het element is gegarandeerd afwezig.
+- **Waarschijnlijk ja** — het element is waarschijnlijk aanwezig (klein false-positive percentage).
+
+Het gebruikt _k_ hash functions en een bit-array. Invoegen zet _k_ bits; opzoeken controleert of alle _k_ bits gezet zijn.
+
+```
+function bloomInsert(filter, item):
+    for i in 1..k:
+        idx = hashFunctions[i](item) % filter.size
+        filter.bits[idx] = 1
+
+function bloomContains(filter, item):
+    for i in 1..k:
+        idx = hashFunctions[i](item) % filter.size
+        if filter.bits[idx] == 0: return false
+    return true   // probably present
+```
+
+**AI-toepassingen:** controleren of een URL al gecrawld is, spam filteren, en overbodige database-queries in caching-lagen voorkomen.
+
+<FunFact>Google Chrome gebruikt een Bloom filter met miljoenen bekende schadelijke URLs. Voordat een pagina wordt geladen, controleert je browser het filter — als het "waarschijnlijk ja" zegt, haalt Chrome de volledige lijst op ter bevestiging.</FunFact>
+
+## Sets vs Maps: wanneer welke gebruiken
+
+| Structuur | Slaat op | Gebruik wanneer |
+|-----------|----------|-----------------|
+| **Set** | Alleen keys | Je lidmaatschapscontroles nodig hebt — "heb ik dit al eerder gezien?" |
+| **Map** | Key–value-paren | Je data aan elke key wilt koppelen — "wat is de waarde voor deze key?" |
+
+Beide zijn gebaseerd op hash tables en bieden gemiddeld O(1)-operaties. Kies een **set** voor deduplicatie, bezochte items bijhouden en uniciteitscontroles. Kies een **map** voor lookups, caches en configuratie.
+
+<ThinkAboutIt>Een AI-contentmoderatiesysteem moet inkomende berichten controleren tegen een blokkeerlijst van 10 miljoen verboden zinnen. Zou je een hash set, een Bloom filter of beide gebruiken? Wat zijn de afwegingen qua geheugen, snelheid en nauwkeurigheid?</ThinkAboutIt>
+
+## Belangrijkste punten
+
+1. Hash tables leveren gemiddeld O(1)-lookups — de ruggengraat van caching, indexering en feature engineering.
+2. Collisions worden beheerd via chaining of open addressing; de load factor bepaalt wanneer er gerehashed moet worden.
+3. Bloom filters ruilen een klein false-positive percentage in voor enorme geheugenbesparingen bij lidmaatschapsquery's.
+4. Inzicht in de werking van hashing helpt je het juiste hulpmiddel te kiezen — set, map of probabilistisch filter — voor elke AI-workload.
+
+<Quiz question="Een Bloom filter meldt dat een element NIET in de verzameling zit. Wat kun je concluderen?" options="Het element zit zeker niet in de verzameling|Het element zou toch nog in de verzameling kunnen zitten|Het filter moet opnieuw worden opgebouwd|Niets — Bloom filters zijn onbetrouwbaar" answer="0" explanation="Bloom filters produceren nooit false negatives. Als een van de k bitposities 0 is, is het element nooit ingevoegd — gegarandeerd." />

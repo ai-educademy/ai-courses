@@ -1,0 +1,144 @@
+---
+title: "Patrons de Binary Search — Au-delà des tableaux triés"
+description: "Maîtrisez l'état d'esprit de la recherche binaire : espaces de recherche, binary search on answer, et les patrons qui apparaissent dans des dizaines de problèmes."
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+---
+
+## Binary Search classique — Rappel rapide
+
+La recherche binaire divise l'espace de recherche en deux à chaque étape. Sur un tableau trié de n éléments, elle trouve une cible en **O(log n)**.
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+Simple — mais la vraie puissance de la recherche binaire va bien au-delà des tableaux triés.
+
+## Le concept d'espace de recherche
+
+La recherche binaire fonctionne dès qu'il existe une **condition monotone** sur un intervalle. Le « tableau » n'a même pas besoin d'exister — il suffit d'un intervalle `[lo, hi]` et d'une fonction qui passe de `False` à `True` à une certaine frontière.
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>La recherche binaire a été publiée pour la première fois en 1946, mais la première version sans bug n'a été écrite qu'en 1962 — 16 ans d'erreurs de décalage d'un !</FunFact>
+
+## Binary Search on Answer
+
+Au lieu de chercher dans un tableau, on cherche dans **l'espace des réponses**. La question devient : « Puis-je atteindre le résultat X ? » Si oui, on essaie plus petit ; sinon, plus grand.
+
+### Exemple : Koko et les bananes
+
+Koko a `n` tas de bananes et `h` heures. Trouvez la **vitesse minimale** pour tout manger à temps.
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+L'espace des réponses est `[1, max(piles)]` et la condition est monotone — une vitesse plus élevée signifie toujours moins d'heures.
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="La recherche binaire réduisant l'espace de réponses pour la vitesse minimale" caption="Binary search on answer : on réduit l'intervalle de vitesses possibles à chaque itération." />
+
+## Tableau trié avec rotation
+
+Un tableau trié pivoté à un point : `[4, 5, 6, 7, 0, 1, 2]`. Une moitié est toujours triée. On compare `mid` avec `lo` pour déterminer laquelle, puis on vérifie si la cible tombe dans la moitié triée.
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="Dans un tableau trié avec rotation [3,4,5,1,2], quelle moitié est triée quand mid=2 (valeur 5) ?" options="La moitié droite [1,2]|La moitié gauche [3,4,5]|Aucune des deux|Les deux moitiés" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, donc la moitié gauche [3,4,5] est triée. On vérifie si la cible se trouve dans cet intervalle ; sinon, on cherche à droite." />
+
+## Première et dernière occurrence
+
+Pour trouver la **première** occurrence, quand on atteint la cible, on ne s'arrête pas — on pose `hi = mid` et on continue à chercher à gauche. Pour la **dernière**, on pose `lo = mid + 1` et on cherche à droite.
+
+Cette paire de recherches donne aussi le **nombre** d'occurrences : `dernière - première + 1`.
+
+## Élément pic (Peak Element)
+
+Un élément plus grand que ses deux voisins. Même dans un tableau non trié, la recherche binaire fonctionne : si `nums[mid] < nums[mid + 1]`, le pic est à droite ; sinon, à gauche. O(log n).
+
+<ThinkAboutIt>Pourquoi la recherche de pic fonctionne-t-elle avec la recherche binaire même si le tableau n'est pas trié ? Quelle propriété remplace l'ordre trié ici ?</ThinkAboutIt>
+
+## Recherche dans une matrice 2D
+
+Si les lignes sont triées et que le premier élément de chaque ligne est supérieur au dernier de la ligne précédente, on traite la matrice comme un seul tableau trié de `m × n` éléments. L'index `k` correspond à la ligne `k // n`, colonne `k % n`.
+
+## Racine carrée sans bibliothèque
+
+Trouver le plus grand entier `x` tel que `x * x ≤ n`. Espace de recherche : `[0, n]`. Binary search on answer classique.
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## Le patron « Minimiser le maximum »
+
+Des problèmes comme « split array largest sum » ou « capacity to ship packages within D days » demandent de **minimiser le pire cas**. La réponse est monotone : si la capacité C fonctionne, C+1 aussi. On fait une recherche binaire sur C.
+
+<Quiz question="Pour « Capacity to Ship Packages in D Days », quel est l'espace de recherche ?" options="[0, poids total]|[poids max d'un colis, poids total]|[1, nombre de colis]|[D, poids total]" answer="1" explanation="La capacité minimale possible est le colis le plus lourd (sinon il ne peut pas être expédié). Le maximum est le poids total (tout expédier en un jour)." />
+
+## Le template universel
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+Ajustez `hi = mid` vs `lo = mid` selon que vous cherchez le **premier True** ou le **dernier True**.
+
+<Quiz question="Quelle est la complexité temporelle d'une binary search sur un espace de taille S avec une vérification de faisabilité en O(n) ?" options="O(n)|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="On effectue O(log S) itérations de recherche binaire, chacune exécutant une vérification en O(n), pour un total de O(n log S)." />
+
+<ThinkAboutIt>Quand vous voyez l'expression « minimum possible maximum » ou « maximum possible minimum » dans un énoncé, à quoi devriez-vous penser immédiatement ?</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [NeetCode — Playlist Binary Search](https://neetcode.io/roadmap) — problèmes sélectionnés du plus simple au plus dur
+- [Tech Interview Handbook — Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) — patrons, astuces et pièges
+- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) — ensemble progressif de problèmes

@@ -1,0 +1,144 @@
+---
+title: "Gouvernance responsable de l'IA — Construire des équipes qui livrent de manière éthique"
+description: "Apprenez la gouvernance pratique de l'IA : cadres, audit des biais, métriques d'équité, outils d'explicabilité, comités d'éthique, réponse aux incidents et leçons tirées d'échecs réels."
+order: 10
+difficulty: "advanced"
+duration: 19
+icon: "🛡️"
+published: true
+---
+
+# Gouvernance responsable de l'IA
+
+L'IA responsable n'est pas un exercice de case à cocher. C'est une discipline d'ingénierie qui exige la même rigueur que la sécurité ou la fiabilité. Les entreprises qui traitent l'éthique comme une réflexion après coup finissent dans les gros titres — l'outil de recrutement biaisé d'Amazon, les algorithmes de santé qui ont déprioritisé les patients noirs et les systèmes de reconnaissance faciale qui ont échoué sur les peaux foncées ne sont pas des cas isolés. Ce sont les résultats prévisibles d'une mise en production sans gouvernance.
+
+## Cadres de gouvernance
+
+Deux cadres dominent l'industrie :
+
+### NIST AI Risk Management Framework (AI RMF)
+
+Le National Institute of Standards and Technology américain propose une approche volontaire et structurée autour de quatre fonctions :
+
+1. **Govern** — Établir les politiques, les rôles et les structures de responsabilité
+2. **Map** — Identifier et documenter les risques IA dans leur contexte
+3. **Measure** — Évaluer les risques par des méthodes quantitatives et qualitatives
+4. **Manage** — Prioriser et atténuer les risques identifiés
+
+L'AI RMF n'est pas prescriptif — il ne dit pas *quoi* mesurer. Il fournit un cadre de réflexion que les organisations adaptent à leur contexte spécifique.
+
+### ISO/IEC 42001
+
+La première norme internationale pour un **AI Management System (AIMS)**. Contrairement au cadre NIST, l'ISO 42001 est certifiable — des auditeurs tiers peuvent vérifier la conformité. Elle couvre l'ensemble du cycle de vie de l'IA : du contexte organisationnel et de l'engagement de la direction jusqu'à l'évaluation des risques, les contrôles de développement et l'amélioration continue.
+
+La certification signale aux clients, régulateurs et partenaires que votre gouvernance IA est validée de manière externe — de plus en plus important pour les ventes entreprise.
+
+<Illustration src="/images/lessons/responsible-ai-governance.svg" alt="Diagramme montrant les quatre piliers de la gouvernance IA : documentation, équité, explicabilité et responsabilité" caption="Une gouvernance IA efficace repose sur quatre piliers — chacun nécessite des outils et des processus dédiés." />
+
+## Fiches modèles et fiches de données
+
+La documentation est le fondement de la gouvernance. Deux formats sont devenus des standards de l'industrie :
+
+Les **fiches modèles** (introduites par Google) documentent l'utilisation prévue d'un modèle, les performances évaluées par sous-groupes, les considérations éthiques et les limitations connues. Chaque modèle déployé devrait en avoir une.
+
+Les **fiches de données pour les jeux de données** documentent comment les données d'entraînement ont été collectées, ce qu'elles contiennent, les biais connus, les usages recommandés et les plans de maintenance. Si vous ne pouvez pas décrire vos données d'entraînement, vous ne pouvez pas gouverner le modèle entraîné dessus.
+
+Ce n'est pas de la lourdeur bureaucratique. C'est la différence entre « nous ne savions pas que le modèle était biaisé » et « nous avons documenté les limitations connues et mis en place des mesures d'atténuation ».
+
+<FunFact>L'article original de Google sur les Model Cards (2019) a montré que le simple fait d'exiger de la documentation amenait les équipes à découvrir et corriger des problèmes de biais qu'elles n'avaient pas remarqués auparavant — l'acte d'écrire forçait la réflexion critique.</FunFact>
+
+## Pipelines d'audit des biais
+
+L'audit des biais doit être automatisé et exécuté sur chaque version du modèle, pas effectué une seule fois au lancement puis oublié.
+
+Un pipeline d'audit des biais en production :
+
+1. **Définir les attributs protégés** — Genre, origine ethnique, âge, handicap et autres caractéristiques légalement protégées pertinentes pour votre domaine
+2. **Découper les données d'évaluation** — Diviser votre jeu de test en sous-groupes selon les attributs protégés
+3. **Calculer les métriques d'équité** — Mesurer les disparités de performance entre les groupes (voir ci-dessous)
+4. **Définir des seuils** — Fixer les limites de disparité acceptables (ex. : aucune précision de sous-groupe inférieure à 85 %)
+5. **Contrôler les déploiements** — Bloquer la promotion en production si les seuils sont dépassés
+6. **Journaliser et suivre les tendances** — Surveiller les métriques d'équité dans le temps, pas seulement au déploiement
+
+<Quiz question="Quand l'audit des biais doit-il être effectué dans le cycle de vie ML ?" options="Une seule fois avant le lancement initial|Automatiquement sur chaque version du modèle dans le cadre du CI/CD|Uniquement lorsqu'une plainte pour biais est reçue|Annuellement lors des revues de conformité" answer="1" explanation="L'audit des biais doit être automatisé et continu — la dérive des données, les mises à jour du modèle et l'évolution des populations signifient qu'un modèle équitable au lancement peut devenir biaisé au fil du temps." />
+
+## Métriques d'équité
+
+Il n'existe pas de définition unique de « l'équité ». Différentes métriques encodent différentes positions philosophiques, et elles sont souvent mathématiquement incompatibles :
+
+- **Demographic parity** — Chaque groupe reçoit des résultats positifs à des taux approximativement égaux. Simple mais peut entrer en conflit avec la précision.
+- **Equalised odds** — Les taux de vrais positifs et de faux positifs sont égaux entre les groupes. Plus robuste que la demographic parity.
+- **Predictive parity** — La précision (valeur prédictive positive) est égale entre les groupes.
+- **Individual fairness** — Des individus similaires reçoivent des prédictions similaires, indépendamment de leur appartenance à un groupe.
+
+L'idée clé : **il est impossible de satisfaire simultanément tous les critères d'équité** (théorème d'impossibilité de Chouldechova). Vous devez choisir quelle définition d'équité est la plus importante pour votre application et documenter pourquoi.
+
+<ThinkAboutIt>Un algorithme de santé doit attribuer des rendez-vous spécialisés limités. La demographic parity donnerait des taux de rendez-vous égaux entre groupes raciaux. L'equalised odds garantirait que l'algorithme est tout aussi précis pour identifier qui a besoin de soins. Ces critères sont contradictoires. Lequel choisiriez-vous, et comment justifieriez-vous cette décision auprès des communautés concernées ?</ThinkAboutIt>
+
+## Outils d'explicabilité
+
+Les parties prenantes — utilisateurs, régulateurs et équipes internes — doivent comprendre *pourquoi* un modèle a fait une prédiction spécifique.
+
+### SHAP (SHapley Additive exPlanations)
+
+Basé sur la théorie des jeux, SHAP attribue à chaque variable une valeur d'importance pour une prédiction donnée. Il répond à : « Quelle a été la contribution de chaque variable d'entrée à cette sortie particulière ? » Les valeurs SHAP sont additives — leur somme correspond à la différence entre la prédiction du modèle et la référence.
+
+### LIME (Local Interpretable Model-agnostic Explanations)
+
+LIME explique les prédictions individuelles en ajustant un modèle simple et interprétable (comme la régression linéaire) au voisinage local de l'entrée. Il fonctionne avec tout modèle mais peut être instable — de petites modifications de l'entrée produisent parfois des explications très différentes.
+
+### Visualisation de l'attention
+
+Pour les modèles transformer, les poids d'attention montrent quels tokens d'entrée le modèle a « regardés » lors de la production de chaque sortie. Utile pour le débogage mais controversé comme explication fidèle — l'attention ne corrèle pas toujours avec l'importance réelle des variables.
+
+<Quiz question="Quelle limitation fondamentale s'applique aux métriques d'équité selon le théorème d'impossibilité de Chouldechova ?" options="Les métriques d'équité ne peuvent pas être calculées pour les grands modèles|Plusieurs critères d'équité ne peuvent pas être satisfaits simultanément|Les métriques d'équité ne fonctionnent que pour les classifieurs binaires|L'equalised odds surpasse toujours la demographic parity" answer="1" explanation="Le théorème de Chouldechova prouve que, sauf dans des cas triviaux, il est mathématiquement impossible de satisfaire simultanément la demographic parity, l'equalised odds et la predictive parity — les équipes doivent faire un choix." />
+
+## Comités d'éthique IA
+
+De nombreuses organisations créent des comités d'éthique pour examiner les systèmes IA. Bien menés, ils offrent une véritable supervision. Mal menés, ils deviennent purement symboliques :
+
+**Ce qui fonctionne :**
+- Membres diversifiés (technique, juridique, éthiciens, représentants des communautés impactées)
+- Pouvoir réel de retarder ou bloquer les déploiements
+- Prise de décision transparente avec des critères publiés
+- Cadence de revue régulière, pas uniquement au moment du lancement
+
+**Ce qui échoue :**
+- Comités uniquement consultatifs sans pouvoir d'exécution
+- Composition homogène (uniquement des technologues, aucun expert du domaine ni voix communautaire)
+- Réunions uniquement en cas de controverse, pas de manière proactive
+- Utiliser l'existence du comité comme outil de communication tout en ignorant ses recommandations
+
+Google a dissous son comité d'éthique IA au bout d'une semaine en 2019 suite à une controverse sur la sélection de ses membres. Microsoft et d'autres entreprises ont depuis adopté des modèles de responsabilité distribuée où la revue éthique est intégrée aux équipes produit plutôt que centralisée.
+
+## Réponse aux incidents pour les défaillances IA
+
+Les systèmes IA échoueront. La question est de savoir si vous avez un plan :
+
+1. **Détection** — Alertes de monitoring sur les métriques d'équité, la qualité des sorties ou les signalements utilisateurs
+2. **Triage** — Classification de sévérité : est-ce un problème de sortie mineur ou un préjudice systématique ?
+3. **Confinement** — Revenir au modèle précédent, ajouter des garde-fous ou désactiver la fonctionnalité
+4. **Investigation** — Analyse des causes profondes des données, du modèle ou du système à l'origine de la défaillance
+5. **Remédiation** — Corriger le problème sous-jacent, réentraîner si nécessaire, mettre à jour la documentation
+6. **Communication** — Informer les utilisateurs et parties prenantes concernés de manière transparente
+7. **Prévention** — Mettre à jour les pipelines d'audit et les tests pour détecter des problèmes similaires
+
+<FunFact>Amazon a abandonné son outil de recrutement IA en 2018 après avoir découvert qu'il pénalisait systématiquement les CV contenant le mot « women's » — le modèle avait appris à partir d'une décennie de données de recrutement à prédominance masculine. L'outil n'a jamais été déployé en externe, mais il a fonctionné en interne pendant un an avant que le biais ne soit détecté.</FunFact>
+
+## Études de cas de défaillances de gouvernance
+
+- **Outil de recrutement Amazon (2018)** — Entraîné sur des données historiques de recrutement reflétant un biais de genre. Le modèle pénalisait les candidates. Leçon : des données d'entraînement biaisées produisent des modèles biaisés, quelle que soit la sophistication du modèle.
+- **Algorithme de santé Optum (2019)** — A utilisé les dépenses de santé comme proxy des besoins de santé. Comme les patients noirs avaient historiquement moins accès aux soins, l'algorithme les déprioritisait systématiquement. Leçon : les variables proxy peuvent encoder l'inégalité structurelle.
+- **Outil de récidive COMPAS** — L'analyse de ProPublica a montré que le système avait deux fois plus de chances de signaler à tort les accusés noirs comme futurs criminels. Leçon : la précision globale peut masquer de graves disparités entre sous-groupes.
+
+<Quiz question="Pourquoi l'algorithme de santé Optum a-t-il déprioritisé de manière disproportionnée les patients noirs ?" options="Le modèle était intentionnellement biaisé|Il utilisait les dépenses de santé comme proxy des besoins, reflétant les disparités historiques d'accès|Les données d'entraînement contenaient des étiquettes raciales explicites|L'algorithme ne fonctionnait que pour certaines démographies" answer="1" explanation="L'algorithme utilisait le coût des soins comme proxy des besoins de santé. Comme les barrières systémiques signifiaient que les patients noirs dépensaient historiquement moins en soins, le modèle assimilait une dépense plus faible à un besoin moindre — encodant l'inégalité structurelle." />
+
+<ThinkAboutIt>Vous mettez en place un programme d'IA responsable de zéro dans une entreprise de 500 personnes livrant des produits ML. Vous avez le budget pour trois recrutements. Quels postes rempliriez-vous en premier, et quels processus mettriez-vous en place dans les 90 premiers jours ?</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [NIST AI Risk Management Framework](https://airc.nist.gov/AI_RMF_Interactivity/NIST-AI-100-1) — Le cadre NIST AI RMF complet avec profils interactifs et cas d'usage
+- [Model Cards for Model Reporting (Mitchell et al.)](https://arxiv.org/abs/1810.03993) — L'article original introduisant les fiches modèles comme standard de documentation
+- [Fairness and Machine Learning (Barocas, Hardt, Narayanan)](https://fairmlbook.org/) — Manuel en ligne gratuit couvrant les mathématiques et la philosophie de l'équité en ML

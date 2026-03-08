@@ -1,0 +1,159 @@
+---
+title: "Distributed Cache డిజైన్ చేయండి — Redis Architecture మొదటి నుండి"
+description: "Cache strategies, consistent hashing, eviction policies, cache stampede prevention, మరియు Redis Cluster architecture కవర్ చేసే distributed caching system డిజైన్ చేయండి."
+order: 10
+difficulty: "advanced"
+duration: 23
+icon: "⚡"
+published: true
+---
+
+# Distributed Cache డిజైన్ చేయండి — Redis Architecture మొదటి నుండి
+
+System performance మెరుగుపరచడానికి caching అత్యంత ప్రభావవంతమైన టెక్నిక్. బాగా డిజైన్ చేసిన distributed cache database load ను 90%+ తగ్గించగలదు మరియు response times ను వందల milliseconds నుండి sub-millisecond కు తీసుకురాగలదు.
+
+## Step 1 — Requirements సేకరణ
+
+### Functional Requirements
+- Optional TTL (time-to-live) తో key-value pairs store చేయడం
+- సాధారణ operations support చేయడం: GET, SET, DELETE, మరియు bulk operations
+- Horizontal scaling కోసం data ను multiple nodes లో distribute చేయడం
+
+### Non-Functional Requirements
+- **Low latency** — cache hits కోసం sub-millisecond reads
+- **High throughput** — ప్రతి node కు 100K+ operations per second
+- **High availability** — cache failures వల్ల system down కాకూడదు
+- **Scalability** — downtime లేకుండా nodes add చేయడం
+
+### ఎప్పుడు Cache చేయాలి
+- **Read-heavy workloads** — reads, writes కంటే చాలా ఎక్కువగా ఉన్నప్పుడు
+- **Expensive computations** — ML model inference results, complex aggregations
+- **Frequently accessed data** — user sessions, product catalogues, configuration
+
+## Step 2 — Caching Strategies
+
+### Cache-Aside (Lazy Loading)
+అత్యంత సాధారణ pattern. Application ముందుగా cache check చేస్తుంది; miss అయితే database నుండి read చేసి, ఆ తర్వాత cache populate చేస్తుంది:
+
+```
+GET user:123 → Cache HIT → return cached data
+GET user:456 → Cache MISS → query DB → SET cache → return data
+```
+
+**ప్రయోజనాలు:** నిజంగా request చేసినదే cache అవుతుంది. **అప్రయోజనాలు:** cache misses వల్ల latency పెరుగుతుంది; data stale కాగలదు.
+
+### Read-Through
+Miss అయినప్పుడు cache స్వయంగా database reads handle చేస్తుంది. Application cache layer తో మాత్రమే communicate చేస్తుంది, ఇది data source ను abstract చేస్తుంది.
+
+### Write-Through
+ప్రతి write cache మరియు database రెండింటికీ synchronously వెళ్తుంది. Cache ఎల్లప్పుడూ consistent గా ఉంటుంది కానీ write latency పెరుగుతుంది.
+
+### Write-Behind (Write-Back)
+Writes వెంటనే cache లోకి వెళ్తాయి; cache asynchronously batches లో database కు flush చేస్తుంది. Write latency తక్కువ కానీ flush చేయకముందే cache node crash అయితే data loss risk ఉంటుంది.
+
+| Strategy | Consistency | Read Latency | Write Latency | Use Case |
+|----------|-------------|-------------|---------------|----------|
+| Cache-Aside | Eventual | Miss penalty | N/A | General purpose |
+| Read-Through | Eventual | Miss penalty | N/A | Simplified reads |
+| Write-Through | Strong | Fast | Slower | Consistency-critical |
+| Write-Behind | Eventual | Fast | Fast | Write-heavy workloads |
+
+<Quiz question="ఒక e-commerce site product prices ను cache చేయాలి, అవి తక్కువగా మారతాయి కానీ 5 minutes లోపు accurate గా ఉండాలి. ఏ strategy అత్యంత సరైనది?" options="1 గంట flush interval తో Write-Behind|5-minute TTL తో Cache-Aside|ప్రతి price update కోసం Write-Through|Caching వద్దు — ఎల్లప్పుడూ database నుండి read చేయండి" answer="1" explanation="5-minute TTL తో Cache-Aside stale data ఆమోదయోగ్య window దాటి ఉండదని నిర్ధారిస్తుంది. Write-Through పని చేస్తుంది కానీ తక్కువగా జరిగే updates కోసం అనవసరమైన write latency add చేస్తుంది. Cache-Aside సరళమైనది మరియు 'read-heavy, occasionally updated' pattern కు సరిగ్గా సరిపోతుంది." />
+
+## Step 3 — Eviction Policies
+
+Cache నిండినప్పుడు, ఏ entries తొలగించాలి?
+
+- **LRU (Least Recently Used)** — చాలా కాలంగా access కాని entry ను evict చేస్తుంది. అత్యుత్తమ general-purpose policy
+- **LFU (Least Frequently Used)** — అతి తక్కువసార్లు access అయిన entry ను evict చేస్తుంది. Skewed access patterns కు మెరుగైనది
+- **TTL-based** — access తో సంబంధం లేకుండా entries నిర్ధారిత సమయం తర్వాత expire అవుతాయి. Data freshness కు అవసరం
+- **Random** — ఆశ్చర్యకరంగా ప్రభావవంతం మరియు implement చేయడానికి చాలా సరళం
+
+<FunFact>Redis ఒక approximated LRU algorithm వాడుతుంది, ఇది కొన్ని keys ను sample చేసి (default: 5) వాటిలో least recently used ను evict చేస్తుంది. ఇది true LRU అంత accurate గా ఉంటుంది కానీ access order track చేయడానికి zero additional memory overhead అవసరం.</FunFact>
+
+## Step 4 — Distribution కోసం Consistent Hashing
+
+### Simple Hashing సమస్య
+`hash(key) % N` nodes తో, ఒక node add లేదా remove చేస్తే దాదాపు అన్ని keys remap అవుతాయి, ఇది massive cache miss storm కు కారణమవుతుంది.
+
+### Virtual Nodes తో Consistent Hashing
+Consistent hashing keys మరియు nodes రెండింటినీ ఒక ring పై map చేస్తుంది. ప్రతి key ring పై తదుపరి clockwise node కు assign అవుతుంది:
+
+```
+Hash Ring (0 to 2^32):
+     Node A (3 virtual nodes: A1, A2, A3)
+     Node B (3 virtual nodes: B1, B2, B3)
+     Node C (3 virtual nodes: C1, C2, C3)
+
+Key "user:123" → hash → lands between B2 and A1 → assigned to Node A
+```
+
+**Virtual nodes** అసమాన distribution సమస్యను పరిష్కరిస్తాయి. ప్రతి physical node కు ring పై multiple positions ఉంటాయి, తక్కువ physical nodes ఉన్నప్పటికీ balanced load నిర్ధారిస్తాయి.
+
+ఒక node add లేదా remove అయినప్పుడు, ring పై దాని adjacent keys మాత్రమే remap అవుతాయి — దాదాపు `K/N` keys (ఇక్కడ K total keys మరియు N node count), అన్నీ కాదు.
+
+<Illustration src="/images/lessons/design-distributed-cache.svg" alt="Consistent hashing ring లో physical nodes virtual nodes కు mapped, keys nearest clockwise node కు assigned" caption="Consistent hashing ఒక node add లేదా remove చేసినప్పుడు keys లో చిన్న భాగం మాత్రమే remap అవుతుందని నిర్ధారిస్తుంది, cache stampedes నివారిస్తుంది" />
+
+<Quiz question="ఒక cache cluster లో 4 nodes ఉన్నాయి. Node 3 fail అవుతుంది. Simple modulo hashing (key % 4 → key % 3) తో, ఎన్ని శాతం keys remap అవుతాయి?" options="25% (Node 3 keys మాత్రమే)|50%|75% — దాదాపు అన్ని keys remap అవుతాయి|100%" answer="2" explanation="Mod 4 నుండి mod 3 కు మారడం వల్ల దాదాపు 75% keys వేరే nodes కు remap అవుతాయి. ఉదాహరణకు, 7 కు hash అయిన key node 3 లో ఉండేది (7%4=3) కానీ ఇప్పుడు node 1 కు వెళ్తుంది (7%3=1). ఇది cache misses లో భారీ spike కలిగిస్తుంది. Consistent hashing కేవలం ~K/N keys remap చేయడం ద్వారా దీన్ని పరిష్కరిస్తుంది." />
+
+## Step 5 — Cache Stampede Prevention
+
+ఒక popular cached entry expire అయినప్పుడు వందల concurrent requests ఏకకాలంలో cache miss అయి database ను hit చేస్తే **cache stampede** జరుగుతుంది.
+
+### పరిష్కారాలు
+
+**Mutex/Locking:** Cache miss అయినప్పుడు distributed lock acquire చేయండి. ఒకే request database నుండి fetch చేస్తుంది; మిగతావి cache repopulate అయ్యేవరకు wait చేస్తాయి.
+
+**Probabilistic Early Expiry:** ప్రతి request కు TTL నిజంగా expire కాకముందే cache refresh చేసే చిన్న random chance ఉంటుంది. ఇది expiry సమయంలో thundering herd సృష్టించడానికి బదులుగా refresh load ను సమయంలో spread చేస్తుంది.
+
+**Background Refresh:** ఒక background process popular cache entries ను expire కాకముందే refresh చేస్తుంది. Hot keys కోసం cache ఎప్పటికీ empty కాదు.
+
+<ThinkAboutIt>ఒక flash sale ను ఊహించండి, ఒక product page కు 100,000 requests per second వస్తున్నాయి. Product details cache entry expire అవుతుంది. Stampede prevention లేకుండా, 100K requests అన్నీ ఒకేసారి database ను hit చేస్తాయి. మీరు ఏ prevention strategy ఎంచుకుంటారు, ఎందుకు?</ThinkAboutIt>
+
+## Step 6 — Redis Cluster Architecture
+
+Redis Cluster అత్యంత విస్తృతంగా deploy చేయబడిన distributed cache:
+
+- **16,384 hash slots** master nodes లో distribute అవుతాయి
+- ప్రతి key `CRC16(key) % 16384` ద్వారా slot కు map అవుతుంది
+- **Replication:** ప్రతి master కు failover కోసం ఒకటి లేదా అంతకంటే ఎక్కువ replicas ఉంటాయి
+- **Automatic failover:** master fail అయితే, replica seconds లో promote అవుతుంది
+
+```
+Slots 0-5460:     Master A ←→ Replica A'
+Slots 5461-10922: Master B ←→ Replica B'
+Slots 10923-16383: Master C ←→ Replica C'
+```
+
+### Key Metrics Monitor చేయడం
+- **Hit ratio** — target 95%+; 80% కంటే తక్కువ caching problem ను సూచిస్తుంది
+- **Memory usage** — evictions నివారించడానికి 80% కంటే తక్కువగా ఉంచండి
+- **Eviction rate** — ఎక్కువ evictions అంటే cache undersized
+- **Latency percentiles** — cache hits కోసం p99 1ms కంటే తక్కువగా ఉండాలి
+
+## Step 7 — Real-World Caching Patterns
+
+| Pattern | Implementation | TTL |
+|---------|---------------|-----|
+| Session store | `SET session:{id} {data}` | 30 నిమిషాలు |
+| API response cache | `SET api:/users/123 {json}` | 5 నిమిషాలు |
+| Database query cache | `SET query:{hash} {result}` | 1 నిమిషం |
+| Rate limiter counter | `INCR ratelimit:{user}:{window}` | Window వ్యవధి |
+| Feature flags | `HSET features {flag} {value}` | 10 సెకన్లు |
+
+### Cache Invalidation
+Computer science లో అత్యంత కఠినమైన సమస్య (naming things తో పాటు):
+- **TTL-based** — సరళం, TTL వ్యవధి పాటు staleness ను సహిస్తుంది
+- **Event-driven** — data మారినప్పుడు invalidation events publish చేయండి (Kafka లేదా Redis Pub/Sub ద్వారా)
+- **Version-based** — cache key లో version చేర్చండి; writes లో version increment చేయండి, పాత entries ప్రభావవంతంగా invalidate అవుతాయి
+
+<Quiz question="ఏ cache invalidation approach అత్యంత బలమైన consistency guarantee అందిస్తుంది?" options="5-minute window తో TTL-based expiry|Database writes ద్వారా trigger అయ్యే event-driven invalidation|Random eviction|ప్రతి 10 seconds కు background refresh" answer="1" explanation="Event-driven invalidation వాస్తవ data changes కు react అవుతుంది, source data update అయినప్పుడు cache వెంటనే invalidate అవుతుంది. TTL-based approaches లో ఎల్లప్పుడూ staleness window ఉంటుంది, background refresh లో refresh cycles మధ్య gaps ఉంటాయి." />
+
+<ThinkAboutIt>Phil Karlton ఇలా అన్నారు: 'Computer Science లో కేవలం రెండు కఠినమైన విషయాలు ఉన్నాయి — cache invalidation మరియు naming things.' Distributed systems లో cache invalidation ఎందుకు అంత కష్టం? Database write succeed అయి cache invalidation message lost అయితే ఏమి జరుగుతుందో ఆలోచించండి.</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+- [Consistent Hashing — ByteByteGo](https://bytebytego.com/courses/system-design-interview/design-consistent-hashing) — consistent hashing మరియు virtual nodes యొక్క visual explanation
+- [Redis Cluster Specification](https://redis.io/docs/reference/cluster-spec/) — official Redis Cluster architecture documentation
+- [Caching Strategies — AWS](https://aws.amazon.com/caching/best-practices/) — cloud applications కోసం practical caching patterns

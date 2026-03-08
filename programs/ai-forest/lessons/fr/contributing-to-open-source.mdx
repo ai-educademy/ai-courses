@@ -1,0 +1,159 @@
+---
+title: "Contribuer à l'Open Source — Bâtir sa réputation et redonner à la communauté"
+description: "Apprenez à trouver des projets, faire des contributions significatives, rédiger d'excellentes PRs et construire un profil public grâce au travail open-source en IA."
+order: 5
+difficulty: "advanced"
+duration: 15
+icon: "🤝"
+published: true
+---
+
+# Contribuer à l'Open Source
+
+Les contributions open-source sont le moyen le plus rapide d'apprendre, de gagner en crédibilité et de se connecter à la communauté IA. Cette leçon vous montre exactement comment démarrer et faire des contributions qui comptent.
+
+## Pourquoi contribuer ?
+
+Contribuer à l'open source n'est pas de la charité — c'est un choix de carrière stratégique.
+
+**Apprentissage** — Lire et modifier du code de qualité production vous enseigne des patterns que les tutoriels n'abordent jamais. Vous apprenez comment les vrais systèmes gèrent les cas limites, les tests et la montée en charge.
+
+**Réseautage** — Vos reviewers de PR et co-contributeurs deviennent souvent des collaborateurs, des références, voire des co-fondateurs. La communauté open-source en IA est remarquablement soudée.
+
+**Impact sur la carrière** — Les hiring managers des grandes entreprises d'IA consultent activement les profils GitHub. Une PR mergée dans un projet respecté démontre bien plus de compétence qu'une certification.
+
+**Redonner** — Vous avez presque certainement bénéficié d'outils open-source. Contribuer, c'est faire vivre l'écosystème.
+
+<FunFact>
+Une enquête GitHub de 2024 a révélé que 87 % des hiring managers en IA/ML prennent en compte les contributions open-source lors de l'évaluation des candidats, ce qui en fait le deuxième signal le plus valorisé après l'expérience professionnelle pertinente.
+</FunFact>
+
+## Trouver le bon projet
+
+Ne commencez pas par contribuer à PyTorch ou TensorFlow. Commencez là où votre contribution sera remarquée et appréciée.
+
+**Où chercher :**
+- **GitHub Topics** — parcourez `good-first-issue` + `machine-learning` ou `artificial-intelligence`
+- **Hugging Face** — leurs bibliothèques `transformers`, `datasets` et `diffusers` accueillent activement les contributeurs
+- **LangChain / LlamaIndex** — des projets qui évoluent vite avec de nombreuses issues ouvertes
+- **Outils plus petits** — les bibliothèques avec 500–5 000 stars ont souvent des maintainers réactifs et reconnaissants
+
+**Comment évaluer un projet :**
+1. Vérifiez la date du dernier commit — est-il activement maintenu ?
+2. Lisez le CONTRIBUTING.md — existe-t-il ?
+3. Regardez les PRs ouvertes — sont-elles reviewées ou ignorées ?
+4. Vérifiez les temps de réponse aux issues — les maintainers s'impliquent-ils ?
+
+<Quiz question="Quel est le meilleur indicateur qu'un projet accueille les nouveaux contributeurs ?" options="Il a plus de 10 000 stars|Il possède un CONTRIBUTING.md et des maintainers réactifs|Il utilise les derniers modèles d'IA|Il n'a aucune issue ouverte" answer="1" explanation="Un fichier CONTRIBUTING.md et des maintainers réactifs montrent que le projet est prêt pour la collaboration. Le nombre de stars seul ne dit rien sur l'expérience des contributeurs." />
+
+<Illustration src="/images/lessons/contributing-to-open-source.svg" alt="Open-source contribution workflow from finding a project to merged PR" caption="Le parcours de contribution — du premier issue à la PR mergée" />
+
+## Le workflow de contribution
+
+Chaque contribution suit le même schéma. Maîtrisez-le une fois et vous pourrez contribuer partout.
+
+### Étape 1 : Fork et Clone
+
+```bash
+gh repo fork owner/project --clone
+cd project
+git remote add upstream https://github.com/owner/project.git
+```
+
+### Étape 2 : Créer une branch
+
+```bash
+git checkout -b fix/improve-tokeniser-docs
+```
+
+Utilisez des noms de branch descriptifs. Les préfixes comme `fix/`, `feat/` ou `docs/` aident les maintainers à comprendre l'intention d'un coup d'œil.
+
+### Étape 3 : Effectuer vos modifications
+
+- Respectez exactement le style de code du projet
+- Exécutez les tests existants avant et après vos modifications
+- Ajoutez des tests pour les nouvelles fonctionnalités
+- Gardez les changements ciblés — une seule préoccupation par PR
+
+### Étape 4 : Commit et Push
+
+```bash
+git add .
+git commit -m "docs: clarify tokeniser padding behaviour for batch inputs"
+git push origin fix/improve-tokeniser-docs
+```
+
+### Étape 5 : Ouvrir une Pull Request
+
+Rédigez une description de PR claire qui explique **ce que** vous avez changé, **pourquoi** vous l'avez changé, et **comment** le tester. Référencez le numéro d'issue s'il en existe un.
+
+<ThinkAboutIt>
+Pensez à un bug que vous avez rencontré dans un outil open-source d'IA. Auriez-vous pu le corriger vous-même et soumettre une PR ? Souvent la réponse est oui — et cette première contribution est la barrière mentale la plus difficile à franchir.
+</ThinkAboutIt>
+
+## Rédiger d'excellentes PRs et commits
+
+Votre PR est votre carte de visite professionnelle. Soignez-la.
+
+**Messages de commit** — Utilisez les conventional commits : `feat:`, `fix:`, `docs:`, `test:`, `refactor:`. Gardez le sujet sous 72 caractères. Ajoutez un corps pour les changements complexes.
+
+**La description de PR doit inclure :**
+- Un résumé en une ligne du changement
+- Le contexte : quel problème cela résout-il ?
+- Comment tester le changement
+- Des captures d'écran ou exemples de sortie si pertinent
+- Les compromis ou décisions que vous avez pris
+
+**Erreurs courantes à éviter :**
+- Mélanger des changements sans rapport dans une même PR
+- Ignorer les règles de linting et de formatage du projet
+- Ne pas répondre rapidement aux retours de review
+- Faire un force-push sans prévenir pendant la review
+
+<Quiz question="Quel est l'élément le plus important d'une bonne pull request ?" options="Le nombre maximum de fichiers modifiés|Une description claire du quoi, pourquoi et comment tester|L'utilisation des dernières fonctionnalités du langage|L'ajout de commentaires inline détaillés" answer="1" explanation="Une description de PR claire aide les maintainers à faire une review efficace. Elle montre du respect pour leur temps et augmente considérablement les chances que votre PR soit mergée." />
+
+## Au-delà du code
+
+Certaines des contributions les plus précieuses n'impliquent aucune ligne de code.
+
+**Documentation** — Corrigez les fautes, améliorez les exemples, traduisez la documentation. De nombreux projets ont désespérément besoin d'aide sur la documentation, et c'est un excellent point d'entrée.
+
+**Triage d'issues** — Reproduisez les bugs, ajoutez du contexte, étiquetez les issues. C'est incroyablement précieux pour les maintainers submergés d'issues non traitées.
+
+**Traductions** — Aidez à rendre les outils d'IA accessibles mondialement. Des projets comme Hugging Face recherchent activement des traducteurs.
+
+**Support communautaire** — Répondez aux questions sur Discord, Stack Overflow ou GitHub Discussions. Aider les autres est aussi une contribution.
+
+<Callout>
+**Astuce pro :** Les PRs de documentation ont le taux d'acceptation le plus élevé de tous les types de contribution. C'est le moyen idéal d'apprendre un codebase, de gagner la confiance des maintainers et de préparer le terrain pour des contributions de code plus importantes.
+</Callout>
+
+## Construire un profil public
+
+Des contributions régulières se transforment en un atout professionnel puissant.
+
+**Étapes concrètes :**
+1. Épinglez vos meilleures contributions sur votre profil GitHub
+2. Rédigez de courts articles de blog sur ce que vous avez appris de chaque contribution
+3. Participez aux discussions des projets — les commentaires réfléchis se font remarquer
+4. Assistez à des meetups virtuels ou conférences liés à vos projets
+5. Ajoutez votre travail open-source à votre CV avec des liens vers vos PRs mergées
+
+<FunFact>
+Les premières contributions open-source d'Andrej Karpathy à des bibliothèques de réseaux de neurones ont contribué à établir sa réputation bien avant qu'il ne rejoigne Tesla ou OpenAI. Votre profil GitHub est un portfolio vivant.
+</FunFact>
+
+<Quiz question="Quel type de contribution open-source a le taux d'acceptation le plus élevé ?" options="Ajouts de fonctionnalités majeures|Optimisations de performance|Améliorations de la documentation|Refactorisations d'architecture" answer="2" explanation="Les PRs de documentation ont le taux d'acceptation le plus élevé car elles comportent peu de risques, nécessitent un effort de review minimal et répondent à un besoin universel dans les projets open-source." />
+
+<ThinkAboutIt>
+À quoi ressemblerait votre contribution open-source idéale ? Choisissez un projet d'IA que vous utilisez régulièrement et trouvez une issue sur laquelle travailler cette semaine. Le meilleur moment pour commencer à contribuer, c'est maintenant.
+</ThinkAboutIt>
+
+## Points clés à retenir
+
+- Les contributions open-source accélèrent l'apprentissage, le réseautage et la progression de carrière
+- Commencez par des projets plus petits et activement maintenus — pas des méga-dépôts
+- Maîtrisez le workflow fork → branch → PR et utilisez-le partout
+- Rédigez des PRs claires et ciblées avec des messages de commit descriptifs
+- La documentation et le triage d'issues sont des contributions précieuses qui ne nécessitent aucun code
+- La régularité compte plus que l'envergure — de petites contributions régulières s'accumulent

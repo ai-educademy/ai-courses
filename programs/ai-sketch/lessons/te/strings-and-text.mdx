@@ -1,0 +1,168 @@
+---
+title: "Strings మరియు Text Processing — AI Text ను ఎలా చదివి అర్థం చేసుకుంటుంది"
+description: "AI systems string operations మరియు pattern matching ఉపయోగించి text ను ఎలా విడదీసి, వెతికి, manipulate చేస్తాయో అన్వేషించండి."
+order: 2
+difficulty: "intermediate"
+duration: 15
+icon: "📝"
+published: true
+---
+
+## AI లో Text అంతటా ఉంది
+
+AI మీ ప్రశ్న అర్థం చేసుకోవడానికి, essay రాయడానికి, లేదా sentence translate చేయడానికి ముందు raw text process చేయాలి. ప్రతి chatbot, search engine, మరియు language model **strings** తో మొదలవుతుంది — మానవ భాషను represent చేసే characters sequences.
+
+Strings ఎలా పని చేస్తాయో అర్థం చేసుకోవడం natural language processing లోకి ద్వారం తెరుస్తుంది.
+
+## String ప్రాథమికాలు
+
+String అనేది characters sequence — అక్షరాలు, అంకెలు, spaces, మరియు symbols — క్రమంలో నిల్వ చేయబడినవి.
+
+```
+message = "Hello, World!"
+```
+
+ప్రతి character కి ఒక position (index) ఉంటుంది, array లాగే:
+
+```
+index:  0  1  2  3  4  5  6  7  8  9  10  11  12
+char:   H  e  l  l  o  ,     W  o  r   l   d   !
+```
+
+<Illustration src="/images/lessons/strings-and-text.svg" alt="ప్రతి character కింద index positions చూపుతూ విడి characters గా విడదీసిన string" caption="String అనేది characters array — ప్రతి దానికి దాని స్వంత index ఉంటుంది." />
+
+### Substrings
+
+**Substring** అనేది string యొక్క slice. "Hello, World!" నుండి "World" (indices 7 నుండి 11) extract చేయవచ్చు. AI systems నిరంతరం substrings extract చేస్తాయి — sentences నుండి names, tweets నుండి hashtags, web pages నుండి URLs.
+
+### Immutability
+
+చాలా languages లో strings **immutable** — character ను place లో మార్చలేరు. బదులుగా కొత్త string create చేస్తారు. Performance కి ఇది ముఖ్యం: AI pipeline text ను millions of times modify చేస్తే, ప్రతిసారి కొత్త strings create చేయడం slow అవుతుంది.
+
+<FunFact>
+Shakespeare మొత్తం రచనలలో సుమారు 9,00,000 పదాలు ఉన్నాయి. GPT-4 వేలరెట్లు పెద్ద text datasets పై train అయింది — వందల billions పదాలు, అన్నీ numbers గా convert అవ్వడానికి ముందు strings గా process అయ్యాయి.
+</FunFact>
+
+## ChatGPT Text ఎలా చదువుతుంది: Tokenisation
+
+AI models మానవులు చదివినట్లు పదాలు చదవరు. **Tokenisation** వాడతారు — text ను tokens అనే చిన్న ముక్కలుగా split చేయడం.
+
+```
+Input:  "unhappiness"
+Tokens: ["un", "happiness"]
+
+Input:  "ChatGPT is brilliant"
+Tokens: ["Chat", "G", "PT", " is", " brilliant"]
+```
+
+Tokenisation character-level మరియు word-level processing మధ్య ఉంటుంది. అరుదైన పదాలను తెలిసిన sub-pieces గా విడదీసి vocabulary manageable గా ఉంచుతుంది.
+
+<ThinkAboutIt>
+"antidisestablishmentarianism" లాంటి పొడవైన, unusual word ChatGPT లో type చేసినప్పుడు, model దాన్ని familiar sub-word tokens గా విడదీస్తుంది. ప్రతి English word ను separate token గా store చేయడం కంటే ఇది ఎందుకు మంచిది?
+</ThinkAboutIt>
+
+### Tokenisation ఎందుకు ముఖ్యం
+
+- Typical language model vocabulary 50,000–100,000 tokens.
+- ప్రతి token ఒక number (దాని ID) కి map అవుతుంది, model నిజంగా process చేసేది అదే.
+- Text ఎలా tokenise అవుతుందో cost ని affect చేస్తుంది — ఎక్కువ tokens అంటే ఎక్కువ computation మరియు API fees.
+
+## Pattern Matching — గడ్డిపరకలలో సూది వెతకడం
+
+Core string operation: పెద్ద text లో pattern search చేయడం. ఈ email లో "urgent" ఉందా? ఈ code లో security vulnerability ఉందా?
+
+### సరళ Approach
+
+Pattern ను text మీద slide చేస్తూ, character by character check చేయడం:
+
+```
+text:    "the cat sat on the mat"
+pattern: "cat"
+
+Position 0: "the" → no match
+Position 1: "he " → no match
+Position 4: "cat" → match found at index 4!
+```
+
+Worst case **O(n × m)**, n text length మరియు m pattern length. చిన్న patterns కి fine. Millions of documents scan చేయడానికి తెలివైన approaches అవసరం.
+
+<Quiz question="చాలా పెద్ద texts కి naive pattern matching ఎందుకు slow?" options="ఎక్కువ memory వాడుతుంది|ప్రతి possible starting position check చేసి character by character compare చేస్తుంది|Alphabetic characters తోనే పని చేస్తుంది|Text sorted ఉండాలి" answer="1" explanation="Naive approach pattern ను text లో ప్రతి position మీద slide చేస్తుంది, ప్రతి position వద్ద m characters వరకు compare చేస్తుంది — O(n × m) time complexity." />
+
+## Classic String Challenges
+
+### String Reversal
+
+```
+reverse("hello") → "olleh"
+```
+
+AI reversal ను sequence-to-sequence models లో వాడుతుంది — కొన్ని early translation models accuracy improve చేయడానికి input sentence reverse చేసేవి.
+
+### Palindrome Detection
+
+ముందుకు వెనుకకు ఒకేలా చదవగలిగే string: "racecar", "madam", "level".
+
+```
+is_palindrome(text):
+    return text == reverse(text)
+```
+
+### Anagram Detection
+
+ఒకే characters వేరే order లో ఉన్న రెండు words: "listen" మరియు "silent".
+
+Hash map తో character frequencies count చేయడం — O(n):
+
+```
+are_anagrams(word1, word2):
+    return character_counts(word1) == character_counts(word2)
+```
+
+<Quiz question="రెండు words anagrams అవునో కాదో most efficiently ఎలా check చేస్తారు?" options="రెండు words sort చేసి compare|word1 లో ప్రతి character ని word2 లో ప్రతి character తో compare|Hash map తో character frequencies count చేసి compare|ఒక word reverse చేసి రెండోదానితో equal అవునో check" answer="2" explanation="Hash map తో character frequencies count చేయడం O(n) — ప్రతి word ద్వారా ఒక pass. Sorting O(n log n) లో పని చేస్తుంది, కానీ hash map approach పెద్ద strings కి వేగం." />
+
+## Regular Expressions — Pattern Matching on Steroids
+
+Regular expressions (regex) exact text బదులు patterns describe చేయడానికి అనుమతిస్తాయి:
+
+| Pattern | Matches | Use Case |
+|---------|---------|----------|
+| `\d+` | ఒకటి లేదా ఎక్కువ digits | Text నుండి numbers extract |
+| `[A-Z][a-z]+` | Capitalised word | Proper nouns కనుగొనడం |
+| `\b\w+@\w+\.\w+\b` | Email addresses | Data extraction |
+| `(cat\|dog\|bird)` | మూడు words లో ఏదైనా | Classification keywords |
+
+AI data pipelines **data cleaning** కి regex విస్తృతంగా వాడతాయి — HTML tags remove, dates extract, phone numbers standardise, training ముందు unwanted characters filter.
+
+<Callout>
+Regular expressions శక్తివంతమైనవి కానీ tricky. తప్పుగా రాసిన regex కొన్ని inputs పై exponentially long time తీసుకోవచ్చు — "catastrophic backtracking" అనే సమస్య. ఎల్లప్పుడూ edge cases పై patterns test చేయండి.
+</Callout>
+
+## Real-World AI Text Processing Pipeline
+
+AI text ఎలా process చేస్తుందో simplified view:
+
+1. **Raw text** → "The café's Wi-Fi isn't working!!!"
+2. **Lowercasing** → "the café's wi-fi isn't working!!!"
+3. **Removing punctuation** → "the cafés wifi isnt working"
+4. **Tokenisation** → ["the", "café", "s", "wi", "fi", "isn", "t", "working"]
+5. **Token IDs** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
+6. **Model లోకి** → AI నిజంగా process చేయగల numbers
+
+ప్రతి step లో string operations ఉంటాయి — slicing, searching, replacing, splitting.
+
+<ThinkAboutIt>
+Words మధ్య spaces వాడని భాషలో (Chinese లేదా Japanese లాగా) chatbot కి message పంపినప్పుడు, tokenisation ఎలా వేరుగా పని చేయవచ్చు? ఏ extra challenges create అవుతాయి?
+</ThinkAboutIt>
+
+<FunFact>
+OpenAI tokeniser "tokenisation" ను ["token", "isation"] — రెండు tokens గా split చేస్తుంది. American spelling "tokenization" ["token", "ization"] అవుతుంది. అదే concept spelling ని బట్టి వేరే cost!
+</FunFact>
+
+<Quiz question="Text processing pipeline లో AI model కి text feed చేయడానికి ముందు tokenisation ఎందుకు చేస్తారు?" options="Text అందంగా కనిపించడానికి|Human-readable text ను model mathematically process చేయగల numerical token IDs గా convert చేయడానికి|Spelling mistakes check చేయడానికి|Text compress చేసి storage save చేయడానికి" answer="1" explanation="AI models numbers తో పని చేస్తాయి, letters తో కాదు. Tokenisation text ను token IDs గా convert చేస్తుంది — model లోపల matrix multiplication లాంటి mathematical operations లోకి feed చేయగల numerical representations." />
+
+## ముఖ్య అంశాలు
+
+- Strings characters sequences — text-based AI అంతటికీ ముడి పదార్థం.
+- **Tokenisation** text ను processable pieces గా split చేసి మానవ భాష మరియు machine learning మధ్య వారధి.
+- Pattern matching మరియు regex data clean చేయడానికి మరియు extract చేయడానికి అవసరమైన tools.
+- Classic string problems (reversal, palindromes, anagrams) AI text processing కి అవసరమైన thinking skills build చేస్తాయి.

@@ -1,0 +1,146 @@
+---
+title: "मशीनें कैसे सीखती हैं — Smart Software के पीछे का रहस्य"
+description: "जानिए कि मशीनें data से predictions और decisions लेने के तीन मुख्य तरीके क्या हैं"
+order: 2
+difficulty: "beginner"
+duration: 12
+icon: "🧠"
+published: true
+---
+
+# मशीनें कैसे सीखती हैं 🧠
+
+पिछले lesson में हमने सीखा कि AI एक ऐसा software है जो **अनुभव से सीखता है**। लेकिन यह असल में काम कैसे करता है? एक machine कुछ न जानने से लेकर आपका चेहरा पहचानने या अगला पसंदीदा गाना recommend करने तक कैसे पहुँचती है?
+
+चलिए smart software के पीछे का रहस्य explore करते हैं।
+
+---
+
+## 🔄 Learning का चक्र
+
+हर machine learning system एक ही basic cycle follow करता है:
+
+1. **Data** — Machine को ढेर सारे उदाहरण दिए जाते हैं
+2. **Patterns** — वो उन उदाहरणों में बार-बार आने वाले patterns ढूँढती है
+3. **Predictions** — उन patterns का इस्तेमाल करके नए data के बारे में अनुमान लगाती है
+4. **Feedback** — पता चलता है कि अनुमान सही थे या ग़लत
+5. **Improvement** — adjust करती है और फिर से कोशिश करती है, हर बार बेहतर होते हुए
+
+इसे खाना बनाना सीखने जैसा सोचिए। आप recipes follow करते हैं (data), notice करते हैं क्या काम करता है (patterns), अपने variations try करते हैं (predictions), result चखते हैं (feedback), और अगली बार मसाला adjust करते हैं (improvement)।
+
+<Illustration src="/images/lessons/how-machines-learn.svg" alt="Machine learning loop का circular diagram: Data से Pattern Recognition, फिर Prediction, फिर Feedback, फिर Improvement, जो वापस Pattern Recognition से जुड़ता है" caption="Machine learning का चक्र: data, patterns, predictions, feedback, और लगातार सुधार" />
+
+<FunFact>
+Google का spam email detect करने वाला AI हर मिनट 1 करोड़ से ज़्यादा संदिग्ध messages process करता है। हर बार जब कोई user किसी चीज़ को "spam" या "not spam" mark करता है, system सीखता है और अपने patterns update करता है — हर click के साथ और smart होता जाता है।
+</FunFact>
+
+---
+
+## 📚 Supervised Learning — Teacher के साथ सीखना
+
+Machine learning का सबसे आम प्रकार **supervised learning** कहलाता है। यह बिल्कुल वैसे काम करता है जैसे किसी teacher के साथ पढ़ाई करना जो आपको answers बता दे।
+
+यह कैसे काम करता है:
+
+1. Machine को हज़ारों उदाहरण **labels** (सही answers) के साथ दिए जाते हैं
+2. Machine इन labelled उदाहरणों का अध्ययन करती है
+3. वो वे patterns सीखती है जो input को सही label से जोड़ते हैं
+4. जब नया, बिना label वाला data दिखता है, तो वो answer predict करती है
+
+### Real-World Example: Email Spam Filter
+
+कल्पना कीजिए कि आप machine को 1,00,000 emails दिखाते हैं। हर एक को इंसानों ने **"spam"** या **"not spam"** label किया है।
+
+Machine patterns notice करती है:
+- "मुफ़्त पैसे जीतिए" वाली emails spam होती हैं
+- आपकी address book के contacts से आई emails genuine होती हैं
+- दर्जनों exclamation marks वाली emails अक्सर spam होती हैं
+
+काफ़ी उदाहरण पढ़ने के बाद, यह एक **बिल्कुल नई email** देखकर predict कर सकती है कि वो spam है या नहीं — बिना किसी specific rules लिखे।
+
+<ThinkAboutIt>
+Supervised learning labelled data पर निर्भर करता है — किसी को machine के सीखने के लिए सही answers देने होते हैं। आपके ख़्याल से यह सारा data कौन label करता है? बहुत से cases में, हज़ारों इंसानी workers ध्यान से images, text, और audio tag करते हैं। AI की "बुद्धिमत्ता" अक्सर बहुत सारी इंसानी मेहनत से शुरू होती है।
+</ThinkAboutIt>
+
+<Quiz question="Machine learning में 'supervised learning' का क्या मतलब है?" options="एक इंसान हर वक़्त computer पर नज़र रखता है|Machine labelled उदाहरणों से सीखती है जहाँ सही answer दिया गया हो|Machine एक supervisor के computer से connected होती है|AI दूसरे AI systems की निगरानी करता है" answer="1" explanation="Supervised learning में machine को ऐसे उदाहरणों पर train किया जाता है जिनके साथ सही answers (labels) होते हैं। जैसे एक student teacher की answer key से सीखता है, machine इन labelled उदाहरणों का इस्तेमाल करके ऐसे patterns खोजती है जो नए data पर लागू हो सकें।" />
+
+---
+
+## 🔍 Unsupervised Learning — छिपे Patterns ढूँढना
+
+अगर आपके पास answers न हों तो? अगर आपके पास बस data का एक बड़ा ढेर हो और आप चाहें कि machine ख़ुद दिलचस्प patterns ढूँढे?
+
+यही **unsupervised learning** है। कोई teacher नहीं, कोई labels नहीं, कोई सही answers नहीं। Machine data explore करती है और मिलती-जुलती चीज़ों को group करती है।
+
+### Real-World Example: Customer Grouping
+
+कल्पना कीजिए कि एक supermarket के पास लाखों customers का purchase data है, लेकिन कोई labels नहीं। AI data analyse करता है और natural groups खोजता है:
+
+- **Group A**: Organic सब्ज़ियाँ, free-range अंडे, और oat milk ख़रीदता है
+- **Group B**: Frozen pizzas, chips, और cold drinks ख़रीदता है
+- **Group C**: Diapers, baby food, और wet wipes ख़रीदता है
+
+किसी ने machine को नहीं बताया कि ये groups मौजूद हैं। इसने shopping data में patterns देखकर ख़ुद इन्हें ढूँढ लिया। अब supermarket हर group को relevant offers भेज सकता है।
+
+<Quiz question="Unsupervised learning, supervised learning से कैसे अलग है?" options="यह ज़्यादा powerful computers इस्तेमाल करता है|यह बिना labelled data के काम करता है, ख़ुद patterns ढूँढता है|यह सिर्फ़ images के साथ काम करता है, text के साथ नहीं|इसमें एक इंसान को लगातार निगरानी करनी पड़ती है" answer="1" explanation="मुख्य फ़र्क़ labels का है। Supervised learning ऐसे data इस्तेमाल करता है जहाँ सही answer दिया गया हो। Unsupervised learning बिना label वाले data के साथ काम करता है, और machine ख़ुद छिपे patterns और groups खोजती है।" />
+
+---
+
+## 🐕 Reinforcement Learning — Trial and Error
+
+तीसरा प्रकार है **reinforcement learning**, और यह काफ़ी हद तक कुत्ते को train करने जैसा काम करता है।
+
+जब कुत्ता command पर बैठता है, आप उसे treat देते हैं (reward)। जब वो आपका जूता चबाता है, आप "नहीं" कहते हैं (penalty)। समय के साथ कुत्ता सीख जाता है कि कौन से व्यवहार treats दिलाते हैं और कौन से मुसीबत।
+
+Reinforcement learning भी इसी तरह काम करता है:
+
+1. AI एक environment में **action** लेता है
+2. उसे **reward** (positive) या **penalty** (negative) मिलता है
+3. वो अपनी strategy adjust करता है ताकि समय के साथ **rewards maximise** हों
+4. वो लाखों अलग-अलग approaches try करता है जब तक सबसे अच्छा तरीका नहीं मिल जाता
+
+### Real-World Example: Game-Playing AI
+
+Google का AlphaGo ने प्राचीन board game Go खेलना **ख़ुद से लाखों games खेलकर** सीखा। हर जीत एक reward थी; हर हार एक penalty। इसने अजीब strategies try कीं, failures से सीखा, और आख़िरकार इतिहास के किसी भी इंसानी खिलाड़ी से बेहतर हो गया।
+
+यही approach robots को चलना सिखाने, self-driving cars को navigate करना सिखाने, और data centres में energy use optimise करने के लिए इस्तेमाल होता है।
+
+<FunFact>
+AlphaGo ने training के दौरान ख़ुद से 3 करोड़ से ज़्यादा games खेलीं। एक इंसान अगर रोज़ एक game खेले तो इतने games खेलने में लगभग 82,000 साल लगें। AI ने यह सारा अनुभव बस कुछ हफ़्तों में समेट लिया।
+</FunFact>
+
+---
+
+## 🗺️ तीनों प्रकारों की तुलना
+
+| प्रकार | Labels हैं? | उपमा | उदाहरण |
+|--------|------------|-------|---------|
+| **Supervised** | हाँ | Answer key के साथ पढ़ाई | Spam filters, medical diagnosis |
+| **Unsupervised** | नहीं | बिखरी हुई दराज़ को छाँटना | Customer grouping, anomaly detection |
+| **Reinforcement** | नहीं (rewards इस्तेमाल करता है) | Treats से कुत्ते को train करना | Game AI, robotics, self-driving cars |
+
+<ThinkAboutIt>
+सोचिए कि आपने साइकिल चलाना कैसे सीखा। क्या यह supervised था (किसी ने बिल्कुल बताया क्या करना है), unsupervised (आपने ख़ुद balance समझा), या reinforcement (आप गिरे, adjust किया, और फिर कोशिश की)? ज़्यादातर इंसानी learning असल में तीनों का मिश्रण होती है। AI की learning styles हमारे ख़ुद के सीखने के तरीके से प्रेरित हैं।
+</ThinkAboutIt>
+
+---
+
+## 🔑 मुख्य बातें
+
+- Machines एक cycle से सीखती हैं: data → patterns → predictions → feedback → improvement
+- **Supervised learning** labelled उदाहरणों का इस्तेमाल करता है — जैसे teacher के साथ पढ़ाई
+- **Unsupervised learning** बिना labels के data में छिपे patterns ढूँढता है
+- **Reinforcement learning** rewards और penalties इस्तेमाल करता है — जैसे कुत्ते को train करना
+- तीनों प्रकार आपके रोज़मर्रा के AI systems को power करते हैं
+
+<Quiz question="Machine learning का कौन सा प्रकार treats और commands से pet को train करने जैसा है?" options="Supervised learning|Unsupervised learning|Reinforcement learning|General learning" answer="2" explanation="Reinforcement learning rewards (treats) और penalties (corrections) के ज़रिए काम करता है, बिल्कुल pet को train करने जैसा। AI अलग-अलग actions try करता है, feedback पाता है, और धीरे-धीरे सीखता है कि कौन से व्यवहार सबसे अच्छे results देते हैं।" />
+
+<Callout>
+Machine learning समझने के लिए आपको mathematician या programmer होने की ज़रूरत नहीं है। इसके मूल में, यह **अनुभव से सीखने** के बारे में है — कुछ ऐसा जो हर इंसान जन्म से natural तरीके से करता है। AI बस यही काम data के साथ करता है, ज़िंदगी के अनुभवों की जगह।
+</Callout>
+
+---
+
+## आगे क्या?
+
+अब जब आप समझ गए हैं कि machines कैसे सीखती हैं, अगला lesson आपकी जेब में पहले से मौजूद AI को उजागर करेगा। आपका smartphone intelligent features से भरा है — चलिए उन्हें खोजते हैं।

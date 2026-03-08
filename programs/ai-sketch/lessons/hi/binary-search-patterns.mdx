@@ -1,0 +1,144 @@
+---
+title: "Binary Search Patterns — Sorted Arrays से आगे"
+description: "Binary search की सोच समझिए: search spaces, binary search on answer, और वो patterns जो दर्जनों interview problems में दिखते हैं।"
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+---
+
+## Classic Binary Search — Quick Review
+
+Binary search हर step में search space आधा कर देता है। Sorted array में n elements में से target **O(log n)** time में मिल जाता है।
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+Simple — लेकिन binary search की असली ताकत sorted arrays से काफ़ी आगे है।
+
+## Search Space का Concept
+
+Binary search तब काम करता है जब किसी range पर **monotonic condition** हो। "Array" का होना ज़रूरी नहीं — बस एक range `[lo, hi]` चाहिए और एक function जो किसी boundary पर `False` से `True` में बदले।
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>Binary search पहली बार 1946 में publish हुआ, लेकिन पहला bug-free version 1962 में लिखा गया — 16 साल off-by-one errors के!</FunFact>
+
+## Binary Search on Answer
+
+Array में ढूँढने की जगह **answer space** में search करो। सवाल पूछो: "क्या मैं result X हासिल कर सकता हूँ?" हाँ तो छोटा try करो; नहीं तो बड़ा।
+
+### Example: Koko Eating Bananas
+
+Koko के पास `n` piles of bananas हैं और `h` hours। **Minimum eating speed** ढूँढो जिससे वो time पर खत्म कर सके।
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+Answer space `[1, max(piles)]` है और condition monotonic है — ज़्यादा speed = कम hours।
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="Binary search minimum eating speed के लिए answer space को narrow कर रहा है" caption="Binary search on answer: हर iteration में feasible speed range सिकुड़ती जाती है।" />
+
+## Rotated Sorted Array
+
+एक sorted array किसी pivot पर rotate हुआ: `[4, 5, 6, 7, 0, 1, 2]`। एक half हमेशा sorted रहता है। `mid` को `lo` से compare करके decide करो कौन सा half sorted है, फिर check करो target उस sorted half में है या नहीं।
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] sorted है।
+Target 1 [4..7] में नहीं → right में search करो।
+```
+
+<Quiz question="Rotated sorted array [3,4,5,1,2] में जब mid=2 (value 5) हो, तो कौन सा half sorted है?" options="Right half [1,2]|Left half [3,4,5]|कोई half नहीं|दोनों halves" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, तो left half [3,4,5] sorted है। Check करो target उस range में है या नहीं; नहीं तो right में search करो।" />
+
+## First और Last Occurrence
+
+**First** occurrence ढूँढने के लिए, target मिलने पर रुको मत — `hi = mid` करो और left में search जारी रखो। **Last** के लिए `lo = mid + 1` करो और right में search करो।
+
+इन दो searches से target का **count** भी मिलता है: `last - first + 1`।
+
+## Peak Element
+
+वो element जो दोनों neighbours से बड़ा हो। Unsorted array में भी binary search काम करता है: अगर `nums[mid] < nums[mid + 1]`, तो peak right में है; वरना left में। O(log n)।
+
+<ThinkAboutIt>Peak-finding binary search से क्यों काम करती है जबकि array sorted नहीं है? Sorted order की जगह कौन सी property काम कर रही है?</ThinkAboutIt>
+
+## Search in a 2D Matrix
+
+अगर rows sorted हैं और हर row का पहला element पिछली row के last से बड़ा है, तो matrix को `m × n` elements की एक sorted array मानो। Index `k` को row `k // n`, column `k % n` में map करो।
+
+## बिना Library के Square Root
+
+सबसे बड़ा integer `x` ढूँढो जहाँ `x * x ≤ n`। Search space: `[0, n]`। Classic binary search on answer।
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## "Minimise the Maximum" Pattern
+
+"Split array largest sum" या "capacity to ship packages within D days" जैसे problems worst case **minimise** करने कहते हैं। Answer monotonic है: अगर capacity C काम करती है, तो C+1 भी करेगी। C पर binary search करो।
+
+<Quiz question="'Capacity to Ship Packages in D Days' में binary search का search space क्या होगा?" options="[0, total weight]|[max single weight, total weight]|[1, number of packages]|[D, total weight]" answer="1" explanation="Minimum possible capacity सबसे भारा single package है (वरना उसे ship नहीं कर सकते)। Maximum total weight है (एक दिन में सब ship करो)।" />
+
+## Universal Template
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+`hi = mid` vs `lo = mid` adjust करो — **first True** ढूँढ रहे हो या **last True**।
+
+<Quiz question="Size S के answer space पर binary search जिसमें O(n) feasibility check हो — time complexity क्या है?" options="O(n)|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="O(log S) iterations की binary search, हर iteration में O(n) check — कुल O(n log S)।" />
+
+<ThinkAboutIt>जब problem statement में "minimum possible maximum" या "maximum possible minimum" दिखे, तो दिमाग में सबसे पहले क्या आना चाहिए?</ThinkAboutIt>
+
+---
+
+## 📚 और पढ़ें
+
+- [NeetCode — Binary Search playlist](https://neetcode.io/roadmap) — easy से hard तक curated problems
+- [Tech Interview Handbook — Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) — patterns, tips और pitfalls
+- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) — progressive problem set

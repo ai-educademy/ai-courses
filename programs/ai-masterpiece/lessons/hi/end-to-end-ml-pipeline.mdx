@@ -1,0 +1,167 @@
+---
+title: "End-to-End ML Pipeline — Raw Data से Deployed Model तक"
+description: "पूरा ML lifecycle master करें: data collection, feature engineering, model training, deployment, और monitoring — सब reproducible pipeline code के रूप में।"
+order: 6
+difficulty: "advanced"
+duration: 22
+icon: "🔄"
+published: true
+---
+
+# End-to-End ML Pipeline — Raw Data से Deployed Model तक
+
+ज़्यादातर tutorials `model.fit()` पर रुक जाते हैं। Production में, ये बमुश्किल 20% काम है। ये lesson **पूरे ML lifecycle** को cover करता है — वही pipeline जो Spotify के recommendation engines, Stripe के fraud detection, और Google की search ranking को power करता है।
+
+## 🗺️ ML Lifecycle एक नज़र में
+
+<Illustration src="/images/lessons/end-to-end-ml-pipeline.svg" alt="Data ingestion से monitoring तक ML pipeline stages का diagram" caption="Production ML pipeline के आठ stages — हर एक potential failure point है।" />
+
+हर production ML system इन stages से गुज़रता है:
+
+1. **Data Collection** — APIs, databases, event streams, web scraping
+2. **Data Cleaning** — nulls handle करना, deduplication, type coercion
+3. **Feature Engineering** — raw signals को model-ready features में बदलना
+4. **Model Selection** — अपनी problem से match करने वाले architectures चुनना
+5. **Training** — GPU/CPU orchestration, hyperparameter tuning
+6. **Evaluation** — offline metrics, A/B testing, fairness audits
+7. **Deployment** — serving infrastructure, latency budgets
+8. **Monitoring** — drift detection, alerting, retraining trigger
+
+## 📦 Data Collection और Versioning
+
+Raw data आपकी foundation है। इसे source code की तरह treat करें — **सब कुछ version करें**।
+
+```bash
+# Initialise DVC in your repo
+dvc init
+dvc remote add -d storage s3://my-ml-data-bucket
+
+# Track a dataset
+dvc add data/transactions.csv
+git add data/transactions.csv.dvc .gitignore
+git commit -m "Track raw transaction dataset v1"
+dvc push
+```
+
+**DVC** (Data Version Control) आपको किसी भी historical dataset को `git checkout` करने देता है। Git tags के साथ मिलाकर, आप किसी भी point in time से कोई भी experiment reproduce कर सकते हैं।
+
+<FunFact>Netflix अपनी data pipelines के ज़रिए रोज़ाना 1.5 trillion से ज़्यादा events process करता है — हर second लगभग 17 million events जो उनके recommendation models को feed करते हैं।</FunFact>
+
+## 🛠️ Feature Engineering — जहाँ Competitions जीती जाती हैं
+
+Features algorithms से ज़्यादा matter करते हैं। शानदार features वाला gradient-boosted tree ख़राब features वाले deep neural network को हरा देता है।
+
+```python
+import pandas as pd
+
+df = pd.read_csv("data/transactions.csv", parse_dates=["timestamp"])
+
+# Temporal features
+df["hour"] = df["timestamp"].dt.hour
+df["is_weekend"] = df["timestamp"].dt.dayofweek >= 5
+
+# Aggregation features
+user_stats = df.groupby("user_id")["amount"].agg(["mean", "std", "count"])
+user_stats.columns = ["user_avg_amount", "user_std_amount", "user_txn_count"]
+df = df.merge(user_stats, on="user_id")
+
+# Ratio features
+df["amount_vs_avg"] = df["amount"] / df["user_avg_amount"]
+```
+
+<Quiz question="Tabular ML problems में कौन सी feature engineering technique आमतौर पर सबसे ज़्यादा predictive power देती है?" options="Categorical variables को one-hot encoding करना|Existing columns के बीच interaction और ratio features बनाना|सभी features को zero mean पर normalise करना|PCA dimensionality reduction apply करना" answer="1" explanation="Interaction और ratio features variables के बीच ऐसे relationships capture करते हैं जो linear models ख़ुद नहीं सीख सकते। Top Kaggle solutions इन्हें consistently highest-impact transformations बताते हैं।" />
+
+## 🧪 MLflow के साथ Experiment Tracking
+
+कभी track मत खोइए कि आपने क्या try किया। MLflow parameters, metrics, और artefacts automatically log करता है।
+
+```python
+import mlflow
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import f1_score
+
+mlflow.set_experiment("fraud-detection-v2")
+
+with mlflow.start_run(run_name="gbm-baseline"):
+    params = {"n_estimators": 500, "max_depth": 6, "learning_rate": 0.05}
+    mlflow.log_params(params)
+
+    model = GradientBoostingClassifier(**params)
+    model.fit(X_train, y_train)
+
+    score = f1_score(y_test, model.predict(X_test))
+    mlflow.log_metric("f1_score", score)
+    mlflow.sklearn.log_model(model, "model")
+```
+
+MLflow UI में runs compare करें, फिर best model को **Model Registry** में promote करें staging → production lifecycle tags के साथ।
+
+## 🚀 Pipeline as Code — Orchestration
+
+Manual steps टूटते हैं। अपनी pipeline को orchestration frameworks से code में encode करें:
+
+| Tool | किसके लिए बेस्ट | मुख्य ताक़त |
+|------|-----------------|------------|
+| **Kubeflow Pipelines** | Kubernetes-native ML | Existing K8s clusters पर scale होता है |
+| **Apache Airflow** | Complex DAG scheduling | Mature ecosystem, wide adoption |
+| **Prefect** | Modern Python workflows | Pythonic API, excellent error handling |
+| **ZenML** | MLOps abstraction | Stack-agnostic, कोई भी tool plug करें |
+
+<ThinkAboutIt>आपकी pipeline nightly retrain होती है लेकिन data hourly बदलता है। Retraining frequency decide करते वक़्त आप कौन से trade-offs weigh करेंगे — cost, staleness, infrastructure complexity?</ThinkAboutIt>
+
+## 🌐 Model Serving और Deployment
+
+आपके model को एक API चाहिए। दो dominant patterns:
+
+**REST API** — simple, HTTP-based, moderate throughput के लिए बढ़िया:
+```python
+# FastAPI model server
+from fastapi import FastAPI
+import joblib
+
+app = FastAPI()
+model = joblib.load("model.pkl")
+
+@app.post("/predict")
+async def predict(features: dict):
+    prediction = model.predict([list(features.values())])
+    return {"prediction": int(prediction[0])}
+```
+
+**gRPC** — binary protocol, REST से 2–10× faster, internal microservices और high-throughput scenarios के लिए ideal।
+
+### Canary Deployments
+
+कभी भी 100% traffic नए model पर मत भेजें। **Canary releases** इस्तेमाल करें: 5% → 25% → 50% → 100% route करें, हर step पर error rates monitor करें। Metrics degrade हों तो instantly roll back करें।
+
+<Quiz question="ML models के लिए canary deployments का PRIMARY advantage क्या है?" options="ये model training time कम करते हैं|ये metric degradation पर automatic rollback के साथ gradual rollout allow करते हैं|ये A/B testing से model accuracy improve करते हैं|ये model versioning की ज़रूरत ख़त्म कर देते हैं" answer="1" explanation="Canary deployments blast radius limit करते हैं। अगर नया model ख़राब perform करे, तो सिर्फ़ एक छोटा percentage users affected होते हैं, और wider damage से पहले roll back कर सकते हैं।" />
+
+## 📊 Monitoring और Feedback Loop
+
+Deployment finish line नहीं है — ये starting gun है। Monitor करें:
+
+- **Data drift** — input distributions training data से shift हो रही हैं
+- **Concept drift** — features और target के बीच relationship बदल रहा है
+- **Performance degradation** — accuracy/latency metrics गिर रहे हैं
+
+**Evidently AI**, **WhyLabs**, और **Arize** जैसे tools drift dashboards provide करते हैं। जब drift thresholds से ज़्यादा हो, fresh production data से automatic retraining trigger करें — feedback loop बंद करें।
+
+<Quiz question="एक fraud detection model की precision तीन months में 95% से 78% गिर जाती है, लेकिन input feature distributions नहीं बदलीं। ये किस type का drift है?" options="Data drift|Concept drift|Model drift|Feature drift" answer="1" explanation="जब input distributions stable रहें लेकिन performance degrade हो, तो features और target के बीच underlying relationship बदल गया है — ये concept drift है। Fraudsters ने अपने tactics evolve किए, लेकिन data का shape वही दिखता है।" />
+
+<ThinkAboutIt>आपकी monitoring Friday शाम को significant drift detect करती है। क्या आप automatic retrain trigger करेंगे, Monday की manual review का इंतज़ार करेंगे, या previous model version पर roll back करेंगे? कौन से factors आपके decision को influence करेंगे?</ThinkAboutIt>
+
+## 🎯 मुख्य Takeaways
+
+- **सब कुछ** version करें: code, data, models, और pipeline configs
+- Feature engineering architecture changes से ज़्यादा ROI deliver करती है
+- Pipelines को code में encode करें — manual steps technical debt हैं
+- Canary releases से deploy करें और relentlessly monitor करें
+- Feedback loop (production data → retraining) वो है जो demos को production systems से अलग करता है
+
+---
+
+## 📚 और पढ़ें
+
+- [Made With ML — MLOps Course](https://madewithml.com/) — पूरे lifecycle को cover करने वाला comprehensive, free MLOps curriculum
+- [Designing Machine Learning Systems by Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) — Production ML system design पर definitive book
+- [MLflow Documentation](https://mlflow.org/docs/latest/index.html) — Experiment tracking और model registry के लिए official guides

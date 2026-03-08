@@ -1,0 +1,186 @@
+---
+title: "Matrix- en Gridproblemen — BFS op Grids en Eilanden Tellen"
+description: "Beheers 2D-gridtraversal met BFS, DFS, flood fill, multi-source BFS, spiraaltraversal en dynamic programming op grids."
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+---
+
+## 2D-Arrays als Grids
+
+Een matrix is gewoon een 2D-array, maar in interviews stelt het vaak een **grid** voor — een kaart, een bord of een doolhof. Elke cel `grid[r][c]` is een knooppunt, en de buren zijn aangrenzende cellen.
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Rij `r`, kolom `c`, afmetingen `m × n`. Eenvoudig — maar de patronen die erop gebouwd worden zijn krachtig.
+
+## Richtingsarrays
+
+In plaats van vier aparte if-statements, gebruik een **richtingsarray**:
+
+```python
+# 4 richtingen (boven, onder, links, rechts)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8 richtingen (inclusief diagonalen)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # verwerk buur
+```
+
+Dit is het meest herbruikbare stukje code in gridproblemen.
+
+<FunFact>De richtingsarray-truc wordt soms "delta-encoding" genoemd. Het komt voor in game-ontwikkeling, beeldverwerking en competitive programming — overal waar grids worden gebruikt.</FunFact>
+
+## BFS op een Grid — Kortste Pad in een Doolhof
+
+BFS vindt het **kortste pad** in een ongewogen grid. Begin bij de bron, verken alle buren op afstand 1, dan afstand 2, enzovoort.
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS breidt zich laag voor laag uit over een grid-doolhof" caption="BFS verkent cellen laag voor laag en garandeert het kortste pad." />
+
+## DFS op een Grid — Flood Fill en Eilanden Tellen
+
+**Flood fill** (zoals het verfemmertje): vanaf een startcel verander je alle verbonden cellen met dezelfde kleur. DFS of BFS werken beide.
+
+**Aantal Eilanden:** scan het grid; als je een `1` vindt, voer DFS/BFS uit om het hele eiland als bezocht te markeren, en verhoog je teller.
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # markeer eiland
+                count += 1
+    return count
+```
+
+<Quiz question="Waarom markeren we bij 'Aantal Eilanden' cellen als bezocht tijdens DFS?" options="Om ze dubbel te tellen voor nauwkeurigheid|Om te voorkomen dat hetzelfde eiland meerdere keren wordt geteld|Om de eilanden te sorteren|Om het grootste eiland te vinden" answer="1" explanation="Bezochte cellen markeren voorkomt dat de buitenste lus een nieuwe DFS start op hetzelfde eiland, wat tot overtelling zou leiden." />
+
+## Rottende Sinaasappels — Multi-Source BFS
+
+Alle aanvankelijk rotte sinaasappels zijn bronnen. Zet ze allemaal in de queue op tijdstip 0, dan BFS. Elk niveau is één minuut. Als de queue leeg is, controleer of er verse sinaasappels overblijven.
+
+```
+Minuut 0:  [2, 1, 1]    2 = rot, 1 = vers
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minuut 4:  [2, 2, 2]    Alle bereikbare sinaasappels rot
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+Het kernidee: **multi-source BFS** start vanuit meerdere knooppunten tegelijk, niet één.
+
+<Quiz question="Wat maakt 'Rottende Sinaasappels' anders dan standaard BFS?" options="Het gebruikt DFS|Meerdere startpunten worden tegelijk in de queue geplaatst|Het vereist Dijkstra's algoritme|Het grid heeft gewogen randen" answer="1" explanation="Multi-source BFS plaatst alle rotte sinaasappels tegelijk in de queue als startfront, zodat het rotten zich vanuit elke bron parallel verspreidt." />
+
+## Spiraal-Matrixtraversal
+
+Loop de matrix in spiraalvolgorde: rechts → omlaag → links → omhoog, waarbij de grenzen na elke doorgang krimpen.
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Matrixrotatie (90°)
+
+Draai een N×N-matrix met de klok mee in-place: **transponeer** (wissel `[r][c]` met `[c][r]`), dan **keer elke rij om**.
+
+```
+Origineel → Transponeer → Keer rijen om
+1 2 3       1 4 7         7 4 1
+4 5 6  →    2 5 8    →    8 5 2
+7 8 9       3 6 9         9 6 3
+```
+
+<ThinkAboutIt>Om tegen de klok in te draaien, zou je eerst rijen omkeren en dan transponeren, of transponeren en dan kolommen omkeren? Probeer het op papier.</ThinkAboutIt>
+
+## Zoeken in een Gesorteerde 2D-Matrix
+
+Twee veelvoorkomende varianten:
+- **Rijen en kolommen onafhankelijk gesorteerd** — begin rechtsboven. Als het doel kleiner is, ga links; als groter, ga omlaag. O(m + n).
+- **Volledig gesorteerd** (elke rij begint waar de vorige eindigt) — behandel als platte gesorteerde array en binary search. O(log(m × n)).
+
+## Dynamic Programming op Grids
+
+**Unieke Paden:** tel paden van linksboven naar rechtsonder, alleen naar rechts of omlaag. `dp[r][c] = dp[r-1][c] + dp[r][c-1]`.
+
+**Minimale Padsom:** zelfde idee, maar kies het minimum inkomende pad.
+
+Dit zijn vaak de zachtste introductie tot 2D dynamic programming.
+
+<Quiz question="In het Unieke Paden-probleem, wat is dp[0][c] voor elke kolom c?" options="0|1|c|c + 1" answer="1" explanation="De eerste rij kan alleen bereikt worden door naar rechts te gaan, dus er is precies één pad naar elke cel in de eerste rij. dp[0][c] = 1." />
+
+## Gridpatronen Samenvatting
+
+| Patroon | Techniek | Kernprobleem |
+|---------|----------|--------------|
+| Kortste pad (ongewogen) | BFS | Doolhof kortste pad |
+| Verbonden componenten | DFS / BFS | Aantal Eilanden |
+| Multi-source verspreiding | Multi-source BFS | Rottende Sinaasappels |
+| Traversalvolgorde | Grenzen bijhouden | Spiraal Matrix |
+| In-place transformatie | Transponeer + omkeer | Afbeelding Draaien |
+| Paden tellen | DP | Unieke Paden |
+| Zoeken in gesorteerd grid | Trap / binary search | Zoek 2D Matrix |
+
+<ThinkAboutIt>Veel gridproblemen zijn eigenlijk verkapte graafproblemen. Wanneer zou je DFS verkiezen boven BFS op een grid, en wanneer andersom?</ThinkAboutIt>
+
+---
+
+## 📚 Verder Lezen
+
+- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — grid-DP-problemen met visuele uitleg
+- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — veelvoorkomende patronen en technieken
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — honderden oefenproblemen

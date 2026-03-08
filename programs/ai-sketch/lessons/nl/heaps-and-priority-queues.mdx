@@ -1,0 +1,132 @@
+---
+title: "Heaps en Priority Queues — Het Zwitsers Zakmes van Interviews"
+description: "Beheers heaps, de priority queue-abstractie en klassieke patronen zoals top-K-problemen en het samenvoegen van gesorteerde lijsten."
+order: 6
+difficulty: "intermediate"
+duration: 18
+icon: "⛰️"
+published: true
+---
+
+## Wat Is een Heap?
+
+Een **heap** is een complete binaire boom waarbij elke ouder voldoet aan de **heap-eigenschap** — altijd kleiner (min-heap) of altijd groter (max-heap) dan zijn kinderen. "Compleet" betekent dat elk niveau vol is, behalve mogelijk het laatste dat van links naar rechts wordt gevuld.
+
+```
+       1            Min-heap
+      / \
+     3   5
+    / \
+   7   4
+```
+
+Omdat de boom compleet is, slaan we hem op in een **platte array** — geen pointers nodig. Voor index `i`: linkerkind = `2i + 1`, rechterkind = `2i + 2`, ouder = `(i - 1) // 2`.
+
+## Min-Heap vs Max-Heap
+
+| Eigenschap | Min-Heap | Max-Heap |
+|------------|----------|----------|
+| Wortel | Kleinste element | Grootste element |
+| Ouder ≤ Kinderen? | ✅ Ja | ❌ Nee (≥) |
+| Extract geeft | Minimum | Maximum |
+
+Python's `heapq` is standaard een **min-heap**. Voor een max-heap negeer je waarden bij insert en negeer je opnieuw bij extract.
+
+## Insert en Extract — Stap voor Stap
+
+**Insert** — voeg toe aan het einde, dan **bubble up** (wissel met ouder zolang kleiner):
+
+```python
+import heapq
+h = [1, 3, 5, 7]
+heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
+```
+
+**Extract min** — wissel wortel met laatste element, verwijder laatste, dan **sift down** (wissel met kleinste kind):
+
+```python
+smallest = heapq.heappop(h)  # returns 1
+```
+
+Beide operaties kosten **O(log n)** omdat de boomhoogte log n is.
+
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Diagram van insert bubble-up en extract sift-down op een min-heap" caption="Insert bubbelt omhoog; extract-min zift omlaag." />
+
+## Heapify — Een Heap Bouwen in O(n)
+
+`heapq.heapify(arr)` zet een lijst **in-place** om naar een heap in O(n), niet O(n log n). Het werkt bottom-up door elke niet-bladknoop omlaag te ziften. Dit is een van de meest verrassende complexiteitsresultaten in de informatica.
+
+<FunFact>Een heap bouwen kost O(n), niet O(n log n). De meeste knooppunten zitten onderaan en hoeven nauwelijks omlaag te ziften — wiskundig komt het uit op lineaire tijd.</FunFact>
+
+## De Priority Queue-abstractie
+
+Een **priority queue** geeft je altijd toegang tot het item met de hoogste prioriteit. Heaps zijn de standaardimplementatie omdat zowel insert als extract O(log n) zijn. Gebruik er een wanneer je "geef me het beste item tot nu toe" nodig hebt.
+
+## Patroon: Top-K Problemen
+
+> "Vind de K grootste elementen in een ongesorteerde array."
+
+Houd een **min-heap van grootte K** bij. Voor elk element: push het; als de heap groter wordt dan K, pop het kleinste. Wat overblijft zijn de K grootste.
+
+```python
+import heapq
+def top_k(nums, k):
+    return heapq.nlargest(k, nums)
+```
+
+Tijd: **O(n log k)** — veel beter dan sorteren wanneer k ≪ n.
+
+<Quiz question="Je hebt de 5 hoogste scores nodig uit 1 miljoen entries. Welk heap-type en welke grootte?" options="Max-heap van grootte 1.000.000|Min-heap van grootte 5|Max-heap van grootte 5|Min-heap van grootte 1.000.000" answer="1" explanation="Een min-heap van grootte 5 bewaart de 5 grootste tot nu toe. De wortel (minimum van de 5) is de poortwachter — alles wat kleiner is wordt afgewezen." />
+
+## Patroon: K Gesorteerde Lijsten Samenvoegen
+
+Push de kop van elke lijst in een min-heap. Pop het kleinste, push dan het volgende element uit diezelfde lijst. Herhaal tot alle lijsten leeg zijn. Tijd: **O(N log K)** waarbij N het totaal aantal elementen is.
+
+## Patroon: Mediaan uit een Datastroom
+
+Onderhoud twee heaps: een **max-heap** voor de onderste helft en een **min-heap** voor de bovenste helft. Houd hun grootte in balans (maximaal 1 verschil). De mediaan zit altijd bij één of beide wortels.
+
+```
+Lower half (max-heap): [1, 2, 3]  ← max = 3
+Upper half (min-heap): [4, 5, 6]  ← min = 4
+Median = (3 + 4) / 2 = 3.5
+```
+
+<Quiz question="Bij de twee-heap mediaan-aanpak, waar gaat een nieuw element eerst naartoe?" options="Altijd de min-heap|Altijd de max-heap|Welke heap kleiner is|Vergelijk eerst met de max-heap wortel, herbalanceer daarna" answer="3" explanation="Push eerst naar de max-heap (onderste helft), verplaats dan indien nodig de wortel naar de min-heap, en herbalanceer de groottes. Zo blijft de heap-eigenschap behouden." />
+
+## Planningsproblemen
+
+Heaps blinken uit bij planning: vergaderruimtes (houd de vroegste eindtijd bij), taakplanning met cooldowns, of CPU-taakwachtrijen. Het kernidee: een heap houdt efficiënt bij "wat eindigt het eerst."
+
+<ThinkAboutIt>Als je zowel het minimum ALS het maximum efficiënt nodig hebt, volstaat een enkele heap niet. Welke combinatie van datastructuren zou je gebruiken?</ThinkAboutIt>
+
+## Wanneer Heap vs Gesorteerde Array vs BST
+
+| Behoefte | Beste keuze | Waarom |
+|----------|-------------|--------|
+| Herhaald min/max extractie | Heap | O(log n) insert + extract |
+| Statische data, eenmalig sorteren | Gesorteerde array | O(n log n) eenmalig, O(1) toegang |
+| Bereik-queries + rangorde-statistieken | Gebalanceerde BST | O(log n) voor alles |
+| Top-K uit een stroom | Heap van grootte K | O(n log k) totaal |
+
+<Quiz question="Welke operatie is O(1) in een min-heap?" options="Minimum vinden|Minimum verwijderen|Maximum vinden|Mediaan vinden" answer="0" explanation="Het minimum zit aan de wortel (index 0) van een min-heap, dus kijken is O(1). Verwijderen is O(log n) omdat je omlaag moet ziften." />
+
+## Complexiteitsoverzicht
+
+| Operatie | Tijd |
+|----------|------|
+| Insert | O(log n) |
+| Extract min/max | O(log n) |
+| Peek min/max | O(1) |
+| Heapify | O(n) |
+| Top-K uit n items | O(n log k) |
+
+<ThinkAboutIt>Waarom kun je geen binary search doen op een heap, ook al is die opgeslagen in een array? Denk na over welke gesorteerde volgorde de heap-eigenschap eigenlijk garandeert.</ThinkAboutIt>
+
+---
+
+## 📚 Verder Lezen
+
+- [NeetCode — Heap / Priority Queue](https://neetcode.io/roadmap) — visuele probleemroadmap met gegroepeerde heap-problemen
+- [Tech Interview Handbook — Heap](https://www.techinterviewhandbook.org/algorithms/heap/) — beknopte patronen en tips
+- [Python heapq docs](https://docs.python.org/3/library/heapq.html) — officiële modulereferentie met voorbeelden

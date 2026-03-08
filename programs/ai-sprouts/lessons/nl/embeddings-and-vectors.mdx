@@ -1,0 +1,142 @@
+---
+title: "Embeddings en Vectordatabases — Hoe AI Betekenis Begrijpt"
+description: "Ontdek hoe AI woorden en zinnen representeert als vectoren in een hoogdimensionale ruimte, waardoor semantisch zoeken, aanbevelingen en RAG mogelijk worden."
+order: 9
+difficulty: "intermediate"
+duration: 16
+icon: "🧭"
+published: true
+---
+
+# Embeddings — Hoe AI Betekenis Begrijpt
+
+Na tokenisatie is elk token slechts een getal — een index in een vocabulaire. Maar index 4.821 vertelt het model niets over *betekenis*. Hoe weet AI dat "koning" en "koningin" verwant zijn, of dat "bank" zowel een zitmeubel als een financiële instelling kan betekenen? Het antwoord is **embeddings**.
+
+## Het Probleem met One-Hot Encoding
+
+De naïeve aanpak representeert elk woord als een vector met één `1` en duizenden `0`-en. "Kat" zou `[0, 0, 1, 0, ..., 0]` kunnen zijn en "hond" `[0, 0, 0, 1, ..., 0]`.
+
+Dit heeft twee fatale gebreken:
+
+- **Geen gelijkenis:** "Kat" en "hond" liggen even ver van elkaar als "kat" en "democratie." De codering bevat nul semantische informatie.
+- **Enorme omvang:** Met een vocabulaire van 50.000 woorden heeft elk woord een vector van 50.000 dimensies nodig. Enorm inefficiënt.
+
+## Woordembeddings — Betekenis als Meetkunde
+
+Een **embedding** koppelt elk token aan een dichte vector van bijvoorbeeld 256 of 768 dimensies. In tegenstelling tot one-hot vectoren worden deze dimensies geleerd tijdens het trainen en coderen ze betekenis.
+
+Woorden die in vergelijkbare contexten worden gebruikt, komen dicht bij elkaar in deze ruimte. "Puppy" landt dicht bij "kitten." "Londen" landt dicht bij "Parijs." De meetkunde van de ruimte *is* de betekenis.
+
+<Illustration src="/images/lessons/embeddings-and-vectors.svg" alt="Een 2D-projectie van woordembeddings met clusters: dieren (kat, hond, vis) gegroepeerd, steden (Londen, Parijs, Tokio) gegroepeerd, en de beroemde koning-koningin-analogie als vectorberekening" caption="In de embeddingsruimte wordt betekenis meetkunde. Vergelijkbare concepten clusteren samen." />
+
+## Word2Vec — Koning − Man + Vrouw = Koningin
+
+Het **Word2Vec**-artikel uit 2013 toonde iets opmerkelijks aan. Getraind op grote tekstcorpora vertonen de geleerde vectoren rekenkundige relaties:
+
+> `vector("koning") − vector("man") + vector("vrouw") ≈ vector("koningin")`
+
+De richting van "man" naar "vrouw" vangt het concept van geslacht. Het toevoegen ervan aan "koning" leidt naar "koningin." Dit is niet geprogrammeerd — het ontstaat uit patronen in taal.
+
+Andere voorbeelden: `Parijs − Frankrijk + Italië ≈ Rome`, `groter − groot + klein ≈ kleiner`.
+
+<FunFact>
+Word2Vec werd in 2013 gecreëerd door Tomáš Mikolov bij Google. Het artikel heeft meer dan 40.000 citaties en wordt beschouwd als een van de meest invloedrijke NLP-artikelen ooit. Het toonde aan dat eenvoudige neurale netwerken die op ruwe tekst werden getraind, verbazingwekkende semantische relaties konden leren.
+</FunFact>
+
+## Embeddingdimensies
+
+Moderne modellen gebruiken verschillende embeddingsgroottes:
+
+| Model | Embeddingdimensies |
+|-------|-------------------|
+| Word2Vec | 100–300 |
+| BERT | 768 |
+| GPT-3 | 12.288 |
+| OpenAI text-embedding-3-large | 3.072 |
+
+Meer dimensies vangen fijnere onderscheidingen, maar vereisen meer geheugen en rekenkracht. Zie het als het beschrijven van een persoon: 3 dimensies (lengte, gewicht, leeftijd) geven een ruwe schets; 768 dimensies schetsen een gedetailleerd portret.
+
+<Quiz question="Wat demonstreert de beroemde vergelijking 'koning − man + vrouw ≈ koningin'?" options="Dat AI kan rekenen|Dat woordembeddings semantische relaties vastleggen als meetkundige richtingen|Dat koninginnen belangrijker zijn dan koningen|Dat Word2Vec woordparen uit het hoofd leert" answer="1" explanation="De vergelijking laat zien dat betekenisvolle concepten zoals geslacht worden gecodeerd als consistente richtingen in de embeddingsruimte. Het aftrekken van 'man' en optellen van 'vrouw' doorloopt de geslachtsrichting en transformeert 'koning' in 'koningin.'" />
+
+## Van Woorden naar Zinnen
+
+Woordembeddings representeren individuele woorden, maar we moeten vaak hele zinnen of documenten vergelijken. **Zinsembeddings** (van modellen zoals Sentence-BERT of de embedding-API van OpenAI) comprimeren een hele passage tot één enkele vector.
+
+"Hoe reset ik mijn wachtwoord?" en "Ik ben mijn inloggegevens vergeten" zouden zeer vergelijkbare zinsembeddings hebben, ook al delen ze bijna geen woorden. De embedding vangt de *intentie*, niet alleen het vocabulaire.
+
+## Gelijkenis Meten — Cosinus-Gelijkenis
+
+Om twee embeddings te vergelijken, gebruiken we **cosinus-gelijkenis** — de cosinus van de hoek tussen twee vectoren. Het varieert van −1 (tegenovergesteld) tot +1 (identieke richting).
+
+- "Blij" en "vrolijk": cosinus ≈ 0,85 (zeer vergelijkbaar).
+- "Blij" en "tafel": cosinus ≈ 0,10 (niet gerelateerd).
+- "Liefde" en "haat": cosinus zou ongeveer ≈ 0,40 kunnen zijn (gerelateerd maar tegengesteld).
+
+Cosinus-gelijkenis negeert de grootte van de vector en richt zich puur op de richting — en daar zit de betekenis.
+
+<ThinkAboutIt>
+"Liefde" en "haat" zijn tegengestelden in betekenis, maar hebben mogelijk een matige cosinus-gelijkenis omdat ze in vergelijkbare contexten voorkomen (emoties, relaties). Wat zegt dit over de beperkingen van embeddings die puur op woordco-occurrentie zijn getraind?
+</ThinkAboutIt>
+
+## Vectordatabases — Zoeken op Betekenis
+
+Een **vectordatabase** slaat miljoenen embeddings op en haalt de meest vergelijkbare razendsnel op. In plaats van zoeken op trefwoorden ("vind documenten met 'machine learning'"), zoek je op *betekenis* ("vind documenten over AI-onderwijs").
+
+Populaire vectordatabases zijn onder andere:
+
+- **Pinecone** — volledig beheerd, schaalt moeiteloos.
+- **Weaviate** — open-source met hybride zoeken (vectoren + trefwoorden).
+- **ChromaDB** — lichtgewicht, ideaal voor prototyping.
+- **pgvector** — voegt vectorzoeken toe aan PostgreSQL.
+
+Deze databases gebruiken algoritmen zoals **HNSW** (Hierarchical Navigable Small World) om miljarden vectoren in milliseconden te doorzoeken.
+
+<Quiz question="Welk voordeel heeft vectorzoeken ten opzichte van traditioneel zoeken op trefwoorden?" options="Het is altijd sneller|Het vindt semantisch vergelijkbare inhoud, zelfs als de exacte trefwoorden verschillen|Het vereist minder opslagruimte|Het werkt zonder database" answer="1" explanation="Vectorzoeken vergelijkt betekenis (via embeddings) in plaats van exacte woorden. Een zoekopdracht over 'auto-onderhoud' kan documenten over 'voertuigservice' matchen omdat hun embeddings vergelijkbaar zijn, zelfs zonder gedeelde trefwoorden." />
+
+## RAG — Retrieval-Augmented Generation
+
+**RAG** is een van de belangrijkste patronen in moderne AI. Het combineert vectorzoeken met taalmodellen:
+
+1. **Embed** je documenten en sla ze op in een vectordatabase.
+2. Wanneer een gebruiker een vraag stelt, **embed** de zoekopdracht.
+3. **Haal op** de meest vergelijkbare documentfragmenten via vectorzoeken.
+4. **Voer** die fragmenten als context in bij het taalmodel.
+5. Het model **genereert** een antwoord dat is gegrond in jouw data.
+
+RAG stelt taalmodellen in staat om vragen te beantwoorden over *jouw* specifieke data — bedrijfsdocumenten, productcatalogi, onderzoeksartikelen — zonder hertraining. Het vermindert hallucinaties drastisch omdat het model echte bronnen heeft om naar te verwijzen.
+
+<Quiz question="Welke rol speelt de vectordatabase in een RAG-systeem?" options="Het genereert het uiteindelijke antwoord|Het traint het taalmodel|Het haalt relevante context op door documentfragmenten te vinden die het meest vergelijkbaar zijn met de vraag van de gebruiker|Het slaat de gewichten van het model op" answer="2" explanation="De vectordatabase is de ophaalmotor in RAG. Het vindt documentfragmenten waarvan de embeddings het dichtst bij de embedding van de zoekopdracht liggen, en voorziet het taalmodel van relevante context om een nauwkeurig, onderbouwd antwoord te genereren." />
+
+## Praktische Toepassingen
+
+Embeddings vormen de basis van talloze systemen in de praktijk:
+
+- **Semantisch zoeken** — vind relevante resultaten ongeacht de exacte bewoordingen.
+- **Aanbevelingen** — "gebruikers die dit leuk vonden, vonden ook..." via embedding-gelijkenis.
+- **Clustering** — groepeer automatisch vergelijkbare supporttickets, reviews of documenten.
+- **Anomaliedetectie** — spot uitschieters die ver van elk cluster liggen.
+- **Duplicaatdetectie** — vind bijna-identieke inhoud in grote corpora.
+
+<FunFact>
+Spotify gebruikt audio-embeddings om nummers aan te bevelen. Elk nummer wordt geëmbed op basis van zijn akoestische eigenschappen, en aanbevelingen komen van het vinden van nabijgelegen vectoren — nummers die "vergelijkbaar klinken" in de embeddingsruimte.
+</FunFact>
+
+<ThinkAboutIt>
+Als je elk product in een webwinkel zou embedden, hoe zou je dan een aanbevelingssysteem kunnen bouwen dat zegt "klanten die dit item bekeken, vonden misschien ook..." zonder afhankelijk te zijn van aankoopgeschiedenis?
+</ThinkAboutIt>
+
+## Belangrijkste Punten
+
+- **Embeddings** zijn dichte vectorrepresentaties waarbij betekenis meetkunde wordt.
+- Vergelijkbare concepten clusteren samen; relaties verschijnen als richtingen.
+- **Cosinus-gelijkenis** meet hoe dicht twee betekenissen bij elkaar liggen.
+- **Vectordatabases** maken zoeken op betekenis mogelijk op enorme schaal.
+- **RAG** combineert vectorzoeken met taalmodellen om vragen te beantwoorden op basis van je eigen data.
+
+---
+
+## 📚 Verder Lezen
+
+- [Jay Alammar — The Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/) — Visuele, intuïtieve uitleg van hoe woordembeddings werken
+- [Pinecone Learning Centre — What Are Embeddings?](https://www.pinecone.io/learn/vector-embeddings/) — Praktische gids over embeddings en vectorzoeken
+- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings) — Hoe je embeddings genereert en gebruikt met de OpenAI API

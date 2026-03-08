@@ -1,0 +1,160 @@
+---
+title: "Recursie en Backtracking — Puzzels Oplossen als een Computer"
+description: "Begrijp recursie vanaf de call stack, en leer het backtracking-sjabloon waarmee je permutaties, N-Queens en meer oplost."
+order: 8
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## Recursie — De Basis
+
+Een recursieve functie roept zichzelf aan met een **kleinere** versie van het probleem, totdat het een **basisgeval** bereikt dat de keten stopt.
+
+Elke recursie heeft twee dingen nodig:
+1. **Basisgeval** — de eenvoudigste invoer waarbij je direct retourneert.
+2. **Recursief geval** — splits het probleem op en roep jezelf aan.
+
+```python
+def factorial(n):
+    if n <= 1:        # basisgeval
+        return 1
+    return n * factorial(n - 1)  # recursief geval
+```
+
+## De Call Stack — Gevisualiseerd
+
+Elke recursieve aanroep pusht een frame op de call stack. Wanneer het basisgeval retourneert, worden frames in omgekeerde volgorde ge-popt.
+
+```
+factorial(4)
+  → factorial(3)
+    → factorial(2)
+      → factorial(1) → geeft 1 terug
+    ← geeft 2 terug
+  ← geeft 6 terug
+← geeft 24 terug
+```
+
+Als er geen basisgeval is, loopt de stack over. Python's standaard recursielimiet is 1.000 frames.
+
+<FunFact>Python's standaard recursielimiet van 1.000 is bewust conservatief. Je kunt het verhogen met sys.setrecursionlimit(), maar iteratieve oplossingen hebben doorgaans de voorkeur bij diepe recursie.</FunFact>
+
+## Fibonacci — De Klassieke Valkuil
+
+De naïeve recursieve Fibonacci is O(2ⁿ) omdat het dezelfde deelproblemen herberekent. Memoisatie lost dit op in O(n) tijd en ruimte.
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+<Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Recursieboom voor Fibonacci met herhaalde deelproblemen" caption="Zonder memoisatie maakt fib(5) 15 aanroepen. Met memoisatie slechts 5." />
+
+## Backtracking — Probeer Alles, Maak dan Ongedaan
+
+Backtracking is recursie met een twist: je **maakt een keuze**, recurseert, en **maakt de keuze ongedaan** voordat je de volgende optie probeert. Zie het als het verkennen van een doolhof — loop vooruit, loop vast, loop terug, probeer het volgende pad.
+
+### Het Backtracking-Sjabloon
+
+```python
+def backtrack(state, choices):
+    if is_solution(state):
+        result.append(state.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            state.add(choice)       # kies
+            backtrack(state, ...)   # verken
+            state.remove(choice)    # maak ongedaan
+```
+
+Dit drieledige patroon — **kiezen, verkennen, ongedaan maken** — is de ruggengraat van vrijwel elk backtracking-probleem.
+
+<Quiz question="Waarom maken we de keuze ongedaan na de recursieve aanroep in het backtracking-sjabloon?" options="Om geheugen vrij te maken|Om de state te herstellen voor de volgende verkenningstak|Omdat de keuze fout was|Om stack overflow te voorkomen" answer="1" explanation="De keuze ongedaan maken herstelt de state zodat de volgende iteratie van de lus een andere tak kan verkennen vanuit hetzelfde startpunt." />
+
+## Permutaties
+
+Genereer alle volgordes van `[1, 2, 3]`. Op elk niveau kies een ongebruikt getal, recurseer, en maak dan de keuze ongedaan.
+
+```
+         []
+      /   |   \
+    [1]  [2]  [3]
+    / \   ...
+ [1,2] [1,3]
+   |      |
+[1,2,3] [1,3,2]  ... (6 totaal)
+```
+
+Er zijn **n!** permutaties, dus de tijdcomplexiteit is O(n × n!).
+
+## Combinaties en Deelverzamelingen
+
+**Combinaties (n boven k):** bij elk element neem je het op of sla je het over, maar recurseer alleen vooruit om duplicaten te vermijden.
+
+**Deelverzamelingen:** zelfde idee zonder beperking — elk knooppunt in de recursieboom is een geldige deelverzameling. Er zijn **2ⁿ** deelverzamelingen.
+
+<ThinkAboutIt>Permutaties leveren n! resultaten op terwijl deelverzamelingen 2ⁿ opleveren. Voor n=10 is dat 3.628.800 vs 1.024 — een enorm verschil. Waarom?</ThinkAboutIt>
+
+## N-Queens — Stap voor Stap
+
+Plaats N koninginnen op een N×N-bord zodat geen enkele de ander aanvalt. Voor N=4:
+
+```
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**Strategie:** plaats één koningin per rij. Probeer voor elke rij elke kolom. Controleer kolom-, hoofddiagonaal- en antidiagonaalconflicten. Als veilig, plaats en recurseer naar de volgende rij. Als vast, backtrack.
+
+Houd conflicten bij met drie sets: `cols`, `diag` (rij − kolom) en `anti_diag` (rij + kolom).
+
+<Quiz question="Hoe controleren we diagonaalconflicten efficiënt bij het N-Queens-probleem?" options="Controleer de positie van elke geplaatste koningin|Gebruik sets die (rij-kolom) en (rij+kolom) bijhouden|Scan het hele bord elke keer|Gebruik een 2D-boolean-matrix" answer="1" explanation="Koninginnen op dezelfde diagonaal delen dezelfde (rij-kolom) waarde; dezelfde antidiagonaal delen (rij+kolom). Sets bieden O(1) opzoeking." />
+
+## Sudoku-Oplosser — Concept
+
+Vind een lege cel, probeer cijfers 1–9. Controleer voor elk cijfer rij-, kolom- en 3×3-vakbeperkingen. Als geldig, plaats en recurseer. Als geen cijfer werkt, maak ongedaan en backtrack. De snoeiing door beperkingen maakt het haalbaar ondanks de enorme zoekruimte.
+
+## Woordzoeker in een Grid
+
+Gegeven een 2D-bord met letters en een doelwoord: start vanuit elke cel en DFS in vier richtingen, één karakter per keer matchend. Markeer cellen als bezocht tijdens recursie en **demarkeer bij backtrack** om andere paden mogelijk te maken.
+
+## Tijdcomplexiteit van Backtracking
+
+De kosten hangen af van de **vertakkingsfactor** (keuzes per stap) en **diepte** (stappen tot een oplossing). Voor b vertakkingen en d diepte: O(bᵈ).
+
+| Probleem | Vertakking | Diepte | Complexiteit |
+|----------|------------|--------|-------------|
+| Permutaties | n, n−1, … | n | O(n!) |
+| Deelverzamelingen | 2 | n | O(2ⁿ) |
+| N-Queens | ~n | n | O(n!) slechtste geval |
+
+## Snoeiing voor Optimalisatie
+
+**Snoeiing** (pruning) betekent het overslaan van takken die je weet dat ze falen. Voorbeelden:
+- N-Queens: sla bezette kolommen over.
+- Sudoku: sla cijfers over die beperkingen schenden.
+- Combinatiesom: sla over als resterende som < 0.
+
+Goede snoeiing kan een onpraktische zoekopdracht omzetten in een snelle.
+
+<Quiz question="Wat doet snoeiing (pruning) in een backtracking-algoritme?" options="Vermindert de recursiediepte|Elimineert takken die niet tot een geldige oplossing kunnen leiden|Zet recursie om naar iteratie|Sorteert de keuzes voor verkenning" answer="1" explanation="Snoeiing kapt delen van de zoekboom vroegtijdig af, waardoor verspild werk aan paden die gegarandeerd falen wordt voorkomen." />
+
+<ThinkAboutIt>Veel backtracking-problemen kunnen ook met dynamic programming worden opgelost. Wat is het belangrijkste verschil in aanpak tussen de twee?</ThinkAboutIt>
+
+---
+
+## 📚 Verder Lezen
+
+- [NeetCode — Backtracking playlist](https://neetcode.io/roadmap) — samengestelde problemen met video-uitleg
+- [Tech Interview Handbook — Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) — patronen en veelvoorkomende valkuilen
+- [LeetCode Backtracking studieplan](https://leetcode.com/tag/backtracking/) — progressieve probleemset

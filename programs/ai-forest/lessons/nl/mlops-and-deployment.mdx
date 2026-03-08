@@ -1,0 +1,131 @@
+---
+title: "MLOps en Deployment — Modellen van Notebook naar Productie"
+description: "Leer de volledige MLOps-levenscyclus: modelregisters, CI/CD voor ML, containerisatie, serving-infrastructuur, driftmonitoring en kostenoptimalisatie op schaal."
+order: 6
+difficulty: "advanced"
+duration: 18
+icon: "⚙️"
+published: true
+---
+
+# MLOps en Deployment
+
+Een Jupyter notebook met 94% nauwkeurigheid is geen product. Op het moment dat je de laptop dichtklapt, bedient dat model niemand meer. MLOps is de discipline die de kloof overbrugt tussen experimentatie en productie — en het is waar de meeste AI-teams het hardst mee worstelen.
+
+## Waarom Notebooks geen Productie zijn
+
+Notebooks moedigen verschrikkelijke engineeringgewoontes aan: verborgen state door het in verkeerde volgorde uitvoeren van cellen, hardgecodeerde bestandspaden, geen dependency management en nul reproduceerbaarheid. Een model dat in een notebook is getraind, kan niet automatisch opnieuw worden getraind wanneer er nieuwe data binnenkomt, kan niet worden teruggedraaid wanneer het faalt, en kan niet worden gemonitord op degradatie.
+
+Productie-ML vereist **geversieerde code, geversieerde data, geversieerde modellen en geautomatiseerde pipelines**. Al het andere is slechts een demo.
+
+## De MLOps-levenscyclus
+
+De MLOps-levenscyclus is een continue loop, geen lineaire pipeline. Elke fase voedt de andere, en de volwassenheid van je organisatie bepaalt hoe geautomatiseerd deze overgangen zijn.
+
+Google definieert drie MLOps-volwassenheidsniveaus:
+- **Niveau 0** — Handmatig, scriptgestuurd proces. Data scientists dragen modellen over aan engineers.
+- **Niveau 1** — Geautomatiseerde trainingspipelines. Hertraining wordt automatisch getriggerd bij nieuwe data.
+- **Niveau 2** — Volledige CI/CD voor ML. Code-, data- en modelwijzigingen gaan allemaal door geautomatiseerde pipelines.
+
+De fases van de loop:
+
+1. **Data-ingestie en -validatie** — Inkomende data verzamelen, opschonen en valideren tegen schema's
+2. **Feature engineering** — Ruwe data transformeren naar modelklare features via een feature store
+3. **Training** — Reproduceerbare trainingsjobs uitvoeren met bijgehouden hyperparameters
+4. **Evaluatie** — Kandidaatmodellen vergelijken met baselines op apart gehouden testsets
+5. **Register** — Goedgekeurde modellen opslaan met metadata, lineage en goedkeuringsstatus
+6. **Deployment** — Het model serveren achter een API met canary of blue-green rollout
+7. **Monitoring** — Voorspelkwaliteit, latentie, doorvoer en data drift bijhouden
+8. **Hertraining** — Nieuwe trainingsruns triggeren wanneer prestaties afnemen
+
+<Illustration src="/images/lessons/mlops-and-deployment.svg" alt="MLOps-levenscyclusdiagram dat de continue loop toont van data naar deployment naar monitoring" caption="De MLOps-levenscyclus is een loop — monitoring voedt terug naar hertraining." />
+
+## Modelregisters
+
+Een modelregister is het versiebeheersysteem voor je getrainde modellen. Tools zoals **MLflow**, **Weights & Biases** en **Neptune** laten je modelartefacten opslaan samen met hun trainingsmetrieken, hyperparameters, datasetversies en promotiestatus (staging → productie → gearchiveerd).
+
+Het register beantwoordt cruciale vragen: *Welk model is momenteel in productie? Op welke data is het getraind? Wie heeft het goedgekeurd? Wat waren de evaluatiemetrieken?*
+
+<Quiz question="Wat is het primaire doel van een modelregister?" options="Trainingsdata opslaan|Getrainde modellen versiebeheren en volgen met metadata|Hyperparametertuning uitvoeren|Modellen serveren aan eindgebruikers" answer="1" explanation="Een modelregister versiebeheert getrainde modellen samen met hun metadata — metrieken, parameters, lineage en promotiestatus — wat reproduceerbaarheid en governance mogelijk maakt." />
+
+## CI/CD voor Machine Learning
+
+Traditionele CI/CD test code. ML CI/CD moet drie dingen testen: **code, data en modellen**.
+
+- **Codetests** — Unit tests voor feature engineering-logica, datatransformaties en API-contracten
+- **Datatests** — Schemavalidatie, distributiecontroles (zit de nieuwe data binnen verwachte bereiken?) en compleetheidscontroles (geen ontbrekende kolommen)
+- **Modeltests** — Prestatiedrempels op validatiesets, latentiebenchmarks, biasmetrieken en vergelijking met het huidige productiemodel
+
+Een pull request die een featurepipeline wijzigt, moet automatisch hertraining en evaluatie triggeren. Als het nieuwe model slechter presteert dan de baseline, wordt de PR geblokkeerd.
+
+## Containerisatie voor ML
+
+Docker is onmisbaar voor productie-ML. Je trainingsomgeving en servingomgeving moeten identiek zijn — het "het werkt op mijn machine"-probleem wordt versterkt wanneer GPU-drivers, CUDA-versies en Python-dependencies allemaal moeten matchen.
+
+Een typisch ML Dockerfile laagt: basis CUDA-image → Python-dependencies → modelartefacten → serving-framework. Multi-stage builds houden de uiteindelijke image klein door de buildomgeving te scheiden van de runtime.
+
+Kernpraktijken voor ML-containerisatie:
+- **Pin elke dependency** — Gebruik exacte versies in `requirements.txt`, geen bereiken
+- **Gebruik digest-gebaseerde basisimages** — `nvidia/cuda@sha256:...` in plaats van `:latest`
+- **Scheid training- en servingimages** — Trainingimages hebben compilers en devtools nodig; servingimages alleen de runtime
+- **Scan op kwetsbaarheden** — ML-images erven CVE's van diepe dependencytrees
+
+<FunFact>De NVIDIA CUDA basisimage alleen al is meer dan 3 GB. Productieteams besteden regelmatig dagen aan het optimaliseren van Docker-images om cold-starttijden en containerregistrykosten te verlagen.</FunFact>
+
+## Serving-infrastructuur
+
+Hoe je een model serveert, hangt af van je latentie- en doorvoervereisten:
+
+| Tool | Het beste voor | Kernfunctie |
+|------|---------------|-------------|
+| **TorchServe** | PyTorch-modellen | Ingebouwde batching, modelversiebeheer |
+| **Triton Inference Server** | Multi-framework, GPU | Dynamische batching, gelijktijdige modeluitvoering |
+| **vLLM** | Large language models | PagedAttention, continue batching |
+| **TensorFlow Serving** | TF/Keras-modellen | gRPC + REST, automatisch modelherladen |
+| **BentoML** | Elk framework | Pythonische API, ingebouwde containerisatie |
+
+Voor LLM-serving specifiek is **vLLM** de industriestandaard geworden omdat het PagedAttention-mechanisme GPU-geheugenverspilling tot 90% vermindert vergeleken met naïeve serving.
+
+<Quiz question="Waarom is vLLM de voorkeurs-servingoplossing geworden voor large language models?" options="Het ondersteunt alleen PyTorch-modellen|Het PagedAttention-mechanisme vermindert GPU-geheugenverspilling drastisch|Het is de enige beschikbare open-source optie|Het vereist geen GPU-hardware" answer="1" explanation="vLLM's PagedAttention beheert het KV cache-geheugen efficiënt door ideeën te lenen van virtueel geheugen in besturingssystemen, waardoor geheugenverspilling tot 90% wordt verminderd." />
+
+## Modeldrift Monitoren
+
+Een model dat nauwkeurig was bij deployment zal na verloop van tijd degraderen. **Data drift** treedt op wanneer de invoerdistributie verandert (bijv. klantgedrag verschuift na een pandemie). **Concept drift** treedt op wanneer de relatie tussen invoer en uitvoer verandert (bijv. fraudepatronen evolueren).
+
+Monitor deze signalen:
+- **Voorspellingsdistributie** — Verschuiven de uitvoeren? Meer high-confidence voorspellingen dan gebruikelijk?
+- **Featuredistributies** — Statistische tests (KS test, PSI) die huidige data vergelijken met trainingsdata
+- **Ground truth feedback** — Wanneer labels binnenkomen, bereken live accuracy/F1 en vergelijk met de baseline
+- **Latentie en foutenpercentages** — Infrastructuurgezondheid beïnvloedt modelkwaliteit indirect
+
+<ThinkAboutIt>Je e-commerce aanbevelingsmodel is vóór de pandemie getraind. Winkelpatronen na de pandemie zijn compleet anders. Hoe zou je deze drift automatisch detecteren, en hoe zou je hertrainingsstrategie eruitzien?</ThinkAboutIt>
+
+## Feature Stores
+
+Een feature store is een gecentraliseerde opslagplaats voor featuredefinities en -waarden, gedeeld tussen training en serving. Tools zoals **Feast**, **Tecton** en **Hopsworks** lossen het kritieke probleem van **training-serving skew** op — wanneer features anders worden berekend tijdens training versus inferentie.
+
+Feature stores bieden: een offline store (batchfeatures voor training), een online store (lage-latentiefeatures voor serving) en een register (featuredefinities, eigenaarschap, lineage).
+
+## Batch vs Real-Time Inferentie
+
+Niet elke voorspelling hoeft in real time te gebeuren. Het kostenverschil is enorm:
+
+- **Batch-inferentie** — Voorspellingen uitvoeren op een schema (elk uur, dagelijks). Goedkoop, gebruikt spot-instances. Ideaal voor aanbevelingen, risicoscoring, rapportgeneratie.
+- **Real-time inferentie** — Sub-seconde voorspellingen via API. Duur, vereist altijd-actieve GPU-instances. Vereist voor chatbots, fraudedetectie, autonome systemen.
+- **Near-real-time (streaming)** — Gebeurtenissen verwerken zodra ze binnenkomen via Kafka of Pub/Sub. Balanceert latentie en kosten voor use cases zoals personalisatie en anomaliedetectie.
+
+Een veelgebruikt patroon is om batchvoorspellingen vooraf te berekenen voor de 95% voorspelbare gevallen, en alleen de resterende 5% naar een real-time endpoint te routeren.
+
+Tip voor kostenoptimalisatie: **schaal inferentie-endpoints automatisch** op basis van wachtrijdiepte, niet CPU-gebruik. ML-workloads zijn onregelmatig — schalen op wachtrijdiepte voorkomt zowel overprovisioning als request-timeouts tijdens verkeerspieken.
+
+<Quiz question="Wanneer verdient batch-inferentie de voorkeur boven real-time inferentie?" options="Wanneer voorspellingen binnen 100 ms nodig zijn|Wanneer voorspellingen op een schema vooraf berekend kunnen worden en latentie niet kritiek is|Wanneer het model te klein is voor GPU-serving|Wanneer je gelijktijdige gebruikers moet bedienen" answer="1" explanation="Batch-inferentie is ideaal wanneer voorspellingen van tevoren gepland kunnen worden — het is aanzienlijk goedkoper omdat je spot-instances kunt gebruiken en geen altijd-actieve GPU-infrastructuur nodig hebt." />
+
+<ThinkAboutIt>Je ontwerpt een ML-platform voor een grote retailer. Welke componenten (feature store, modelregister, servinglaag, monitoring) zou je eerst zelf bouwen, en welke zou je als managed services adopteren? Welke factoren sturen die beslissing?</ThinkAboutIt>
+
+---
+
+## 📚 Verder Lezen
+
+- [Designing Machine Learning Systems door Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) — Hét standaardwerk over het ontwerpen van productie-ML-systemen
+- [MLOps Maturity Model door Google](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) — Het raamwerk van Google om MLOps-volwassenheid te beoordelen van niveau 0 tot niveau 2
+- [vLLM: Easy, Fast, and Cheap LLM Serving](https://docs.vllm.ai/) — Officiële documentatie van de toonaangevende open-source LLM-servingengine

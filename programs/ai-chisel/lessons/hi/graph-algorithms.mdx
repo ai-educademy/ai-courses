@@ -1,0 +1,143 @@
+---
+title: "Graph Algorithms — AI कैसे Networks को Navigate करता है"
+description: "Maps, social networks और web crawlers को power करने वाले traversal और shortest-path algorithms सीखें।"
+order: 3
+difficulty: "intermediate"
+duration: 20
+icon: "🗺️"
+published: true
+---
+
+## Graphs दुनिया के Connections को Model करते हैं
+
+दोस्ती, road networks, hyperlinks, neural pathways — जब भी entities आपस में relationships से जुड़ी होती हैं, तो आपके पास एक **graph** होता है। Formally, एक graph G = (V, E) vertices (nodes) और edges (connections) से मिलकर बनता है।
+
+Graphs **directed** (one-way streets) या **undirected** (two-way) हो सकते हैं, और edges पर **weights** (distances, costs, latencies) हो सकते हैं।
+
+<Illustration src="/images/lessons/graph-algorithms.svg" alt="A directed weighted graph with six nodes and labelled edges, showing a shortest path highlighted" caption="Graphs entities के बीच relationships को capture करते हैं; edge weights traversal की cost को दर्शाते हैं।" />
+
+## Graphs को Represent कैसे करें
+
+दो common representations:
+
+| Representation | Space | Edge lookup | किसके लिए बेस्ट |
+|---------------|-------|-------------|-----------------|
+| **Adjacency list** | O(V + E) | O(degree) | Sparse graphs (ज़्यादातर real-world networks) |
+| **Adjacency matrix** | O(V²) | O(1) | Dense graphs, quick edge existence checks |
+
+```
+// Adjacency list example
+graph = {
+    A: [(B, 4), (C, 1)],
+    B: [(D, 1)],
+    C: [(B, 2), (D, 5)],
+    D: []
+}
+```
+
+## Breadth-First Search (BFS)
+
+BFS **level by level** explore करता है — पहले सारे neighbours को visit करता है, फिर deeper जाता है। यह एक **queue** use करता है।
+
+```
+function bfs(graph, start):
+    visited = {start}
+    queue = [start]
+    while queue is not empty:
+        node = queue.dequeue()
+        process(node)
+        for neighbour in graph[node]:
+            if neighbour not in visited:
+                visited.add(neighbour)
+                queue.enqueue(neighbour)
+```
+
+**Key property:** BFS unweighted graphs में **shortest path** find करता है क्योंकि यह nodes को source से distance के order में process करता है।
+
+### BFS के AI Use Cases
+
+- **Social network friend suggestions** — 2–3 connections के अंदर लोगों को find करना।
+- **Web crawlers** — एक seed URL से layer by layer pages को index करना।
+- **Puzzle solvers** — minimum number of moves find करना (जैसे Rubik's cube states)।
+
+<Quiz question="BFS unweighted graph में shortest path की guarantee क्यों देता है?" options="यह हमेशा सबसे हल्का edge pick करता है|यह source से बढ़ती distance के order में nodes explore करता है|यह backtracking के लिए stack use करता है|यह traversal से पहले सारे edges sort करता है" answer="1" explanation="BFS distance d पर सारे nodes को process करता है इससे पहले कि distance d+1 का कोई node process हो, इसलिए जब यह किसी node तक पहली बार पहुँचता है, वो shortest path होता है।" />
+
+## Depth-First Search (DFS)
+
+DFS **जितना deep हो सके** जाता है, फिर backtrack करता है। यह एक **stack** (या recursion) use करता है।
+
+```
+function dfs(graph, node, visited):
+    visited.add(node)
+    process(node)
+    for neighbour in graph[node]:
+        if neighbour not in visited:
+            dfs(graph, neighbour, visited)
+```
+
+### DFS के Applications
+
+- **Topological sort** — tasks को ऐसे order करना कि हर dependency पहले आए (build systems, course prerequisites)।
+- **Cycle detection** — अगर DFS किसी ऐसे node पर दोबारा पहुँचे जो अभी call stack पर है, तो cycle है।
+- **Maze solving** — alternatives try करने से पहले एक path को पूरा explore करना।
+- **Connected components** — हर unvisited node से DFS run करके अलग-अलग clusters identify करना।
+
+<ThinkAboutIt>एक package manager को dependencies को सही order में install करना है। क्या उसे BFS use करना चाहिए या DFS-based topological sort? अगर dependency graph में cycle हो तो क्या होगा?</ThinkAboutIt>
+
+## Dijkstra's Algorithm — Weights के साथ Shortest Path
+
+जब edges की अलग-अलग costs हों, तो BFS काफी नहीं है। Dijkstra's algorithm एक source से बाकी सभी nodes तक shortest weighted path find करता है।
+
+**Core idea:** हमेशा **सबसे सस्ते unvisited node** को min-heap (priority queue) से expand करो।
+
+```
+function dijkstra(graph, source):
+    dist = {source: 0}          // all others: infinity
+    pq = MinHeap([(0, source)])
+    while pq is not empty:
+        (cost, node) = pq.extractMin()
+        if cost > dist[node]: continue
+        for (neighbour, weight) in graph[node]:
+            newDist = cost + weight
+            if newDist < dist.getOrDefault(neighbour, INF):
+                dist[neighbour] = newDist
+                pq.insert((newDist, neighbour))
+    return dist
+```
+
+**Time complexity:** Binary heap के साथ O((V + E) log V)।
+
+<FunFact>Google Maps पूरे road network पर plain Dijkstra नहीं चलाता। यह contraction hierarchies और A* search use करता है — लेकिन दोनों Dijkstra की foundational insight पर बने हैं: shortest known distance से greedy expansion।</FunFact>
+
+### Dijkstra के AI Use Cases
+
+- **Route planning** — navigation apps सबसे तेज़ route find करने के लिए।
+- **Network routing** — internet packets lowest-latency path choose करने के लिए।
+- **Knowledge graphs** — concepts के बीच shortest semantic connection find करने के लिए।
+
+<Quiz question="Dijkstra's algorithm को next node efficiently select करने के लिए कौन सा data structure चाहिए?" options="Stack|Queue|Min-heap (priority queue)|Hash table" answer="2" explanation="Min-heap Dijkstra को सबसे छोटी tentative distance वाला unvisited node O(log V) time में extract करने देता है।" />
+
+## Cycle Detection और Connected Components
+
+### Cycle Detection
+
+एक **directed graph** में, nodes को तीन states में track करें: unvisited, in-progress (current DFS path पर), और completed। अगर in-progress node दोबारा मिले, तो cycle है।
+
+एक **undirected graph** में, अगर DFS किसी ऐसे visited node तक पहुँचे जो immediate parent नहीं है, तो cycle है।
+
+### Connected Components
+
+हर unvisited node से BFS या DFS run करो। हर run एक connected component discover करता है। Social networks में, components isolated communities को reveal करते हैं।
+
+<ThinkAboutIt>एक AI fraud detection system transactions को graph के रूप में model करता है जहाँ accounts nodes हैं और transfers edges हैं। Connected components money-laundering rings identify करने में कैसे मदद कर सकते हैं?</ThinkAboutIt>
+
+## मुख्य बातें
+
+1. **BFS** level by level explore करता है — unweighted graphs में shortest paths और neighbour-based discovery के लिए ideal।
+2. **DFS** deep dive करता है — topological sorting, cycle detection, और component analysis की backbone।
+3. **Dijkstra** BFS को priority queue से weighted graphs तक extend करता है — modern route planning की foundation।
+4. Graph algorithms maps, social networks, package managers, और knowledge graphs के पीछे का engine हैं।
+
+<FunFact>World Wide Web में 50 billion से ज़्यादा indexed pages हैं। Search engine crawlers pages discover और re-index करने के लिए BFS की variations use करते हैं, page importance (PageRank) के हिसाब से prioritise करते हुए।</FunFact>
+
+<Quiz question="एक directed task-dependency graph में circular dependency detect करने के लिए कौन सा algorithm use करेंगे?" options="Dijkstra's algorithm|BFS shortest path|DFS with in-progress tracking|Binary search" answer="2" explanation="DFS three-state tracking (unvisited, in-progress, completed) से back edges detect करता है — अगर in-progress node दोबारा मिले तो cycle है।" />

@@ -1,0 +1,138 @@
+---
+title: "Agentic Workflows — Multi-Agent AI వ్యవస్థలను నిర్మించడం"
+description: "AI agents ఎలా observe చేస్తాయి, reason చేస్తాయి, autonomously act చేస్తాయి — tool use, memory, planning strategies, మరియు multi-agent architectures ద్వారా complex real-world tasks ని ఎలా పూర్తి చేస్తాయో నేర్చుకోండి."
+order: 9
+difficulty: "advanced"
+duration: 20
+icon: "🤖"
+published: true
+---
+
+# Agentic Workflows — Multi-Agent AI వ్యవస్థలను నిర్మించడం
+
+ఒక language model ప్రశ్నలకు సమాధానాలు ఇస్తుంది. ఒక **agent** లక్ష్యాలను సాధిస్తుంది. తేడా ఏమిటంటే loop: agents తమ environment ని observe చేస్తాయి, ఏమి చేయాలో reason చేస్తాయి, tools ఉపయోగించి actions తీసుకుంటాయి, task పూర్తయ్యే వరకు ఇది repeat అవుతుంది. ఈ lesson లో modern agentic AI systems యొక్క architecture, patterns, మరియు failure modes గురించి తెలుసుకుందాం.
+
+## AI Agent అంటే ఏమిటి
+
+ఒక AI agent ని మూడు capabilities define చేస్తాయి — ఇవి continuous loop లో పనిచేస్తాయి:
+
+1. **Observe** — ప్రస్తుత state ని గ్రహించడం: user instructions, tool outputs, environment data, ఇంతకు ముందు చేసిన actions
+2. **Reason** — తదుపరి ఏమి చేయాలో నిర్ణయించడం: goal ని decompose చేయడం, steps plan చేయడం, options evaluate చేయడం
+3. **Act** — Action execute చేయడం: tool call చేయడం, code రాయడం, API request పంపడం, result return చేయడం
+
+Simple prompting కంటే ముఖ్యమైన తేడా **multiple steps పై autonomy**. Agent కేవలం respond చేయదు — iterate చేస్తుంది. Web search చేయవచ్చు, results చదవచ్చు, ఇంకా information కావాలని decide చేయవచ్చు, refined query తో మళ్ళీ search చేయవచ్చు, findings synthesise చేసి answer present చేయవచ్చు.
+
+<Illustration src="/images/lessons/agentic-workflows.svg" alt="Observe-reason-act loop చూపించే circular diagram — tools, memory, మరియు environment తో connections" caption="Agentic loop: environment ని observe చేయడం, తదుపరి step గురించి reason చేయడం, tools ఉపయోగించి act చేయడం, లక్ష్యం సాధించే వరకు repeat చేయడం." />
+
+## Tool Use మరియు Function Calling
+
+Tools లేకుండా, agent text generation కి మాత్రమే పరిమితం. **Tool use** agents కి ప్రపంచంతో interact చేసే సామర్థ్యం ఇస్తుంది:
+
+- **Function calling** — LLM structured JSON output ఇస్తుంది — ఏ function call చేయాలో, ఏ arguments తో call చేయాలో specify చేస్తుంది. Runtime ఆ function execute చేసి results ని context గా తిరిగి ఇస్తుంది.
+- **API integration** — Agents databases query చేయవచ్చు, REST endpoints call చేయవచ్చు, emails పంపవచ్చు, files manipulate చేయవచ్చు.
+- **Code execution** — కొన్ని agents sandboxed environment లో code రాసి run చేస్తాయి, output ని తదుపరి steps కి ఉపయోగిస్తాయి.
+
+Modern frameworks tools ని typed function signatures గా expose చేస్తాయి. Model task ఆధారంగా ఏ tool invoke చేయాలో నేర్చుకుంటుంది — maths కి calculator, current events కి search engine, data analysis కి code interpreter.
+
+<Quiz question="LLM ని tool 'ఊహించుకో' అని అడగడం కంటే function calling యొక్క ప్రధాన ప్రయోజనం ఏమిటి?" options="Function calling తక్కువ compute వాడుతుంది|Function calling నిజంగా code లేదా API calls execute చేసి actual real-world results ఇస్తుంది, plausible కానీ fabricated answers కాకుండా|Function calling కి language model అవసరం లేదు|Function calling ఎల్లప్పుడూ correct results ఇస్తుంది" answer="1" explanation="LLM search result ని 'ఊహించుకుంటే', plausible కానీ incorrect information hallucinate చేయవచ్చు. Function calling నిజంగా search execute చేసి real data return చేస్తుంది, agent reasoning ని external systems నుండి వచ్చిన factual results పై ground చేస్తుంది." />
+
+## Memory: Short-Term మరియు Long-Term
+
+ఒక context window లో పట్టని complex tasks కోసం agents కి memory అవసరం:
+
+**Short-term memory** అంటే conversation context — ఇటీవలి observations, actions, మరియు results యొక్క sliding window. Model context length ద్వారా పరిమితమై ఉంటుంది.
+
+**Long-term memory** external storage ఉపయోగిస్తుంది, సాధారణంగా **vector databases**, sessions మధ్య information persist మరియు retrieve చేయడానికి:
+- ముఖ్యమైన observations ని embed చేసి vector store లో store చేయడం
+- ప్రతి step లో relevant past experiences కోసం store ని query చేయడం
+- ఇది agents కి అనేక interactions లో సేకరించిన knowledge కి access ఇస్తుంది
+
+Short-term context మరియు long-term retrieval కలయిక మానవ working memory మరియు episodic memory ని ప్రతిబింబిస్తుంది.
+
+## Planning Strategies
+
+Agent **తదుపరి ఏమి చేయాలో** ఎలా decide చేస్తుందో అది దాని effectiveness ని నిర్ణయిస్తుంది:
+
+**Chain-of-Thought (CoT)** — Model act చేయడానికి ముందు step by step reason చేస్తుంది. Simple కానీ straightforward problems కి effective.
+
+**ReAct (Reason + Act)** — Explicit reasoning traces ని tool actions తో structured format లో interleave చేస్తుంది: `Thought → Action → Observation → Thought → ...` ఇది agent decision process ని transparent మరియు debuggable చేస్తుంది.
+
+**Tree-of-Thought (ToT)** — Agent multiple reasoning paths ని simultaneously explore చేసి, ప్రతి branch ని evaluate చేసి, most promising దాన్ని select చేస్తుంది.
+
+**Plan-then-Execute** — Agent ముందుగా complete plan generate చేసి, తర్వాత ప్రతి step execute చేస్తుంది. High-level strategy ని low-level execution నుండి separate చేస్తుంది.
+
+<FunFact>
+AutoGPT, మొదటి autonomous agent experiments లో ఒకటి, April 2023 లో viral అయ్యి GitHub చరిత్రలో అత్యంత వేగంగా grow అయిన repository గా నిలిచింది. దీని popularity ఉన్నప్పటికీ, ఇది తరచుగా infinite loops లో చిక్కుకునేది — impressive demos మరియు reliable production agents మధ్య ఉన్న భారీ gap ని highlight చేసింది.
+</FunFact>
+
+## Multi-Agent Architectures
+
+Complex tasks కోసం multiple specialised agents కలిసి పనిచేయడం ప్రయోజనకరం:
+
+**Supervisor pattern** — ఒక central "manager" agent task ని decompose చేసి specialised worker agents కి (researcher, coder, reviewer) delegate చేస్తుంది. Supervisor outputs synthesise చేసి coordination manage చేస్తుంది.
+
+**Peer-to-peer** — Agents central coordinator లేకుండా నేరుగా ఒకరితో ఒకరు communicate చేస్తారు. ప్రతి agent కి defined role ఉంటుంది, results ని chain లో తదుపరి agent కి pass చేస్తుంది.
+
+**Hierarchical** — Multiple layers of supervision: top-level planner mid-level coordinators కి delegate చేస్తుంది, వారు specialist workers ని manage చేస్తారు.
+
+<ThinkAboutIt>
+Multi-agent systems coordination overhead, communication costs, మరియు agents cross-purposes లో పనిచేసే potential introduce చేస్తాయి. Specialisation యొక్క benefits orchestration complexity కంటే ఎప్పుడు ఎక్కువగా ఉంటాయి? Single, more capable agent ఎప్పుడు better choice అవుతుంది?
+</ThinkAboutIt>
+
+## Modern Agent Frameworks
+
+Ecosystem early experiments నుండి వేగంగా mature అయింది:
+
+- **LangGraph** — Agents ని stateful graphs గా build చేస్తుంది — explicit control flow, cycles, మరియు persistence తో. Autonomy కంటే predictability మరియు debuggability కి priority ఇస్తుంది.
+- **CrewAI** — Role-based multi-agent collaboration పై focus చేస్తుంది — defined tasks, tools, మరియు delegation patterns తో.
+- **AutoGen (Microsoft)** — Conversational multi-agent workflows enable చేస్తుంది, agents ఒకరితో ఒకరు chat చేసి problems solve చేస్తారు.
+- **OpenAI Agents SDK** — Built-in function calling, agents మధ్య handoffs, మరియు guardrails తో first-party framework.
+
+## Agentic Coding
+
+బహుశా అత్యంత transformative application: AI agents autonomously code రాయడం, test చేయడం, మరియు debug చేయడం:
+
+- **GitHub Copilot** — In-editor agent mode — changes plan చేస్తుంది, multiple files edit చేస్తుంది, terminal commands run చేస్తుంది.
+- **Cursor** — ఒక agent చుట్టూ build అయిన IDE — entire codebases అర్థం చేసుకుని multi-file edits చేస్తుంది.
+- **Devin (Cognition)** — Autonomous software engineering agent — issue నుండి pull request వరకు full development tasks handle చేస్తుంది.
+
+ఈ tools **autocomplete నుండి autonomy** వైపు shift ని represent చేస్తాయి — agent తదుపరి line suggest చేయడం కాదు, goal అర్థం చేసుకుని files, terminals, browsers అంతటా దాని వైపు పనిచేస్తుంది.
+
+## Agents Fail అయినప్పుడు
+
+Reliable agents build చేయడానికి failure modes అర్థం చేసుకోవడం essential:
+
+- **Hallucination loops** — Agent ఒక tool result fabricate చేసి, దాని నుండి reason చేసి, ప్రతి iteration తో fiction లో deeper గా వెళ్తుంది.
+- **Infinite recursion** — Agent approach మార్చకుండా failing action ని repeatedly retry చేస్తుంది, tokens మరియు compute waste చేస్తుంది.
+- **Goal drift** — అనేక steps తర్వాత, agent original objective ని కోల్పోయి tangential subtasks pursue చేస్తుంది.
+- **Reward hacking** — Agent problem నిజంగా solve చేయకుండా success criteria satisfy చేసే shortcuts కనుగొంటుంది.
+
+<Quiz question="ఒక agent కి codebase లో bug కనుగొనే task ఇచ్చారు. File కోసం search చేస్తుంది, కనుగొనలేదు, అదే query తో మళ్ళీ search చేస్తుంది, repeatedly. ఇది ఏ failure mode?" options="Hallucination loop|Goal drift|Infinite recursion — approach adapt చేయకుండా failing action ని retry చేయడం|Reward hacking" answer="2" explanation="ఇది infinite recursion: agent ఒక loop లో చిక్కుకుని, approach modify చేయకుండా అదే failing action ని retry చేస్తోంది. Well-designed agent repeated failures detect చేసి alternative strategy try చేయాలి — different search terms, clarification అడగడం, లేదా different path explore చేయడం." />
+
+## Production Agent Patterns
+
+Production లో reliably పనిచేసే agents build చేయడానికి defensive engineering అవసరం:
+
+- **Guardrails** — Input/output validation, content filtering, boundary checks — agents dangerous actions తీసుకోకుండా నిరోధిస్తాయి.
+- **Human-in-the-loop** — High-stakes actions (emails పంపడం, databases modify చేయడం, code deploy చేయడం) కోసం execution ముందు human approval అవసరం.
+- **Structured outputs** — Agents ని machine-parseable responses (JSON schemas) produce చేయమని force చేయడం, parsing errors తగ్గించడం.
+- **Observability** — ప్రతి thought, action, tool call log చేయడం. Comprehensive traces లేకుండా failed 20-step agent run debug చేయడం దాదాపు impossible.
+- **Circuit breakers** — Maximum step counts, token budgets, time limits set చేయడం. Agent ఈ bounds exceed చేస్తే halt చేసి human కి escalate చేయడం.
+
+<Quiz question="High-stakes actions చేసే production agents కి human-in-the-loop approval ఎందుకు critical?" options="AI agents ఎల్లప్పుడూ తప్పు చేస్తాయి కాబట్టి|Compute costs తగ్గించడానికి|Agents hallucinate చేయవచ్చు, intent misunderstand చేయవచ్చు, లేదా irreversible actions తీసుకోవచ్చు — real-world consequences ఉన్న decisions కి human oversight safety net provide చేస్తుంది|అన్ని cases లో regulations require చేస్తాయి కాబట్టి" answer="2" explanation="Agents goals misinterpret చేయవచ్చు, information hallucinate చేయవచ్చు, లేదా reverse చేయడం కష్టమైన actions తీసుకోవచ్చు (data delete చేయడం, communications పంపడం, code deploy చేయడం). High-stakes operations కోసం human approval critical safety net గా పనిచేస్తుంది." />
+
+<FunFact>
+Browser agents — websites navigate చేసే AI systems, click చేయడం, type చేయడం, screens చదవడం ద్వారా — reliably build చేయడానికి అత్యంత కష్టమైన agentic applications లో ఒకటి. WebArena వంటి benchmarks ప్రకారం, best agents కూడా realistic web tasks లో 15-30% మాత్రమే successfully complete చేస్తాయి, humans దాదాపు perfect performance ఇస్తారు.
+</FunFact>
+
+<ThinkAboutIt>
+Agentic coding tools మరింత capable అవుతున్నకొద్దీ, software engineer పాత్ర code రాయడం నుండి AI-generated code review చేయడం, direct చేయడం, verify చేయడం వైపు shift అవుతోంది. ఈ ప్రపంచంలో ఏ కొత్త skills essential అవుతాయి — మరియు ఏ traditional skills తక్కువ critical అవుతాయి?
+</ThinkAboutIt>
+
+---
+
+## 📚 ఇంకా చదవండి
+
+- [ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2023)](https://arxiv.org/abs/2210.03629) — ReAct agent pattern పై foundational paper
+- [The Landscape of Emerging AI Agent Architectures (LangChain)](https://blog.langchain.dev/what-is-an-agent/) — Modern agent design patterns యొక్క comprehensive overview
+- [Andrew Ng — Agentic Design Patterns](https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/) — నాలుగు key agentic patterns: reflection, tool use, planning, మరియు multi-agent collaboration

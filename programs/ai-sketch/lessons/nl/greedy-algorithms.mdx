@@ -1,0 +1,133 @@
+---
+title: "Greedy Algoritmen — Wanneer Lokale Keuzes tot Globale Oplossingen Leiden"
+description: "Leer wanneer de lokaal optimale keuze bij elke stap ook daadwerkelijk het globaal optimale resultaat oplevert, en wanneer niet."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+---
+
+## Wat Maakt een Algoritme Greedy?
+
+Een greedy algoritme bouwt stap voor stap een oplossing op, waarbij het altijd de optie kiest die er **op dit moment** het beste uitziet — zonder eerdere keuzes te heroverwegen. Geen backtracking, geen vooruitkijken.
+
+Het werkt als twee eigenschappen gelden:
+1. **Greedy choice property** — een lokaal optimale keuze leidt tot een globaal optimale oplossing.
+2. **Optimale substructuur** — het resterende probleem na elke keuze is een kleinere versie van hetzelfde probleem.
+
+## Activiteitenselectie — Het Klassieke Voorbeeld
+
+Gegeven een verzameling activiteiten met begin- en eindtijden: selecteer het **maximale aantal** niet-overlappende activiteiten.
+
+**Greedy strategie:** sorteer op eindtijd, kies altijd de activiteit die het eerst eindigt.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+Waarom werkt dit? De activiteit kiezen die het eerst eindigt, laat de meeste ruimte voor toekomstige activiteiten. Geen andere keuze kan beter zijn.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Tijdlijn met activiteitenselectie op basis van vroegste eindtijd" caption="Selectie op vroegste eindtijd maximaliseert het aantal niet-overlappende activiteiten." />
+
+## Huffman-codering — Concept
+
+Bouw een optimale prefixvrije binaire code door herhaaldelijk de **twee laagste-frequentie** symbolen samen te voegen. Dit is greedy: bij elke stap voeg je het goedkoopste paar samen. Het resultaat is een boom waarin frequente symbolen korte codes krijgen.
+
+<FunFact>Huffman-codering wordt gebruikt in JPEG, MP3 en ZIP-compressie. David Huffman bedacht het als student in 1952 — het was een huiswerkopdracht!</FunFact>
+
+## Jump Game
+
+Gegeven een array waarbij `nums[i]` de maximale spronglengte is vanaf index `i`: bepaal of je de laatste index kunt bereiken.
+
+**Greedy aanpak:** houd de verst bereikbare index bij. Scan van links naar rechts — als je ooit achterraakt, return false.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="Wat stelt de greedy-variabele 'farthest' voor in het Jump Game?" options="De huidige positie|Het aantal gemaakte sprongen|De maximale index bereikbaar vanaf elke bezochte positie|De lengte van de langste sprong" answer="2" explanation="'farthest' houdt de meest rechtse index bij die bereikbaar is vanaf welke bezochte positie dan ook. Als je huidige index die overschrijdt, zit je vast." />
+
+## Gas Station
+
+Rij een circulaire route met tankstations. Bij station `i` krijg je `gas[i]` brandstof en verbruik je `cost[i]` om het volgende station te bereiken. Vind het startstation waarmee je het circuit kunt voltooien, of return −1.
+
+**Greedy inzicht:** als totaal gas ≥ totaal kosten, bestaat er een oplossing. Houd een lopend surplus bij; zodra het onder nul zakt, moet het antwoord **na** dat punt beginnen.
+
+## Task Scheduler
+
+Plan taken met een cooldown van `n` tussen identieke taken. **Greedy:** kies altijd de meest frequente resterende taak. Het antwoord hangt af van de maximale frequentie en hoeveel taken die frequentie delen.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>Waarom minimaliseert het kiezen van de meest frequente taak eerst de idle slots in de task scheduler? Wat zou er misgaan als je de minst frequente taak eerst kiest?</ThinkAboutIt>
+
+## Fractionele Knapsack vs 0/1 Knapsack
+
+**Fractionele knapsack:** je kunt fracties van items meenemen. Greedy werkt — sorteer op waarde-per-gewicht, neem de beste verhouding eerst.
+
+**0/1 knapsack:** items zijn alles-of-niets. Greedy **faalt** hier omdat het overslaan van een zwaar-maar-waardevol item slechter kan uitpakken dan twee lichtere items meenemen. Dit vereist dynamisch programmeren.
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): takes item 1 (w=3, v=4) → 1 remaining → can't fit rest → value = 4
+Optimal: takes items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fails!
+```
+
+<Quiz question="Waarom faalt de greedy aanpak bij het 0/1 knapsack-probleem?" options="Items zijn niet deelbaar, waardoor het beste-ratio item capaciteit kan verspillen|De items zijn niet gesorteerd|Er zijn te veel items|Greedy algoritmen werken nooit voor knapsack-problemen" answer="0" explanation="Wanneer je hele items moet nemen, kan de beste verhouding kiezen ongebruikte capaciteit overlaten die kleinere items winstgevender hadden kunnen vullen." />
+
+## Wanneer Werkt Greedy?
+
+✅ **Werkt** wanneer je de greedy choice property kunt bewijzen:
+- Intervalplanning, Huffman-codering, minimum spanning trees, Dijkstra's algoritme, wisselgeld met standaard coupures
+
+❌ **Faalt** wanneer lokale optima geen globaal optimum vormen:
+- 0/1 knapsack, langste pad in algemene grafen, handelsreizigersprobleem
+
+## Greedy Correctheid Bewijzen — Exchange Argument
+
+De standaardtechniek: neem aan dat er een optimale oplossing bestaat die de greedy-keuze **niet** maakt. Laat zien dat je één van haar keuzes kunt **verwisselen** met de greedy-keuze zonder de oplossing te verslechteren. Dit bewijst dat greedy minstens even goed is.
+
+<Quiz question="Waarvoor wordt het 'exchange argument' gebruikt?" options="Twee elementen in een array verwisselen|Bewijzen dat een greedy algoritme een optimale oplossing oplevert|Recursie omzetten naar iteratie|Tijdscomplexiteit optimaliseren" answer="1" explanation="Het exchange argument bewijst correctheid door te laten zien dat elke optimale oplossing kan worden omgevormd tot de greedy-oplossing zonder kwaliteitsverlies." />
+
+## Greedy vs Dynamisch Programmeren
+
+| Aspect | Greedy | Dynamisch Programmeren |
+|--------|--------|------------------------|
+| Keuzes | Eén beste keuze per stap | Alle deelproblemen verkennen |
+| Heroverweegt eerder? | Nooit | Ja — slaat deelresultaten op |
+| Snelheid | Meestal sneller | Hangt af van de toestandsruimte |
+| Correctheid | Alleen als bewijsbaar | Altijd (mits correct geformuleerd) |
+
+Bij twijfel: begin greedy — als je niet kunt bewijzen dat het werkt, schakel over naar DP.
+
+<FunFact>Dijkstra's kortste-pad-algoritme is greedy — het verwerkt altijd de dichtstbijzijnde onbezochte knoop. Het werkt omdat randgewichten niet-negatief zijn, waardoor de greedy-keuze veilig is.</FunFact>
+
+<ThinkAboutIt>Je krijgt muntwaarden [1, 3, 4] en moet wisselgeld maken voor 6. De greedy aanpak kiest 4+1+1=3 munten, maar optimaal is 3+3=2 munten. Wat aan deze coupures breekt de greedy choice property?</ThinkAboutIt>
+
+---
+
+## 📚 Verder Lezen
+
+- [NeetCode — Greedy playlist](https://neetcode.io/roadmap) — samengestelde greedy-problemen met uitleg
+- [Tech Interview Handbook — Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) — wanneer greedy te gebruiken en veelvoorkomende patronen
+- [CP-Algorithms — Greedy algorithms](https://cp-algorithms.com/) — diepere theorie en bewijzen

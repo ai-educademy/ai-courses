@@ -1,0 +1,186 @@
+---
+title: "Matrix మరియు Grid సమస్యలు — Grids పై BFS మరియు Islands లెక్కించడం"
+description: "BFS, DFS, flood fill, multi-source BFS, spiral traversal మరియు grids పై dynamic programming తో 2D grid traversal నేర్చుకోండి."
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+---
+
+## Grids గా 2D Arrays
+
+Matrix అనేది 2D array, కానీ interviews లో ఇది తరచుగా **grid** ను సూచిస్తుంది — map, board లేదా maze. ప్రతి cell `grid[r][c]` ఒక node, దాని neighbors పక్కనే ఉన్న cells.
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Row `r`, column `c`, dimensions `m × n`. సరళం — కానీ దీని పైన నిర్మించే patterns శక్తివంతమైనవి.
+
+## Direction Arrays
+
+నాలుగు వేర్వేరు if-statements రాయడానికి బదులు, **direction array** ఉపయోగించండి:
+
+```python
+# 4-దిశల (పైన, కింద, ఎడమ, కుడి)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-దిశల (diagonals తో సహా)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # neighbor ను process చేయి
+```
+
+Grid సమస్యలలో అత్యంత పునర్వినియోగ code snippet ఇది.
+
+<FunFact>Direction array trick ను కొన్నిసార్లు "delta encoding" అంటారు. Game development, image processing మరియు competitive programming లో — grids ఉపయోగించే చోటల్లా కనిపిస్తుంది.</FunFact>
+
+## Grid పై BFS — Maze లో Shortest Path
+
+BFS unweighted grid లో **shortest path** కనుగొంటుంది. Source నుండి ప్రారంభించి, దూరం 1 వద్ద అన్ని neighbors ను, తర్వాత దూరం 2 వద్ద, ఇలా explore చేయండి.
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="Grid maze లో BFS level-by-level విస్తరిస్తూ" caption="BFS cells ను level-by-level explore చేస్తుంది, shortest path guarantee చేస్తుంది." />
+
+## Grid పై DFS — Flood Fill మరియు Islands సంఖ్య
+
+**Flood fill** (paint bucket tool లాగా): starting cell నుండి అదే రంగు ఉన్న అన్ని connected cells ను మార్చండి. DFS లేదా BFS రెండూ పనిచేస్తాయి.
+
+**Islands సంఖ్య:** grid scan చేయండి; `1` కనుగొంటే, మొత్తం island ను visited గా mark చేయడానికి DFS/BFS run చేసి, count పెంచండి.
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # island mark చేయి
+                count += 1
+    return count
+```
+
+<Quiz question="'Islands సంఖ్య' లో, DFS సమయంలో cells ను visited గా ఎందుకు mark చేస్తాం?" options="ఖచ్చితత్వం కోసం రెండుసార్లు లెక్కించడానికి|అదే island ను అనేక సార్లు లెక్కించకుండా నివారించడానికి|Islands ను sort చేయడానికి|అతిపెద్ద island కనుగొనడానికి" answer="1" explanation="Visited cells mark చేయడం outer loop అదే island పై కొత్త DFS ప్రారంభించకుండా నిరోధిస్తుంది, ఇది overcount చేస్తుంది." />
+
+## Rotting Oranges — Multi-Source BFS
+
+మొదట్లో rotten అయిన అన్ని oranges sources. వాటన్నింటినీ time 0 వద్ద queue లో push చేసి, BFS చేయండి. ప్రతి level ఒక నిమిషం. Queue ఖాళీ అయినప్పుడు, fresh oranges మిగిలాయా తనిఖీ చేయండి.
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    చేరుకోగల అన్ని oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+కీలక అంతర్దృష్టి: **multi-source BFS** ఒకే node నుండి కాకుండా అనేక nodes నుండి ఏకకాలంలో ప్రారంభిస్తుంది.
+
+<Quiz question="'Rotting Oranges' ను standard BFS నుండి ఏమి భిన్నంగా చేస్తుంది?" options="ఇది DFS ఉపయోగిస్తుంది|అనేక starting points ఏకకాలంలో queue లో ఉంచబడతాయి|ఇది Dijkstra's algorithm అవసరం|Grid కి weighted edges ఉన్నాయి" answer="1" explanation="Multi-source BFS అన్ని rotten oranges ను starting 'frontier' గా ఒకేసారి enqueue చేస్తుంది, కాబట్టి rotting ప్రతి source నుండి parallel గా వ్యాపిస్తుంది." />
+
+## Spiral Matrix Traversal
+
+Matrix ను spiral క్రమంలో నడవండి: కుడి → కింద → ఎడమ → పైన, ప్రతి pass తర్వాత boundaries తగ్గిస్తూ.
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Matrix Rotation (90°)
+
+N×N matrix ను clockwise in-place rotate చేయండి: **transpose** (`[r][c]` ని `[c][r]` తో swap), తర్వాత **ప్రతి row reverse**.
+
+```
+Original → Transpose → Rows reverse
+1 2 3      1 4 7       7 4 1
+4 5 6  →   2 5 8   →   8 5 2
+7 8 9      3 6 9       9 6 3
+```
+
+<ThinkAboutIt>Anti-clockwise rotate చేయడానికి, ముందు rows reverse చేసి transpose చేస్తారా, లేదా transpose చేసి columns reverse చేస్తారా? కాగితంపై ప్రయత్నించండి.</ThinkAboutIt>
+
+## Sorted 2D Matrix లో Search
+
+రెండు సాధారణ variants:
+- **Rows మరియు columns స్వతంత్రంగా sorted** — top-right corner నుండి ప్రారంభించండి. Target చిన్నదైతే ఎడమకు, పెద్దదైతే కిందకు. O(m + n).
+- **పూర్తిగా sorted** (ప్రతి row ముందటి row ముగిసిన చోట ప్రారంభం) — flat sorted array గా చూసి binary search. O(log(m × n)).
+
+## Grids పై Dynamic Programming
+
+**Unique Paths:** top-left నుండి bottom-right కి కేవలం కుడి లేదా కింద కదులుతూ paths లెక్కించండి. `dp[r][c] = dp[r-1][c] + dp[r][c-1]`.
+
+**Minimum Path Sum:** అదే ఆలోచన కానీ minimum incoming path ఎంచుకోండి.
+
+ఇవి 2D dynamic programming కి తరచుగా సులభమైన పరిచయం.
+
+<Quiz question="Unique Paths సమస్యలో, ఏ column c కైనా dp[0][c] ఏమిటి?" options="0|1|c|c + 1" answer="1" explanation="మొదటి row కి కేవలం కుడికి కదలడం ద్వారా మాత్రమే చేరుకోవచ్చు, కాబట్టి మొదటి row లో ప్రతి cell కి సరిగ్గా ఒక path ఉంటుంది. dp[0][c] = 1." />
+
+## Grid Patterns సంగ్రహం
+
+| Pattern | Technique | కీలక సమస్య |
+|---------|-----------|------------|
+| Shortest path (unweighted) | BFS | Maze shortest path |
+| Connected components | DFS / BFS | Number of Islands |
+| Multi-source spread | Multi-source BFS | Rotting Oranges |
+| Traversal order | Boundary pointers | Spiral Matrix |
+| In-place transform | Transpose + reverse | Rotate Image |
+| Paths లెక్కించడం | DP | Unique Paths |
+| Sorted grid లో search | Staircase / binary search | Search 2D Matrix |
+
+<ThinkAboutIt>చాలా grid సమస్యలు నిజానికి మారువేషంలో graph సమస్యలు. Grid పై DFS ను BFS కంటే ఎప్పుడు ఇష్టపడతారు, ఎప్పుడు వ్యతిరేకం?</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+
+- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — visual వివరణలతో grid DP సమస్యలు
+- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — సాధారణ patterns మరియు techniques
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — వందలాది practice సమస్యలు

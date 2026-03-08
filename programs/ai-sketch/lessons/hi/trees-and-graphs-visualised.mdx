@@ -1,0 +1,160 @@
+---
+title: "Trees और Graphs Visualised — AI Relationships कैसे Map करता है"
+description: "देखिए trees और graphs कैसे hierarchical और interconnected data represent करते हैं जो AI decision-making और recommendations power करता है।"
+order: 5
+difficulty: "intermediate"
+duration: 18
+icon: "🌳"
+published: true
+---
+
+## Data With Relationships
+
+अब तक हमने data lines में देखा — arrays, linked lists, stacks, queues सब items sequence में रखते हैं। लेकिन real world linear नहीं है। Family trees branch out करती हैं। Social networks webs बनाते हैं। Road maps interconnected routes create करते हैं।
+
+**Trees** और **graphs** ये relationships capture करते हैं, और AI की सबसे powerful techniques के दिल में यही हैं।
+
+## Trees — Hierarchical Data
+
+**Tree** एक structure है जहाँ हर item (**node**) के child nodes हो सकते हैं, hierarchy बनाते हुए। सबसे ऊपर एक **root** node होता है, और बिना children वाले nodes **leaves** कहलाते हैं।
+
+```
+         CEO
+        /    \
+      CTO    CFO
+     /   \      \
+   Dev1  Dev2   Accountant
+```
+
+<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="Root node से child nodes में branch होता tree structure, बगल में interconnected nodes वाला graph" caption="Trees root से नीचे flow करते हैं; graphs nodes को किसी भी direction में connect करते हैं।" />
+
+Trees हर जगह हैं: file systems, HTML/DOM, org charts, JSON data — सब trees हैं।
+
+### Binary Trees
+
+**Binary tree** हर node को maximum दो children तक restrict करता है — left और right। Simple constraint, powerful algorithms।
+
+```
+        8
+       / \
+      3   10
+     / \    \
+    1   6    14
+```
+
+### Binary Search Trees (BSTs)
+
+**BST** एक rule जोड़ता है: हर node के लिए left subtree के सब values छोटी, right subtree की सब बड़ी।
+
+Search fast बनता है — हर node पर पता चलता है left जाना है या right:
+
+```
+ऊपर के BST में 6 ढूँढो:
+  8 से शुरू → 6 < 8, left जाओ
+  3 पर → 6 > 3, right जाओ
+  6 पर → मिल गया!
+```
+
+**Time complexity**: Balanced tree पर O(log n) — sorted array पर binary search जैसा ही logarithmic magic।
+
+<Quiz question="10 लाख nodes वाले balanced BST में value ढूँढने के लिए लगभग कितनी comparisons चाहिए?" options="10,00,000|5,00,000|लगभग 20|लगभग 100" answer="2" explanation="Balanced BST की depth log₂(1,000,000) ≈ 20 है। हर level पर एक comparison, तो कोई भी value ~20 steps में मिलती है।" />
+
+## Graphs — Everything Connected
+
+**Graph** trees को generalise करता है hierarchy constraint हटाकर। इसमें **nodes** (vertices) और **edges** (connections) होते हैं। Edges हो सकते हैं:
+
+- **Directed** (one-way: A → B) या **undirected** (two-way: A ↔ B)
+- **Weighted** (हर edge का cost/distance) या **unweighted**
+
+```
+Social network (undirected):
+  Alice — Bob — Charlie
+    \       |
+     Diana — Eve
+
+Road map (weighted, directed):
+  London →(2h)→ Birmingham →(1.5h)→ Manchester
+```
+
+Graphs हर जगह हैं: social networks (लोग nodes, friendships edges), internet (pages nodes, links edges), road maps, recommendation systems।
+
+<FunFact>
+Facebook के social graph में 3 billion+ nodes (users) और सैकड़ों अरब edges (friendships) हैं। Graph algorithms आपका News Feed, friend suggestions, और ad targeting तय करते हैं।
+</FunFact>
+
+## AI Trees कैसे इस्तेमाल करता है
+
+### Decision Trees
+
+सबसे interpretable AI models में से एक **decision tree** है। Yes/no questions की series पूछकर data classify करता है:
+
+```
+Is temperature > 30°C?
+├── Yes: Is humidity > 70%?
+│   ├── Yes: "Don't play tennis"
+│   └── No: "Play tennis"
+└── No: Is it windy?
+    ├── Yes: "Don't play tennis"
+    └── No: "Play tennis"
+```
+
+Decision trees इसलिए popular हैं क्योंकि इंसान इन्हें पढ़ और समझ सकते हैं — healthcare, finance, और legal AI में explainability crucial है।
+
+<ThinkAboutIt>
+Hospital AI patient risk predict करता है। Regulators चाहते हैं AI अपने decisions explain करे। Decision tree deep neural network से क्यों prefer हो, भले ही neural network थोड़ा ज़्यादा accurate हो?
+</ThinkAboutIt>
+
+### Random Forests
+
+**Random forest** सैकड़ों decision trees बनाता है, हर एक data के अलग subset पर trained, फिर vote लेता है। यह ensemble approach single tree से ज़्यादा accurate और robust है।
+
+## AI Graphs कैसे इस्तेमाल करता है
+
+### Knowledge Graphs
+
+**Knowledge graph** entities के बीच facts as relationships store करता है:
+
+```
+(London) --[capital_of]--> (United Kingdom)
+(London) --[located_in]--> (England)
+(Big Ben) --[located_in]--> (London)
+```
+
+Google का Knowledge Graph search results में वो information panels power करता है।
+
+### Recommendation Graphs
+
+Netflix, Spotify, Amazon users और items को graph में model करते हैं। Users A और B दोनों ने items X, Y पसंद किए, A ने Z भी पसंद किया, तो graph B को Z suggest करता है — **collaborative filtering**।
+
+<Quiz question="Social networks model करने में graphs simple lists से बेहतर क्यों हैं?" options="Graphs कम memory इस्तेमाल करते हैं|Graphs complex many-to-many relationships represent कर सकते हैं|Graphs search में हमेशा faster हैं|Graphs automatically data sort करते हैं" answer="1" explanation="Social networks में complex many-to-many relationships हैं। Graphs naturally इन interconnected relationships model करते हैं; lists नहीं कर सकतीं।" />
+
+## Traversal — Trees और Graphs में चलना
+
+### Depth-First Search (DFS)
+
+DFS एक path पर जितना हो सके आगे जाता है, फिर backtrack करता है। DFS **stack** इस्तेमाल करता है। Order: A → B → D → E → C → F।
+
+### Breadth-First Search (BFS)
+
+BFS current depth के सब neighbours पहले explore करता है, फिर deeper। तालाब में ripples जैसा। BFS **queue** इस्तेमाल करता है। Order: A → B → C → D → E → F।
+
+<Callout>
+ध्यान दो कैसे पिछले lesson के stacks और queues tree/graph traversal से जुड़ते हैं? DFS stack इस्तेमाल करता है; BFS queue। Data structures एक-दूसरे पर build करते हैं।
+</Callout>
+
+<Quiz question="दो cities के बीच shortest route चाहिए जहाँ सब roads same length की हैं। कौन सा traversal?" options="DFS — deeper paths पहले explore करता है|BFS — unweighted graphs में shortest path ढूँढता है|Binary search — sorted data पर काम करता है|Random search — randomly paths try करता है" answer="1" explanation="BFS level by level explore करता है, guarantee करता है कि destination पर पहली बार पहुँचने पर shortest path (edges की संख्या में) मिला है।" />
+
+<ThinkAboutIt>
+Social media "degrees of separation" measure करता है — दो लोगों के बीच कितने friend-of-friend hops। कौन सा traversal algorithm efficiently minimum hops ढूँढेगा?
+</ThinkAboutIt>
+
+<FunFact>
+Google का PageRank algorithm — जिसने Google को dominant बनाया — web को graph model करता है। हर page node, हर hyperlink directed edge, और page की importance इस पर depend करती है कितने important pages link करते हैं। Essentially graph पर random walk।
+</FunFact>
+
+## मुख्य बातें
+
+- **Trees** hierarchical data model करते हैं — file systems, HTML, और AI decision trees सब tree structures इस्तेमाल करते हैं।
+- **BSTs** sorted hierarchy maintain करके O(log n) lookups enable करते हैं।
+- **Graphs** interconnected data model करते हैं — social networks, knowledge bases, recommendation engines।
+- **DFS** (stack) deep जाता है; **BFS** (queue) wide जाता है — दोनों PageRank और recommendations जैसे core AI algorithms power करते हैं।

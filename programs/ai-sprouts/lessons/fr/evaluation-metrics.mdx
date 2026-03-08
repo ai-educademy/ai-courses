@@ -1,0 +1,166 @@
+---
+title: "Métriques d'évaluation — Votre IA est-elle vraiment performante ?"
+description: "Découvrez pourquoi la précision seule est trompeuse, et maîtrisez les métriques — précision, rappel, F1, ROC-AUC, BLEU et perplexité — qui mesurent réellement les performances de l'IA."
+order: 10
+difficulty: "intermediate"
+duration: 15
+icon: "📊"
+published: true
+---
+
+# Métriques d'évaluation — Votre IA est-elle vraiment performante ?
+
+Vous avez entraîné un modèle. La perte a diminué. Mais est-il vraiment *bon* ? La réponse dépend entièrement de la façon dont vous le mesurez — et choisir la mauvaise métrique peut vous donner une confiance dangereusement trompeuse. Cette leçon couvre les métriques que tout praticien de l'IA doit comprendre.
+
+## Le piège de l'exactitude
+
+**Exactitude** (accuracy) = prédictions correctes ÷ total des prédictions. Cela semble raisonnable — jusqu'à ce que vous rencontriez le **déséquilibre de classes**.
+
+Imaginez un modèle de détection de fraude. Sur 10 000 transactions, seules 50 sont frauduleuses. Un modèle qui prédit simplement « pas de fraude » pour chaque transaction atteint une **exactitude de 99,5 %** — tout en ne détectant aucune fraude. Totalement inutile, et pourtant l'exactitude semble brillante.
+
+C'est pourquoi l'exactitude seule ne suffit jamais pour l'IA en conditions réelles.
+
+<FunFact>
+Dans le dépistage médical de maladies rares, un modèle qui prédit toujours « en bonne santé » peut dépasser 99,9 % d'exactitude. C'est pourquoi les médecins et les data scientists s'appuient sur la sensibilité (rappel) comme métrique principale pour les tests de dépistage.
+</FunFact>
+
+## La matrice de confusion
+
+Avant d'examiner de meilleures métriques, nous avons besoin de la **matrice de confusion** — un tableau 2×2 qui détaille chaque prédiction :
+
+|  | Prédit positif | Prédit négatif |
+|---|---|---|
+| **Réellement positif** | Vrai positif (VP) | Faux négatif (FN) |
+| **Réellement négatif** | Faux positif (FP) | Vrai négatif (VN) |
+
+**Exemple concret — filtre anti-spam sur 1 000 e-mails (100 spams, 900 légitimes) :**
+
+|  | Prédit spam | Prédit légitime |
+|---|---|---|
+| **Réellement spam** | 80 (VP) | 20 (FN) |
+| **Réellement légitime** | 30 (FP) | 870 (VN) |
+
+À partir de ce seul tableau, nous pouvons dériver toutes les métriques de classification.
+
+<Illustration src="/images/lessons/evaluation-metrics.svg" alt="Une matrice de confusion pour un filtre anti-spam avec les quatre quadrants colorés : vert pour VP et VN, rouge pour FP et FN, avec les formules de précision et de rappel à côté" caption="La matrice de confusion est le fondement de toutes les métriques de classification." />
+
+## Précision — « Sur tout ce que j'ai signalé, combien était correct ? »
+
+```
+Précision = VP ÷ (VP + FP) = 80 ÷ (80 + 30) = 72,7 %
+```
+
+Dans notre filtre anti-spam : sur tous les e-mails marqués comme spam, 72,7 % étaient réellement du spam. Les 27,3 % restants étaient des e-mails légitimes interceptés à tort — des **faux positifs**.
+
+**Quand la précision compte le plus :** Lorsque les faux positifs sont coûteux. Un filtre anti-spam qui envoie les e-mails importants de clients dans les indésirables est un problème sérieux.
+
+## Rappel — « Sur tout ce qui était positif, combien ai-je trouvé ? »
+
+```
+Rappel = VP ÷ (VP + FN) = 80 ÷ (80 + 20) = 80 %
+```
+
+Le modèle a détecté 80 des 100 vrais spams — il a *rappelé* 80 % d'entre eux. Les 20 autres sont passés à travers comme des **faux négatifs**.
+
+**Quand le rappel compte le plus :** Lorsque manquer un cas positif est dangereux. Dans le dépistage du cancer, ne pas détecter une tumeur (faux négatif) pourrait coûter une vie.
+
+<Quiz question="Un hôpital souhaite un modèle pour dépister une maladie dangereuse. Quelle métrique devrait-il privilégier ?" options="La précision — éviter les fausses alertes|Le rappel — détecter chaque cas, même au prix de quelques fausses alertes|L'exactitude — obtenir le plus de prédictions correctes|Le F1 — tout équilibrer" answer="1" explanation="Dans le dépistage médical, manquer un vrai cas (faux négatif) est bien plus dangereux qu'une fausse alerte. Un rappel élevé garantit que presque chaque cas positif est détecté, même si certains patients sains doivent passer des examens complémentaires." />
+
+## Le compromis précision–rappel
+
+La précision et le rappel tirent dans des directions opposées. Resserrer le seuil du filtre anti-spam intercepte moins d'e-mails légitimes (la précision augmente) mais laisse passer plus de spams (le rappel diminue). L'assouplir attrape plus de spams (le rappel augmente) mais piège plus de bons e-mails (la précision diminue).
+
+Il n'y a pas de solution miracle — vous devez décider quelles erreurs sont les plus coûteuses pour votre cas d'usage spécifique.
+
+## Score F1 — La moyenne harmonique
+
+Lorsque vous avez besoin d'un seul nombre équilibrant la précision et le rappel, utilisez le **score F1** :
+
+```
+F1 = 2 × (Précision × Rappel) ÷ (Précision + Rappel)
+```
+
+Pour notre filtre anti-spam : `F1 = 2 × (0,727 × 0,80) ÷ (0,727 + 0,80) = 0,762` — environ 76,2 %.
+
+La moyenne harmonique pénalise les déséquilibres extrêmes. Si la précision ou le rappel est très faible, le F1 chute fortement.
+
+<ThinkAboutIt>
+Un système de modération de contenu a une précision de 95 % mais un rappel de seulement 30 %. Le score F1 n'est que de 46 %. Qu'est-ce que cela vous dit sur le comportement réel du système, et le déploieriez-vous ?
+</ThinkAboutIt>
+
+## Courbes ROC et AUC
+
+La **courbe ROC** (Receiver Operating Characteristic) trace le taux de vrais positifs en fonction du taux de faux positifs pour chaque seuil de classification possible. Elle montre à quel point un modèle sépare les classes à travers tous les seuils, pas un seul.
+
+**AUC** (Area Under the Curve — Aire sous la courbe) résume cela en un seul nombre :
+
+- **AUC = 1,0** — séparation parfaite.
+- **AUC = 0,5** — pas mieux qu'une estimation aléatoire (la ligne diagonale).
+- **AUC < 0,5** — pire que le hasard (vos étiquettes sont peut-être inversées !).
+
+L'AUC est indépendante du seuil, ce qui la rend excellente pour comparer des modèles avant d'avoir choisi un point de fonctionnement spécifique.
+
+<Quiz question="Que signifie une AUC de 0,5 ?" options="Le modèle est parfait|Le modèle ne fait pas mieux qu'une estimation aléatoire|Le modèle a 50 % d'exactitude|Le modèle a un rappel élevé" answer="1" explanation="Une AUC de 0,5 correspond à la diagonale de la courbe ROC — le modèle n'a aucune capacité à distinguer les classes. C'est l'équivalent de jouer à pile ou face." />
+
+## Métriques pour la génération de texte
+
+Les métriques de classification ne s'appliquent pas aux modèles de langage qui génèrent du texte. Différentes tâches nécessitent différentes mesures.
+
+### Score BLEU
+
+**BLEU** (Bilingual Evaluation Understudy) mesure le chevauchement entre une traduction générée et des traductions de référence, en comptant les n-grammes correspondants (séquences de mots). Les scores vont de 0 à 1.
+
+BLEU est largement utilisé en traduction automatique mais présente des limites significatives : il récompense le chevauchement de mots, pas le sens. « Le chat était assis sur le tapis » et « Un félin se reposait sur la moquette » obtiennent un mauvais score l'un par rapport à l'autre malgré un sens similaire.
+
+### Perplexité
+
+La **perplexité** mesure à quel point un modèle de langage est « surpris » par un nouveau texte. Plus c'est bas, mieux c'est — une perplexité de 20 signifie que le modèle choisit, en moyenne, parmi 20 mots suivants également probables. Un bon modèle a une faible perplexité car il prédit bien le texte.
+
+GPT-4 atteint une perplexité remarquablement basse sur du texte anglais, reflétant sa forte compréhension linguistique.
+
+<FunFact>
+La métrique BLEU a été introduite en 2002 et est rapidement devenue le standard pour l'évaluation de la traduction automatique. Malgré des défauts connus, elle est restée dominante pendant près de deux décennies car aucune alternative simple ne corrélait mieux de manière constante avec le jugement humain.
+</FunFact>
+
+## Tests A/B en production
+
+Les métriques hors ligne sont nécessaires mais insuffisantes. Le test ultime est le **test A/B** : déployer deux versions du modèle auprès de groupes d'utilisateurs différents et mesurer les résultats en conditions réelles.
+
+- Le nouveau modèle de recommandation augmente-t-il le taux de clics ?
+- Le chatbot amélioré réduit-il les escalades de tickets de support ?
+- Le filtre anti-spam mis à jour reçoit-il moins de corrections « ce n'est pas du spam » ?
+
+Les métriques en production divergent souvent des métriques hors ligne parce que les utilisateurs se comportent de manière imprévisible.
+
+<Quiz question="Pourquoi un modèle avec d'excellentes métriques hors ligne pourrait-il mal performer en test A/B ?" options="Le jeu de test était trop volumineux|Les métriques hors ligne ne peuvent pas capturer le comportement réel des utilisateurs, les cas limites et les changements de distribution|Les tests A/B sont moins précis que l'évaluation hors ligne|Le modèle surapprenait le test A/B" answer="1" explanation="L'évaluation hors ligne utilise des jeux de données statiques qui peuvent ne pas refléter les conditions réelles — le comportement des utilisateurs évolue, les distributions de données changent, et des cas limites émergent que les jeux de test n'avaient jamais anticipés. Les tests A/B révèlent comment le modèle performe là où cela compte vraiment." />
+
+## Quand utiliser quelle métrique
+
+| Scénario | Métrique principale |
+|----------|-------------------|
+| Classification équilibrée | Exactitude, F1 |
+| Classes déséquilibrées | Précision, Rappel, AUC |
+| Dépistage médical | Rappel (sensibilité) |
+| Filtrage anti-spam | Équilibre précision + rappel |
+| Traduction automatique | BLEU, METEOR |
+| Qualité du modèle de langage | Perplexité |
+| Impact en production | Résultats des tests A/B |
+
+<ThinkAboutIt>
+Vous construisez un système de détection de piétons pour une voiture autonome. Un faux négatif signifie ne pas voir un piéton ; un faux positif signifie freiner pour une ombre. Quelle métrique optimisez-vous, et quel compromis êtes-vous prêt à accepter ?
+</ThinkAboutIt>
+
+## Points clés à retenir
+
+- L'**exactitude** est trompeuse avec des données déséquilibrées — vérifiez toujours la matrice de confusion.
+- La **précision** mesure la justesse des prédictions positives ; le **rappel** mesure leur exhaustivité.
+- Le **F1** équilibre les deux ; l'**AUC** évalue à travers tous les seuils.
+- La génération de texte utilise **BLEU** et la **perplexité** au lieu des métriques de classification.
+- Le **test A/B** est le standard de référence pour mesurer l'impact réel d'un modèle.
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Google ML Crash Course — Classification Metrics](https://developers.google.com/machine-learning/crash-course/classification/accuracy) — Parcours interactif sur la précision, le rappel et les courbes ROC
+- [Towards Data Science — Beyond Accuracy](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c/) — Guide pratique avec des exemples concrets de choix de métriques

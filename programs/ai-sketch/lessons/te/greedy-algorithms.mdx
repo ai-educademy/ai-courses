@@ -1,0 +1,133 @@
+---
+title: "Greedy Algorithms — స్థానిక ఎంపికలు సమగ్ర పరిష్కారాలకు ఎప్పుడు దారితీస్తాయి"
+description: "ప్రతి అడుగులో స్థానికంగా ఉత్తమ ఎంపిక చేయడం నిజంగా సమగ్ర ఉత్తమ ఫలితాన్ని ఎప్పుడు ఇస్తుందో, ఎప్పుడు ఇవ్వదో నేర్చుకోండి."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+---
+
+## Algorithm ను Greedy గా ఏది చేస్తుంది?
+
+Greedy algorithm ఒక పరిష్కారాన్ని **ఒక్కో అడుగు** గా నిర్మిస్తుంది, ఎల్లప్పుడూ **ఇప్పుడు** ఉత్తమంగా కనిపించే ఎంపికను ఎంచుకుంటుంది — గత ఎంపికలను తిరిగి పరిగణించకుండా. Backtracking లేదు, ముందుకు చూడడం లేదు.
+
+రెండు లక్షణాలు ఉన్నప్పుడు ఇది పనిచేస్తుంది:
+1. **Greedy choice property** — స్థానికంగా ఉత్తమ ఎంపిక సమగ్రంగా ఉత్తమ పరిష్కారానికి దారితీస్తుంది.
+2. **Optimal substructure** — ప్రతి ఎంపిక తర్వాత మిగిలిన సమస్య అదే సమస్య యొక్క చిన్న రూపం.
+
+## Activity Selection — క్లాసిక్ ఉదాహరణ
+
+ప్రారంభ మరియు ముగింపు సమయాలతో కార్యకలాపాల సమూహం ఇచ్చినప్పుడు, అతిపెక్కు అతివ్యాప్తి కాని కార్యకలాపాలను ఎంచుకోండి.
+
+**Greedy వ్యూహం:** ముగింపు సమయం ప్రకారం sort చేసి, ఎల్లప్పుడూ ముందుగా ముగిసే కార్యకలాపాన్ని ఎంచుకోండి.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+ఇది ఎందుకు పనిచేస్తుంది? ముందుగా ముగిసే కార్యకలాపాన్ని ఎంచుకోవడం భవిష్యత్ కార్యకలాపాలకు ఎక్కువ స్థలం ఇస్తుంది. మరే ఎంపికా దీని కంటే మెరుగ్గా చేయలేదు.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="ముందుగా ముగింపు సమయం ఆధారంగా activity selection చూపే timeline" caption="ముందుగా ముగింపు సమయం ప్రకారం ఎంపిక అతివ్యాప్తి కాని కార్యకలాపాల సంఖ్యను గరిష్టం చేస్తుంది." />
+
+## Huffman Coding — భావన
+
+అత్యంత తక్కువ-ఫ్రీక్వెన్సీ **రెండు** చిహ్నాలను పదేపదే కలపడం ద్వారా ఉత్తమ prefix-free binary code నిర్మించండి. ఇది greedy: ప్రతి అడుగులో, చౌకైన జతను కలపండి. ఫలితం ఒక tree, ఇందులో తరచుగా వచ్చే చిహ్నాలకు చిన్న codes ఉంటాయి.
+
+<FunFact>Huffman coding JPEG, MP3, మరియు ZIP compression లో ఉపయోగించబడుతుంది. David Huffman దీన్ని 1952 లో విద్యార్థిగా కనుగొన్నాడు — ఇది ఒక హోంవర్క్ అసైన్‌మెంట్!</FunFact>
+
+## Jump Game
+
+`nums[i]` index `i` నుండి గరిష్ట jump పొడవు అయిన array ఇచ్చినప్పుడు, మీరు చివరి index కి చేరుకోగలరా అని నిర్ణయించండి.
+
+**Greedy విధానం:** ఇప్పటివరకు చేరుకోగల అతి దూర index ను ట్రాక్ చేయండి. ఎడమ నుండి కుడికి scan చేయండి — మీరు ఎప్పుడైనా వెనుకబడితే, false రిటర్న్ చేయండి.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="Jump Game లో, greedy variable 'farthest' ఏమిటి?" options="ప్రస్తుత స్థానం|చేసిన jumps సంఖ్య|సందర్శించిన ఏ స్థానం నుండైనా చేరుకోగల గరిష్ట index|అతి పొడవైన jump యొక్క పొడవు" answer="2" explanation="'farthest' ఇప్పటివరకు సందర్శించిన ఏ స్థానం నుండైనా చేరుకోగల అతి కుడి index ను ట్రాక్ చేస్తుంది. మీ ప్రస్తుత index దాన్ని మించితే, మీరు చిక్కుకున్నట్లు." />
+
+## Gas Station
+
+Gas stations ఉన్న వృత్తాకార మార్గంలో ప్రయాణించండి. Station `i` వద్ద `gas[i]` ఇంధనం పొందుతారు మరియు తదుపరి station కి చేరుకోవడానికి `cost[i]` ఖర్చవుతుంది. circuit పూర్తి చేయగల starting station కనుగొనండి, లేదా −1 రిటర్న్ చేయండి.
+
+**Greedy అంతర్దృష్టి:** మొత్తం gas ≥ మొత్తం cost అయితే, పరిష్కారం ఉంటుంది. Running surplus ట్రాక్ చేయండి; అది సున్నా కంటే తగ్గినప్పుడు, సమాధానం ఆ point **తర్వాత** మొదలవ్వాలి.
+
+## Task Scheduler
+
+ఒకే రకమైన tasks మధ్య `n` cooldown తో tasks షెడ్యూల్ చేయండి. **Greedy:** ఎల్లప్పుడూ అత్యధిక ఫ్రీక్వెన్సీ మిగిలిన task ను ఎంచుకోండి. సమాధానం గరిష్ట ఫ్రీక్వెన్సీ మరియు ఎన్ని tasks దాన్ని పంచుకుంటాయి అనే దానిపై ఆధారపడుతుంది.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>Task scheduler లో, అత్యధిక ఫ్రీక్వెన్సీ task ను ముందుగా ఎంచుకోవడం idle slots ను ఎందుకు తగ్గిస్తుంది? అత్యల్ప ఫ్రీక్వెన్సీ ముందుగా ఎంచుకుంటే ఏమి తప్పు జరుగుతుంది?</ThinkAboutIt>
+
+## Fractional Knapsack vs 0/1 Knapsack
+
+**Fractional knapsack:** అంశాల భాగాలు తీసుకోవచ్చు. Greedy పనిచేస్తుంది — విలువ-ప్రతి-బరువు ప్రకారం sort చేసి, ఉత్తమ నిష్పత్తి ముందుగా తీసుకోండి.
+
+**0/1 knapsack:** అంశాలు పూర్తిగా తీసుకోవాలి లేదా వదిలేయాలి. ఇక్కడ Greedy **విఫలమవుతుంది** ఎందుకంటే బరువైన-కానీ-విలువైన అంశాన్ని వదిలేయడం రెండు తేలికైన వాటిని తీసుకోవడం కంటే అధ్వాన్నంగా ఉండవచ్చు. దీనికి dynamic programming అవసరం.
+
+```
+Items: (బరువు=3, విలువ=4), (బరువు=2, విలువ=3), (బరువు=2, విలువ=3)
+Capacity: 4
+
+Greedy (ఉత్తమ నిష్పత్తి ముందు): item 1 తీసుకుంటుంది (బ=3, వి=4) → 1 మిగిలింది → మిగతాది సరిపోదు → విలువ = 4
+Optimal: items 2+3 తీసుకుంటుంది (బ=4, వి=6) → విలువ = 6 ✗ Greedy విఫలం!
+```
+
+<Quiz question="0/1 knapsack సమస్యకు greedy విధానం ఎందుకు విఫలమవుతుంది?" options="అంశాలు విభజించలేము, కాబట్టి ఉత్తమ నిష్పత్తి అంశం capacity వృథా చేయవచ్చు|అంశాలు sort చేయబడలేదు|చాలా ఎక్కువ అంశాలు ఉన్నాయి|Greedy algorithms knapsack సమస్యలకు ఎప్పుడూ పనిచేయవు" answer="0" explanation="పూర్తి అంశాలు తీసుకోవాల్సినప్పుడు, ఉత్తమ నిష్పత్తి ముందు ఎంచుకోవడం ఉపయోగించని capacity వదిలేయవచ్చు, దానిని చిన్న అంశాలు మరింత లాభదాయకంగా నింపగలిగేవి." />
+
+## Greedy ఎప్పుడు పనిచేస్తుంది?
+
+✅ Greedy choice property నిరూపించగలిగినప్పుడు **పనిచేస్తుంది**:
+- Interval scheduling, Huffman coding, minimum spanning trees, Dijkstra's algorithm, ప్రామాణిక నాణెపు విలువలతో చిల్లర
+
+❌ స్థానిక optima సమగ్ర optima గా కలవనప్పుడు **విఫలమవుతుంది**:
+- 0/1 knapsack, సాధారణ graphs లో longest path, travelling salesman
+
+## Greedy సరైనదని నిరూపించడం — Exchange Argument
+
+ప్రామాణిక పద్ధతి: greedy ఎంపిక **ఉపయోగించని** optimum పరిష్కారం ఉందని ఊహించండి. దాని ఎంపికలలో ఒకదాన్ని greedy ఎంపికతో **మార్చినా** పరిష్కారం తగ్గదని చూపించండి. ఇది greedy కనీసం అంత మంచిదని నిరూపిస్తుంది.
+
+<Quiz question="'Exchange argument' దేని కోసం ఉపయోగిస్తారు?" options="Array లో రెండు elements swap చేయడం|Greedy algorithm optimal పరిష్కారం ఇస్తుందని నిరూపించడం|Recursion ను iteration గా మార్చడం|Time complexity ను optimize చేయడం" answer="1" explanation="Exchange argument ఏదైనా optimal పరిష్కారాన్ని నాణ్యత నష్టం లేకుండా greedy పరిష్కారంగా మార్చవచ్చని చూపించడం ద్వారా సరైనదని నిరూపిస్తుంది." />
+
+## Greedy vs Dynamic Programming
+
+| అంశం | Greedy | Dynamic Programming |
+|--------|--------|---------------------|
+| ఎంపికలు | ప్రతి అడుగుకు ఒక ఉత్తమ ఎంపిక | అన్ని ఉప-సమస్యలను అన్వేషించు |
+| గతాన్ని తిరిగి చూస్తుందా? | ఎప్పుడూ కాదు | అవును — ఉప-ఫలితాలు నిల్వ చేస్తుంది |
+| వేగం | సాధారణంగా వేగవంతం | State space పై ఆధారపడుతుంది |
+| సరైనది | నిరూపించగలిగితే మాత్రమే | ఎల్లప్పుడూ (సరిగ్గా రూపొందిస్తే) |
+
+అనుమానం ఉంటే, greedy తో ప్రారంభించండి — నిరూపించలేకపోతే, DP కి మారండి.
+
+<FunFact>Dijkstra యొక్క shortest-path algorithm greedy — ఇది ఎల్లప్పుడూ సమీపంలోని సందర్శించని node ను ప్రాసెస్ చేస్తుంది. Edge weights non-negative అయినందున ఇది పనిచేస్తుంది, greedy ఎంపిక సురక్షితంగా ఉంటుంది.</FunFact>
+
+<ThinkAboutIt>మీకు నాణెపు విలువలు [1, 3, 4] ఇచ్చి 6 కోసం చిల్లర ఇవ్వాలి. Greedy విధానం 4+1+1=3 నాణేలు ఎంచుకుంటుంది, కానీ optimal 3+3=2 నాణేలు. ఈ విలువలలో greedy choice property ని ఏది విచ్ఛిన్నం చేస్తుంది?</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+
+- [NeetCode — Greedy playlist](https://neetcode.io/roadmap) — వివరణలతో greedy సమస్యలు
+- [Tech Interview Handbook — Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) — greedy ఎప్పుడు ఉపయోగించాలి మరియు సాధారణ పాటర్న్‌లు
+- [CP-Algorithms — Greedy algorithms](https://cp-algorithms.com/) — లోతైన సిద్ధాంతం మరియు నిరూపణలు

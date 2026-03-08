@@ -1,0 +1,146 @@
+---
+title: "Dynamic Programming — AI जटिल समस्याओं को तोड़कर कैसे हल करता है"
+description: "Memoisation, tabulation, और classic DP patterns को समझें जो AI और computer science में हर जगह इस्तेमाल होते हैं।"
+order: 4
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## बड़ा आइडिया
+
+कुछ problems देखने में बहुत complex लगते हैं, लेकिन जब ध्यान से देखो तो पता चलता है कि वो **छोटी-छोटी repeating sub-problems** से बने हैं। Dynamic programming (DP) हर sub-problem को **एक बार** solve करता है, result store करता है, और उसे दोबारा use करता है — थोड़ी memory खर्च करके बहुत बड़ी speed-up हासिल करता है।
+
+दो conditions बताती हैं कि DP लगा सकते हैं:
+
+1. **Overlapping sub-problems** — एक ही calculations बार-बार repeat होती हैं।
+2. **Optimal substructure** — पूरी problem का best solution उसके parts के best solutions से बनाया जा सकता है।
+
+<Illustration src="/images/lessons/dynamic-programming.svg" alt="Fibonacci के लिए एक recursion tree जिसमें repeated sub-problems highlight हैं, साथ में एक भरी हुई DP table" caption="बिना DP के, Fibonacci एक ही values को exponentially recalculate करता है। DP के साथ, हर value सिर्फ एक बार compute होती है।" />
+
+## Fibonacci: सबसे Classic Example
+
+### Naïve Recursion — O(2ⁿ)
+
+```
+function fib(n):
+    if n <= 1: return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+`fib(5)` call करने पर **15** function calls होती हैं, जिनमें काफी redundant हैं। `fib(40)` पर seconds लगते हैं; `fib(100)` पर तो universe से भी ज़्यादा time लगेगा।
+
+### Memoisation (Top-Down) — O(n)
+
+Results को एक cache में store करो। अगर कोई sub-problem पहले solve हो चुकी है, तो cached answer return करो।
+
+```
+memo = {}
+function fib(n):
+    if n in memo: return memo[n]
+    if n <= 1: return n
+    memo[n] = fib(n - 1) + fib(n - 2)
+    return memo[n]
+```
+
+### Tabulation (Bottom-Up) — O(n)
+
+Base cases से शुरू करके iteratively answer बनाओ।
+
+```
+function fib(n):
+    table = [0, 1]
+    for i in 2..n:
+        table[i] = table[i - 1] + table[i - 2]
+    return table[n]
+```
+
+<Quiz question="Memoisation और tabulation में क्या फ़र्क है?" options="Memoisation stack use करता है; tabulation queue use करता है|Memoisation top-down recursion से काम करता है; tabulation bottom-up iteration से|Memoisation हमेशा faster होता है|दोनों एक ही technique के अलग-अलग नाम हैं" answer="1" explanation="Memoisation original problem से शुरू होकर नीचे recurse करता है और रास्ते में cache करता जाता है। Tabulation सबसे छोटी sub-problems से शुरू होकर ऊपर की ओर iteratively बनाता है।" />
+
+## Classic DP Problems
+
+### Climbing Stairs
+
+आप एक बार में 1 या 2 सीढ़ियाँ चढ़ सकते हैं। Step _n_ तक पहुँचने के कितने अलग-अलग तरीके हैं?
+
+```
+function climbStairs(n):
+    if n <= 2: return n
+    a = 1, b = 2
+    for i in 3..n:
+        a, b = b, a + b
+    return b
+```
+
+यह असल में Fibonacci ही है — step _n_ का answer, step _n−1_ और _n−2_ तक पहुँचने के तरीकों का sum है।
+
+### Coin Change
+
+दिए गए coin denominations से target amount बनाने के लिए **सबसे कम coins** ढूँढो।
+
+```
+function coinChange(coins, amount):
+    dp = array of size (amount + 1), filled with INF
+    dp[0] = 0
+    for i in 1..amount:
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    return dp[amount] if dp[amount] != INF else -1
+```
+
+### Longest Common Subsequence (LCS)
+
+दो strings में common characters की सबसे लंबी sequence ढूँढो (ज़रूरी नहीं कि contiguous हो)।
+
+```
+function lcs(s1, s2):
+    m = s1.length, n = s2.length
+    dp = 2D array of size (m+1) x (n+1), filled with 0
+    for i in 1..m:
+        for j in 1..n:
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    return dp[m][n]
+```
+
+<FunFact>`diff` tool जो file versions के बीच changes दिखाता है, वो LCS पर based है। जब भी आप `git diff` चलाते हैं, Git इसका एक variant use करता है।</FunFact>
+
+<ThinkAboutIt>Coin change minimum coins की संख्या पूछता है। अगर आपको amount बनाने के कुल अलग-अलग तरीकों की गिनती करनी हो तो? Recurrence relation कैसे बदलेगा?</ThinkAboutIt>
+
+## AI में Real Applications
+
+| Problem | AI Domain | DP Technique |
+|---------|-----------|-------------|
+| **Edit distance** (Levenshtein) | Spell checkers, fuzzy search | Characters compare करने वाली 2D table |
+| **Viterbi algorithm** | Speech recognition, POS tagging | Hidden Markov model में best path |
+| **Sequence alignment** | Bioinformatics (DNA matching) | Gap penalties वाला LCS variant |
+| **CTC decoding** | Handwriting / speech-to-text | Repeated characters को optimally merge करना |
+| **Beam search pruning** | Machine translation | Top-k partial translations रखना |
+
+<Quiz question="एक spell checker corrections suggest करने के लिए सबसे likely कौन सा DP-based algorithm use करता है?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Climbing stairs" answer="1" explanation="Edit distance एक word को दूसरे में बदलने के लिए minimum insertions, deletions, और substitutions count करता है — सीधे measure करता है कि एक misspelling dictionary word से कितनी 'करीब' है।" />
+
+## Top-Down vs Bottom-Up
+
+| पहलू | Top-Down (Memoisation) | Bottom-Up (Tabulation) |
+|-------|----------------------|----------------------|
+| Style | Recursive + cache | Iterative + table |
+| कौन सी sub-problems solve होती हैं | सिर्फ़ जो ज़रूरी हैं | _n_ तक सभी sub-problems |
+| Stack overflow का risk | हाँ, deep recursion में | नहीं |
+| Space optimisation की आसानी | मुश्किल | आसान (अक्सर बस last row रखनी होती है) |
+
+**अंगूठे का नियम:** पहले memoisation से recurrence समझो, फिर space optimise करने या stack limits से बचने के लिए tabulation में convert करो।
+
+<ThinkAboutIt>Coin change table का size O(amount) है। LCS table का size O(m × n) है। क्या आप एक बार में सिर्फ़ दो rows रखकर LCS space को O(min(m, n)) तक कम कर सकते हैं? ऐसा करने पर कौन सी information खो जाएगी?</ThinkAboutIt>
+
+## मुख्य बातें
+
+1. DP exponential brute-force को polynomial time में बदलता है **repeated work को cache करके**।
+2. DP लगाने से पहले overlapping sub-problems और optimal substructure identify करो।
+3. Memoisation intuitive है; tabulation efficient है — दोनों सीखो।
+4. Edit distance, Viterbi, और sequence alignment दिखाते हैं कि DP modern AI के दिल में है।
+
+<Quiz question="एक problem में overlapping sub-problems हैं लेकिन optimal substructure नहीं है। क्या आप optimal solution पाने के लिए DP लगा सकते हैं?" options="हाँ — अगर sub-problems overlap करती हैं तो DP हमेशा काम करता है|नहीं — DP से optimality guarantee करने के लिए दोनों conditions ज़रूरी हैं|सिर्फ़ tabulation से|सिर्फ़ graph problems के लिए" answer="1" explanation="DP के लिए overlapping sub-problems (efficiency के लिए) और optimal substructure (correctness के लिए) दोनों ज़रूरी हैं। Optimal substructure के बिना, सिर्फ़ caching से global optimum की guarantee नहीं मिलती।" />

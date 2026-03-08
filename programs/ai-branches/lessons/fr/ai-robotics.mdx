@@ -1,0 +1,123 @@
+---
+title: "IA et robotique — Des bras d'usine aux assistants humanoïdes"
+description: "Découvrez comment l'IA transforme la robotique — de l'automatisation des entrepôts et la précision chirurgicale aux robots humanoïdes qui marchent, saisissent et apprennent."
+order: 9
+difficulty: "intermediate"
+duration: 15
+icon: "🤖"
+published: true
+---
+
+# IA et robotique — Des bras d'usine aux assistants humanoïdes
+
+Les robots travaillent dans les usines depuis des décennies — soudant des châssis de voitures, peignant des surfaces et assemblant des composants électroniques avec une précision infatigable. Mais ces robots classiques suivaient des instructions rigides et préprogrammées. Ils ne pouvaient pas s'adapter si un boulon était légèrement de travers ou si une boîte était mal placée. **La robotique alimentée par l'IA** change tout : des robots qui perçoivent, raisonnent et apprennent de leur environnement.
+
+## Robotique classique vs robotique alimentée par l'IA
+
+Les robots industriels traditionnels fonctionnent selon des **instructions codées en dur** : se déplacer à la position X, pivoter de 45 degrés, fermer la pince. Ils sont rapides, précis et fiables — mais uniquement dans des environnements contrôlés où rien d'inattendu ne se produit.
+
+Les robots alimentés par l'IA, en revanche, utilisent la **perception**, la **planification** et l'**apprentissage** pour gérer l'incertitude. Ils peuvent reconnaître des objets qu'ils n'ont jamais vus, planifier des trajectoires à travers des espaces encombrés et améliorer leurs performances au fil du temps grâce à l'expérience.
+
+| Aspect | Robotique classique | Robotique alimentée par l'IA |
+|---|---|---|
+| Programmation | Trajectoires codées en dur | Comportements appris |
+| Environnement | Structuré, prévisible | Non structuré, dynamique |
+| Adaptabilité | Aucune | Apprentissage continu |
+| Capteurs | Minimaux (encodeurs de position) | Riches (caméras, LiDAR, toucher) |
+
+<Illustration src="/images/lessons/ai-robotics.svg" alt="Diagramme illustrant la boucle perception-planification-action dans un robot alimenté par l'IA" caption="Les robots IA perçoivent continuellement leur environnement, planifient des actions et les exécutent — en s'adaptant en temps réel." />
+
+## La boucle perception-planification-action
+
+Chaque robot IA fonctionne selon un cycle continu :
+
+1. **Perception** — Les caméras, le LiDAR, les capteurs de profondeur et les capteurs de force construisent un modèle de l'environnement. La vision par ordinateur identifie les objets, estime les poses et détecte les obstacles.
+2. **Planification** — À partir du monde perçu et d'un objectif, le robot planifie une séquence d'actions. Cela peut impliquer la planification de trajectoire (éviter les obstacles), la planification de saisie (comment attraper un objet) ou la planification de tâches (quelles étapes pour accomplir un travail).
+3. **Action** — Les moteurs et actionneurs exécutent le plan. Les retours des capteurs affinent continuellement l'exécution.
+
+Cette boucle s'exécute de nombreuses fois par seconde. Plus chaque étape est rapide et précise, plus le robot devient performant dans les environnements dynamiques. Les robots modernes exécutent souvent la perception à 30–60 images par seconde et la replanification à des taux similaires, permettant un comportement fluide et réactif.
+
+## La vision par ordinateur dans les robots
+
+La vision est sans doute le sens le plus crucial pour les robots modernes. Les capacités clés incluent :
+
+- **Détection et reconnaissance d'objets** — Identifier des articles sur un tapis roulant ou une étagère.
+- **Estimation de pose** — Déterminer la position exacte et l'orientation d'un objet pour une saisie précise.
+- **Segmentation sémantique** — Comprendre la scène au niveau du pixel (sol, obstacle, objet cible).
+- **Perception de la profondeur** — Les caméras stéréo ou les capteurs à lumière structurée fournissent une compréhension 3D.
+
+<FunFact>Les robots des entrepôts d'Amazon traitent quotidiennement des milliers de types de produits différents, utilisant la vision par ordinateur pour identifier des articles sur lesquels ils n'ont jamais été explicitement entraînés.</FunFact>
+
+## Boston Dynamics et la locomotion à pattes
+
+**Boston Dynamics** a repoussé les limites de ce que les robots peuvent physiquement accomplir. Leurs robots — **Spot** (quadrupède), **Atlas** (humanoïde) et **Stretch** (entrepôt) — démontrent une agilité remarquable.
+
+Atlas peut courir, sauter, faire des saltos arrière et naviguer sur un terrain irrégulier. Spot patrouille les chantiers de construction, inspecte les installations industrielles et monte les escaliers. Le défi majeur de la locomotion à pattes est le **contrôle de l'équilibre** : le robot doit constamment ajuster sa posture en réponse au terrain, aux obstacles et à son propre élan.
+
+Les avancées récentes utilisent l'apprentissage par renforcement pour entraîner des politiques de locomotion en simulation, puis les transférer aux robots physiques — une technique appelée **sim-to-real transfer** (transfert simulation-réalité). Les résultats sont saisissants : les robots entraînés de cette manière se rétablissent après des poussées, naviguent sur des décombres et traversent la glace — le tout sans programmation explicite pour chaque scénario.
+
+<Quiz question="Quel est le principal avantage des robots alimentés par l'IA par rapport aux robots industriels classiques ?" options="Ils sont toujours plus rapides|Ils peuvent s'adapter à des environnements non structurés et imprévisibles|Ils consomment moins d'énergie|Ils sont moins chers à fabriquer" answer="1" explanation="Les robots alimentés par l'IA utilisent la perception et l'apprentissage pour gérer l'incertitude et s'adapter à des environnements que les robots classiques à instructions codées en dur ne peuvent pas gérer." />
+
+## Robots d'entrepôt — Amazon et au-delà
+
+Les centres de distribution d'Amazon déploient plus de **750 000 robots** travaillant aux côtés des employés humains. Ces robots :
+
+- Transportent des unités de rayonnage à travers les sols d'entrepôt (Kiva/Proteus).
+- Trient les colis à l'aide de la vision par ordinateur et de bras robotiques (Sparrow).
+- Naviguent dans des environnements dynamiques partagés avec des travailleurs humains.
+
+L'intérêt économique est convaincant : les robots réduisent le temps de traitement des commandes, fonctionnent 24 heures sur 24 et améliorent la précision. Mais ils soulèvent également des questions importantes sur le déplacement de la main-d'œuvre et l'évolution du travail en entrepôt.
+
+## Robots chirurgicaux — Une précision au-delà des mains humaines
+
+Le **da Vinci Surgical System** d'Intuitive Surgical a réalisé plus de 12 millions d'interventions dans le monde. Il ne fonctionne pas de manière autonome — un chirurgien le contrôle — mais l'IA améliore l'expérience :
+
+- **Filtrage des tremblements** élimine les tremblements naturels de la main.
+- **Mise à l'échelle des mouvements** traduit les grands mouvements de la main en mouvements d'instruments minuscules et précis.
+- **Visualisation 3D** fournit des vues agrandies et haute définition du site chirurgical.
+
+Les robots chirurgicaux entièrement autonomes restent une frontière de recherche, mais les systèmes assistés par l'IA permettent déjà des interventions qui seraient impossibles avec les seules mains humaines.
+
+<ThinkAboutIt>Les robots chirurgicaux peuvent réaliser des opérations avec une précision surhumaine, et pourtant la chirurgie entièrement autonome reste à des années de distance. Quels obstacles techniques et éthiques doivent être surmontés avant qu'un robot n'opère sans chirurgien humain dans la boucle ?</ThinkAboutIt>
+
+## Robots humanoïdes — La prochaine frontière
+
+La course à la construction de robots humanoïdes polyvalents s'accélère :
+
+- **Tesla Optimus** — Conçu pour le travail manuel répétitif dans les usines et potentiellement les foyers. Tesla exploite son expertise en IA de conduite autonome pour la perception et la planification d'Optimus.
+- **Figure 01 et Figure 02** — Les humanoïdes de Figure AI combinent de grands modèles de langage avec la manipulation physique, permettant des robots qui comprennent les instructions vocales et exécutent des tâches complexes.
+- **Agility Robotics Digit** — Un robot bipède conçu pour la logistique, déjà déployé dans les entrepôts Amazon pour des tests.
+
+Le facteur de forme humanoïde est attrayant car les environnements humains — bâtiments, véhicules, outils — sont conçus pour le corps humain. Un robot humanoïde peut théoriquement utiliser l'infrastructure existante sans modification.
+
+<Quiz question="Pourquoi le facteur de forme humanoïde est-il considéré comme avantageux pour les robots polyvalents ?" options="Les robots humanoïdes sont plus faciles à construire|Les environnements humains sont conçus pour la forme du corps humain|Les robots humanoïdes sont plus rapides que les robots à roues|La locomotion bipède consomme moins d'énergie" answer="1" explanation="Puisque les bâtiments, les outils et les véhicules sont conçus pour la forme humaine, un robot humanoïde peut opérer dans des environnements existants sans nécessiter de modifications coûteuses." />
+
+## Le monde réel est désordonné
+
+Le plus grand défi en robotique n'est pas un algorithme unique — c'est le **fossé entre la simulation et la réalité**. Le monde réel est imprévisible :
+
+- L'éclairage change tout au long de la journée.
+- Les objets ont des formes, des poids et des textures inattendus.
+- Les surfaces sont glissantes, irrégulières ou encombrées.
+- Les humains se comportent de manière imprévisible.
+
+C'est pourquoi les robots qui fonctionnent parfaitement en laboratoire peinent souvent dans une vraie cuisine ou sur un chantier de construction. La robustesse reste le défi d'ingénierie central du domaine.
+
+## Sim-to-Real et IA incarnée
+
+Le **sim-to-real transfer** entraîne les robots dans des environnements simulés — qui sont peu coûteux, rapides et sûrs — puis les déploie dans le monde physique. Des techniques comme la **domain randomisation** (variation des paramètres de simulation) aident les politiques à se généraliser.
+
+L'**IA incarnée** va plus loin : elle soutient que la véritable intelligence nécessite un corps physique interagissant avec un monde physique. Les modèles de langage comprennent le mot « lourd », mais un robot qui a eu du mal à soulever un bloc de béton possède une compréhension fondamentalement différente et plus riche.
+
+<FunFact>La plateforme Isaac Sim de NVIDIA peut simuler des millions d'interactions robotiques par heure, accélérant considérablement un entraînement qui prendrait des mois dans le monde réel.</FunFact>
+
+<Quiz question="Qu'est-ce que la domain randomisation dans le sim-to-real transfer ?" options="Utiliser différents logiciels de simulation|Varier aléatoirement les paramètres de simulation (éclairage, friction, textures) pour créer des politiques robustes|Randomiser la configuration matérielle du robot|S'entraîner sur des tâches aléatoires" answer="1" explanation="La domain randomisation introduit une variation contrôlée dans les paramètres de simulation afin que le robot apprenne des politiques suffisamment robustes pour fonctionner malgré les différences entre la simulation et la réalité." />
+
+<ThinkAboutIt>À mesure que les robots deviennent plus performants et autonomes, comment la société devrait-elle gérer l'impact économique sur les emplois actuellement occupés par des humains ?</ThinkAboutIt>
+
+---
+
+## 📚 Lectures complémentaires
+
+- [Boston Dynamics — Dans les coulisses du laboratoire](https://bostondynamics.com/) — Vidéos et présentations techniques de Spot, Atlas et Stretch
+- [NVIDIA Isaac Sim](https://developer.nvidia.com/isaac-sim) — Plateforme de simulation pour l'entraînement et le test de robots alimentés par l'IA à grande échelle

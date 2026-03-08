@@ -1,0 +1,138 @@
+---
+title: "Agentic Workflows — Multi-Agent AI Systems बनाना"
+description: "जानिए कैसे AI agents tool use, memory, planning strategies और multi-agent architectures का उपयोग करके observe, reason और act करते हैं।"
+order: 9
+difficulty: "advanced"
+duration: 20
+icon: "🤖"
+published: true
+---
+
+# Agentic Workflows — Multi-Agent AI Systems बनाना
+
+एक language model सवालों के जवाब देता है। एक **agent** goals पूरे करता है। फ़र्क है loop का: agents अपने environment को observe करते हैं, सोचते हैं कि आगे क्या करना है, tools की मदद से action लेते हैं, और task पूरा होने तक यही cycle दोहराते हैं। इस lesson में हम modern agentic AI systems की architecture, patterns और failure modes को समझेंगे।
+
+## AI Agent क्या बनाता है?
+
+एक AI agent तीन capabilities का continuous loop है:
+
+1. **Observe** — मौजूदा state को समझना: user instructions, tool outputs, environment data, पिछले actions
+2. **Reason** — अगला कदम तय करना: goal को तोड़ना, steps plan करना, options evaluate करना
+3. **Act** — Action execute करना: tool call करना, code लिखना, API request भेजना, result return करना
+
+Simple prompting से मुख्य अंतर यह है कि agent के पास **कई steps पर autonomy** होती है। Agent सिर्फ respond नहीं करता — वह iterate करता है। वह web search कर सकता है, results पढ़ सकता है, decide कर सकता है कि और information चाहिए, refined query से दोबारा search कर सकता है, findings synthesise कर सकता है, और फिर answer दे सकता है।
+
+<Illustration src="/images/lessons/agentic-workflows.svg" alt="Observe-reason-act loop का circular diagram जो tools, memory और environment से connections दिखाता है" caption="Agentic loop: environment को observe करो, अगले step के बारे में reason करो, tools से act करो, और goal achieve होने तक repeat करो।" />
+
+## Tool Use और Function Calling
+
+Tools के बिना, agent सिर्फ text generate कर सकता है। **Tool use** agents को दुनिया से interact करने की ताकत देता है:
+
+- **Function calling** — LLM structured JSON output करता है जिसमें बताया जाता है कि कौन सा function call करना है और किन arguments के साथ। Runtime function execute करता है और results context में वापस feed करता है।
+- **API integration** — Agents databases query कर सकते हैं, REST endpoints call कर सकते हैं, emails भेज सकते हैं, या files manipulate कर सकते हैं।
+- **Code execution** — कुछ agents sandboxed environment में code लिखकर run करते हैं और output से अगले steps decide करते हैं।
+
+Modern frameworks tools को typed function signatures के रूप में expose करते हैं। Model task के अनुसार सही tool चुनना सीख जाता है — maths के लिए calculator, current events के लिए search engine, या data analysis के लिए code interpreter।
+
+<Quiz question="Function calling का LLM से tool 'imagine' करवाने पर क्या मुख्य फ़ायदा है?" options="Function calling कम compute use करता है|Function calling actual real-world results produce करता है — code या API calls execute करके, न कि plausible लेकिन fabricated answers generate करके|Function calling को language model की ज़रूरत नहीं|Function calling हमेशा सही results देता है" answer="1" explanation="जब LLM search result 'imagine' करता है, तो वह plausible लेकिन गलत information hallucinate कर सकता है। Function calling actually search execute करता है और real data return करता है, जिससे agent की reasoning factual results पर based होती है।" />
+
+## Memory: Short-Term और Long-Term
+
+Complex tasks के लिए जो single context window से बड़े हों, agents को memory चाहिए:
+
+**Short-term memory** conversation context है — recent observations, actions और results की sliding window। यह model की context length से limited है।
+
+**Long-term memory** external storage use करती है, आमतौर पर **vector databases**, जो sessions के बीच information persist और retrieve करती है:
+- Important observations को embed करके vector store में रखो
+- हर step पर relevant past experiences के लिए store query करो
+- इससे agents को कई interactions से accumulated knowledge मिलती है
+
+Short-term context और long-term retrieval का combination हमारी working memory और episodic memory जैसा है।
+
+## Planning Strategies
+
+Agent **आगे क्या करेगा** — यह उसकी effectiveness तय करता है:
+
+**Chain-of-Thought (CoT)** — Model action लेने से पहले step by step reason करता है। Simple लेकिन straightforward problems के लिए effective।
+
+**ReAct (Reason + Act)** — Explicit reasoning traces और tool actions को structured format में interleave करता है: `Thought → Action → Observation → Thought → ...` इससे agent का decision process transparent और debuggable बनता है।
+
+**Tree-of-Thought (ToT)** — Agent एक साथ कई reasoning paths explore करता है, हर branch evaluate करता है, और सबसे promising एक चुनता है। जहाँ पहला approach गलत हो सकता है वहाँ useful है।
+
+**Plan-then-Execute** — Agent पहले complete plan बनाता है, फिर हर step execute करता है। इससे high-level strategy और low-level execution अलग रहती है।
+
+<FunFact>
+AutoGPT, पहले autonomous agent experiments में से एक, April 2023 में viral हुआ और कुछ समय के लिए GitHub पर सबसे तेज़ी से बढ़ने वाला repository बन गया। लोकप्रियता के बावजूद, यह अक्सर infinite loops में फँस जाता था — जो impressive demos और reliable production agents के बीच के बड़े gap को दर्शाता था।
+</FunFact>
+
+## Multi-Agent Architectures
+
+Complex tasks में अक्सर कई specialised agents मिलकर बेहतर काम करते हैं:
+
+**Supervisor pattern** — एक central "manager" agent task decompose करता है और specialised worker agents (researcher, coder, reviewer) को subtasks delegate करता है। Supervisor outputs synthesise करता है और coordination manage करता है।
+
+**Peer-to-peer** — Agents बिना central coordinator के directly एक-दूसरे से communicate करते हैं। हर agent की defined role होती है और वह results chain या network में अगले agent को pass करता है।
+
+**Hierarchical** — कई layers of supervision: top-level planner mid-level coordinators को delegate करता है, जो specialist workers manage करते हैं।
+
+<ThinkAboutIt>
+Multi-agent systems coordination overhead, communication costs और agents के cross-purposes पर काम करने का risk लाते हैं। किन परिस्थितियों में specialisation के फ़ायदे orchestration की complexity से ज़्यादा होते हैं? कब एक single, ज़्यादा capable agent बेहतर choice है?
+</ThinkAboutIt>
+
+## Modern Agent Frameworks
+
+Ecosystem तेज़ी से mature हुआ है:
+
+- **LangGraph** — Agents को stateful graphs के रूप में बनाता है जिनमें explicit control flow, cycles और persistence होती है।
+- **CrewAI** — Role-based multi-agent collaboration पर focus करता है जिसमें defined tasks, tools और delegation patterns हैं।
+- **AutoGen (Microsoft)** — Conversational multi-agent workflows enable करता है जहाँ agents problems solve करने के लिए आपस में chat करते हैं।
+- **OpenAI Agents SDK** — Built-in function calling, agent handoffs और guardrails के साथ first-party framework।
+
+## Agentic Coding
+
+शायद सबसे transformative application: AI agents जो autonomously code लिखते हैं, test करते हैं और debug करते हैं:
+
+- **GitHub Copilot** — In-editor agent mode जो changes plan करता है, multiple files edit करता है और terminal commands run करता है।
+- **Cursor** — Agent के around बना IDE जो पूरे codebases को समझता है और multi-file edits करता है।
+- **Devin (Cognition)** — Autonomous software engineering agent जो issue से pull request तक full development tasks handle कर सकता है।
+
+ये tools **autocomplete से autonomy** की तरफ shift दर्शाते हैं — agent सिर्फ अगली line suggest नहीं करता, वह goal समझता है और files, terminals और browsers में उसकी तरफ काम करता है।
+
+## जब Agents Fail होते हैं
+
+Reliable agents बनाने के लिए failure modes समझना ज़रूरी है:
+
+- **Hallucination loops** — Agent tool result fabricate करता है, उससे reason करता है, और हर iteration में fiction में गहरा उतरता जाता है।
+- **Infinite recursion** — Agent बिना approach बदले failing action को बार-बार retry करता है, tokens और compute बर्बाद करता है।
+- **Goal drift** — कई steps के बाद agent original objective भूल जाता है और tangential subtasks में उलझ जाता है।
+- **Reward hacking** — Agent ऐसे shortcuts ढूँढता है जो success criteria satisfy करते हैं बिना problem actually solve किए।
+
+<Quiz question="एक agent को codebase में bug ढूँढने का task दिया गया। वह file search करता है, नहीं मिलती, फिर same query से दोबारा search करता है, बार-बार। यह कौन सा failure mode है?" options="Hallucination loop|Goal drift|Infinite recursion — बिना approach बदले failing action retry करना|Reward hacking" answer="2" explanation="यह infinite recursion है: agent एक loop में फँसा है, बिना approach modify किए same failing action retry कर रहा है। एक अच्छे design वाला agent repeated failures detect करके alternative strategy try करेगा।" />
+
+## Production Agent Patterns
+
+Production में reliably काम करने वाले agents बनाने के लिए defensive engineering चाहिए:
+
+- **Guardrails** — Input/output validation, content filtering और boundary checks जो agents को dangerous actions लेने से रोकते हैं।
+- **Human-in-the-loop** — High-stakes actions (emails भेजना, databases modify करना, code deploy करना) के लिए execution से पहले human approval ज़रूरी।
+- **Structured outputs** — Agents को free-form text की जगह machine-parseable responses (JSON schemas) produce करने पर force करना।
+- **Observability** — हर thought, action और tool call log करो। Comprehensive traces के बिना 20-step agent run debug करना लगभग impossible है।
+- **Circuit breakers** — Maximum step counts, token budgets और time limits set करो। अगर agent इन bounds से बाहर जाए, तो रुको और human को escalate करो।
+
+<Quiz question="Production agents में high-stakes actions के लिए human-in-the-loop approval इतना critical क्यों है?" options="क्योंकि AI agents हमेशा गलत होते हैं|क्योंकि इससे compute costs कम होती है|क्योंकि agents hallucinate कर सकते हैं, intent गलत समझ सकते हैं, या irreversible actions ले सकते हैं — human oversight real-world consequences वाले decisions के लिए safety net है|क्योंकि regulations हर case में इसकी ज़रूरत बताते हैं" answer="2" explanation="Agents goals गलत interpret कर सकते हैं, information hallucinate कर सकते हैं, या ऐसे actions ले सकते हैं जो reverse करना मुश्किल है। High-stakes operations के लिए human approval एक critical safety net है जो real-world impact से पहले errors पकड़ता है।" />
+
+<FunFact>
+Browser agents — AI systems जो websites पर click, type और screen read करके navigate करते हैं — सबसे कठिन agentic applications में से हैं। WebArena जैसे benchmarks दिखाते हैं कि best agents भी realistic web tasks में सिर्फ 15-30% सफल होते हैं, जबकि humans लगभग perfect perform करते हैं।
+</FunFact>
+
+<ThinkAboutIt>
+जैसे-जैसे agentic coding tools ज़्यादा capable बनते जाएँगे, software engineer की भूमिका code लिखने से बदलकर AI-generated code review करने, direct करने और verify करने की हो जाएगी। इस दुनिया में कौन सी नई skills ज़रूरी बनेंगी — और कौन सी traditional skills कम critical हो जाएँगी?
+</ThinkAboutIt>
+
+---
+
+## �� आगे पढ़ें
+
+- [ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2023)](https://arxiv.org/abs/2210.03629) — ReAct agent pattern पर foundational paper
+- [The Landscape of Emerging AI Agent Architectures (LangChain)](https://blog.langchain.dev/what-is-an-agent/) — Modern agent design patterns का comprehensive overview
+- [Andrew Ng — Agentic Design Patterns](https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/) — चार key agentic patterns: reflection, tool use, planning, और multi-agent collaboration

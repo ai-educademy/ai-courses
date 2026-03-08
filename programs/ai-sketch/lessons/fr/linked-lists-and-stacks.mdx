@@ -1,0 +1,126 @@
+---
+title: "Listes chaînées et Piles — Les structures dynamiques derrière l'IA"
+description: "Comprenez comment les listes chaînées, les piles et les files d'attente gèrent les données dynamiques dans les systèmes d'IA et au-delà."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+---
+
+## Au-delà des tableaux — Données dynamiques
+
+Les tableaux sont excellents quand on connaît la taille des données à l'avance. Mais que se passe-t-il quand les données arrivent de façon imprévisible — un flux de mesures de capteurs, une file de tâches à traiter par une IA, ou un historique de conversation qui grandit à chaque message ? Il faut des structures qui s'adaptent.
+
+Voici les **listes chaînées**, les **piles** et les **files d'attente** — le trio dynamique.
+
+## Listes chaînées — Nœuds et pointeurs
+
+Une liste chaînée stocke les éléments sous forme de chaîne de **nœuds**. Chaque nœud contient deux choses : la donnée et un pointeur vers le nœud suivant.
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Contrairement aux tableaux, les nœuds ne sont pas contigus en mémoire. Ils peuvent être éparpillés — le pointeur indique simplement où trouver le suivant.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="Une liste chaînée de trois nœuds reliés par des flèches, comparée à un tableau avec des blocs contigus" caption="Les nœuds d'une liste chaînée sont reliés par des pointeurs, contrairement aux éléments d'un tableau qui sont côte à côte." />
+
+### Listes chaînées vs Tableaux
+
+| Opération | Tableau | Liste chaînée |
+|-----------|---------|---------------|
+| Accès par index | O(1) ⚡ | O(n) 🐢 |
+| Insertion au début | O(n) 🐢 | O(1) ⚡ |
+| Insertion au milieu | O(n) 🐢 | O(1)* ⚡ |
+| Suppression au milieu | O(n) 🐢 | O(1)* ⚡ |
+| Utilisation mémoire | Compacte | Surcoût (pointeurs) |
+
+*Une fois la position trouvée — la trouver reste O(n).
+
+### Quand les listes chaînées gagnent
+
+- **Insertions et suppressions fréquentes** : si vous ajoutez et retirez constamment des éléments au milieu, les listes chaînées évitent le décalage coûteux des tableaux.
+- **Taille inconnue** : quand on ne sait pas combien d'éléments stocker, la liste chaînée grandit nœud par nœud sans redimensionnement.
+- **Base d'autres structures** : piles, files d'attente et structures plus complexes reposent souvent sur des listes chaînées.
+
+<ThinkAboutIt>
+La barre d'onglets de votre navigateur permet d'ouvrir, fermer et réorganiser librement. Un tableau ou une liste chaînée serait-il mieux adapté pour gérer les onglets ouverts ? Pensez à ce qui se passe quand on ferme un onglet au milieu.
+</ThinkAboutIt>
+
+## Piles — Dernier entré, premier sorti (LIFO)
+
+Une **pile** (stack) fonctionne exactement comme une pile d'assiettes : on ajoute par le haut et on retire par le haut.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+Deux opérations définissent une pile :
+- **Push** : ajouter un élément au sommet.
+- **Pop** : retirer l'élément du sommet.
+
+Les deux sont en **O(1)** — instantanées, quelle que soit la taille.
+
+### Les piles dans le monde réel
+
+- **Annuler/Rétablir** : chaque éditeur maintient une pile d'actions. Ctrl+Z dépile la dernière action et l'inverse.
+- **Bouton retour** : l'historique de navigation est une pile. Chaque nouvelle page est empilée ; cliquer « retour » dépile.
+- **Pile d'appels** : quand le code appelle une fonction, celle-ci est empilée. Quand elle se termine, elle est dépilée.
+
+<FunFact>
+Quand vous voyez une erreur « stack overflow », la pile d'appels a littéralement manqué d'espace — généralement parce qu'une fonction s'appelle elle-même sans jamais s'arrêter (récursion infinie). Le célèbre site de questions-réponses Stack Overflow tire son nom de cette erreur.
+</FunFact>
+
+### Les piles en IA
+
+- **Évaluation d'expressions** : les compilateurs IA utilisent des piles pour évaluer les expressions dans les graphes de calcul.
+- **Algorithmes de retour sur trace** : quand une IA explore des solutions possibles, elle utilise une pile pour se souvenir du chemin parcouru.
+- **Parcours en profondeur (DFS)** : traverser des arbres et graphes en profondeur utilise naturellement une pile.
+
+<Quiz question="Vous implémentez une fonction « annuler » pour une application de dessin. Quelle structure modélise le mieux l'historique des actions ?" options="Un tableau trié par horodatage|Une hash map d'identifiants d'actions|Une pile — l'action la plus récente doit être annulée en premier|Une file d'attente — l'action la plus ancienne doit être annulée en premier" answer="2" explanation="L'annulation nécessite un comportement LIFO — on annule toujours l'action la plus récente en premier. Une pile fournit exactement cela avec des opérations push et pop en O(1)." />
+
+## Files d'attente — Premier entré, premier sorti (FIFO)
+
+Une **file d'attente** (queue) fonctionne comme une file au magasin : le premier arrivé est le premier servi.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+### Les files d'attente en IA
+
+- **Parcours en largeur (BFS)** : explorer un graphe niveau par niveau utilise une file d'attente.
+- **Pipelines de données d'entraînement** : les données sont chargées dans des files pour que le GPU ait toujours le prochain lot prêt.
+- **Gestion des requêtes** : quand des milliers d'utilisateurs interrogent une API d'IA, les requêtes entrent dans une file et sont traitées dans l'ordre.
+
+<Quiz question="Une API d'IA reçoit 10 000 requêtes par seconde. Quelle structure garantit le traitement dans l'ordre d'arrivée ?" options="Une pile — traiter la requête la plus récente d'abord|Une hash map — rechercher chaque requête par ID|Une file d'attente — premier entré, premier sorti|Un tableau — stocker tout et traiter aléatoirement" answer="2" explanation="Le comportement FIFO d'une file d'attente garantit l'équité — les requêtes sont traitées dans l'ordre d'arrivée, évitant que les premières ne soient jamais servies." />
+
+<Callout>
+Il existe aussi une **file de priorité** (priority queue), où les éléments sont traités selon leur priorité plutôt que leur ordre d'arrivée. Les systèmes d'IA utilisent les files de priorité pour traiter les tâches urgentes en premier — par exemple, une voiture autonome peut prioriser la détection d'obstacles sur la planification d'itinéraire.
+</Callout>
+
+## Utilisation en IA : traitement séquentiel et gestion mémoire
+
+Les modèles de langage traitent le texte comme des séquences. En coulisses, des frameworks comme PyTorch et TensorFlow utilisent des structures de type liste chaînée pour construire des **graphes de calcul**. Quand on entraîne un réseau de neurones, la mémoire est constamment allouée et libérée ; les allocateurs utilisent souvent des listes chaînées de blocs mémoire libres.
+
+<ThinkAboutIt>
+Un chatbot doit mémoriser les 10 derniers messages d'une conversation mais supprimer les plus anciens. Utiliseriez-vous une pile, une file d'attente, ou autre chose ? Que se passe-t-il quand le 11e message arrive ?
+</ThinkAboutIt>
+
+<Quiz question="Quelle affirmation sur les listes chaînées est FAUSSE ?" options="Les listes chaînées permettent l'insertion en O(1) au début|Les listes chaînées utilisent de la mémoire supplémentaire pour les pointeurs|Les listes chaînées offrent un accès O(1) à n'importe quel élément par index|Les listes chaînées peuvent grandir dynamiquement sans redimensionnement" answer="2" explanation="Accéder à un élément par index dans une liste chaînée nécessite de parcourir depuis la tête — en O(n). Contrairement aux tableaux, on ne peut pas sauter directement à la position k." />
+
+## Points clés à retenir
+
+- Les **listes chaînées** excellent avec des données dynamiques nécessitant des insertions et suppressions fréquentes, mais sacrifient l'accès direct par index.
+- Les **piles** (LIFO) alimentent les systèmes d'annulation, le retour sur trace et le parcours en profondeur.
+- Les **files d'attente** (FIFO) garantissent un ordre équitable pour la planification de tâches, le BFS et la gestion des requêtes.
+- Ces structures travaillent souvent en coulisses dans les frameworks d'IA, gérant la mémoire et le traitement séquentiel.

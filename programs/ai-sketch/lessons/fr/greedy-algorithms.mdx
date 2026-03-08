@@ -1,0 +1,133 @@
+---
+title: "Algorithmes gloutons — Quand les choix locaux mènent à des solutions globales"
+description: "Apprenez quand faire le choix localement optimal à chaque étape produit réellement le résultat globalement optimal, et quand ce n'est pas le cas."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+---
+
+## Qu'est-ce qui rend un algorithme glouton ?
+
+Un algorithme glouton construit une solution **étape par étape**, en choisissant toujours l'option qui semble la meilleure **sur le moment** — sans revenir sur ses choix passés. Pas de retour sur trace, pas d'anticipation.
+
+Il fonctionne quand deux propriétés sont réunies :
+1. **Propriété de choix glouton** — un choix localement optimal mène à une solution globalement optimale.
+2. **Sous-structure optimale** — le problème restant après chaque choix est une instance plus petite du même problème.
+
+## Sélection d'activités — L'exemple classique
+
+Étant donné un ensemble d'activités avec des heures de début et de fin, sélectionnez le **nombre maximum** d'activités non chevauchantes.
+
+**Stratégie gloutonne :** trier par heure de fin, toujours choisir l'activité qui se termine le plus tôt.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+Pourquoi ça marche ? Choisir l'activité qui finit le plus tôt laisse le plus de place pour les activités suivantes.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Frise chronologique montrant la sélection d'activités par heure de fin la plus précoce" caption="Sélectionner par heure de fin la plus tôt maximise le nombre d'activités non chevauchantes." />
+
+## Codage de Huffman — Le concept
+
+On construit un code binaire préfixe optimal en fusionnant répétitivement les **deux symboles de plus basse fréquence**. C'est glouton : à chaque étape, on fusionne la paire la moins coûteuse. Le résultat est un arbre où les symboles fréquents reçoivent des codes courts.
+
+<FunFact>Le codage de Huffman est utilisé dans JPEG, MP3 et ZIP. David Huffman l'a inventé en tant qu'étudiant en 1952 — c'était un devoir !</FunFact>
+
+## Jump Game
+
+Étant donné un tableau où `nums[i]` est la longueur maximale du saut depuis l'index `i`, déterminez si vous pouvez atteindre le dernier index.
+
+**Approche gloutonne :** suivre l'index le plus loin atteignable. Parcourir de gauche à droite — si on reste bloqué, retourner false.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="Dans le Jump Game, que représente la variable gloutonne 'farthest' ?" options="La position actuelle|Le nombre de sauts effectués|L'index maximum atteignable depuis n'importe quelle position visitée|La longueur du plus long saut" answer="2" explanation="'farthest' suit l'index le plus à droite atteignable depuis toute position visitée. Si l'index courant le dépasse, on est bloqué." />
+
+## Gas Station
+
+Parcourir un circuit avec des stations-service. À la station `i`, on gagne `gas[i]` de carburant et on dépense `cost[i]` pour atteindre la station suivante. Trouvez la station de départ qui permet de boucler le circuit, ou retournez −1.
+
+**Intuition gloutonne :** si le total de carburant ≥ le coût total, une solution existe. On suit un surplus cumulé ; dès qu'il passe en négatif, la réponse doit commencer **après** ce point.
+
+## Task Scheduler
+
+Planifier des tâches avec un délai de refroidissement de `n` entre les tâches identiques. **Glouton :** toujours choisir la tâche restante la plus fréquente.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>Dans le task scheduler, pourquoi choisir la tâche la plus fréquente en premier minimise-t-il les créneaux d'inactivité ? Que se passerait-il si on choisissait la moins fréquente ?</ThinkAboutIt>
+
+## Sac à dos fractionnaire vs 0/1
+
+**Sac à dos fractionnaire :** on peut prendre des fractions d'objets. L'approche gloutonne fonctionne — trier par ratio valeur/poids, prendre le meilleur ratio d'abord.
+
+**Sac à dos 0/1 :** les objets sont tout-ou-rien. L'approche gloutonne **échoue** car ignorer un objet lourd mais précieux peut être pire que d'en prendre deux plus légers. Il faut la programmation dynamique.
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): takes item 1 (w=3, v=4) → 1 remaining → can't fit rest → value = 4
+Optimal: takes items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fails!
+```
+
+<Quiz question="Pourquoi l'approche gloutonne échoue-t-elle pour le sac à dos 0/1 ?" options="Les objets ne peuvent pas être divisés, donc le meilleur ratio peut gaspiller de la capacité|Les objets ne sont pas triés|Il y a trop d'objets|Les algorithmes gloutons ne marchent jamais pour le sac à dos" answer="0" explanation="Quand on doit prendre des objets entiers, choisir le meilleur ratio d'abord peut laisser de la capacité inutilisée que des objets plus petits auraient mieux remplie." />
+
+## Quand l'approche gloutonne fonctionne-t-elle ?
+
+✅ **Fonctionne** quand on peut prouver la propriété de choix glouton :
+- Sélection d'intervalles, codage de Huffman, arbre couvrant minimal, algorithme de Dijkstra, rendu de monnaie avec des dénominations standard
+
+❌ **Échoue** quand les optima locaux ne composent pas un optimum global :
+- Sac à dos 0/1, plus long chemin dans un graphe général, voyageur de commerce
+
+## Preuve de correction — Argument d'échange
+
+La technique standard : supposer une solution optimale qui **n'utilise pas** le choix glouton. Montrer qu'on peut **échanger** un de ses choix contre le choix glouton sans dégrader la solution. Cela prouve que le glouton est au moins aussi bon.
+
+<Quiz question="À quoi sert l'argument d'échange ?" options="Échanger deux éléments dans un tableau|Prouver qu'un algorithme glouton produit une solution optimale|Convertir la récursion en itération|Optimiser la complexité temporelle" answer="1" explanation="L'argument d'échange prouve la correction en montrant que toute solution optimale peut être transformée pour correspondre à la solution gloutonne sans perte de qualité." />
+
+## Glouton vs Programmation dynamique
+
+| Aspect | Glouton | Programmation dynamique |
+|--------|---------|-------------------------|
+| Choix | Un meilleur choix par étape | Explorer tous les sous-problèmes |
+| Revient en arrière ? | Jamais | Oui — stocke les sous-résultats |
+| Vitesse | Généralement plus rapide | Dépend de l'espace d'états |
+| Correction | Seulement si prouvable | Toujours (si bien formulé) |
+
+En cas de doute, commencez par le glouton — si vous ne pouvez pas prouver que ça marche, passez à la programmation dynamique.
+
+<FunFact>L'algorithme de Dijkstra pour le plus court chemin est glouton — il traite toujours le nœud non visité le plus proche. Il fonctionne car les poids des arêtes sont non négatifs, garantissant la sûreté du choix glouton.</FunFact>
+
+<ThinkAboutIt>On vous donne les pièces [1, 3, 4] et vous devez rendre la monnaie pour 6. L'approche gloutonne donne 4+1+1=3 pièces, mais l'optimal est 3+3=2 pièces. Qu'est-ce qui, dans ces dénominations, casse la propriété de choix glouton ?</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [NeetCode — Playlist Greedy](https://neetcode.io/roadmap) — problèmes gloutons sélectionnés avec explications
+- [Tech Interview Handbook — Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) — quand utiliser l'approche gloutonne et patrons courants
+- [CP-Algorithms — Algorithmes gloutons](https://cp-algorithms.com/) — théorie et preuves approfondies

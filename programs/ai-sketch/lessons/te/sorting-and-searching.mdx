@@ -1,0 +1,147 @@
+---
+title: "Sorting మరియు Searching — AI ఫలితాలను ఎలా Rank చేసి కనుగొంటుంది"
+description: "AI aanbevelingen rank చేయడం మరియు సమాధానాలు కనుగొనడంలో sorting మరియు searching algorithms ఎందుకు ప్రాథమికమో తెలుసుకోండి."
+order: 3
+difficulty: "intermediate"
+duration: 15
+icon: "🔍"
+published: true
+---
+
+## వేగంగా కనుగొనడం
+
+Google search చేసినప్పుడు, ఫలితాలు ఒక సెకను లోపు కనిపిస్తాయి — అత్యంత relevant నుండి తక్కువ relevant వరకు rank చేయబడి. Netflix సినిమాలు recommend చేసేటప్పుడు, మీరు ఎంత ఇష్టపడతారో ఆధారంగా వేలాది titles sort చేస్తుంది. ప్రతి వేగవంతమైన lookup మరియు ranked list వెనుక ఒక sorting లేదా searching algorithm ఉంటుంది.
+
+## Sorting ఎందుకు ముఖ్యం
+
+Sorted data శక్తివంతమైన data. List క్రమంలో ఉంటే:
+
+- Binary search ఉపయోగించి **సమర్థవంతంగా search** చేయవచ్చు.
+- **Duplicates కనుగొనడం** — అవి పక్కపక్కనే ఉంటాయి.
+- **Top-N ఫలితాలు కనుగొనడం** — మొదటి N items తీసుకోండి.
+- **Datasets merge చేయడం** — రెండు sorted lists కలపడం unsorted వాటి కంటే చాలా వేగం.
+
+<Illustration src="/images/lessons/sorting-and-searching.svg" alt="Unsorted array sorted array గా మారుతూ, binary search highlight చేసే magnifying glass తో" caption="Sorting అస్తవ్యస్తమైన data ను searchable మరియు structured గా మారుస్తుంది." />
+
+## Bubble Sort — సరళం కానీ నెమ్మది
+
+Bubble sort పదేపదే list ద్వారా నడుస్తుంది, పక్కపక్కన ఉన్న items ను పోల్చి తప్పు క్రమంలో ఉంటే swap చేస్తుంది. పెద్ద విలువలు చివరికి "bubble" అవుతాయి.
+
+```
+[5, 3, 8, 1, 2]
+ ↕
+[3, 5, 8, 1, 2]  → 5 మరియు 3 swap
+[3, 5, 1, 8, 2]  → 8 మరియు 1 swap
+[3, 5, 1, 2, 8]  → 8 మరియు 2 swap
+... swaps అవసరం లేనంత వరకు కొనసాగించండి
+```
+
+**Time complexity**: O(n²). 1,000,000 items తో? ట్రిలియన్ comparisons. AI workloads కి practical కాదు.
+
+<ThinkAboutIt>
+Bubble sort దాదాపు n² comparisons తీసుకుంటే, వెయ్యి items తో పోలిస్తే మిలియన్ items sort చేయడం ఎంత నెమ్మదిగా ఉంటుంది? (1,000,000)² vs (1,000)² నిష్పత్తి ఆలోచించండి. అది మిలియన్ రెట్లు నెమ్మది — కేవలం వెయ్యి రెట్లు ఎక్కువ data కోసం.
+</ThinkAboutIt>
+
+## Merge Sort — Divide and Conquer
+
+Merge sort list ను రెండుగా split చేసి, ప్రతి సగాన్ని sort చేసి, రెండు sorted halves ను merge చేస్తుంది.
+
+```
+[5, 3, 8, 1, 2, 7, 4, 6]
+         split
+[5, 3, 8, 1]   [2, 7, 4, 6]
+    split            split
+[5, 3] [8, 1]  [2, 7] [4, 6]
+  ↓       ↓       ↓       ↓
+[3, 5] [1, 8]  [2, 7] [4, 6]
+    merge            merge
+[1, 3, 5, 8]   [2, 4, 6, 7]
+         merge
+[1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+**Time complexity**: O(n log n) — నాటకీయంగా వేగం. మిలియన్ items కి ట్రిలియన్ బదులు దాదాపు 20 మిలియన్ comparisons.
+
+<FunFact>
+Python built-in sort Timsort ఉపయోగిస్తుంది — merge sort మరియు insertion sort కలిపిన hybrid algorithm. Tim Peters 2002 లో కనుగొన్నారు, ఇప్పుడు Python, Java మరియు Android లో ఉపయోగిస్తారు. ఇది ఇప్పటికే partially sorted ఉన్న real-world data పై బాగా పనిచేయడానికి ప్రత్యేకంగా రూపొందించబడింది.
+</FunFact>
+
+### Bubble Sort vs Merge Sort స్థాయిలో
+
+| Items | Bubble Sort (O(n²)) | Merge Sort (O(n log n)) |
+|-------|---------------------|-------------------------|
+| 100 | 10,000 ops | ~700 ops |
+| 10,000 | 100,000,000 ops | ~130,000 ops |
+| 1,000,000 | 1,000,000,000,000 ops | ~20,000,000 ops |
+
+తేడా academic కాదు — "సెకనులో పూర్తి" మరియు "వచ్చే వారం పూర్తి" మధ్య తేడా.
+
+<Quiz question="AI applications లో పెద్ద datasets కి bubble sort కంటే merge sort ఎందుకు ఇష్టపడతారు?" options="Merge sort తక్కువ memory ఉపయోగిస్తుంది|Merge sort O(n log n) bubble sort O(n²) తో పోలిస్తే, scale లో నాటకీయంగా వేగం|Merge sort ఇటీవల కనుగొన్నారు|Merge sort numbers తోనే పనిచేస్తుంది" answer="1" explanation="Scale లో O(n²) మరియు O(n log n) మధ్య తేడా భారీగా ఉంటుంది. మిలియన్ items కి merge sort దాదాపు 20 మిలియన్ operations vs bubble sort ట్రిలియన్." />
+
+## Binary Search — Phone Book Trick
+
+"Smith" ను phone book లో చూస్తున్నారనుకోండి. Page 1 నుండి ప్రారంభించి ప్రతి పేరు చదవరు. మధ్యలో తెరిచి, ఎక్కడ ఉన్నారో చూసి, సరైన సగానికి jump చేస్తారు. తర్వాత repeat.
+
+అది **binary search** — ఇది sorted data పైనే పనిచేస్తుంది.
+
+```
+sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+target = 23
+
+Step 1: Middle = 16 → 23 > 16, కుడి సగం search
+Step 2: Middle = 38 → 23 < 38, ఎడమ సగం search
+Step 3: Middle = 23 → కనుగొన్నాం!
+```
+
+**Time complexity**: O(log n). మిలియన్ items sorted list లో binary search ఏ item నైనా గరిష్టంగా 20 steps లో కనుగొంటుంది.
+
+<Quiz question="Sorted database లో 1,000,000 records ఉన్నాయి. Binary search worst case లో ఎన్ని comparisons?" options="1,000,000|500,000|దాదాపు 20|దాదాపు 1,000" answer="2" explanation="Binary search ప్రతి step లో search space సగానికి తగ్గిస్తుంది. log₂(1,000,000) ≈ 20, కాబట్టి గరిష్టంగా దాదాపు 20 comparisons." />
+
+## AI Sorting మరియు Searching ఎలా ఉపయోగిస్తుంది
+
+### Search Results Ranking
+
+Google ప్రతి relevant page కి score ఇచ్చి relevance ప్రకారం sort చేస్తుంది. Top 10 page one లో కనిపిస్తాయి.
+
+### Recommendation Systems
+
+Netflix మీ viewing history ఆధారంగా వేలాది titles కి "match score" లెక్కించి, ఉత్తమ matches ముందు చూపించడానికి sort చేస్తుంది.
+
+### K-Nearest Neighbours
+
+ఈ classic AI algorithm ఇచ్చిన input కి K అత్యంత సారూప్య items కనుగొంటుంది. Distances లెక్కించి K అతి చిన్నవి కనుగొనడానికి partially sorts చేస్తుంది.
+
+<Callout>
+ఎల్లప్పుడూ పూర్తిగా sort చేయాల్సిన అవసరం లేదు. మిలియన్ items నుండి top 10 మాత్రమే కావాలంటే, **partial sort** లేదా **heap** O(n log k) సమయంలో కనుగొనగలదు.
+</Callout>
+
+### Training Data Preparation
+
+Training ముందు, balanced batches సృష్టించడానికి AI practitioners data sort చేస్తారు — ప్రతి batch లో easy మరియు hard examples mix ఉండేలా.
+
+## Sort ఎప్పుడు vs Hash Map ఎప్పుడు
+
+| Scenario | ఉత్తమ ఎంపిక | ఎందుకు |
+|----------|------------|--------|
+| Key ద్వారా ఒక item కనుగొనడం | Hash map | O(1) lookup |
+| Top-10 items కనుగొనడం | Sort | Ordered results కావాలి |
+| Item ఉందో తనిఖీ | Hash map | O(1) vs O(log n) |
+| Items క్రమంలో పొందడం | Sort | Hash maps కి order లేదు |
+| Range queries (A మరియు B మధ్య items) | Sorted array + binary search | Hash maps ranges చేయలేవు |
+
+<ThinkAboutIt>
+Music streaming service మీ "Top 50 most played songs" చూపించాలి. మీ మొత్తం listening history sort చేస్తారా, లేదా ఎల్లప్పుడూ top 50 తెలిసిన data structure maintain చేస్తారా?
+</ThinkAboutIt>
+
+<FunFact>
+Google రోజుకు 8.5 బిలియన్ కంటే ఎక్కువ searches process చేస్తుంది. ప్రతి search milliseconds లో వందలాది ఫలితాలను sort మరియు rank చేస్తుంది. Sorting algorithms సామర్థ్యం Google data centres ఎంత electricity వినియోగిస్తాయో నేరుగా ప్రభావితం చేస్తుంది — మెరుగైన algorithms అక్షరాలా megawatts ఆదా చేస్తాయి.
+</FunFact>
+
+<Quiz question="Binary search ఎప్పుడు తగినది కాదు?" options="Data sorted అయినప్పుడు|ఒక నిర్దిష్ట item కనుగొనాలనుకున్నప్పుడు|Data unsorted మరియు తరచుగా మారుతున్నప్పుడు|Dataset చాలా పెద్దది అయినప్పుడు" answer="2" explanation="Binary search కి sorted data కావాలి. Data తరచుగా మారితే, sorted order maintain చేయడం ఖరీదు. Hash map unsorted, dynamic data లో quick lookups కి మెరుగు." />
+
+## ముఖ్య అంశాలు
+
+- **Sorting** అస్తవ్యస్తమైన data ను structured, searchable data గా మారుస్తుంది — ranking మరియు recommendations కి అవసరం.
+- **O(n²)** algorithms bubble sort వంటివి educational కానీ scale లో impractical; **O(n log n)** algorithms merge sort వంటివి నిజ systems ను నడిపిస్తాయి.
+- **Binary search** sorted data పై అసాధారణంగా efficient — మిలియన్ items search చేయడానికి 20 steps.
+- **Ordered results** కావాలా లేదా **instant lookups** కావాలా ఆధారంగా sorting మరియు hash maps మధ్య ఎంచుకోండి.

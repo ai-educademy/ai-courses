@@ -1,0 +1,159 @@
+---
+title: "Concevoir un Distributed Cache — Architecture Redis de zéro"
+description: "Concevez un système de distributed caching couvrant les stratégies de cache, le consistent hashing, les eviction policies, la prévention du cache stampede et l'architecture Redis Cluster."
+order: 10
+difficulty: "advanced"
+duration: 23
+icon: "⚡"
+published: true
+---
+
+# Concevoir un Distributed Cache — Architecture Redis de zéro
+
+Le caching est la technique la plus efficace pour améliorer les performances d'un système. Un distributed cache bien conçu peut réduire la charge de la base de données de plus de 90 % et ramener les temps de réponse de plusieurs centaines de millisecondes à moins d'une milliseconde.
+
+## Étape 1 — Recueil des exigences
+
+### Exigences fonctionnelles
+- Stocker des paires clé-valeur avec un TTL (time-to-live) optionnel
+- Supporter les opérations courantes : GET, SET, DELETE et les opérations en masse
+- Distribuer les données sur plusieurs nodes pour un scaling horizontal
+
+### Exigences non fonctionnelles
+- **Faible latence** — lectures sub-milliseconde pour les cache hits
+- **Haut débit** — 100K+ opérations par seconde par node
+- **Haute disponibilité** — les pannes du cache ne doivent pas faire tomber le système
+- **Scalabilité** — ajouter des nodes sans interruption de service
+
+### Quand utiliser le cache
+- **Workloads en lecture intensive** — quand les lectures dépassent largement les écritures
+- **Calculs coûteux** — résultats d'inférence de modèles ML, agrégations complexes
+- **Données fréquemment consultées** — sessions utilisateurs, catalogues produits, configuration
+
+## Étape 2 — Stratégies de caching
+
+### Cache-Aside (Lazy Loading)
+Le pattern le plus courant. L'application consulte d'abord le cache ; en cas de miss, elle lit la base de données puis remplit le cache :
+
+```
+GET user:123 → Cache HIT → return cached data
+GET user:456 → Cache MISS → query DB → SET cache → return data
+```
+
+**Avantages :** ne met en cache que ce qui est réellement demandé. **Inconvénients :** les cache misses engendrent de la latence ; les données peuvent devenir obsolètes.
+
+### Read-Through
+Le cache gère lui-même les lectures en base de données lors d'un miss. L'application communique uniquement avec la couche cache, qui abstrait la source de données.
+
+### Write-Through
+Chaque écriture est envoyée au cache et à la base de données de manière synchrone. Le cache reste toujours cohérent mais la latence d'écriture augmente.
+
+### Write-Behind (Write-Back)
+Les écritures vont immédiatement dans le cache ; celui-ci effectue un flush asynchrone vers la base de données par lots. La latence d'écriture est réduite mais il y a un risque de perte de données si le cache node tombe avant le flush.
+
+| Stratégie | Cohérence | Latence lecture | Latence écriture | Cas d'usage |
+|-----------|-----------|----------------|-------------------|-------------|
+| Cache-Aside | Eventual | Miss penalty | N/A | Usage général |
+| Read-Through | Eventual | Miss penalty | N/A | Lectures simplifiées |
+| Write-Through | Strong | Rapide | Plus lente | Cohérence critique |
+| Write-Behind | Eventual | Rapide | Rapide | Workloads en écriture intensive |
+
+<Quiz question="Un site e-commerce doit mettre en cache des prix de produits qui changent rarement mais doivent être exacts à 5 minutes près. Quelle stratégie est la plus appropriée ?" options="Write-Behind avec un intervalle de flush d'1 heure|Cache-Aside avec un TTL de 5 minutes|Write-Through pour chaque mise à jour de prix|Pas de caching — toujours lire depuis la base de données" answer="1" explanation="Cache-Aside avec un TTL de 5 minutes garantit que les données obsolètes ne persistent jamais au-delà de la fenêtre acceptable. Write-Through fonctionnerait mais ajoute une latence d'écriture inutile pour des mises à jour peu fréquentes. Cache-Aside est plus simple et s'adapte parfaitement au pattern 'lecture intensive, mises à jour occasionnelles'." />
+
+## Étape 3 — Eviction Policies
+
+Quand le cache est plein, quelles entrées supprimer ?
+
+- **LRU (Least Recently Used)** — évince l'entrée non consultée depuis le plus longtemps. Meilleure policy à usage général
+- **LFU (Least Frequently Used)** — évince l'entrée consultée le moins souvent. Mieux adaptée aux patterns d'accès asymétriques
+- **TTL-based** — les entrées expirent après un temps défini indépendamment des accès. Essentiel pour la fraîcheur des données
+- **Random** — étonnamment efficace et très simple à implémenter
+
+<FunFact>Redis utilise un algorithme LRU approximé qui échantillonne un petit nombre de clés (par défaut : 5) et évince la moins récemment utilisée parmi elles. C'est presque aussi précis qu'un vrai LRU mais ne nécessite aucune mémoire supplémentaire pour le suivi de l'ordre d'accès.</FunFact>
+
+## Étape 4 — Consistent Hashing pour la distribution
+
+### Le problème du hashing simple
+Avec `hash(key) % N` nodes, l'ajout ou le retrait d'un node remappe presque toutes les clés, provoquant une tempête massive de cache misses.
+
+### Consistent Hashing avec virtual nodes
+Le consistent hashing projette clés et nodes sur un ring. Chaque clé est assignée au prochain node dans le sens horaire du ring :
+
+```
+Hash Ring (0 to 2^32):
+     Node A (3 virtual nodes: A1, A2, A3)
+     Node B (3 virtual nodes: B1, B2, B3)
+     Node C (3 virtual nodes: C1, C2, C3)
+
+Key "user:123" → hash → lands between B2 and A1 → assigned to Node A
+```
+
+Les **virtual nodes** résolvent le problème de distribution inégale. Chaque node physique obtient plusieurs positions sur le ring, assurant une charge équilibrée même avec peu de nodes physiques.
+
+Lors de l'ajout ou du retrait d'un node, seules les clés adjacentes sur le ring sont remappées — environ `K/N` clés (où K est le nombre total de clés et N le nombre de nodes), pas toutes.
+
+<Illustration src="/images/lessons/design-distributed-cache.svg" alt="Hash ring de consistent hashing montrant les nodes physiques mappés sur les virtual nodes, avec les clés assignées au node clockwise le plus proche" caption="Le consistent hashing garantit que l'ajout ou le retrait d'un node ne remappe qu'une petite fraction des clés, évitant les cache stampedes" />
+
+<Quiz question="Un cluster de cache a 4 nodes. Le Node 3 tombe en panne. Avec un hashing modulo simple (key % 4 → key % 3), quel pourcentage de clés est remappé ?" options="25 % (uniquement les clés du Node 3)|50 %|75 % — presque toutes les clés sont remappées|100 %" answer="2" explanation="Passer de mod 4 à mod 3 remappe environ 75 % de toutes les clés vers des nodes différents. Par exemple, une clé hashée à 7 était sur le node 3 (7%4=3) mais va maintenant au node 1 (7%3=1). Cela provoque un pic massif de cache misses. Le consistent hashing résout ce problème en ne remappant que ~K/N clés." />
+
+## Étape 5 — Prévention du cache stampede
+
+Un **cache stampede** survient lorsqu'une entrée populaire du cache expire et que des centaines de requêtes concurrentes manquent simultanément le cache et frappent la base de données.
+
+### Solutions
+
+**Mutex/Locking :** Lors d'un cache miss, acquérir un distributed lock. Seule une requête interroge la base de données ; les autres attendent que le cache soit rerempli.
+
+**Probabilistic Early Expiry :** Chaque requête a une petite chance aléatoire de rafraîchir le cache avant l'expiration réelle du TTL. Cela répartit la charge de rafraîchissement dans le temps au lieu de créer un thundering herd à l'expiration.
+
+**Background Refresh :** Un processus en arrière-plan rafraîchit les entrées populaires du cache avant leur expiration. Le cache n'est jamais vide pour les hot keys.
+
+<ThinkAboutIt>Imaginez une vente flash où une page produit reçoit 100 000 requêtes par seconde. L'entrée cache des détails du produit expire. Sans prévention du stampede, les 100K requêtes frappent la base de données simultanément. Quelle stratégie de prévention choisiriez-vous, et pourquoi ?</ThinkAboutIt>
+
+## Étape 6 — Architecture Redis Cluster
+
+Redis Cluster est le distributed cache le plus largement déployé :
+
+- **16 384 hash slots** répartis entre les master nodes
+- Chaque clé correspond à un slot via `CRC16(key) % 16384`
+- **Réplication :** chaque master possède un ou plusieurs replicas pour le failover
+- **Failover automatique :** si un master tombe, son replica est promu en quelques secondes
+
+```
+Slots 0-5460:     Master A ←→ Replica A'
+Slots 5461-10922: Master B ←→ Replica B'
+Slots 10923-16383: Master C ←→ Replica C'
+```
+
+### Métriques clés à surveiller
+- **Hit ratio** — cible 95 %+ ; en dessous de 80 %, cela indique un problème de caching
+- **Utilisation mémoire** — rester en dessous de 80 % pour éviter les evictions
+- **Taux d'eviction** — un taux élevé signifie que le cache est sous-dimensionné
+- **Percentiles de latence** — le p99 doit être inférieur à 1 ms pour les cache hits
+
+## Étape 7 — Patterns de caching en conditions réelles
+
+| Pattern | Implémentation | TTL |
+|---------|---------------|-----|
+| Session store | `SET session:{id} {data}` | 30 minutes |
+| Cache de réponse API | `SET api:/users/123 {json}` | 5 minutes |
+| Cache de requête DB | `SET query:{hash} {result}` | 1 minute |
+| Compteur de rate limiter | `INCR ratelimit:{user}:{window}` | Durée de la fenêtre |
+| Feature flags | `HSET features {flag} {value}` | 10 secondes |
+
+### Cache Invalidation
+Le problème le plus difficile en informatique (avec le nommage des choses) :
+- **TTL-based** — simple, tolère l'obsolescence pendant la durée du TTL
+- **Event-driven** — publier des événements d'invalidation quand les données changent (via Kafka ou Redis Pub/Sub)
+- **Version-based** — inclure une version dans la clé du cache ; incrémenter la version lors des écritures pour invalider efficacement les anciennes entrées
+
+<Quiz question="Quelle approche de cache invalidation offre la garantie de cohérence la plus forte ?" options="Expiration TTL-based avec une fenêtre de 5 minutes|Invalidation event-driven déclenchée par les écritures en base de données|Random eviction|Background refresh toutes les 10 secondes" answer="1" explanation="L'invalidation event-driven réagit aux changements réels des données, invalidant le cache immédiatement lorsque les données source sont mises à jour. Les approches TTL-based ont toujours une fenêtre d'obsolescence, tandis que le background refresh présente des écarts entre les cycles de rafraîchissement." />
+
+<ThinkAboutIt>Phil Karlton a dit : « Il n'y a que deux choses difficiles en informatique — le cache invalidation et le nommage. » Pourquoi le cache invalidation est-il si difficile dans les systèmes distribués ? Réfléchissez à ce qui se passe quand une écriture en base de données réussit mais que le message d'invalidation du cache est perdu.</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+- [Consistent Hashing — ByteByteGo](https://bytebytego.com/courses/system-design-interview/design-consistent-hashing) — explication visuelle du consistent hashing et des virtual nodes
+- [Redis Cluster Specification](https://redis.io/docs/reference/cluster-spec/) — documentation officielle de l'architecture Redis Cluster
+- [Caching Strategies — AWS](https://aws.amazon.com/caching/best-practices/) — patterns de caching pratiques pour les applications cloud

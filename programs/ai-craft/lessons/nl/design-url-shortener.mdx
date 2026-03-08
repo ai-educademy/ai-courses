@@ -1,0 +1,191 @@
+---
+title: "Ontwerp een URL Shortener — Je eerste System Design Interview"
+description: "Doorloop stap voor stap het volledige ontwerp van een URL shortener met het gestructureerde interview-framework."
+order: 2
+difficulty: "advanced"
+duration: 25
+icon: "🔗"
+published: true
+---
+
+## De interviewvraag
+
+*"Ontwerp een URL-verkortingsservice zoals bit.ly die lange URLs omzet in korte, unieke codes."*
+
+Dit is de meest voorkomende eerste system design-vraag, omdat ze bedrieglijk eenvoudig lijkt maar kernconcepten behandelt: API design, encoding-strategieën, database-keuzes, caching en scaling. Laten we het stap voor stap doorwerken met het gestructureerde framework uit Les 1.
+
+## Stap 1: Requirements verzamelen (5 minuten)
+
+**Functionele requirements:**
+- Genereer een korte, unieke URL op basis van een lange URL
+- Redirecten via de korte URL geeft de originele lange URL terug
+- Gebruikers kunnen optioneel aangepaste short codes instellen
+- Links verlopen na een configureerbare periode (standaard: 5 jaar)
+- Basisanalytics: aantal kliks, referrer, geografie
+
+**Niet-functionele requirements:**
+- 100 miljoen URLs gegenereerd per maand (~40 per seconde)
+- Read-heavy: 100:1 read-to-write ratio → 4.000 redirects per seconde
+- URL-redirectlatentie onder 50 ms
+- Korte URLs moeten zo kort mogelijk zijn
+- Hoge beschikbaarheid — een gebroken link is een verschrikkelijke gebruikerservaring
+
+<Callout>
+Begin elk system design-interview met het stellen van verduidelijkende vragen. Het opschrijven van expliciete cijfers (40 writes/sec, 4.000 reads/sec) laat zien dat je kwantitatief kunt redeneren over scale.
+</Callout>
+
+## Stap 2: API Design (5 minuten)
+
+```
+POST /api/shorten
+Body: { "url": "https://example.com/very/long/path", "custom_code": "mylink", "expires_in": "30d" }
+Response: { "short_url": "https://sho.rt/aB3kx9", "expires_at": "2025-02-15T00:00:00Z" }
+
+GET /:code
+Response: HTTP 301 Redirect → Location: https://example.com/very/long/path
+
+GET /api/analytics/:code
+Response: { "clicks": 14523, "created_at": "...", "top_referrers": [...] }
+```
+
+**Waarom HTTP 301 vs 302?**
+- **301 (Permanent Redirect)** — browsers cachen dit, wat de load op onze servers vermindert
+- **302 (Temporary Redirect)** — browsers raken altijd onze servers, wat nauwkeurige analytics mogelijk maakt
+
+Voor een service die kliks bijhoudt, is **302 meestal de betere keuze** omdat elke redirect via onze servers loopt.
+
+<Quiz question="Je URL shortener heeft nauwkeurige klik-analytics nodig. Welke HTTP redirect-statuscode gebruik je en waarom?" options="200 OK — de pagina-inhoud direct teruggeven|301 Permanent Redirect — browsers cachen het voor snelheid|302 Temporary Redirect — elke klik raakt onze server voor telling|404 Not Found — dan client-side redirecten via JavaScript" answer="2" explanation="302 Temporary Redirect zorgt ervoor dat de browser bij elke klik contact opneemt met onze server, zodat we het bezoek kunnen registreren voor analytics. Een 301 zou door de browser gecachet worden, waardoor herhaalde bezoeken niet geteld worden." />
+
+## Stap 3: Encoding-strategie
+
+De kernuitdaging: hoe genereren we korte, unieke codes?
+
+**Base62 encoding** gebruikt `[a-zA-Z0-9]` — 62 tekens. Een 7-tekencode geeft ons 62⁷ = **3,5 biljoen** unieke combinaties, ruim voldoende voor onze schaal.
+
+**Optie A — Op basis van een teller:**
+- Gebruik een auto-incrementerende teller (1, 2, 3, ...) en converteer naar base62
+- Teller 1000 → `g8` | Teller 1000000 → `4c92`
+- **Voordelen:** gegarandeerd uniek, eenvoudig, geen collisions
+- **Nadelen:** voorspelbaar (gebruikers kunnen de volgende URL raden), vereist een gecentraliseerde teller
+
+**Optie B — Op basis van hash:**
+- Hash de lange URL met MD5/SHA-256, neem de eerste 7 tekens van base62
+- **Voordelen:** stateless, geen centrale coördinatie nodig
+- **Nadelen:** mogelijke collisions — database controleren en opnieuw proberen
+
+**Optie C — Vooraf gegenereerde keys (aanbevolen):**
+- Een achtergrondservice genereert vooraf miljoenen unieke base62-codes en slaat ze op in een key pool
+- Bij een nieuwe URL pak je de volgende beschikbare code uit de pool
+- **Voordelen:** snel, geen collision-risico, niet voorspelbaar
+- **Nadelen:** vereist het beheren van de key generation service
+
+<FunFact>
+De originele TinyURL-service werd gelanceerd in 2002 en draait nog steeds. Op een gegeven moment genereerde het meer dan 1 miljoen korte URLs per dag. Het domein tinyurl.com is zo iconisch geworden dat "tinyurl" als generieke term voor URL-verkorting wordt gebruikt.
+</FunFact>
+
+## Stap 4: Database-keuze en schema
+
+Met 100 miljoen nieuwe URLs per maand en een bewaarperiode van 5 jaar slaan we ongeveer **6 miljard records** op. Dit is een read-heavy workload met eenvoudige key-value lookups.
+
+**Database-keuze: DynamoDB of Cassandra**
+- Lookups zijn altijd op short code (partition key) — geen complexe joins nodig
+- Beide verwerken enorme read throughput met horizontal scaling
+- Beide bieden sub-10ms lookups op partition key
+
+**Schema:**
+```
+Table: urls
+  short_code (partition key): "aB3kx9"
+  long_url: "https://example.com/very/long/path"
+  user_id: "user_123"
+  created_at: 1706000000
+  expires_at: 1863000000
+  click_count: 14523
+```
+
+Voor analytics slaat een aparte time-series tabel individuele klikgebeurtenissen op:
+```
+Table: clicks
+  short_code (partition key): "aB3kx9"
+  timestamp (sort key): 1706000001
+  referrer: "twitter.com"
+  country: "GB"
+  device: "mobile"
+```
+
+<Illustration src="/images/lessons/design-url-shortener.svg" alt="URL shortener-architectuur met API servers, key generation service, cache en database" caption="De URL shortener-architectuur — leesverzoeken raken eerst de cache, met een fallback naar de database bij een miss." />
+
+## Stap 5: Caching-strategie
+
+Bij 4.000 reads per seconde en een heavy-tailed distributie (sommige URLs krijgen miljoenen kliks, de meeste heel weinig) is caching essentieel.
+
+**Redis cache** slaat de meest bezochte mappings op:
+```
+Key:   url:aB3kx9
+Value: "https://example.com/very/long/path"
+TTL:   24 hours
+```
+
+**Cache hit-flow (snel pad):**
+1. Verzoek binnenkomst: `GET /aB3kx9`
+2. Redis controleren → cache hit → 302 redirect teruggeven
+3. Asynchroon de klikgebeurtenis naar Kafka loggen
+
+**Cache miss-flow:**
+1. Redis controleren → miss
+2. Database opvragen → gevonden
+3. Redis cache vullen
+4. 302 redirect teruggeven
+
+Met een cache hit rate van 80% bereiken slechts 800 van de 4.000 verzoeken per seconde daadwerkelijk de database.
+
+<Quiz question="Je URL shortener verwerkt 4.000 redirects per seconde. De cache hit rate is 80%. Hoeveel database-reads per seconde moet de database verwerken?" options="4.000|3.200|800|0 — de cache verwerkt alles" answer="2" explanation="Met een cache hit rate van 80% mist 20% van de verzoeken de cache: 4.000 × 0,20 = 800 database-reads per seconde." />
+
+## Stap 6: Analytics en klikregistratie
+
+Klikregistratie mag de redirects niet vertragen. De redirect-respons moet onmiddellijk terugkomen terwijl analytics asynchroon worden verwerkt.
+
+**Architectuur:**
+1. De redirect handler publiceert een klikgebeurtenis naar **Kafka**
+2. Een klikverwerkingsservice consumeert gebeurtenissen en:
+   - Verhoogt de `click_count` in het URL-record
+   - Schrijft gedetailleerde klikdata naar de clicks-tabel
+   - Werkt real-time dashboards bij via een streaming-aggregatie
+
+Deze ontkoppeling garandeert dat een trage analytics-pipeline nooit de redirect-latentie beïnvloedt.
+
+<ThinkAboutIt>
+URL shorteners worden soms gebruikt om kwaadaardige links te verbergen. Als je bit.ly zou ontwerpen, hoe zou je dan een veiligheidscontrole implementeren die bestemmings-URLs scant op phishing of malware, zonder significante latentie toe te voegen aan het verkortingsproces?
+</ThinkAboutIt>
+
+## Stap 7: Het systeem opschalen
+
+**Horizontal scaling-aanpak:**
+- **API servers** zijn stateless — schaal op door instances toe te voegen achter een load balancer
+- **Key generation service** draait als aparte microservice met een eigen database van vooraf gegenereerde codes
+- **Redis cluster** verdeelt de cache over nodes met consistent hashing
+- **Database sharding** op het eerste teken van de short code verdeelt data gelijkmatig
+
+**Omgaan met piekbelasting:**
+- Tijdens virale events kan een enkele URL miljoenen hits per minuut ontvangen
+- De Redis cache absorbeert dit van nature — één cache-entry bedient onbeperkte reads
+- Kafka buffert klikgebeurtenissen en vlakt de schrijfbelasting op de analytics database af
+
+<Quiz question="Een URL gaat viraal en ontvangt 500.000 kliks per minuut. Welk component blijft hoogstwaarschijnlijk onaangetast?" options="De Redis cache (één key bedient alle verzoeken)|De Kafka klikgebeurtenis-consumers|Het schrijfpad van de analytics database|De CPU van de API server" answer="0" explanation="Redis verwerkt moeiteloos miljoenen reads per seconde voor een enkele gecachete key. De Kafka consumers en analytics database krijgen 500K writes/minuut, en de API servers verwerken 500K verzoeken/minuut — allemaal onder aanzienlijke belasting." />
+
+<ThinkAboutIt>
+Bedrijven zoals bit.ly verwerken maandelijks miljarden redirects. Als een korte URL op een billboard of tv-reclame wordt gedeeld, kan het verkeer in seconden van nul naar miljoenen springen. Welke andere strategieën, naast caching, zou je gebruiken om deze plotselinge, onvoorspelbare verkeerspieken op te vangen?
+</ThinkAboutIt>
+
+<FunFact>
+In 2009 verwerkte bit.ly meer dan 80 miljoen kliks per dag. Toen Libië — met landcode .ly — tijdelijk .ly-domeinen uitschakelde vanwege politieke instabiliteit, ontstond er paniek op het internet doordat miljoenen verkorte links tijdelijk niet meer werkten.
+</FunFact>
+
+## Belangrijkste inzichten
+
+- Volg het framework: requirements → API → encoding → data model → architecture → deep dives
+- Base62 met 7 tekens levert 3,5 biljoen unieke codes op — ruim voldoende
+- Vooraf gegenereerde key pools voorkomen collision-problemen en bottlenecks van centrale tellers
+- Gebruik 302 redirects (niet 301) wanneer je nauwkeurige klik-analytics nodig hebt
+- Redis caching vermindert de database-belasting drastisch voor read-heavy workloads
+- Ontkoppel analytics van het redirect-pad met Kafka voor asynchrone verwerking

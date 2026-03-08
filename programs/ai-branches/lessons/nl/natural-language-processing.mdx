@@ -1,0 +1,130 @@
+---
+title: "Natural Language Processing — Hoe AI menselijke taal begrijpt"
+description: "Ontdek hoe machines de rommelige complexiteit van menselijke taal lezen, schrijven en interpreteren."
+order: 2
+difficulty: "intermediate"
+duration: 18
+icon: "💬"
+published: true
+---
+
+# Natural Language Processing — Hoe AI menselijke taal begrijpt
+
+Je hebt waarschijnlijk al eens een vraag gesteld aan een stemassistent, Google Translate gebruikt, of YouTube-ondertiteling in realtime zien verschijnen. Achter elk van die ervaringen zit **Natural Language Processing (NLP)** — de tak van AI die machines helpt om met menselijke taal te werken.
+
+## Waarom taal moeilijk is voor machines
+
+Taal lijkt ons moeiteloos af te gaan, maar voor computers is het spectaculair complex:
+
+- **Dubbelzinnigheid** — "I saw her duck" — dook ze weg, of zag je haar eend?
+- **Context** — "That's sick!" kan betekenen dat iets walgelijk is of juist geweldig,
+  geheel afhankelijk van wie er spreekt en wanneer.
+- **Sarcasme** — "Oh great, another Monday" draagt het tegenovergestelde van de letterlijke betekenis,
+  maar er is geen expliciet teken om dit aan te geven.
+- **Structuur** — dezelfde woorden anders gerangschikt kunnen de betekenis volledig veranderen:
+  "Dog bites man" versus "Man bites dog."
+- **Evoluerend straattaal** — nieuwe woorden en betekenissen ontstaan voortdurend, waardoor statische
+  woordenboeken ontoereikend worden.
+
+Machines kunnen niet vertrouwen op intuïtie of levenservaring zoals mensen dat doen. NLP-systemen moeten
+patronen leren uit enorme hoeveelheden tekst, vaak miljarden zinnen.
+
+<Illustration src="/images/lessons/natural-language-processing.svg" alt="Pipeline die laat zien hoe tekst door tokenisatie-, embedding- en modelfasen stroomt" caption="NLP transformeert ruwe tekst via meerdere stappen voordat de AI het kan begrijpen." />
+
+## Kerntaken van NLP
+
+| Taak | Wat het doet | Voorbeeld |
+|------|-------------|---------|
+| **Tokenisatie** | Splitst tekst in woorden of subwoorden | "I'm learning" → ["I", "'m", "learning"] |
+| **Sentimentanalyse** | Detecteert emotie of mening | "This film was brilliant!" → Positief |
+| **Named entity recognition** | Vindt namen, plaatsen, datums | "Marie Curie worked in Paris" → Persoon, Locatie |
+| **Machinevertaling** | Converteert tussen talen | Engels → Frans |
+| **Samenvatting** | Vat lange tekst samen | Een rapport van 10 pagina's → een korte alinea |
+
+<Quiz question="Welke NLP-taak zou identificeren dat 'London' een locatie is in een zin?" options="Tokenisatie|Sentimentanalyse|Named entity recognition|Samenvatting" answer="2" explanation="Named entity recognition (NER) identificeert en classificeert entiteiten zoals personen, organisaties en locaties in tekst." />
+
+## Woorden omzetten in getallen
+
+Machines werken met getallen, niet met woorden. Hoe vertegenwoordig je dan de rijkdom van taal
+op een wiskundige manier? Het baanbrekende inzicht was om woorden voor te stellen als **vectoren** — lijsten van getallen
+die betekenis en relaties vastleggen.
+
+**Word2Vec** (2013) toonde aan dat woorden die in vergelijkbare contexten worden gebruikt, vergelijkbare vectoren krijgen. Het beroemde rekenresultaat was:
+
+> *king* − *man* + *woman* ≈ *queen*
+
+Dit bewees dat woordembeddings echte semantische relaties vastleggen.
+
+**BERT** (2018) ging nog verder door embeddings **contextueel** te maken — de vector voor "bank" verandert afhankelijk van of de zin over rivieren of financiën gaat.
+
+<FunFact>
+BERT werd getraind op de volledige Engelstalige Wikipedia en het BookCorpus — ongeveer 3,3 miljard woorden. Toch heeft het model zelf "slechts" 340 miljoen parameters, wat betekent dat het een enorme bibliotheek van menselijke kennis comprimeert tot patronen die veel kleiner zijn dan de originele tekst.
+</FunFact>
+
+## Hoe ChatGPT werkt (de korte versie)
+
+ChatGPT is gebouwd op een **transformer**-architectuur — dezelfde familie van modellen achter Google
+Translate, GitHub Copilot en vele andere AI-tools. Hier is de vereenvoudigde pipeline:
+
+1. **Tokeniseer** je bericht in subwoordstukken.
+2. Gebruik **aandachtsmechanismen** om te bepalen welke woorden met welke samenhangen — zelfs over zeer
+   lange passages met duizenden tokens.
+3. Voorspel het volgende woord, één token per keer, op basis van alles wat ervoor kwam.
+4. Het model werd verfijnd met **Reinforcement Learning from Human Feedback (RLHF)** — echte
+   mensen beoordeelden de output om het model behulpzaamheid, nauwkeurigheid en veiligheid aan te leren.
+
+Het idee van "aandacht" is het magische ingrediënt. Het stelt het model in staat om zich te concentreren op de
+meest relevante delen van de invoer, ongeacht hoe ver ze uit elkaar staan in de tekst. Vóór transformers
+hadden modellen moeite met lange documenten omdat eerdere woorden uit het geheugen vervaagden.
+
+<ThinkAboutIt>
+Wanneer ChatGPT een alinea schrijft, genereert het één woord per keer en voorspelt steeds het meest waarschijnlijke volgende woord. Betekent dit dat het echt "begrijpt" wat het zegt, of voert het een ongelooflijk geavanceerde vorm van patroonherkenning uit? Waar zou jij de grens trekken?
+</ThinkAboutIt>
+
+## Toepassingen in de echte wereld
+
+- **Spamfilters** — Gmail gebruikt NLP om elke minuut meer dan 10 miljoen spam-e-mails te blokkeren.
+- **Chatbots** — klantenservicebots behandelen routinevragen, waardoor menselijke medewerkers vrij zijn voor complexe problemen.
+- **Zoekmachines** — Google begrijpt nu volledige vragen, niet alleen trefwoordovereenkomsten.
+- **Juridische technologie** — AI beoordeelt duizenden juridische documenten in uren, een taak die advocaten voorheen weken kostte.
+- **Toegankelijkheid** — realtime ondertiteling helpt dove en slechthorende gebruikers om live-evenementen te volgen.
+
+<FunFact>
+Google Translate verwerkt dagelijks meer dan 100 miljard woorden in 133 talen. Vóór neurale NLP vertrouwde het op frase-tabellen en produceerde het notoir onhandige vertalingen. Moderne op transformers gebaseerde vertaling is opmerkelijk vloeiend.
+</FunFact>
+
+<Quiz question="Wat is de belangrijkste innovatie van de transformer-architectuur die wordt gebruikt in modellen zoals ChatGPT?" options="Het maakt gebruik van pixelgebaseerde beeldherkenning|Het gebruikt aandachtsmechanismen om woorden over lange passages met elkaar te verbinden|Het zet eerst alle tekst om naar binaire code|Het heeft geen trainingsdata nodig" answer="1" explanation="Het aandachtsmechanisme stelt transformers in staat om de relevantie van elk woord ten opzichte van elk ander woord te wegen, waardoor langeafstandsafhankelijkheden worden vastgelegd waar eerdere modellen moeite mee hadden." />
+
+## Beperkingen en uitdagingen
+
+Ondanks opmerkelijke vooruitgang is NLP verre van een opgelost probleem:
+
+- **Hallucinaties** — taalmodellen kunnen zelfverzekerd klinkende tekst genereren die feitelijk
+  onjuist is. Ze hebben geen ingebouwde manier om de waarheid te verifiëren.
+- **Vooroordelen** — modellen die zijn getraind op internettekst nemen maatschappelijke vooroordelen over uit die data,
+  en produceren soms seksistische, racistische of anderszins schadelijke output.
+- **Talen met weinig bronnen** — NLP werkt het best voor het Engels; veel van de meer dan 7.000 talen in de wereld
+  hebben zeer weinig digitale tekst beschikbaar voor training.
+- **Privacy** — het verwerken van persoonlijke berichten, e-mails en documenten roept ernstige zorgen op over
+  gegevensbescherming onder regelgeving zoals de GDPR.
+- **Energiekosten** — het trainen van grote taalmodellen vereist enorme computationele middelen,
+  wat vragen oproept over ecologische duurzaamheid.
+
+<ThinkAboutIt>
+Als een AI een nieuwsartikel schrijft dat een feitelijke fout bevat en duizenden mensen het lezen, wie is dan verantwoordelijk — het AI-bedrijf, de uitgever, of de lezer die de feiten niet heeft gecontroleerd?
+</ThinkAboutIt>
+
+## Belangrijkste inzichten
+
+- Menselijke taal zit vol dubbelzinnigheid, context, straattaal en nuance — waardoor het een van de
+  moeilijkste uitdagingen van AI is.
+- Woordembeddings zetten taal om in wiskundige vectoren die echte semantische relaties
+  tussen woorden vastleggen.
+- Transformers en aandachtsmechanismen drijven de meest capabele taalmodellen van vandaag aan, van ChatGPT
+  tot Google Search.
+- NLP drijft alledaagse tools aan, waaronder zoekmachines, spamfilters, chatbots en
+  vertaaldiensten.
+- Hallucinaties, vooroordelen, energiekosten en gegevensprivacy blijven belangrijke openstaande problemen
+  waar onderzoekers en bedrijven actief aan werken.
+
+<Quiz question="Wat demonstreert de vergelijking king − man + woman ≈ queen over woordembeddings?" options="Woorden worden opgeslagen als afbeeldingen|Embeddings leggen semantische relaties tussen woorden vast|Alle woorden hebben dezelfde vector|Vertaling gebeurt automatisch" answer="1" explanation="Dit beroemde voorbeeld laat zien dat woordvectoren betekenisvolle relaties coderen — de richting van 'man' naar 'woman' is vergelijkbaar met de richting van 'king' naar 'queen', wat bewijst dat het model echte semantische structuur heeft geleerd." />

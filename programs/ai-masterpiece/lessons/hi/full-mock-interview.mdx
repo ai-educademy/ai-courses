@@ -1,0 +1,161 @@
+---
+title: "Full Mock Interview — 60 मिनट का Senior Engineer सिमुलेशन"
+description: "एक पूरे senior-level AI engineering interview को शुरू से अंत तक समझें और प्रैक्टिस करें।"
+order: 2
+difficulty: "advanced"
+duration: 45
+icon: "🎯"
+published: true
+---
+
+# Full Mock Interview
+
+इस lesson में हम एक पूरा 60 मिनट का senior AI engineering interview सिमुलेट करेंगे। इसे सिर्फ पढ़ें नहीं — हर सेक्शन पर रुकें, पहले खुद अपना जवाब सोचें, फिर model response पढ़ें और खुद को ईमानदारी से score करें।
+
+इसे dress rehearsal समझें, तमाशा नहीं।
+
+<Illustration src="/images/lessons/full-mock-interview.svg" alt="पाँच interview चरणों की टाइमलाइन: intro, system design, behavioural, सवाल, और wrap-up" caption="एक structured 60 मिनट का interview जो पाँच अलग-अलग चरणों में बँटा है" />
+
+## Interview का Structure
+
+| चरण | समय | फोकस |
+|-----|------|-------|
+| Introduction | 5 मिनट | पहला प्रभाव, background सारांश |
+| System Design | 25 मिनट | Technical गहराई, architecture सोच |
+| Behavioural | 15 मिनट | Leadership, conflict, growth |
+| आपके सवाल | 10 मिनट | जिज्ञासा, समझदारी, culture fit |
+| Wrap-Up | 5 मिनट | आखिरी प्रभाव, अगले कदम |
+
+<Callout>
+Time management अपने आप में एक signal है। Interviewers ध्यान देते हैं जब आप requirements पर 20 मिनट लगा दें और architecture के लिए सिर्फ पाँच बचें। Timer लगाकर प्रैक्टिस करें।
+</Callout>
+
+## Phase 1: Introduction (5 मिनट)
+
+Interviewer कहता है: *"अपने बारे में बताइए और यहाँ आने की वजह क्या है।"*
+
+आपका जवाब एक **दो मिनट का elevator pitch** होना चाहिए जिसमें:
+
+1. आपकी current role और एक बड़ी उपलब्धि।
+2. आपके career का एक छोटा सा सफर — आप यहाँ तक कैसे पहुँचे।
+3. यह specific role और company आपको क्यों excite करती है।
+
+अपना CV मत सुनाइए। एक कहानी बताइए जो past, present और future को जोड़ती हो।
+
+## Phase 2: System Design (25 मिनट)
+
+**सवाल:** *"500 million daily active users वाले social media platform के लिए एक real-time AI content moderation system design करें।"*
+
+### Step 1: Requirements समझें (3 मिनट)
+
+कोई भी diagram बनाने से पहले सवाल पूछें:
+
+- कौन से content types? Text, images, video, या तीनों?
+- Latency target क्या है? क्या moderation content दिखने से पहले होनी चाहिए?
+- False positive tolerance कितनी? हानिकारक content miss करना बुरा है या सुरक्षित content गलती से हटाना?
+- Scale? Posts per second, peak traffic patterns?
+
+**मान लें:** Text और images, text के लिए 200ms से कम, images के लिए 2s से कम, peak पर 50,000 posts per second।
+
+### Step 2: API Design (3 मिनट)
+
+```
+POST /moderate
+  Body: { contentId, contentType, text?, imageUrl?, userId, context }
+  Response: { decision: "allow" | "flag" | "block", confidence, categories[] }
+```
+
+सिंपल रखें। एक endpoint, साफ contract, नए content types के लिए extensible।
+
+### Step 3: High-Level Architecture (7 मिनट)
+
+System में चार layers हैं:
+
+1. **Ingestion** — Kafka topic हर नई post receive करता है। Producers को moderation से decouple करता है।
+2. **Classification pipeline** — Text classifier (fine-tuned transformer) और image classifier (vision model) parallel चलते हैं।
+3. **Decision engine** — Classifier outputs को user reputation score और platform policy rules के साथ combine करता है।
+4. **Action layer** — Decision execute करता है: allow, human review के लिए flag, या तुरंत block।
+
+<Quiz question="Message queue से ingestion को classification से decouple करना क्यों ज़रूरी है?" options="इससे diagrams में system ज़्यादा impressive दिखता है|इससे classification pipeline स्वतंत्र रूप से scale हो सकती है और traffic spikes को absorb कर सकती है|इससे database की ज़रूरत खत्म हो जाती है|इससे zero false positives की गारंटी मिलती है" answer="1" explanation="Kafka जैसी message queue ingestion layer को किसी भी rate पर posts accept करने देती है जबकि classification pipeline अपनी speed से process करती है, बिना requests drop किए spikes को absorb करती है।" />
+
+### Step 4: Deep Dives (12 मिनट)
+
+**Text moderation model:**
+- Harmful content categories (hate speech, spam, self-harm आदि) के labelled dataset पर fine-tuned BERT या similar transformer।
+- Model server (Triton या TorchServe) से serve, throughput के लिए batching।
+- Confidence threshold: 0.95 से ऊपर block, 0.7-0.95 के बीच flag, 0.7 से नीचे allow।
+
+**Image moderation:**
+- Vision transformer categories में classify करता है: explicit, violent, safe।
+- Pre-processing: resize, normalise। Auto-scaling group के पीछे GPU instances पर inference।
+- Edge cases के लिए human review queue में भेजें।
+
+**Scaling considerations:**
+- Load balancer के पीछे classifier pods का horizontal scaling।
+- Canary deployments के साथ model versioning — नए models पहले 5% traffic पर roll out।
+- Circuit breakers: classifier down हो तो "allow and queue for async review" — सब content block करने से बेहतर।
+
+<ThinkAboutIt>
+Interviewer पूछता है: "जब एक नई तरह का हानिकारक content सामने आए जो आपके model ने कभी नहीं देखा?" रुकें और सोचें। Short-term और long-term दोनों responses सोचें।
+</ThinkAboutIt>
+
+**नई threats से निपटना:** Short term में keyword-based rules और human escalation। Medium term में active learning loop: human reviewers नए examples label करें, जो अगले model version के training pipeline में वापस जाएँ।
+
+## Phase 3: Behavioural (15 मिनट)
+
+### सवाल 1: *"एक ऐसा समय बताइए जब आपको अधूरी जानकारी के साथ मुश्किल technical फैसला लेना पड़ा।"*
+
+**STAR** framework इस्तेमाल करें:
+
+- **Situation**: हमें custom ML pipeline बनाने और managed service अपनाने के बीच चुनना था, deadline छह हफ्ते में थी।
+- **Task**: मैं tech lead था, recommendation मेरी ज़िम्मेदारी थी।
+- **Action**: मैंने एक हफ्ते का spike चलाया, दोनों approaches को actual data पर compare किया। Trade-offs एक decision record में document किए।
+- **Result**: हमने managed service चुनी, दो हफ्ते पहले ship किया, और पहले साल में लगभग £40,000 engineering time बचाया।
+
+### सवाल 2: *"एक ऐसा समय बताइए जब आप किसी teammate से असहमत थे और कैसे सुलझाया।"*
+
+- **Situation**: एक colleague complex ensemble model चाहता था; मैं पहले simpler baseline की वकालत कर रहा था।
+- **Task**: रिश्ता खराब किए बिना alignment लाना।
+- **Action**: मैंने propose किया कि दोनों time-boxed experiment में अपना approach implement करें और metrics तय करें।
+- **Result**: Simpler model ने ensemble के 2% के अंदर perform किया, inference cost दसवाँ हिस्सा। हमने simple model ship किया।
+
+<Quiz question="एक मज़बूत STAR answer का सबसे ज़रूरी element क्या है?" options="हर कहानी में खुद को hero बनाना|एक specific, measurable result देना जो impact दिखाए|ज़्यादा से ज़्यादा technical buzzwords इस्तेमाल करना|जवाब 30 सेकंड से कम रखना" answer="1" explanation="Numbers वाले concrete results — समय बचा, cost कम हुआ, accuracy बढ़ी — आपकी कहानियों को विश्वसनीय और यादगार बनाते हैं। 'अच्छा रहा' जैसे vague outcomes काम नहीं करते।" />
+
+## Phase 4: आपके सवाल (10 मिनट)
+
+अच्छे सवाल पूछना समझदारी और सच्ची दिलचस्पी दिखाता है:
+
+1. *"ML platform team की on-call rotation कैसी है और model incidents कैसे handle होते हैं?"* — Production realities की सोच दिखाता है।
+2. *"अगले छह महीनों में team की सबसे बड़ी technical challenge क्या होगी?"* — आगे की सोच दिखाता है।
+3. *"Team कैसे decide करती है कि in-house build करें या managed solution खरीदें?"* — Pragmatism दिखाता है।
+
+**बचें:** Perks, छुट्टियों, या company website पर आसानी से मिलने वाली चीज़ों के बारे में सवाल।
+
+<FunFact>
+Harvard Business Review की एक study में पाया गया कि सोच-समझकर सवाल पूछने वाले candidates को overall 9% ज़्यादा rating मिली, भले ही उनका technical performance बिल्कुल वही था।
+</FunFact>
+
+## Phase 5: Wrap-Up (5 मिनट)
+
+Interviewer को नाम लेकर धन्यवाद दें। अपना उत्साह एक वाक्य में बताएँ: *"मैं यहाँ content moderation challenges को लेकर सच में excited हूँ — यही वो high-scale ML systems work है जो मैं करना चाहता हूँ।"*
+
+24 घंटे के अंदर एक छोटा thank-you email भेजें जिसमें एक specific चर्चा का ज़िक्र हो।
+
+## Self-Scoring Rubric
+
+हर dimension पर खुद को 1–5 में rate करें:
+
+| Dimension | "5" कैसा दिखता है |
+|-----------|-------------------|
+| **Requirements gathering** | Design में कूदने से पहले clarifying questions पूछे |
+| **Architecture clarity** | साफ, logical system बनाया जिसमें clear data flow हो |
+| **गहराई** | कम से कम एक component पर real trade-offs के साथ गहराई से गए |
+| **Communication** | विचार structured और follow करने में आसान |
+| **Behavioural answers** | STAR framework, specific measurable results |
+| **सवाल पूछे** | सच्ची जिज्ञासा और अच्छी समझ दिखाई |
+
+<FunFact>
+Google के internal interview data से पता चला कि candidate की सफलता का सबसे मज़बूत predictor algorithm score नहीं, बल्कि ambiguous problems को structure करने की क्षमता थी — ठीक वही जो system design questions test करते हैं।
+</FunFact>
+
+<Quiz question="System design interview में सबसे पहले क्या करना चाहिए?" options="तुरंत architecture diagram बनाना शुरू करें|Requirements और constraints के बारे में clarifying questions पूछें|API endpoints लिखें|Database technology चुनें" answer="1" explanation="पहले requirements clarify करने से आप सही problem solve करते हैं। Constraints समझे बिना solutions पर कूदना system design interviews की सबसे आम गलती है।" />

@@ -1,0 +1,132 @@
+---
+title: "Two Pointers మరియు Sliding Window — AI డేటాను ఎఫిషియెంట్‌గా ఎలా Scan చేస్తుంది"
+description: "అనవసరమైన computation లేకుండా sequences ను scan చేసే రెండు ముఖ్యమైన patterns నేర్చుకోండి."
+order: 1
+difficulty: "intermediate"
+duration: 15
+icon: "👆"
+published: true
+---
+
+## Smart Scanning ఎందుకు ముఖ్యం
+
+ఒక AI live video feed లో అనుమానాస్పద కార్యకలాపాలను monitor చేస్తుందని ఊహించుకోండి. ప్రతి సెకనూ మొత్తం recording మళ్ళీ చూడటం సాధ్యం కాదు — stream మీద ఒక attention window slide చేయాలి, అవసరమైనంత context మాత్రమే ఉంచుకుంటూ. **Two pointers** మరియు **sliding window** patterns sequential data తో సరిగ్గా ఇదే చేస్తాయి.
+
+రెండు techniques brute-force O(n²) scans ను elegant O(n) passes గా మారుస్తాయి.
+
+<Illustration src="/images/lessons/two-pointers-and-sliding-window.svg" alt="Array రెండు చివరల నుండి converge అవుతున్న two pointers మరియు data stream మీద కదులుతున్న sliding window" caption="Two pointers search space ను తగ్గిస్తాయి; sliding window ఒక running view ను maintain చేస్తుంది." />
+
+## Two Pointer Technique
+
+ఒక sequence లో రెండు references ఉంచి, ఒక rule ప్రకారం వాటిని move చేయండి. రెండు ప్రధాన రకాలు ఉన్నాయి.
+
+### Converging Pointers
+
+ఒక pointer ప్రారంభంలో, మరొకటి చివరలో ఉంచి, లోపలికి move చేయండి. **Sorted** data కు అద్భుతం.
+
+**Classic problem — Pair Sum:** ఒక sorted array ఇస్తే, target కు add అయ్యే రెండు numbers కనుగొనండి.
+
+```
+function pairSum(arr, target):
+    left = 0
+    right = arr.length - 1
+    while left < right:
+        sum = arr[left] + arr[right]
+        if sum == target: return (left, right)
+        if sum < target: left += 1
+        else: right -= 1
+    return null
+```
+
+Array sorted కాబట్టి, `left` ను right కి move చేస్తే sum పెరుగుతుంది, `right` ను left కి move చేస్తే sum తగ్గుతుంది — ఏ valid pair కూడా miss కాదు.
+
+### Same-Direction Pointers
+
+రెండు pointers ముందుకు move అవుతాయి, కానీ వేర్వేరు speeds తో. **Partitioning** లేదా **cycle detection** కు useful.
+
+**Example — Duplicates ను in-place remove చేయడం:** Slow pointer write position ను mark చేస్తుంది; fast pointer ముందుకు scan చేస్తుంది.
+
+```
+function removeDuplicates(arr):
+    slow = 0
+    for fast in 1..arr.length - 1:
+        if arr[fast] != arr[slow]:
+            slow += 1
+            arr[slow] = arr[fast]
+    return slow + 1
+```
+
+<Quiz question="Sorted array మీద converging two-pointer technique లో, current sum target కంటే తక్కువగా ఉన్నప్పుడు ఏమి చేయాలి?" options="Right pointer ను left కి move చేయండి|Left pointer ను right కి move చేయండి|రెండు elements ను swap చేయండి|మధ్య నుండి restart చేయండి" answer="1" explanation="Left pointer ను right కి move చేస్తే sum పెరుగుతుంది ఎందుకంటే array ascending order లో sorted." />
+
+## Sliding Window Pattern
+
+Sliding window ఒక contiguous sub-sequence ను maintain చేస్తుంది, దాని size _k_ (fixed) లేదా variable, మరియు aggregates ను scratch నుండి recalculate చేయకుండా incrementally update చేస్తుంది.
+
+### Fixed-Size Window
+
+సరిగ్గా _k_ elements ఉన్న window ను array మీద slide చేయండి.
+
+**Example — ఏదైనా k consecutive elements యొక్క maximum sum:**
+
+```
+function maxSubarraySum(arr, k):
+    windowSum = sum(arr[0..k-1])
+    best = windowSum
+    for i in k..arr.length - 1:
+        windowSum += arr[i] - arr[i - k]
+        best = max(best, windowSum)
+    return best
+```
+
+ప్రతి step లో window లోకి వచ్చే కొత్త element add అవుతుంది, బయటికి వెళ్ళేది subtract అవుతుంది — O(1) per move.
+
+### Variable-Size Window
+
+మరింత data include చేయడానికి window ను expand చేయండి, constraint violate అయినప్పుడు shrink చేయండి.
+
+**Example — Repeating characters లేని longest substring:**
+
+```
+function longestUnique(s):
+    seen = {}
+    left = 0
+    best = 0
+    for right in 0..s.length - 1:
+        if s[right] in seen and seen[s[right]] >= left:
+            left = seen[s[right]] + 1
+        seen[s[right]] = right
+        best = max(best, right - left + 1)
+    return best
+```
+
+<FunFact>Apache Flink వంటి streaming analytics platforms sliding మరియు tumbling windows ను first-class primitives గా ఉపయోగిస్తాయి — ఇదే concept సెకనుకు millions of events కు scale అవుతుంది.</FunFact>
+
+## Real AI Applications
+
+| Pattern | AI Use Case |
+|---------|------------|
+| Fixed window | చివరి _k_ sensor readings మీద anomaly detection |
+| Variable window | అన్ని query keywords ఉన్న అతి చిన్న text span కనుగొనడం (search engines) |
+| Converging pointers | Sorted embedding dimensions లో efficient nearest-neighbour checks |
+| Same-direction pointers | Multiple retrieval models నుండి sorted result lists ను merge చేయడం |
+
+<ThinkAboutIt>ఒక voice assistant wake word detect చేయడానికి చివరి 3 seconds audio ను buffer చేస్తుంది. ఇది ఏ pattern — fixed window లేదా variable window? Wake word buffer కంటే పెద్దదైతే ఏమి జరుగుతుంది?</ThinkAboutIt>
+
+## ఏ Pattern ఎప్పుడు వాడాలి
+
+- **Two pointers (converging):** sorted input, pair/triplet search, palindrome checks.
+- **Two pointers (same-direction):** in-place modifications, fast/slow runner problems.
+- **Fixed sliding window:** తెలిసిన window size మీద aggregate.
+- **Variable sliding window:** ఒక condition ను satisfy చేసే అతి చిన్న లేదా అతి పెద్ద window కనుగొనడం.
+
+<Quiz question="ఇచ్చిన value కంటే ఎక్కువ sum ఉన్న అతి చిన్న subarray కనుగొనడానికి ఏ pattern ఎంచుకుంటారు?" options="Converging two pointers|Fixed sliding window|Variable sliding window|Binary search" answer="2" explanation="Variable-size window sum value ను మించే వరకు expand అవుతుంది, తర్వాత minimum length కనుగొనడానికి left నుండి contract అవుతుంది — అంతా O(n) లో." />
+
+<ThinkAboutIt>Two pointers ను sliding window తో combine చేయగలరా? Rolling data window లో pair కనుగొనాల్సిన problems గురించి ఆలోచించండి — ఉదాహరణకు, ఐదు నిమిషాల window లో duplicate transactions detect చేయడం.</ThinkAboutIt>
+
+## Key Takeaways
+
+1. Two pointers ordering లేదా partitioning ను ఉపయోగించి nested loops ను eliminate చేస్తాయి.
+2. Sliding windows running state maintain చేస్తాయి, తద్వారా ప్రతి element గరిష్ఠంగా రెండుసార్లు process అవుతుంది.
+3. రెండు patterns real-time AI pipelines లో foundational — anomaly detection నుండి search ranking వరకు.
+
+<Quiz question="Brute-force nested loop ను two-pointer లేదా sliding-window solution గా మార్చినప్పుడు సాధారణంగా ఏ time complexity వస్తుంది?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="రెండు patterns ప్రతి element ను constant సార్లు process చేస్తాయి, మొత్తం O(n) వస్తుంది — O(n²) brute-force approach కంటే గణనీయమైన మెరుగుదల." />

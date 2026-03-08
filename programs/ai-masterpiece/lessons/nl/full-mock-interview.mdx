@@ -1,0 +1,161 @@
+---
+title: "Volledig Oefensollicitatiegesprek — 60 Minuten Senior Engineer Simulatie"
+description: "Loop stap voor stap door een compleet sollicitatiegesprek op senior AI-engineeringniveau."
+order: 2
+difficulty: "advanced"
+duration: 45
+icon: "🎯"
+published: true
+---
+
+# Volledig Oefensollicitatiegesprek
+
+Deze les simuleert een compleet 60-minuten sollicitatiegesprek voor een senior AI-engineer. Lees actief mee — pauzeer bij elke sectie, formuleer eerst je eigen antwoord en beoordeel jezelf eerlijk.
+
+Behandel dit als een generale repetitie, niet als een toeschouwerssport.
+
+<Illustration src="/images/lessons/full-mock-interview.svg" alt="Tijdlijn met vijf interviewfasen: introductie, system design, gedragsvragen, jouw vragen en afsluiting" caption="Een gestructureerd 60-minuten sollicitatiegesprek opgedeeld in vijf fasen" />
+
+## Structuur van het Interview
+
+| Fase | Duur | Focus |
+|------|------|-------|
+| Introductie | 5 min | Eerste indruk, samenvatting achtergrond |
+| System Design | 25 min | Technische diepgang, architectuurdenken |
+| Gedragsvragen | 15 min | Leiderschap, conflicthantering, groei |
+| Jouw Vragen | 10 min | Nieuwsgierigheid, oordeelsvermogen, culturele fit |
+| Afsluiting | 5 min | Laatste indruk, vervolgstappen |
+
+<Callout>
+Tijdmanagement is op zichzelf al een signaal. Interviewers merken het als je 20 minuten besteedt aan requirements en nog maar vijf minuten overhoudt voor de architectuur. Oefen met een timer.
+</Callout>
+
+## Fase 1: Introductie (5 minuten)
+
+De interviewer zegt: *"Vertel over jezelf en wat je hierheen brengt."*
+
+Je antwoord moet een **elevatorpitch van twee minuten** zijn met:
+
+1. Je huidige rol en één opvallende prestatie.
+2. Een kort overzicht van je carrière — hoe je hier gekomen bent.
+3. Waarom deze specifieke rol en dit bedrijf je aanspreken.
+
+Vermijd het opdreunen van je CV. Vertel een verhaal met een duidelijke rode draad die verleden, heden en toekomst verbindt.
+
+## Fase 2: System Design (25 minuten)
+
+**De vraag:** *"Ontwerp een realtime AI-contentmoderatiesysteem voor een socialmediaplatform met 500 miljoen dagelijks actieve gebruikers."*
+
+### Stap 1: Verduidelijk de Requirements (3 min)
+
+Stel eerst vragen voordat je ook maar één blok tekent:
+
+- Welke contenttypes? Tekst, afbeeldingen, video, of alle drie?
+- Wat is de latency-eis? Moet moderatie plaatsvinden vóórdat content zichtbaar is?
+- Wat is de tolerantie voor false positives? Is het erger om schadelijke content te missen of veilige content onterecht te verwijderen?
+- Welke schaal? Posts per seconde, piekverkeerpatronen?
+
+**Aanname:** Tekst en afbeeldingen, sub-200ms voor tekst, sub-2s voor afbeeldingen, 50.000 posts per seconde bij piek.
+
+### Stap 2: API-ontwerp (3 min)
+
+```
+POST /moderate
+  Body: { contentId, contentType, text?, imageUrl?, userId, context }
+  Response: { decision: "allow" | "flag" | "block", confidence, categories[] }
+```
+
+Houd het simpel. Eén endpoint, duidelijk contract, uitbreidbaar met nieuwe contenttypes.
+
+### Stap 3: High-Level Architectuur (7 min)
+
+Het systeem heeft vier lagen:
+
+1. **Ingestie** — Een Kafka-topic ontvangt elk nieuw bericht. Ontkoppelt producers van moderatie.
+2. **Classificatiepipeline** — Tekstclassifier (fine-tuned transformer) en afbeeldingsclassifier (vision model) draaien parallel.
+3. **Beslissingsengine** — Combineert classifierresultaten met de reputatiescore van de gebruiker en platformbeleid.
+4. **Actielaag** — Voert de beslissing uit: toestaan, markeren voor menselijke review, of direct blokkeren.
+
+<Quiz question="Waarom is het belangrijk om ingestie te ontkoppelen van classificatie met een message queue?" options="Het maakt het systeem indrukwekkender in diagrammen|Het stelt de classificatiepipeline in staat onafhankelijk te schalen en verkeerspieken op te vangen|Het elimineert de noodzaak van een database|Het garandeert nul false positives" answer="1" explanation="Een message queue zoals Kafka laat de ingestielaag berichten accepteren op elk tempo, terwijl de classificatiepipeline ze in eigen tempo verwerkt en pieken opvangt zonder verzoeken te verliezen." />
+
+### Stap 4: Deep Dives (12 min)
+
+**Tekstmoderatie-model:**
+- Fine-tuned BERT of vergelijkbare transformer, getraind op een gelabelde dataset van schadelijke contentcategorieën (haatspraak, spam, zelfbeschadiging, etc.).
+- Geserveerd via een model server (Triton of TorchServe) met batching voor doorvoer.
+- Confidence-drempel: blokkeren boven 0,95, markeren tussen 0,7 en 0,95, toestaan onder 0,7.
+
+**Afbeeldingsmoderatie:**
+- Vision transformer die classificeert in categorieën: expliciet, gewelddadig, veilig.
+- Voorverwerking: resize, normaliseren. Inferentie op GPU-instances achter een auto-scaling groep.
+- Voor grensgevallen: doorsturen naar een wachtrij voor menselijke review.
+
+**Schaalbaarheidsoverwegingen:**
+- Horizontale schaling van classifier-pods achter een load balancer.
+- Modelversioning met canary deployments — rol nieuwe modellen uit naar eerst 5 procent van het verkeer.
+- Circuit breakers: als de classifier uitvalt, standaard "toestaan en in de wachtrij zetten voor asynchrone review" in plaats van alle content te blokkeren.
+
+<ThinkAboutIt>
+De interviewer vraagt: "Wat gebeurt er als een nieuw type schadelijke content opduikt dat je model nog nooit heeft gezien?" Pauzeer en denk na over je antwoord voordat je verder leest. Overweeg zowel korte- als langetermijnoplossingen.
+</ThinkAboutIt>
+
+**Omgaan met nieuwe dreigingen:** Op korte termijn: gebruik keyword-gebaseerde regels en menselijke escalatie. Op middellange termijn: implementeer een active learning loop — menselijke reviewers labelen nieuwe voorbeelden, die terugvloeien in de trainingspipeline voor de volgende modelversie.
+
+## Fase 3: Gedragsvragen (15 minuten)
+
+### Vraag 1: *"Vertel over een moment dat je een moeilijke technische beslissing moest nemen met onvolledige informatie."*
+
+Gebruik het **STAR**-framework:
+
+- **Situatie**: We moesten kiezen tussen een eigen ML-pipeline bouwen en een managed service adopteren, met een deadline over zes weken.
+- **Taak**: Ik was de tech lead die verantwoordelijk was voor het advies.
+- **Actie**: Ik voerde een spike van één week uit waarin ik beide aanpakken vergeleek op onze eigen data. Ik documenteerde de afwegingen in een beslisdocument en presenteerde dit aan het team.
+- **Resultaat**: We kozen voor de managed service, leverden twee weken eerder op en bespaarden het eerste jaar circa €40.000 aan engineeringtijd.
+
+### Vraag 2: *"Beschrijf een moment dat je het oneens was met een collega en hoe je dat oploste."*
+
+- **Situatie**: Een collega wilde een complex ensemble-model gebruiken; ik pleitte voor eerst een eenvoudiger baseline.
+- **Taak**: Overeenstemming bereiken zonder de relatie te schaden.
+- **Actie**: Ik stelde voor dat we beiden onze aanpak in een afgebakend tijdsexperiment zouden implementeren en de metrics lieten beslissen.
+- **Resultaat**: Het eenvoudigere model presteerde binnen 2 procent van het ensemble tegen een tiende van de inferentiekosten. We brachten het simpele model uit en spraken af om het te heroverwegen als nauwkeurigheid een knelpunt werd.
+
+<Quiz question="Wat is het belangrijkste element van een sterk STAR-antwoord?" options="Jezelf neerzetten als de held van elk verhaal|Een specifiek, meetbaar resultaat geven dat impact laat zien|Zoveel mogelijk technische buzzwords gebruiken|Het antwoord onder de 30 seconden houden" answer="1" explanation="Concrete resultaten met cijfers — bespaarde tijd, lagere kosten, verbeterde nauwkeurigheid — maken je verhalen geloofwaardig en onvergetelijk. Vage uitkomsten als 'het ging goed' maken geen indruk." />
+
+## Fase 4: Jouw Vragen (10 minuten)
+
+Goede vragen stellen toont oordeelsvermogen en oprechte interesse. Drie sterke voorbeelden:
+
+1. *"Hoe ziet de on-call-rotatie eruit voor het ML-platformteam, en hoe gaan jullie om met modelincidenten?"* — Laat zien dat je nadenkt over productierealiteiten.
+2. *"Wat is de grootste technische uitdaging die het team de komende zes maanden verwacht aan te pakken?"* — Toont vooruitdenken.
+3. *"Hoe beslist het team wanneer iets intern gebouwd wordt versus een managed oplossing afnemen?"* — Toont pragmatisme en architectuurgevoel.
+
+**Vermijd:** Vragen over extraatjes, vakantiedagen of zaken die makkelijk op de bedrijfswebsite te vinden zijn.
+
+<FunFact>
+Uit een studie van Harvard Business Review bleek dat kandidaten die doordachte vragen stelden 9 procent hoger werden beoordeeld, zelfs als hun technische prestaties identiek waren aan die van kandidaten die geen vragen stelden.
+</FunFact>
+
+## Fase 5: Afsluiting (5 minuten)
+
+Bedank de interviewer bij naam. Vat je enthousiasme samen in één zin: *"Ik ben oprecht enthousiast over de contentmoderatie-uitdagingen hier — dit is precies het soort high-scale ML-systeemwerk dat ik wil doen."*
+
+Stuur binnen 24 uur een kort bedankmailtje waarin je verwijst naar één specifiek onderwerp uit het gesprek.
+
+## Zelfevaluatie
+
+Beoordeel jezelf op een schaal van 1–5 per dimensie:
+
+| Dimensie | Wat "5" betekent |
+|----------|-----------------|
+| **Requirements verzamelen** | Stelde verhelderende vragen vóór het ontwerpen |
+| **Architectuurhelderheid** | Tekende een overzichtelijk, logisch systeem met duidelijke dataflow |
+| **Diepte van kennis** | Ging diep in op minstens één component met echte afwegingen |
+| **Communicatie** | Structureerde gedachten helder; makkelijk te volgen |
+| **Gedragsantwoorden** | Gebruikte STAR met specifieke, meetbare resultaten |
+| **Gestelde vragen** | Toonde oprechte nieuwsgierigheid en goed oordeelsvermogen |
+
+<FunFact>
+Interne interviewdata van Google toonden aan dat de sterkste voorspeller van succes van een kandidaat niet hun algoritmescore was, maar hun vermogen om ambigue problemen te structureren — precies wat system design-vragen testen.
+</FunFact>
+
+<Quiz question="Wat moet je EERST doen tijdens een system design-interview?" options="Meteen beginnen met het tekenen van het architectuurdiagram|Verhelderende vragen stellen over requirements en beperkingen|De API-endpoints schrijven|De databasetechnologie kiezen" answer="1" explanation="Eerst de requirements verduidelijken zorgt ervoor dat je het juiste probleem oplost. Direct naar oplossingen springen zonder de beperkingen te begrijpen is de meest gemaakte fout bij system design-interviews." />

@@ -1,0 +1,160 @@
+---
+title: "Recursion और Backtracking — Computer की तरह Puzzles Solve करना"
+description: "Call stack से recursion समझो, फिर backtracking template सीखो जो permutations, N-Queens, और बहुत कुछ solve करता है।"
+order: 8
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## Recursion Fundamentals
+
+Recursive function खुद को problem के **छोटे** version के साथ call करता है जब तक **base case** न आ जाए जो chain रोक दे।
+
+हर recursion को दो चीज़ें चाहिए:
+1. **Base case** — सबसे simple input जहाँ सीधे return करो।
+2. **Recursive case** — problem तोड़ो और खुद को call करो।
+
+```python
+def factorial(n):
+    if n <= 1:        # base case
+        return 1
+    return n * factorial(n - 1)  # recursive case
+```
+
+## Call Stack — Visualised
+
+हर recursive call call stack पर एक frame push करती है। Base case return होने पर frames reverse order में pop होते हैं।
+
+```
+factorial(4)
+  → factorial(3)
+    → factorial(2)
+      → factorial(1) → returns 1
+    ← returns 2
+  ← returns 6
+← returns 24
+```
+
+Base case न हो तो stack overflow। Python की default recursion limit 1,000 frames है।
+
+<FunFact>Python की default recursion limit 1,000 intentionally conservative है। sys.setrecursionlimit() से बढ़ा सकते हो, लेकिन deep recursion के लिए iterative solutions बेहतर हैं।</FunFact>
+
+## Fibonacci — Classic Trap
+
+Naïve recursive Fibonacci O(2ⁿ) है क्योंकि same sub-problems बार-बार compute होते हैं। Memoisation इसे O(n) time और space में fix करता है।
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+<Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Fibonacci का recursion tree जिसमें repeated sub-problems दिख रहे हैं" caption="Memoisation बिना fib(5) 15 calls करता है। Memoisation से सिर्फ 5।" />
+
+## Backtracking — सब Try करो, फिर Undo करो
+
+Backtracking recursion है एक twist के साथ: **choice बनाओ**, recurse करो, फिर **choice undo करो** और next option try करो। सोचो जैसे maze explore कर रहे हो — आगे जाओ, dead end मिला, वापस आओ, दूसरा रास्ता try करो।
+
+### Backtracking Template
+
+```python
+def backtrack(state, choices):
+    if is_solution(state):
+        result.append(state.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            state.add(choice)       # choose
+            backtrack(state, ...)   # explore
+            state.remove(choice)    # un-choose
+```
+
+यह **choose, explore, un-choose** pattern लगभग हर backtracking problem की रीढ़ है।
+
+<Quiz question="Backtracking template में recursive call के बाद choice undo क्यों करते हैं?" options="Memory free करने के लिए|अगली branch explore करने के लिए state reset करना|Choice गलत थी इसलिए|Stack overflow से बचने के लिए" answer="1" explanation="Choice undo करने से state restore होता है ताकि loop की अगली iteration same starting point से different branch explore कर सके।" />
+
+## Permutations
+
+`[1, 2, 3]` के सभी orderings generate करो। हर level पर unused number choose करो, recurse करो, फिर un-pick करो।
+
+```
+         []
+      /   |   \
+    [1]  [2]  [3]
+    / \   ...
+ [1,2] [1,3]
+   |      |
+[1,2,3] [1,3,2]  ... (6 total)
+```
+
+**n!** permutations होते हैं, तो time complexity O(n × n!) है।
+
+## Combinations और Subsets
+
+**Combinations (n choose k):** हर element पर include करो या skip करो, लेकिन duplicates से बचने के लिए सिर्फ forward recurse करो।
+
+**Subsets:** same idea बिना size constraint — recursion tree का हर node valid subset है। **2ⁿ** subsets होते हैं।
+
+<ThinkAboutIt>Permutations n! results देते हैं जबकि subsets 2ⁿ। n=10 के लिए 3,628,800 vs 1,024 — बहुत बड़ा अंतर। क्यों?</ThinkAboutIt>
+
+## N-Queens — Walkthrough
+
+N×N board पर N queens रखो जो एक-दूसरे को attack न करें। N=4 के लिए:
+
+```
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**Strategy:** हर row में एक queen रखो। हर row के लिए हर column try करो। Column, main diagonal, और anti-diagonal conflicts check करो। Safe हो तो रखो और next row पर recurse करो। Stuck हो तो backtrack।
+
+Conflicts track करो तीन sets से: `cols`, `diag` (row − col), `anti_diag` (row + col)।
+
+<Quiz question="N-Queens में diagonal conflicts efficiently कैसे check करते हैं?" options="हर placed queen की position check करो|Sets से (row-col) और (row+col) track करो|हर बार पूरा board scan करो|2D boolean matrix इस्तेमाल करो" answer="1" explanation="Same diagonal पर queens का (row-col) same होता है; same anti-diagonal पर (row+col) same। Sets O(1) lookup देते हैं।" />
+
+## Sudoku Solver — Concept
+
+Empty cell ढूँढो, digits 1–9 try करो। हर digit के लिए row, column, और 3×3 box constraints check करो। Valid हो तो place करो और recurse करो। कोई digit काम न करे तो undo करो और backtrack। Constraints की pruning huge search space को manageable बनाती है।
+
+## Word Search in a Grid
+
+2D board of letters और target word दिया है। हर cell से शुरू करो और DFS से four directions में एक character match करते जाओ। Recursion में cells visited mark करो और **backtrack पर unmark** करो।
+
+## Backtracking की Time Complexity
+
+Cost **branching factor** (हर step पर choices) और **depth** (solution तक steps) पर depend करती है। b branches, d depth: O(bᵈ)।
+
+| Problem | Branching | Depth | Complexity |
+|---------|-----------|-------|------------|
+| Permutations | n, n−1, … | n | O(n!) |
+| Subsets | 2 | n | O(2ⁿ) |
+| N-Queens | ~n | n | O(n!) worst case |
+
+## Pruning से Optimise करो
+
+**Pruning** का मतलब ऐसी branches skip करना जो fail होंगी:
+- N-Queens: पहले से occupied columns skip करो।
+- Sudoku: constraints violate करने वाले digits skip करो।
+- Combination sum: remaining sum < 0 हो तो skip।
+
+अच्छी pruning impractical search को fast बना सकती है।
+
+<Quiz question="Backtracking algorithm में pruning क्या करती है?" options="Recursion depth कम करती है|ऐसी branches eliminate करती है जो valid solution तक नहीं ले जा सकतीं|Recursion को iteration में बदलती है|Choices explore करने से पहले sort करती है" answer="1" explanation="Pruning search tree के parts जल्दी काट देती है, ऐसे paths पर wasted work बचाती है जो guarantee fail होंगे।" />
+
+<ThinkAboutIt>कई backtracking problems dynamic programming से भी solve हो सकते हैं। दोनों approaches में key difference क्या है?</ThinkAboutIt>
+
+---
+
+## 📚 और पढ़ें
+
+- [NeetCode — Backtracking playlist](https://neetcode.io/roadmap) — curated problems with video walkthroughs
+- [Tech Interview Handbook — Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) — patterns और common pitfalls
+- [LeetCode Backtracking study plan](https://leetcode.com/tag/backtracking/) — progressive problem set

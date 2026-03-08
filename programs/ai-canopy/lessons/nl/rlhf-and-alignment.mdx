@@ -1,0 +1,122 @@
+---
+title: "RLHF en Alignment — Hoe ChatGPT Menselijke Waarden Leert"
+description: "Begrijp hoe ruwe taalmodellen worden omgevormd tot behulpzame, ongevaarlijke assistenten via supervised fine-tuning, reward modelling en reinforcement learning from human feedback."
+order: 8
+difficulty: "advanced"
+duration: 18
+icon: "🎯"
+published: true
+---
+
+# RLHF en Alignment — Hoe ChatGPT Menselijke Waarden Leert
+
+Een voorgetraind taalmodel is een krachtige maar ongecontroleerde motor. Het kan poëzie schrijven, code genereren en redeneren over natuurkunde — maar het kan ook toxische content produceren, met stelligheid feiten verzinnen en gebruikersinstructies negeren. **Alignment** is het proces om die ruwe capaciteit te sturen richting daadwerkelijk behulpzaam, eerlijk en onschadelijk gedrag.
+
+## Het Alignment-probleem
+
+Pre-training optimaliseert één enkel doel: **voorspel het volgende token**. Dit geeft het model brede kennis maar geen begrip van wat een mens daadwerkelijk *wil*. Stel een basismodel een vraag en het kan de tekst voortzetten alsof het een forumpost schrijft, een advertentie, of een complottheorie — omdat al die patronen in de trainingsdata voorkomen.
+
+De kloof tussen "capabel" en "nuttig" is het alignment-probleem. Een model dat medisch advies kan schrijven maar niet weet wanneer het moet weigeren, is potentieel gevaarlijk. Het dichten van deze kloof vereist dat het model **menselijke voorkeuren** leert — niet alleen wat er *zou kunnen* volgen, maar wat er *zou moeten* volgen.
+
+<Illustration src="/images/lessons/rlhf-and-alignment.svg" alt="Driefasenpipeline: SFT traint op demonstraties, het reward model leert voorkeuren, PPO optimaliseert het beleid tegen het reward model" caption="De RLHF-pipeline transformeert een basismodel in een afgestemde assistent via drie fasen: SFT, reward modelling en RL-optimalisatie." />
+
+## Fase 1: Supervised Fine-Tuning (SFT)
+
+De eerste stap is eenvoudig: verzamel duizenden hoogwaardige **demonstratievoorbeelden** — ideale gesprekken tussen een gebruiker en een assistent — en fine-tune het basismodel erop. Dit leert het model het *format* van behulpzaam zijn: vragen direct beantwoorden, instructies opvolgen, onzekerheid erkennen en schadelijke verzoeken weigeren.
+
+SFT alleen produceert al een merkbaar beter model, maar het heeft beperkingen. Menselijke demonstrateurs kunnen slechts een beperkt aantal voorbeelden schrijven, en het model leert de *gemiddelde* kwaliteit van die demonstraties te imiteren in plaats van consequent het best mogelijke antwoord te produceren.
+
+## Fase 2: Reward Model Training
+
+In plaats van ideale antwoorden te schrijven, krijgen menselijke beoordelaars **paren modeloutputs** voorgelegd en wordt hen gevraagd te rangschikken welke beter is. Dit is cognitief eenvoudiger — vergelijken is makkelijker dan creëren — en maakt het mogelijk om veel meer voorkeursdata te verzamelen.
+
+Deze gerangschikte paren trainen een **reward model (RM)**: een apart neuraal netwerk dat een prompt en een antwoord als invoer neemt en een scalaire score uitvoert die menselijke voorkeur representeert. Het RM leert patronen zoals:
+
+- Nauwkeurige, onderbouwde antwoorden scoren hoger dan vage
+- Antwoorden die onzekerheid erkennen scoren hoger dan zelfverzekerde verzinsels
+- Behulpzame weigeringen scoren hoger dan meegaan met schadelijke verzoeken
+
+<Quiz question="Waarom is het eenvoudiger en schaalbaarder om vergelijkingsdata (twee outputs rangschikken) te verzamelen dan demonstratiedata (ideale outputs schrijven)?" options="Vergelijking vereist minder rekenkracht|Mensen kunnen relatieve kwaliteit veel sneller en consistenter beoordelen dan dat ze experttekst vanuit het niets kunnen produceren|Vergelijkingsdata vereist minder beoordelaars|Demonstratiedata kan niet worden gebruikt voor taalmodellen" answer="1" explanation="Het schrijven van een perfect assistentantwoord vereist expertise en aanzienlijke tijd. Twee antwoorden vergelijken en beoordelen welke beter is, is een veel snellere cognitieve taak die consistentere labels oplevert over verschillende beoordelaars, waardoor het veel schaalbaarder is." />
+
+## Fase 3: Reinforcement Learning (PPO)
+
+Met een reward model in de hand wordt het SFT-model verder geoptimaliseerd met **Proximal Policy Optimisation (PPO)**. Het proces:
+
+1. Het model genereert een antwoord op een prompt
+2. Het reward model scoort het antwoord
+3. PPO werkt de modelgewichten bij om de verwachte beloning te verhogen
+4. Een **KL-divergentie-penalty** voorkomt dat het model te ver afdrijft van de SFT-basis (om reward hacking te vermijden)
+
+De KL-penalty is cruciaal. Zonder zou het model eigenaardigheden van het reward model leren exploiteren — antwoorden genereren die hoog scoren maar onzinnig of repetitief zijn. Door te beperken hoe ver het beleid kan afwijken van het SFT-model, houdt PPO de outputs coherent terwijl de alignment verbetert.
+
+Dit driefasenproces — SFT → Reward Model → PPO — is precies hoe OpenAI GPT-3.5 transformeerde in ChatGPT, zoals beschreven in hun **InstructGPT**-paper.
+
+<FunFact>
+Het InstructGPT-paper onthulde een opvallend resultaat: een model met 1,3 miljard parameters afgestemd met RLHF werd door menselijke beoordelaars verkozen boven het niet-afgestemde GPT-3 met 175 miljard parameters — een model dat 100× groter is. Alignment kan belangrijker zijn dan puur schaalgrootte.
+</FunFact>
+
+## DPO: De Tussenpersoon Elimineren
+
+**Direct Preference Optimisation (DPO)** vereenvoudigt de RLHF-pipeline door het aparte reward model volledig te elimineren. In plaats daarvan formuleert DPO alignment als een classificatieprobleem: gegeven een geprefereerd antwoord en een afgewezen antwoord, worden de gewichten van het taalmodel direct bijgewerkt om de waarschijnlijkheid van het geprefereerde antwoord te verhogen.
+
+De DPO-lossfunctie definieert impliciet een reward model binnen het taalmodel zelf:
+
+```
+L_DPO = -log σ(β · (log π(y_w|x)/π_ref(y_w|x) - log π(y_l|x)/π_ref(y_l|x)))
+```
+
+Waarbij `y_w` het geprefereerde antwoord is, `y_l` het afgewezen antwoord, en `π_ref` het referentiemodel (SFT). DPO is eenvoudiger, stabieler en goedkoper om te trainen — geen reward model, geen RL-lus, geen hyperparametergevoelige PPO. Meta's LLaMA 2 en vele open-source modellen gebruiken nu DPO of varianten ervan.
+
+<ThinkAboutIt>
+DPO elimineert het reward model maar verliest daarmee ook de mogelijkheid om willekeurige nieuwe antwoorden te scoren tijdens inferentie. In welke scenario's zou een expliciet reward model (de volledige RLHF-pipeline) waardevoller zijn dan de eenvoud van DPO?
+</ThinkAboutIt>
+
+## Constitutional AI: Zelfsupervisie op Schaal
+
+Anthropic introduceerde **Constitutional AI (CAI)** om de afhankelijkheid van menselijke beoordelaars te verminderen. De aanpak:
+
+1. Definieer een set principes (een "grondwet") — bijv. *"Kies het antwoord dat het meest behulpzaam is en tegelijk eerlijk en onschadelijk"*
+2. Genereer antwoordparen en gebruik het **model zelf** om te beoordelen welk antwoord beter voldoet aan de grondwet
+3. Gebruik deze AI-gegenereerde voorkeuren om het reward model te trainen (RLAIF — RL from AI Feedback)
+
+CAI schaalt het verzamelen van voorkeuren enorm — de AI kan miljoenen vergelijkingen genereren en evalueren tegen een fractie van de kosten van menselijke labeling. Het maakt de alignment-criteria ook **expliciet en controleerbaar**, vastgelegd in de grondwet in plaats van impliciet geleerd uit de vooroordelen van beoordelaars.
+
+<Quiz question="Wat is de kerninnovatie van Constitutional AI vergeleken met standaard RLHF?" options="Het gebruikt een veel groter basismodel|Het vervangt menselijke voorkeursbeoordelaars door het AI-model zelf, geleid door expliciet geschreven principes|Het elimineert de noodzaak voor enige fine-tuning|Het traint uitsluitend op synthetische data" answer="1" explanation="Constitutional AI gebruikt het model zelf om voorkeursoordelen te genereren, geleid door een set expliciet geschreven principes (de grondwet). Dit schaalt het verzamelen van voorkeursdata enorm terwijl de alignment-criteria transparant en aanpasbaar worden." />
+
+## Red Teaming
+
+Geen enkele alignment-techniek is perfect. **Red teaming** omvat het doelbewust proberen om het model schadelijke, bevooroordeelde of onwaarheidgetrouwe outputs te laten produceren. Red teamers onderzoeken:
+
+- Jailbreaks die veiligheidstraining omzeilen
+- Systematische bias in antwoorden over verschillende demografieën
+- Feitelijke fouten in hoog-risico domeinen (medisch, juridisch)
+- Inconsistenties in weigeringsgrenzen
+
+Grote labs voeren nu uitgebreide red teaming uit voordat modellen worden uitgebracht, vaak met inzet van externe beveiligingsonderzoekers, domeinexperts en dedicated teams voor vijandige tests.
+
+## De Alignment-belasting
+
+Alignment heeft een prijs. RLHF-getrainde modellen worden soms **overdreven voorzichtig** — ze weigeren onschuldige verzoeken, voegen onnodige voorbehouden toe, of produceren saaie antwoorden om elk waargenomen risico te vermijden. Deze "alignment-belasting" is een reële technische uitdaging:
+
+- Te weinig alignment → schadelijke outputs
+- Te veel alignment → nutteloze, irritante weigeringen
+
+De frontier van alignment-onderzoek is het vinden van technieken die behulpzaamheid maximaliseren terwijl echte veiligheidsgrenzen gehandhaafd blijven — niet alleen patroonherkenning op oppervlakkig "veilige" antwoorden.
+
+<Quiz question="Wat is de 'alignment-belasting' in de context van RLHF-getrainde modellen?" options="De financiële kosten van het inhuren van menselijke beoordelaars voor voorkeursdata|De vermindering van modelbehulpzaamheid en -capaciteit die het gevolg is van veiligheidstraining die het model overdreven voorzichtig maakt|De rekenkosten van het draaien van PPO-optimalisatie|De belasting die overheden opleggen aan AI-bedrijven voor veiligheidsnaleving" answer="1" explanation="De alignment-belasting verwijst naar het verlies aan capaciteit of behulpzaamheid wanneer veiligheidstraining een model buitensporig voorzichtig maakt — onschuldige verzoeken weigeren, onnodig nuanceren, of generieke antwoorden produceren. Het balanceren van veiligheid met oprechte behulpzaamheid is een van de moeilijkste open problemen in alignment." />
+
+<FunFact>
+OpenAI besteedde ongeveer zes maanden aan alignment-werk (SFT-dataverzameling, reward modelling en RLHF-training) om het basismodel van GPT-4 te transformeren in de publiek beschikbare versie. De alignment-fase kostte, hoewel een fractie van de pre-training compute, duizenden uren gespecialiseerde menselijke labeling.
+</FunFact>
+
+<ThinkAboutIt>
+Menselijke beoordelaars brengen onvermijdelijk hun eigen vooroordelen, culturele perspectieven en inconsistenties in de voorkeursdata. Als alignment uiteindelijk "leren wat mensen prefereren" is, wiens voorkeuren moeten dan meetellen — en hoe gaan we om met fundamentele meningsverschillen over waarden tussen culturen?
+</ThinkAboutIt>
+
+---
+
+## 📚 Verder Lezen
+
+- [Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — OpenAI's fundamentele RLHF-paper
+- [Direct Preference Optimization (Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290) — Het DPO-paper dat alignment-training vereenvoudigde
+- [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073) — Anthropic's benadering van schaalbare alignment met AI-zelfsupervisie

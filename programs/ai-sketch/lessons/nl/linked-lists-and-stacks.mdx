@@ -1,0 +1,143 @@
+---
+title: "Linked Lists en Stacks — De Dynamische Structuren Achter AI"
+description: "Begrijp hoe linked lists, stacks en queues dynamische data verwerken in AI-systemen en daarbuiten."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+---
+
+## Voorbij Arrays — Dynamische Data
+
+Arrays zijn geweldig als je de grootte van je data vooraf kent. Maar wat als data onvoorspelbaar binnenkomt — een stroom sensorwaarden, een wachtrij met taken voor een AI, of een gespreksgeschiedenis die bij elk bericht groeit? Dan heb je structuren nodig die soepel mee groeien en krimpen.
+
+Hier komen **linked lists**, **stacks** en **queues** in beeld — het dynamische trio.
+
+## Linked Lists — Knooppunten en Pointers
+
+Een linked list slaat items op als een keten van **knooppunten** (nodes). Elk knooppunt bevat twee dingen: de data zelf en een pointer (verwijzing) naar het volgende knooppunt.
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Anders dan bij arrays staan knooppunten niet naast elkaar in het geheugen. Ze kunnen overal staan — de pointer vertelt je simpelweg waar het volgende knooppunt te vinden is.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="Een linked list met drie knooppunten verbonden door pijlen, vergeleken met een array met aaneengesloten blokken" caption="Linked list-knooppunten zijn verbonden door pointers, anders dan array-elementen die naast elkaar staan." />
+
+### Linked Lists vs Arrays
+
+| Operatie | Array | Linked List |
+|----------|-------|-------------|
+| Toegang via index | O(1) ⚡ | O(n) 🐢 |
+| Invoegen aan begin | O(n) 🐢 | O(1) ⚡ |
+| Invoegen in midden | O(n) 🐢 | O(1)* ⚡ |
+| Verwijderen uit midden | O(n) 🐢 | O(1)* ⚡ |
+| Geheugengebruik | Compact | Extra (pointers) |
+
+*Zodra je de positie gevonden hebt — het vinden is nog steeds O(n).
+
+### Wanneer Linked Lists Winnen
+
+- **Veel invoegingen en verwijderingen**: Als je constant items toevoegt en verwijdert in het midden, vermijden linked lists het kostbare opschuiven dat arrays vereisen.
+- **Onbekende grootte**: Als je niet weet hoeveel items je gaat opslaan, groeit een linked list per knooppunt zonder herschaling.
+- **Basis voor andere structuren**: Stacks, queues en complexere structuren worden vaak bovenop linked lists gebouwd.
+
+<ThinkAboutIt>
+De tabbalk van je browser laat je vrij tabbladen openen, sluiten en herschikken. Zou een array of een linked list beter passen voor het beheren van open tabbladen? Bedenk wat er gebeurt als je een tabblad in het midden sluit.
+</ThinkAboutIt>
+
+## Stacks — Last In, First Out (LIFO)
+
+Een **stack** werkt precies als een stapel borden: je legt bovenop en pakt van bovenaf. Het laatst geplaatste item is het eerste dat eraf gaat.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+Twee operaties definiëren een stack:
+- **Push**: Voeg een item toe bovenaan.
+- **Pop**: Verwijder het bovenste item.
+
+Beide zijn **O(1)** — instant, ongeacht de grootte van de stack.
+
+### Stacks in de Praktijk
+
+- **Ongedaan maken/opnieuw**: Elke teksteditor heeft een stack van acties. Druk Ctrl+Z en de meest recente actie wordt gepopped en teruggedraaid.
+- **Terugknop browser**: Je browsergeschiedenis is een stack. Elke nieuwe pagina wordt gepusht; klikken op "terug" popt de huidige pagina.
+- **Call stacks**: Wanneer je code een functie aanroept, wordt die op de call stack gepusht. Als die klaar is, wordt hij eraf gepopped.
+
+<FunFact>
+Wanneer je een "stack overflow"-fout ziet, betekent dat letterlijk dat de call stack geen ruimte meer heeft — meestal omdat een functie zichzelf blijft aanroepen zonder te stoppen (oneindige recursie). De bekende ontwikkelaarssite Stack Overflow is naar precies deze fout vernoemd.
+</FunFact>
+
+### Stacks in AI
+
+- **Expressie-evaluatie**: AI-compilers en -interpreters gebruiken stacks om wiskundige expressies te evalueren in neurale netwerk-berekeningsgrafen.
+- **Backtracking-algoritmen**: Wanneer een AI mogelijke oplossingen verkent (zoals een doolhof oplossen), gebruikt het een stack om te onthouden waar het geweest is.
+- **Depth-first search**: Bomen en grafen depth-first doorlopen gebruikt van nature een stack — dit verkennen we in de volgende les.
+
+<Quiz question="Je implementeert een 'ongedaan maken'-functie voor een tekentoepassing. Welke datastructuur modelleert de actiegeschiedenis het beste?" options="Een op tijdstempel gesorteerde array|Een hash map van actie-ID's|Een stack — de meest recente actie moet als eerste ongedaan gemaakt worden|Een queue — de oudste actie moet als eerste ongedaan gemaakt worden" answer="2" explanation="Ongedaan maken vereist Last In, First Out (LIFO) gedrag — je maakt altijd de meest recente actie als eerste ongedaan. Een stack biedt precies dit met O(1) push en pop." />
+
+## Queues — First In, First Out (FIFO)
+
+Een **queue** werkt als een wachtrij in een winkel: wie het eerst komt, wordt het eerst geholpen. Items worden achteraan toegevoegd en vooraan verwijderd.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+### Queues in de Praktijk
+
+- **Printwachtrijen**: Documenten worden afgedrukt in de volgorde van indiening.
+- **Taakplanning**: Besturingssystemen gebruiken queues om te bepalen welke processen als volgende draaien.
+- **Message queues**: Webapplicaties gebruiken queues (zoals RabbitMQ of Kafka) om duizenden verzoeken te verwerken zonder er te verliezen.
+
+### Queues in AI
+
+- **Breadth-first search (BFS)**: Een graaf niveau voor niveau verkennen gebruikt een queue — dit zien we in de les over bomen en grafen.
+- **Trainingsdata-pipelines**: Trainingsdata wordt in queues geladen zodat de GPU altijd de volgende batch klaar heeft staan.
+- **Verzoekafhandeling**: Wanneer duizenden gebruikers tegelijk een AI-API bevragen, komen verzoeken in een queue en worden ze op volgorde verwerkt.
+
+<Quiz question="Een AI-API ontvangt 10.000 verzoeken per seconde. Welke structuur zorgt ervoor dat verzoeken op volgorde van aankomst worden verwerkt?" options="Een stack — verwerk het nieuwste verzoek eerst|Een hash map — zoek elk verzoek op via ID|Een queue — eerste verzoek erin, eerste verzoek eruit|Een array — sla alle verzoeken op en verwerk willekeurig" answer="2" explanation="Het FIFO-gedrag (First In, First Out) van een queue zorgt voor eerlijkheid — verzoeken worden op aankomstvolgorde afgehandeld, waardoor vroege verzoeken niet eindeloos moeten wachten." />
+
+<Callout>
+Er is ook een **priority queue**, waarbij items worden verwerkt op basis van prioriteit in plaats van aankomstvolgorde. AI-systemen gebruiken priority queues om urgente taken voorrang te geven — een zelfrijdende auto geeft bijvoorbeeld voorrang aan obstakeldetectie boven routeplanning.
+</Callout>
+
+## Praktijk: Sequentieverwerking en Geheugenbeheer
+
+### Sequentieverwerking
+
+Taalmodellen verwerken tekst als reeksen. Onder de motorkap gebruiken frameworks als PyTorch en TensorFlow linked-list-achtige structuren om **berekeningsgrafen** op te bouwen — ketens van bewerkingen waarbij elke stap naar de volgende wijst.
+
+### Geheugenbeheer in ML-frameworks
+
+Bij het trainen van een neuraal netwerk wordt continu geheugen gealloceerd en vrijgegeven terwijl tensors worden aangemaakt en vernietigd. Geheugentoewijzers gebruiken vaak linked lists van vrije geheugenblokken om geschikte ruimte te vinden voor nieuwe tensors.
+
+<ThinkAboutIt>
+Een chatbot moet de laatste 10 berichten in een gesprek onthouden maar oudere berichten weggooien. Zou je een stack, een queue, of iets anders gebruiken? Wat gebeurt er als het 11e bericht binnenkomt?
+</ThinkAboutIt>
+
+<Quiz question="Welke bewering over linked lists is ONWAAR?" options="Linked lists bieden O(1) invoegen aan het begin|Linked lists gebruiken extra geheugen voor pointers|Linked lists bieden O(1) toegang tot elk element via index|Linked lists kunnen dynamisch groeien zonder herschaling" answer="2" explanation="Toegang tot een element via index in een linked list vereist doorlopen vanaf het begin — O(n) tijd. Anders dan arrays kun je niet direct naar positie k springen." />
+
+<FunFact>
+De ongedaan-maken-geschiedenis in de meeste toepassingen heeft een limiet — meestal 100 tot 1.000 acties. Zonder deze limiet zou de stack steeds meer geheugen verbruiken. Sommige geavanceerde systemen gebruiken een combinatie van stack en queue (een "deque") om de meest recente acties te bewaren terwijl de oudste worden weggegooid.
+</FunFact>
+
+## Belangrijkste Inzichten
+
+- **Linked lists** blinken uit bij dynamische data met veel invoegingen en verwijderingen, maar offeren directe indextoegang op.
+- **Stacks** (LIFO) drijven ongedaan-maken-systemen, backtracking en depth-first traversal aan.
+- **Queues** (FIFO) zorgen voor eerlijke volgorde bij taakplanning, BFS en verzoekafhandeling.
+- Deze structuren werken vaak achter de schermen in AI-frameworks voor geheugenbeheer en sequentieverwerking.
+- De keuze tussen arrays en linked structuren hangt af van je toegangspatronen — random access favoriseert arrays, dynamische wijzigingen favoriseren linked lists.

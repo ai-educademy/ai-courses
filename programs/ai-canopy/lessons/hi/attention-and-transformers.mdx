@@ -1,0 +1,124 @@
+---
+title: "Attention और Transformers — वो Architecture जिसने सब बदल दिया"
+description: "Self-attention, multi-head attention, positional encoding और Transformer architecture की गहरी समझ जो हर modern large language model को power करती है।"
+order: 6
+difficulty: "advanced"
+duration: 20
+icon: "🔦"
+published: true
+---
+
+# Attention और Transformers — वो Architecture जिसने सब बदल दिया
+
+आज का हर major language model — GPT-4, Claude, Gemini, LLaMA — Transformer architecture पर बना है। 2017 के landmark paper *Attention Is All You Need* में publish हुआ, इसने recurrence को **self-attention** नामक mechanism से replace किया, जिससे unprecedented parallelism और performance unlock हुई।
+
+## RNNs क्यों दीवार से टकरा गए
+
+Recurrent Neural Networks sequences को एक-एक token करके process करते हैं, hidden state forward carry करते हुए। इससे दो गंभीर समस्याएँ पैदा होती हैं:
+
+- **Vanishing gradients** — जब gradient सैकड़ों time steps से back propagate होता है, तो लगभग zero हो जाता है, जिससे long-range dependencies सीखना impossible हो जाता है।
+- **Sequential bottleneck** — हर step पिछले पर depend करता है, इसलिए sequence के across training parallelise नहीं हो सकती। 1,000-token input के लिए 1,000 serial operations चाहिए।
+
+LSTMs और GRUs ने gating mechanisms add करके vanishing gradients कम किए, लेकिन parallelisation problem कभी solve नहीं हुई। Training fundamentally slow रही।
+
+## Attention की Intuition
+
+सोचिए आप एक लंबा paragraph पढ़ रहे हैं और पूछा जाए *"CEO ने क्या announce किया?"* आपकी आँखें हर शब्द sequentially नहीं पढ़तीं — वे **relevant sentence पर jump** करती हैं। Attention बिल्कुल ऐसे ही काम करता है: यह हर token को हर दूसरे token को देखने देता है और decide करने देता है कि उसके current context के लिए कौन से सबसे ज़्यादा matter करते हैं।
+
+इसे **stage पर spotlight** की तरह सोचिए। पूरे stage को uniformly illuminate करने की बजाय, model सीखता है कि task के लिए सबसे relevant information रखने वाले tokens पर bright beam shine करे।
+
+<Illustration src="/images/lessons/attention-and-transformers.svg" alt="Self-attention diagram: एक query token सभी key tokens पर varying weights के साथ attend करता है, values का weighted sum produce करता है" caption="Self-attention हर token को हर दूसरे token पर attend करने देता है, learned weights relevance determine करते हैं।" />
+
+## Query, Key, Value — Core Mechanism
+
+Self-attention information retrieval से terminology लेता है। हर token के लिए model तीन vectors compute करता है:
+
+- **Query (Q)** — *"मैं क्या ढूँढ रहा हूँ?"*
+- **Key (K)** — *"मेरे पास कौन सी information है?"*
+- **Value (V)** — *"Select होने पर मैं actually क्या contribute करता हूँ?"*
+
+दो tokens के बीच attention score **Q और K का dot product** है, जिसे √d_k (key dimension) से scale किया जाता है ताकि values explode न हों। Softmax apply करने से normalised weights मिलते हैं, और output सभी V vectors का weighted sum है:
+
+```
+Attention(Q, K, V) = softmax(Q·Kᵀ / √d_k) · V
+```
+
+**उदाहरण:** *"The cat sat on the mat because it was tired."* sentence में *"it"* process करते समय, *"it"* का query सबसे strongly *"cat"* पर attend करता है (high Q·K score), ambiguous pronoun resolve करते हुए — बिना recurrence के।
+
+<Quiz question="Self-attention formula में √d_k से divide क्यों करते हैं?" options="Model GPUs पर तेज़ चले इसलिए|Dot products बहुत बड़े होने से रोकने के लिए, जो softmax को tiny gradients वाले regions में push कर देता|Model में parameters कम करने के लिए|Variable-length sequences के लिए normalise करने के लिए" answer="1" explanation="जब d_k बड़ा होता है, dot products magnitude में बहुत बड़े हो सकते हैं, जिससे softmax near-zero gradients output करता है (saturation region)। √d_k से divide करने से values ऐसी range में रहती हैं जहाँ softmax gradients healthy रहें।" />
+
+## Multi-Head Attention
+
+एक single attention head एक बार में सिर्फ एक type की relationship capture कर सकता है। **Multi-head attention** कई attention heads parallel में run करता है, हर एक के अपने learned Q, K, V projections के साथ, फिर results concatenate और project करता है:
+
+```
+MultiHead(Q, K, V) = Concat(head₁, ..., headₕ) · Wᴼ
+```
+
+अलग-अलग heads अलग-अलग linguistic patterns सीखते हैं — एक syntactic dependencies attend कर सकता है, दूसरा semantic similarity, और तीसरा positional proximity। GPT-3 96 heads use करता है; हर एक full 12,288-dimensional space का 128-dimensional slice देखता है।
+
+<FunFact>
+Google के researchers ने discover किया कि BERT में individual attention heads remarkably specialise होते हैं — कुछ subject-verb agreement track करते हैं, कुछ coreference resolution handle करते हैं, और कुछ dependency parsing सीख लेते हैं, वो भी बिना explicit supervision के।
+</FunFact>
+
+## Positional Encoding
+
+Self-attention **permutation-invariant** है — यह *"dog bites man"* और *"man bites dog"* को same treat करता है जब तक हम positional information inject न करें। Original Transformer ने sinusoidal encodings use किए:
+
+```
+PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```
+
+हर position को different frequencies पर sine और cosine waves का unique pattern मिलता है। Modern models (GPT, LLaMA) **Rotary Positional Embeddings (RoPE)** use करते हैं, जो relative position सीधे Q/K dot product में encode करते हैं।
+
+## Full Transformer Architecture
+
+Original Transformer **encoder-decoder** structure रखता है:
+
+- **Encoder** — Full input को bidirectional self-attention के साथ process करता है (हर token हर दूसरे token पर attend करता है)। N layers stack करता है: self-attention + feed-forward blocks with residual connections और layer normalisation।
+- **Decoder** — **Causal (masked) self-attention** के साथ auto-regressively output generate करता है (हर token सिर्फ पिछले tokens पर attend कर सकता है) plus encoder output पर cross-attention।
+
+हर sub-layer pattern follow करता है: `LayerNorm(x + Sublayer(x))`, जहाँ residual connection ensure करता है कि gradients deep stacks से freely flow करें।
+
+<ThinkAboutIt>
+Transformer की residual connections gradients को 100+ layers से directly flow करने देती हैं। इनके बिना, 96-layer GPT-3 train करना लगभग impossible होता। यह ResNets में skip connections से कैसे relate करता है जिन्होंने deep computer vision viable बनाया?
+</ThinkAboutIt>
+
+## Transformers क्यों Parallelise होते हैं
+
+Key insight: self-attention सभी pairwise token interactions एक **single matrix multiplication** में compute करता है। Length n की sequence के लिए, पूरा n×n attention matrix GPU hardware पर simultaneously compute होता है। इसकी तुलना करें RNNs से, जिन्हें available compute के बावजूद n sequential steps चाहिए।
+
+यही O(1) depth (constant sequential operations) बनाम RNN की O(n) depth है जिसकी वजह से Transformers training में हज़ारों tokens की sequences तक scale करते हैं।
+
+## Decoder-Only vs Encoder-Only vs Encoder-Decoder
+
+Original design से तीन architectural variants निकले:
+
+| Variant | Attention | उदाहरण | Best For |
+|---------|-----------|---------|----------|
+| **Encoder-only** | Bidirectional | BERT, RoBERTa | Classification, NER, embeddings |
+| **Decoder-only** | Causal (left-to-right) | GPT, LLaMA, Claude | Text generation, chat, reasoning |
+| **Encoder-decoder** | Both | T5, BART, Whisper | Translation, summarisation |
+
+Decoder-only models आज dominate करते हैं क्योंकि **generation universal interface है** — कोई भी NLP task text generation के रूप में frame किया जा सकता है।
+
+<Quiz question="Decoder-only models training के दौरान causal (masked) attention क्यों use करते हैं?" options="Memory usage आधा करने के लिए|Tokens को future tokens पर attend करने से रोकने के लिए, जो autoregressive training में answer leak कर देता|Model को bidirectional बनाने के लिए|Attention calculations skip करके inference speed बढ़ाने के लिए" answer="1" explanation="Training के दौरान model हर position पर simultaneously next token predict करता है। Causal masking ensure करता है कि हर position सिर्फ preceding tokens देख सके, future positions से information leakage रोकते हुए।" />
+
+<Quiz question="BERT किस Transformer variant पर based है, और open-ended text generation के लिए unsuitable क्यों है?" options="Decoder-only; इसमें cross-attention layers नहीं हैं|Encoder-decoder; इसे text generate करने के लिए separate decoder चाहिए|Encoder-only; इसकी bidirectional attention का मतलब है कि यह full sequence देखता है, जिससे autoregressive generation impossible है|Encoder-only; इसमें generation tasks के लिए बहुत कम parameters हैं" answer="2" explanation="BERT bidirectional (encoder-only) attention use करता है, मतलब हर token future ones सहित हर दूसरे token पर attend करता है। यह understanding tasks के लिए perfect है लेकिन autoregressive generation impossible बनाता है — जब सभी tokens पहले से दिख रहे हों तो 'next token' predict नहीं कर सकता।" />
+
+<FunFact>
+Original *Attention Is All You Need* paper एक पहले venue से reject हुआ था, उसके बाद NeurIPS 2017 में accept हुआ। 2024 तक इसके 130,000 से ज़्यादा citations हैं — यह अब तक लिखे गए सबसे ज़्यादा cited computer science papers में से एक है।
+</FunFact>
+
+<ThinkAboutIt>
+Self-attention की sequence length में O(n²) complexity है — context window double करने पर compute चार गुना बढ़ जाता है। Linear attention, sparse attention और ring attention में research इस barrier को तोड़ने का लक्ष्य रखती है। इन approximations से क्या trade-offs आ सकते हैं?
+</ThinkAboutIt>
+
+---
+
+## 📚 आगे पढ़ें
+
+- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762) — Transformer architecture introduce करने वाला foundational paper
+- [Andrej Karpathy — Let's build GPT: from scratch, in code](https://www.youtube.com/watch?v=kCc8FmEb1nY) — Scratch से Transformer build करने का complete walkthrough
+- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/) — हर Transformer component की visual, intuitive explanation

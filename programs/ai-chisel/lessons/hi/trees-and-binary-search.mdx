@@ -1,0 +1,129 @@
+---
+title: "Trees और Binary Search — AI तेज़ फ़ैसले कैसे लेता है"
+description: "Tree structures को explore करें जो databases से लेकर machine learning तक decision-making को power करती हैं।"
+order: 2
+difficulty: "intermediate"
+duration: 18
+icon: "🌲"
+published: true
+---
+
+## AI में Trees हर जगह हैं
+
+जब भी कोई spam filter किसी email को classify करता है या कोई database मिलीसेकंड में आपका order retrieve करता है, तो पीछे एक tree data structure काम कर रही होती है। Trees **hierarchical decisions** को model करते हैं — हर node search space को छोटा करता है जब तक आप answer तक नहीं पहुँच जाते।
+
+<Illustration src="/images/lessons/trees-and-binary-search.svg" alt="एक binary search tree जिसमें nodes पर values लिखी हैं, left-smaller और right-larger property दिखाते हुए" caption="BST में हर left child अपने parent से छोटा और हर right child बड़ा होता है।" />
+
+## Binary Search Trees (BSTs)
+
+BST elements को इस तरह store करता है कि किसी भी node के लिए, उसके **left** subtree की सभी values छोटी होती हैं और **right** subtree की सभी values बड़ी होती हैं।
+
+### Search
+
+```
+function search(node, target):
+    if node is null: return null
+    if target == node.value: return node
+    if target < node.value: return search(node.left, target)
+    return search(node.right, target)
+```
+
+हर comparison लगभग आधे बचे हुए nodes को eliminate कर देता है — balanced tree पर O(log n)।
+
+### Insertion
+
+```
+function insert(node, value):
+    if node is null: return new Node(value)
+    if value < node.value:
+        node.left = insert(node.left, value)
+    else:
+        node.right = insert(node.right, value)
+    return node
+```
+
+### Deletion
+
+Deletion सबसे tricky operation है। तीन cases बनते हैं:
+
+1. **Leaf node** — बस हटा दो।
+2. **एक child** — node को उसके child से replace कर दो।
+3. **दो children** — node की value को उसके in-order successor (right subtree की सबसे छोटी value) से swap करो, फिर उस successor को delete करो।
+
+<Quiz question="BST में किसी node का in-order successor क्या होता है?" options="Node का parent|Left subtree का सबसे बड़ा node|Right subtree का सबसे छोटा node|Tree का root" answer="2" explanation="In-order successor right subtree की सबसे छोटी value होती है — एक बार right जाओ, फिर जितना हो सके left जाते रहो।" />
+
+## Balanced vs Unbalanced
+
+अगर आप sorted data को एक plain BST में insert करो, तो वो एक linked list बन जाता है — हर operation O(n)। **Self-balancing** trees इसे fix करते हैं:
+
+| Tree | Balance Rule | Typical Use |
+|------|-------------|-------------|
+| AVL | Subtrees के बीच height difference ≤ 1 | In-memory lookups |
+| Red-Black | Colour-based rotation rules | Language standard libraries (जैसे Java TreeMap) |
+| B-Tree | हर node में multiple keys, सभी leaves एक ही depth पर | Databases और file systems |
+
+<FunFact>PostgreSQL और MySQL दोनों अपने default index structure के लिए B-tree variants use करते हैं। Branching factor 100 वाला B-tree सिर्फ पाँच levels में एक billion rows को index कर सकता है।</FunFact>
+
+## Tree Traversals
+
+Traversals हर node को exactly एक बार visit करते हैं। तीन classic orders में फ़र्क सिर्फ इतना है कि current node को उसके children के relative **कब** process किया जाता है।
+
+| Traversal | Order | Use Case |
+|-----------|-------|----------|
+| **In-order** | Left → Node → Right | BST से sorted output निकालना |
+| **Pre-order** | Node → Left → Right | Tree को serialise / clone करना |
+| **Post-order** | Left → Right → Node | Tree को safely delete करना; expression trees evaluate करना |
+
+```
+function inOrder(node):
+    if node is null: return
+    inOrder(node.left)
+    process(node)
+    inOrder(node.right)
+```
+
+<ThinkAboutIt>एक compiler आपके code को Abstract Syntax Tree (AST) में parse करता है। Expression `(3 + 5) * 2` को tree में store करने पर evaluate करने के लिए कौन सा traversal order use करोगे? क्यों?</ThinkAboutIt>
+
+## Heaps और Priority Queues
+
+**Heap** एक complete binary tree है जहाँ हर parent अपने children से बड़ा (max-heap) या छोटा (min-heap) होता है। यह support करता है:
+
+- **Insert** — end में add करो, bubble up करो। O(log n)।
+- **Extract min/max** — root हटाओ, last element को root पर लाओ, sift down करो। O(log n)।
+
+Priority queues जो heaps पर बनी हैं, ये चीज़ें power करती हैं:
+- **Dijkstra's algorithm** (अगला lesson!) — हमेशा nearest unvisited node को expand करो।
+- **Task scheduling** — OS schedulers highest-priority process को pick करते हैं।
+- **Beam search in NLP** — top-k सबसे promising sentence completions रखो।
+
+```
+function siftUp(heap, index):
+    while index > 0:
+        parent = (index - 1) / 2
+        if heap[index] < heap[parent]:
+            swap(heap, index, parent)
+            index = parent
+        else: break
+```
+
+<Quiz question="Min-heap में minimum element find करने की time complexity क्या है?" options="O(n)|O(log n)|O(1)|O(n log n)" answer="2" explanation="Minimum हमेशा min-heap के root पर होता है, तो उसे access करना O(1) है — कोई traversal नहीं चाहिए।" />
+
+## Real AI Applications
+
+- **Decision trees** machine learning में हर node पर data को उस feature से split करते हैं जो classes को सबसे अच्छे से separate करता है — tree structure का direct application।
+- **Syntax trees** NLP में grammatical structure represent करते हैं, जो sentiment analysis और machine translation जैसे tasks enable करते हैं।
+- **Monte Carlo Tree Search (MCTS)** AlphaGo जैसी game-playing AI को power करता है, possible moves को game states के tree के रूप में explore करता है।
+- **Huffman trees** frequent symbols को shorter codes assign करके data compress करते हैं — model weight compression में use होते हैं।
+
+<FunFact>scikit-learn decision tree classifier एक ऐसा tree बनाता है जहाँ हर internal node एक feature threshold test करता है। Depth 20 वाला trained model दस लाख से ज़्यादा distinct decision paths represent कर सकता है।</FunFact>
+
+<ThinkAboutIt>अगर आप एक autocomplete system बना रहे हो, तो BST, heap, या कोई और tree structure (जैसे trie) — कौन सा use करोगे? सोचो कि कौन से operations fast होने चाहिए।</ThinkAboutIt>
+
+## मुख्य बातें
+
+1. BSTs O(log n) search, insert, और delete देते हैं — लेकिन तभी जब balanced हों।
+2. Traversal order तय करता है कि tree से कौन सी information निकलेगी।
+3. Heaps extreme value तक O(1) access और O(log n) insertion देते हैं — priority-based AI algorithms के लिए ideal।
+4. Trees ML, databases, compilers, और game AI में decision-making की नींव हैं।
+
+<Quiz question="Already-sorted data को plain (unbalanced) BST में insert करने से performance problems क्यों होती हैं?" options="Duplicate nodes बन जाते हैं|Tree एक linked list बन जाता है जिसमें O(n) operations होते हैं|Hash collisions होते हैं|Root node overflow हो जाता है" answer="1" explanation="हर नई value हमेशा पिछली से बड़ी (या छोटी) होती है, तो हर insertion एक ही side में जाता है, balanced tree की जगह एक linear chain बनती है।" />

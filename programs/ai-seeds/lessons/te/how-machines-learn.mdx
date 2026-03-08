@@ -1,0 +1,146 @@
+---
+title: "యంత్రాలు ఎలా నేర్చుకుంటాయి — Smart Software వెనుక రహస్యం"
+description: "Predictions మరియు నిర్ణయాలు తీసుకోవడానికి machines data నుండి నేర్చుకునే మూడు ప్రధాన విధానాలను తెలుసుకోండి"
+order: 2
+difficulty: "beginner"
+duration: 12
+icon: "🧠"
+published: true
+---
+
+# యంత్రాలు ఎలా నేర్చుకుంటాయి 🧠
+
+గత పాఠంలో, AI అనేది **అనుభవం నుండి నేర్చుకునే** software అని తెలుసుకున్నాం. కానీ ఇది నిజంగా ఎలా పని చేస్తుంది? ఒక machine ఏమీ తెలియని స్థితి నుండి మీ ముఖం recognize చేయడం లేదా మీ తదుపరి ఇష్టమైన పాట recommend చేయడం వరకు ఎలా చేరుకుంటుంది?
+
+Smart software వెనుక రహస్యాన్ని explore చేద్దాం.
+
+---
+
+## 🔄 Learning Loop
+
+ప్రతి machine learning system ఒకే basic cycle ను follow చేస్తుంది:
+
+1. **Data** — Machine కి చాలా examples ఇవ్వబడతాయి
+2. **Patterns** — ఆ examples లో పునరావృతమయ్యే patterns చూస్తుంది
+3. **Predictions** — కొత్త data గురించి guess చేయడానికి ఆ patterns వాడుతుంది
+4. **Feedback** — తన guesses సరైనవా తప్పా అని తెలుసుకుంటుంది
+5. **Improvement** — Adjust చేసి మళ్ళీ try చేస్తుంది, ప్రతిసారి మెరుగవుతుంది
+
+ఇది వంట నేర్చుకోవడం లాంటిది. మీరు recipes follow చేస్తారు (data), ఏమి బాగా పని చేసిందో గమనిస్తారు (patterns), మీ సొంత variations try చేస్తారు (predictions), result రుచి చూస్తారు (feedback), తదుపరిసారి seasoning adjust చేస్తారు (improvement).
+
+<Illustration src="/images/lessons/how-machines-learn.svg" alt="Machine learning loop చూపించే circular diagram: Data నుండి Pattern Recognition కి, తర్వాత Prediction కి, తర్వాత Feedback కి, తర్వాత Improvement కి, మళ్ళీ Pattern Recognition కి loop అవుతుంది" caption="Machine learning cycle: data, patterns, predictions, feedback మరియు continuous improvement" />
+
+<FunFact>
+Spam email detect చేయడానికి Google AI ప్రతి నిమిషం 10 million కంటే ఎక్కువ suspicious messages process చేస్తుంది. User "spam" లేదా "not spam" అని mark చేసిన ప్రతిసారి, system నేర్చుకుంటుంది మరియు తన patterns update చేసుకుంటుంది — ప్రతి click తో మరింత smart అవుతుంది.
+</FunFact>
+
+---
+
+## 📚 Supervised Learning — Teacher తో నేర్చుకోవడం
+
+Machine learning లో అత్యంత సాధారణ రకం **supervised learning**. ఇది మీకు answers ఇచ్చే teacher తో చదవడం లాగా పని చేస్తుంది.
+
+ఇలా పని చేస్తుంది:
+
+1. Machine కి **labels ఉన్న** (correct answers) వేలాది examples ఇస్తారు
+2. Machine ఈ labelled examples ను study చేస్తుంది
+3. Input ను correct label కి connect చేసే patterns నేర్చుకుంటుంది
+4. కొత్త, unlabelled data కనిపించినప్పుడు, answer predict చేస్తుంది
+
+### Real-World Example: Email Spam Filter
+
+Machine కి 1,00,000 emails చూపించినట్లు ఊహించుకోండి. ప్రతి ఒక్కటి humans చేత **"spam"** లేదా **"not spam"** అని label చేయబడింది.
+
+Machine patterns గమనిస్తుంది:
+- "FREE MONEY WIN" ఉన్న emails సాధారణంగా spam
+- మీ address book contacts నుండి emails సాధారణంగా genuine
+- డజన్ల exclamation marks ఉన్న emails తరచుగా spam
+
+తగినన్ని examples study చేసిన తర్వాత, ఎప్పుడూ చూడని **కొత్త email** చూసి అది spam అవునా కాదా predict చేయగలదు — ఎవరూ specific rules రాయకుండానే.
+
+<ThinkAboutIt>
+Supervised learning labelled data పై ఆధారపడుతుంది — machine నేర్చుకోవడానికి ఎవరో correct answers అందించాలి. ఆ data అంతా ఎవరు label చేస్తారు? చాలా cases లో, ఇది వేలాది మంది human workers జాగ్రత్తగా images, text మరియు audio tag చేస్తారు. AI యొక్క "intelligence" తరచుగా చాలా human effort తో మొదలవుతుంది.
+</ThinkAboutIt>
+
+<Quiz question="Machine learning లో 'supervised learning' అంటే ఏమిటి?" options="ఒక మనిషి ఎల్లప్పుడూ computer ను watch చేస్తాడు|Machine correct answer అందించబడిన labelled examples నుండి నేర్చుకుంటుంది|Machine supervisor computer కి connect చేయబడింది|AI ఇతర AI systems ను supervise చేస్తుంది" answer="1" explanation="Supervised learning లో, machine correct answers (labels) తో వచ్చే examples పై train అవుతుంది. Teacher answer key నుండి నేర్చుకునే student లాగా, machine కొత్త data కి apply చేయగల patterns discover చేయడానికి ఈ labelled examples వాడుతుంది." />
+
+---
+
+## 🔍 Unsupervised Learning — Hidden Patterns కనుగొనడం
+
+మీ దగ్గర answers లేకపోతే? కేవలం పెద్ద data pile ఉంటే మరియు machine స్వంతంగా interesting patterns కనుగొనాలంటే?
+
+అది **unsupervised learning**. Teacher లేదు, labels లేవు, correct answers లేవు. Machine data ను explore చేసి similar things ను group చేస్తుంది.
+
+### Real-World Example: Customer Grouping
+
+Supermarket దగ్గర millions of customers purchase data ఉంది, కానీ labels లేవని ఊహించుకోండి. AI data analyse చేసి natural groups discover చేస్తుంది:
+
+- **Group A**: Organic vegetables, free-range eggs మరియు oat milk కొంటారు
+- **Group B**: Frozen pizzas, chips మరియు cool drinks కొంటారు
+- **Group C**: Diapers, baby food మరియు wet wipes కొంటారు
+
+ఈ groups ఉన్నాయని machine కి ఎవరూ చెప్పలేదు. Shopping data లో patterns spot చేసి స్వంతంగా కనుగొంది. ఇప్పుడు supermarket ప్రతి group కి relevant offers పంపగలదు.
+
+<Quiz question="Unsupervised learning supervised learning నుండి ఎలా different?" options="ఇది మరింత powerful computers వాడుతుంది|ఇది labelled data లేకుండా పని చేస్తుంది, స్వంతంగా patterns కనుగొంటుంది|ఇది కేవలం images తో మాత్రమే పని చేస్తుంది|ఇది నిరంతర human monitoring అవసరం" answer="1" explanation="Key difference labels. Supervised learning correct answer ఉన్న data వాడుతుంది. Unsupervised learning unlabelled data తో పని చేస్తుంది, machine స్వంతంగా hidden patterns మరియు groupings discover చేస్తుంది." />
+
+---
+
+## 🐕 Reinforcement Learning — Trial and Error
+
+మూడవ రకం **reinforcement learning**, ఇది కుక్కకు training ఇవ్వడం లాంటిది.
+
+కుక్క ఆజ్ఞ పై కూర్చున్నప్పుడు, బిస్కెట్ (reward) ఇస్తారు. మీ shoe నమిలినప్పుడు "వద్దు" (penalty) అంటారు. కాలక్రమేణా, ఏ behavior rewards కి lead అవుతుందో, ఏది trouble కి lead అవుతుందో కుక్క నేర్చుకుంటుంది.
+
+Reinforcement learning అదే విధంగా పని చేస్తుంది:
+
+1. AI ఒక environment లో **action** తీసుకుంటుంది
+2. **Reward** (positive) లేదా **penalty** (negative) receive చేస్తుంది
+3. కాలక్రమేణా **rewards maximize** చేయడానికి strategy adjust చేస్తుంది
+4. Best approach కనుగొనే వరకు millions of different approaches try చేస్తుంది
+
+### Real-World Example: Game-Playing AI
+
+Google AlphaGo పురాతన board game Go ను **తనతో తాను millions of games** ఆడి నేర్చుకుంది. ప్రతి గెలుపు reward; ప్రతి ఓటమి penalty. Wild strategies try చేసింది, failures నుండి నేర్చుకుంది, చివరకు చరిత్రలో ఏ human player కంటే మెరుగైనదిగా మారింది.
+
+అదే approach robots నడవడం train చేయడానికి, self-driving cars navigate చేయడానికి, data centres లో energy use optimize చేయడానికి వాడబడుతుంది.
+
+<FunFact>
+AlphaGo training సమయంలో తనతో తాను 30 million కంటే ఎక్కువ games ఆడింది. రోజుకు ఒక game ఆడే మనిషికి అన్ని games ఆడటానికి దాదాపు 82,000 సంవత్సరాలు పడుతుంది. AI ఆ మొత్తం experience ను కొన్ని వారాల్లో compress చేసింది.
+</FunFact>
+
+---
+
+## 🗺️ మూడు రకాలను Compare చేయడం
+
+| రకం | Labels ఉన్నాయా? | పోలిక | Example |
+|-----|-----------------|-------|---------|
+| **Supervised** | అవును | Answer key తో చదవడం | Spam filters, medical diagnosis |
+| **Unsupervised** | కాదు | Messy drawer sort చేయడం | Customer grouping, anomaly detection |
+| **Reinforcement** | కాదు (rewards వాడుతుంది) | కుక్కకు treats తో training | Game AI, robotics, self-driving cars |
+
+<ThinkAboutIt>
+మీరు bicycle ride ఎలా నేర్చుకున్నారో ఆలోచించండి. అది supervised (ఎవరైనా ఏమి చేయాలో exactly చెప్పారు), unsupervised (మీరు స్వంతంగా balance figure out చేసుకున్నారు), లేదా reinforcement (మీరు పడ్డారు, adjust చేసి, మళ్ళీ try చేశారు)? చాలా human learning నిజానికి మూడింటి mix. AI learning styles మనం ఎలా నేర్చుకుంటామో దాని నుండి inspired అయ్యాయి.
+</ThinkAboutIt>
+
+---
+
+## 🔑 ముఖ్యమైన అంశాలు
+
+- Machines ఒక cycle ద్వారా నేర్చుకుంటాయి: data → patterns → predictions → feedback → improvement
+- **Supervised learning** labelled examples వాడుతుంది — teacher తో చదవడం లాంటిది
+- **Unsupervised learning** labels లేకుండా data లో hidden patterns కనుగొంటుంది
+- **Reinforcement learning** rewards మరియు penalties వాడుతుంది — కుక్కకు training ఇవ్వడం లాంటిది
+- మూడు రకాలు మీరు ప్రతిరోజూ వాడే AI systems ను power చేస్తాయి
+
+<Quiz question="Pet కి treats మరియు commands తో training ఇవ్వడం లాంటి machine learning ఏది?" options="Supervised learning|Unsupervised learning|Reinforcement learning|General learning" answer="2" explanation="Reinforcement learning rewards (treats) మరియు penalties (corrections) ద్వారా పని చేస్తుంది, pet కి training ఇవ్వడం లాగా. AI different actions try చేస్తుంది, feedback receive చేస్తుంది, మరియు ఏ behaviors best outcomes కి lead అవుతాయో gradually నేర్చుకుంటుంది." />
+
+<Callout>
+Machine learning అర్థం చేసుకోవడానికి mathematician లేదా programmer అవసరం లేదు. దాని core లో, ఇది **experience నుండి నేర్చుకోవడం** — ప్రతి మనిషి పుట్టిన రోజు నుండి సహజంగా చేసేది. AI దీన్ని life experiences కి బదులు data తో చేస్తుంది.
+</Callout>
+
+---
+
+## తర్వాత ఏమిటి?
+
+Machines ఎలా నేర్చుకుంటాయో ఇప్పుడు మీకు తెలుసు. తదుపరి పాఠం ఇప్పటికే మీ pocket లో ఉన్న AI ని reveal చేస్తుంది. మీ smartphone intelligent features తో నిండి ఉంది — వాటిని uncover చేద్దాం.

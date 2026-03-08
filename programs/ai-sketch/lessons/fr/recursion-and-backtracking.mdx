@@ -1,0 +1,160 @@
+---
+title: "Récursivité et Backtracking — Résoudre des casse-tête comme un ordinateur"
+description: "Comprenez la récursivité depuis la pile d'appels, puis apprenez le template de backtracking qui résout permutations, N-Queens et bien plus."
+order: 8
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## Les fondamentaux de la récursivité
+
+Une fonction récursive s'appelle elle-même avec une version **plus petite** du problème jusqu'à atteindre un **cas de base** qui arrête la chaîne.
+
+Toute récursion a besoin de deux choses :
+1. **Cas de base** — l'entrée la plus simple où l'on retourne directement.
+2. **Cas récursif** — décomposer le problème et s'appeler soi-même.
+
+```python
+def factorial(n):
+    if n <= 1:        # base case
+        return 1
+    return n * factorial(n - 1)  # recursive case
+```
+
+## La pile d'appels — Visualisée
+
+Chaque appel récursif empile un cadre (frame) sur la pile d'appels. Quand le cas de base retourne, les cadres se dépilent en ordre inverse.
+
+```
+factorial(4)
+  → factorial(3)
+    → factorial(2)
+      → factorial(1) → returns 1
+    ← returns 2
+  ← returns 6
+← returns 24
+```
+
+Sans cas de base, la pile déborde. La limite de récursion par défaut de Python est de 1 000 frames.
+
+<FunFact>La limite de récursion de Python (1 000) est volontairement prudente. On peut l'augmenter avec sys.setrecursionlimit(), mais les solutions itératives sont généralement préférées pour les récursions profondes.</FunFact>
+
+## Fibonacci — Le piège classique
+
+Le Fibonacci récursif naïf est en O(2ⁿ) car il recalcule les mêmes sous-problèmes. La mémoïsation corrige cela en O(n) en temps et en espace.
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+<Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Arbre de récursion pour Fibonacci montrant les sous-problèmes répétés" caption="Sans mémoïsation, fib(5) effectue 15 appels. Avec, seulement 5." />
+
+## Backtracking — Tout essayer, puis défaire
+
+Le retour sur trace (backtracking) est la récursivité avec une astuce : on **fait un choix**, on recurse, puis on **annule le choix** avant d'essayer l'option suivante. Comme explorer un labyrinthe — avancer, atteindre un cul-de-sac, revenir en arrière, essayer un autre chemin.
+
+### Le template de backtracking
+
+```python
+def backtrack(state, choices):
+    if is_solution(state):
+        result.append(state.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            state.add(choice)       # choose
+            backtrack(state, ...)   # explore
+            state.remove(choice)    # un-choose
+```
+
+Ce patron en trois étapes — **choisir, explorer, annuler** — est la colonne vertébrale de presque tout problème de backtracking.
+
+<Quiz question="Dans le template de backtracking, pourquoi annule-t-on le choix après l'appel récursif ?" options="Pour libérer de la mémoire|Pour rétablir l'état et explorer la branche suivante|Parce que le choix était mauvais|Pour éviter un débordement de pile" answer="1" explanation="Annuler le choix restaure l'état afin que l'itération suivante de la boucle puisse explorer une branche différente depuis le même point de départ." />
+
+## Permutations
+
+Générer tous les ordres de `[1, 2, 3]`. À chaque niveau, choisir un nombre non utilisé, recurser, puis le retirer.
+
+```
+         []
+      /   |   \
+    [1]  [2]  [3]
+    / \   ...
+ [1,2] [1,3]
+   |      |
+[1,2,3] [1,3,2]  ... (6 total)
+```
+
+Il y a **n!** permutations, donc la complexité est O(n × n!).
+
+## Combinaisons et sous-ensembles
+
+**Combinaisons (n parmi k) :** pour chaque élément, l'inclure ou le sauter, en ne récursant que vers l'avant pour éviter les doublons.
+
+**Sous-ensembles :** même idée sans contrainte de taille — chaque nœud de l'arbre de récursion est un sous-ensemble valide. Il y a **2ⁿ** sous-ensembles.
+
+<ThinkAboutIt>Les permutations produisent n! résultats tandis que les sous-ensembles en produisent 2ⁿ. Pour n=10, c'est 3 628 800 contre 1 024 — une différence massive. Pourquoi ?</ThinkAboutIt>
+
+## N-Queens — Pas à pas
+
+Placer N reines sur un échiquier N×N de sorte qu'aucune ne s'attaque. Pour N=4 :
+
+```
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**Stratégie :** placer une reine par ligne. Pour chaque ligne, essayer chaque colonne. Vérifier les conflits de colonne, diagonale et anti-diagonale. Si c'est sûr, placer et recurser. Sinon, backtracker.
+
+On suit les conflits avec trois ensembles : `cols`, `diag` (row − col) et `anti_diag` (row + col).
+
+<Quiz question="Dans le problème des N-Queens, comment vérifie-t-on efficacement les conflits diagonaux ?" options="Vérifier la position de chaque reine déjà placée|Utiliser des ensembles suivant (row-col) et (row+col)|Scanner tout l'échiquier à chaque fois|Utiliser une matrice booléenne 2D" answer="1" explanation="Les reines sur la même diagonale partagent la même valeur (row-col) ; sur la même anti-diagonale, (row+col). Les ensembles offrent une recherche en O(1)." />
+
+## Solveur de Sudoku — Concept
+
+Trouver une cellule vide, essayer les chiffres 1–9. Pour chaque chiffre, vérifier les contraintes de ligne, colonne et carré 3×3. Si valide, placer et recurser. Si aucun chiffre ne marche, annuler et backtracker.
+
+## Recherche de mot dans une grille
+
+Étant donné un plateau 2D de lettres et un mot cible, démarrer depuis chaque cellule et DFS dans quatre directions, en faisant correspondre un caractère à la fois. Marquer les cellules visitées pendant la récursion et **démarquer au backtrack**.
+
+## Complexité du backtracking
+
+Le coût dépend du **facteur de branchement** (choix par étape) et de la **profondeur**. Pour b branches et d profondeur : O(bᵈ).
+
+| Problème | Branchement | Profondeur | Complexité |
+|----------|-------------|------------|------------|
+| Permutations | n, n−1, … | n | O(n!) |
+| Sous-ensembles | 2 | n | O(2ⁿ) |
+| N-Queens | ~n | n | O(n!) pire cas |
+
+## L'élagage pour optimiser
+
+**L'élagage** (pruning) consiste à ignorer les branches vouées à l'échec :
+- N-Queens : sauter les colonnes déjà occupées.
+- Sudoku : sauter les chiffres qui violent les contraintes.
+- Somme de combinaisons : sauter si la somme restante < 0.
+
+Un bon élagage peut rendre une recherche impraticable rapide.
+
+<Quiz question="Que fait l'élagage dans un algorithme de backtracking ?" options="Réduit la profondeur de récursion|Élimine les branches qui ne peuvent pas mener à une solution valide|Convertit la récursion en itération|Trie les choix avant exploration" answer="1" explanation="L'élagage coupe des parties de l'arbre de recherche en amont, évitant le travail inutile sur des chemins garantis comme étant des échecs." />
+
+<ThinkAboutIt>De nombreux problèmes de backtracking peuvent aussi être résolus par programmation dynamique. Quelle est la différence clé d'approche entre les deux ?</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [NeetCode — Playlist Backtracking](https://neetcode.io/roadmap) — problèmes sélectionnés avec vidéos explicatives
+- [Tech Interview Handbook — Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) — patrons et pièges courants
+- [LeetCode Backtracking study plan](https://leetcode.com/tag/backtracking/) — ensemble progressif de problèmes

@@ -1,0 +1,146 @@
+---
+title: "Dynamic Programming — Comment l'IA résout des problèmes complexes en les décomposant"
+description: "Comprendre la memoisation, la tabulation et les patterns DP classiques utilisés en IA et en informatique."
+order: 4
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## L'idée fondamentale
+
+Certains problèmes semblent d'une complexité insurmontable jusqu'à ce qu'on remarque qu'ils sont composés de **sous-problèmes plus petits et répétitifs**. Le dynamic programming (DP) résout chaque sous-problème **une seule fois**, stocke le résultat et le réutilise — échangeant un peu de mémoire contre une accélération spectaculaire.
+
+Deux conditions signalent une opportunité DP :
+
+1. **Sous-problèmes chevauchants** — les mêmes calculs reviennent de nombreuses fois.
+2. **Sous-structure optimale** — la meilleure solution du problème global peut être construite à partir des meilleures solutions de ses parties.
+
+<Illustration src="/images/lessons/dynamic-programming.svg" alt="Un arbre de récursion pour Fibonacci montrant les sous-problèmes répétés en surbrillance, à côté d'une table DP remplie" caption="Sans DP, Fibonacci recalcule les mêmes valeurs de manière exponentielle. Avec DP, chaque valeur n'est calculée qu'une seule fois." />
+
+## Fibonacci : l'exemple classique
+
+### Récursion naïve — O(2ⁿ)
+
+```
+function fib(n):
+    if n <= 1: return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+Appeler `fib(5)` déclenche **15** appels de fonction, dont beaucoup sont redondants. À `fib(40)`, cela prend des secondes ; à `fib(100)`, cela durerait plus longtemps que l'univers.
+
+### Memoisation (Top-Down) — O(n)
+
+Stockez les résultats dans un cache. Si un sous-problème a déjà été résolu, renvoyez la réponse en cache.
+
+```
+memo = {}
+function fib(n):
+    if n in memo: return memo[n]
+    if n <= 1: return n
+    memo[n] = fib(n - 1) + fib(n - 2)
+    return memo[n]
+```
+
+### Tabulation (Bottom-Up) — O(n)
+
+Construisez la réponse itérativement à partir des cas de base.
+
+```
+function fib(n):
+    table = [0, 1]
+    for i in 2..n:
+        table[i] = table[i - 1] + table[i - 2]
+    return table[n]
+```
+
+<Quiz question="Qu'est-ce qui distingue la memoisation de la tabulation ?" options="La memoisation utilise une pile ; la tabulation utilise une file|La memoisation fonctionne en top-down avec récursion ; la tabulation fonctionne en bottom-up avec itération|La memoisation est toujours plus rapide|Ce sont des noms différents pour la même technique" answer="1" explanation="La memoisation part du problème original et descend récursivement en mettant en cache au passage. La tabulation part des plus petits sous-problèmes et construit itérativement vers le haut." />
+
+## Problèmes DP classiques
+
+### Monter des escaliers
+
+Vous pouvez monter 1 ou 2 marches à la fois. Combien de façons distinctes pour atteindre la marche _n_ ?
+
+```
+function climbStairs(n):
+    if n <= 2: return n
+    a = 1, b = 2
+    for i in 3..n:
+        a, b = b, a + b
+    return b
+```
+
+C'est Fibonacci déguisé — la réponse pour la marche _n_ est la somme des façons d'atteindre les marches _n−1_ et _n−2_.
+
+### Coin Change
+
+Étant donné des valeurs de pièces, trouvez le **nombre minimum de pièces** pour atteindre un montant cible.
+
+```
+function coinChange(coins, amount):
+    dp = array of size (amount + 1), filled with INF
+    dp[0] = 0
+    for i in 1..amount:
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    return dp[amount] if dp[amount] != INF else -1
+```
+
+### Longest Common Subsequence (LCS)
+
+Trouvez la plus longue séquence de caractères commune à deux chaînes (pas nécessairement contiguë).
+
+```
+function lcs(s1, s2):
+    m = s1.length, n = s2.length
+    dp = 2D array of size (m+1) x (n+1), filled with 0
+    for i in 1..m:
+        for j in 1..n:
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    return dp[m][n]
+```
+
+<FunFact>L'outil `diff` qui affiche les modifications entre versions de fichiers repose sur le LCS. Git en utilise une variante chaque fois que vous lancez `git diff`.</FunFact>
+
+<ThinkAboutIt>Le coin change demande le nombre minimum de pièces. Et si vous vouliez compter le nombre total de façons différentes de constituer le montant ? Comment la relation de récurrence changerait-elle ?</ThinkAboutIt>
+
+## Applications réelles en IA
+
+| Problème | Domaine IA | Technique DP |
+|----------|-----------|-------------|
+| **Edit distance** (Levenshtein) | Correcteurs orthographiques, recherche floue | Table 2D comparant les caractères |
+| **Algorithme de Viterbi** | Reconnaissance vocale, étiquetage POS | Meilleur chemin dans un modèle de Markov caché |
+| **Alignement de séquences** | Bio-informatique (correspondance ADN) | Variante du LCS avec pénalités de gap |
+| **Décodage CTC** | Écriture manuscrite / speech-to-text | Fusion optimale de caractères répétés |
+| **Élagage beam search** | Traduction automatique | Conservation des top-k traductions partielles |
+
+<Quiz question="Quel algorithme basé sur le DP un correcteur orthographique utilise-t-il le plus probablement pour suggérer des corrections ?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Monter des escaliers" answer="1" explanation="L'edit distance compte le nombre minimum d'insertions, suppressions et substitutions pour transformer un mot en un autre — mesurant directement la « proximité » d'une faute d'orthographe avec un mot du dictionnaire." />
+
+## Top-Down vs Bottom-Up
+
+| Aspect | Top-Down (Memoisation) | Bottom-Up (Tabulation) |
+|--------|----------------------|----------------------|
+| Style | Récursif + cache | Itératif + table |
+| Sous-problèmes résolus | Uniquement ceux nécessaires | Tous les sous-problèmes jusqu'à _n_ |
+| Risque de stack overflow | Oui, pour une récursion profonde | Non |
+| Facilité d'optimisation | Plus difficile à réduire en espace | Plus facile (souvent, garder la dernière ligne suffit) |
+
+**Règle générale :** Commencez par la memoisation pour comprendre la récurrence, puis convertissez en tabulation si vous devez optimiser l'espace ou éviter les limites de pile.
+
+<ThinkAboutIt>La table du coin change a une taille O(amount). La table du LCS a une taille O(m × n). Pourriez-vous réduire l'espace du LCS à O(min(m, n)) en ne gardant que deux lignes à la fois ? Quelle information perdriez-vous ?</ThinkAboutIt>
+
+## Points clés
+
+1. Le DP transforme la force brute exponentielle en temps polynomial en **mettant en cache le travail répété**.
+2. Identifiez les sous-problèmes chevauchants et la sous-structure optimale avant d'opter pour le DP.
+3. La memoisation est intuitive ; la tabulation est efficace — apprenez les deux.
+4. L'edit distance, Viterbi et l'alignement de séquences montrent le DP au cœur de l'IA moderne.
+
+<Quiz question="Un problème présente des sous-problèmes chevauchants mais N'A PAS de sous-structure optimale. Peut-on appliquer le DP pour trouver la solution optimale ?" options="Oui — le DP fonctionne toujours si les sous-problèmes se chevauchent|Non — les deux conditions sont requises pour que le DP garantisse l'optimalité|Uniquement avec la tabulation|Uniquement pour les problèmes de graphes" answer="1" explanation="Le DP nécessite à la fois des sous-problèmes chevauchants (pour l'efficacité) et une sous-structure optimale (pour la correction). Sans sous-structure optimale, le cache seul ne garantit pas l'optimum global." />

@@ -1,0 +1,129 @@
+---
+title: "Trees మరియు Binary Search — AI వేగంగా నిర్ణయాలు ఎలా తీసుకుంటుంది"
+description: "Databases నుండి machine learning వరకు decision-making ను power చేసే tree structures ను explore చేయండి."
+order: 2
+difficulty: "intermediate"
+duration: 18
+icon: "🌲"
+published: true
+---
+
+## AI లో Trees ప్రతిచోటా ఉన్నాయి
+
+Spam filter ఒక email ను classify చేసినప్పుడు లేదా database మిల్లీసెకన్లలో మీ order retrieve చేసినప్పుడు, వెనుక ఒక tree data structure పని చేస్తుంటుంది. Trees **hierarchical decisions** ను model చేస్తాయి — ప్రతి node search space ను తగ్గిస్తుంది, మీరు answer కు చేరుకునే వరకు.
+
+<Illustration src="/images/lessons/trees-and-binary-search.svg" alt="Values తో label చేయబడిన nodes ఉన్న binary search tree, left-smaller మరియు right-larger property చూపిస్తూ" caption="BST లో ప్రతి left child దాని parent కంటే చిన్నది మరియు ప్రతి right child పెద్దది." />
+
+## Binary Search Trees (BSTs)
+
+BST elements ను ఇలా store చేస్తుంది — ఏ node కైనా, దాని **left** subtree లోని అన్ని values చిన్నవిగా మరియు **right** subtree లోని అన్ని values పెద్దవిగా ఉంటాయి.
+
+### Search
+
+```
+function search(node, target):
+    if node is null: return null
+    if target == node.value: return node
+    if target < node.value: return search(node.left, target)
+    return search(node.right, target)
+```
+
+ప్రతి comparison మిగిలిన nodes లో సగాన్ని eliminate చేస్తుంది — balanced tree పై O(log n).
+
+### Insertion
+
+```
+function insert(node, value):
+    if node is null: return new Node(value)
+    if value < node.value:
+        node.left = insert(node.left, value)
+    else:
+        node.right = insert(node.right, value)
+    return node
+```
+
+### Deletion
+
+Deletion అత్యంత కష్టమైన operation. మూడు cases ఉంటాయి:
+
+1. **Leaf node** — దాన్ని తీసేయండి.
+2. **ఒక child** — node ను దాని child తో replace చేయండి.
+3. **రెండు children** — node value ను దాని in-order successor (right subtree లో అత్యంత చిన్న value) తో swap చేసి, ఆ successor ను delete చేయండి.
+
+<Quiz question="BST లో ఒక node యొక్క in-order successor ఏమిటి?" options="Node యొక్క parent|Left subtree లో అత్యంత పెద్ద node|Right subtree లో అత్యంత చిన్న node|Tree యొక్క root" answer="2" explanation="In-order successor అంటే right subtree లో అత్యంత చిన్న value — ఒకసారి right వెళ్ళి, తర్వాత వీలైనంత left వెళ్ళండి." />
+
+## Balanced vs Unbalanced
+
+Sorted data ను plain BST లో insert చేస్తే, అది linked list గా మారిపోతుంది — ప్రతి operation O(n). **Self-balancing** trees దీన్ని fix చేస్తాయి:
+
+| Tree | Balance Rule | సాధారణ వాడుక |
+|------|-------------|--------------|
+| AVL | Subtrees మధ్య height difference ≤ 1 | In-memory lookups |
+| Red-Black | Colour-based rotation rules | Language standard libraries (ఉదా. Java TreeMap) |
+| B-Tree | ప్రతి node లో multiple keys, అన్ని leaves ఒకే depth లో | Databases మరియు file systems |
+
+<FunFact>PostgreSQL మరియు MySQL రెండూ B-tree variants ను default index structure గా వాడతాయి. Branching factor 100 ఉన్న B-tree కేవలం ఐదు levels లో ఒక billion rows ను index చేయగలదు.</FunFact>
+
+## Tree Traversals
+
+Traversals ప్రతి node ను సరిగ్గా ఒకసారి visit చేస్తాయి. మూడు classic orders లో తేడా ఏమిటంటే current node ను దాని children కంటే **ఎప్పుడు** process చేస్తారు అనేది మాత్రమే.
+
+| Traversal | Order | వాడుక |
+|-----------|-------|-------|
+| **In-order** | Left → Node → Right | BST నుండి sorted output ఇస్తుంది |
+| **Pre-order** | Node → Left → Right | Tree ను serialise / clone చేయడం |
+| **Post-order** | Left → Right → Node | Tree ను safely delete చేయడం; expression trees evaluate చేయడం |
+
+```
+function inOrder(node):
+    if node is null: return
+    inOrder(node.left)
+    process(node)
+    inOrder(node.right)
+```
+
+<ThinkAboutIt>Compiler మీ code ను Abstract Syntax Tree (AST) గా parse చేస్తుంది. `(3 + 5) * 2` expression ను tree గా store చేసి evaluate చేయడానికి ఏ traversal order వాడతారు? ఎందుకు?</ThinkAboutIt>
+
+## Heaps మరియు Priority Queues
+
+**Heap** అనేది ఒక complete binary tree, దీనిలో ప్రతి parent దాని children కంటే పెద్దది (max-heap) లేదా చిన్నది (min-heap). ఇది support చేస్తుంది:
+
+- **Insert** — చివర add చేసి, bubble up చేయండి. O(log n).
+- **Extract min/max** — root తీసేసి, last element ను root కు move చేసి, sift down చేయండి. O(log n).
+
+Heaps పై నిర్మించిన priority queues వీటిని power చేస్తాయి:
+- **Dijkstra's algorithm** (తదుపరి lesson!) — ఎల్లప్పుడూ nearest unvisited node ను expand చేయండి.
+- **Task scheduling** — OS schedulers highest-priority process ను pick చేస్తాయి.
+- **Beam search in NLP** — top-k అత్యంత promising sentence completions ను ఉంచండి.
+
+```
+function siftUp(heap, index):
+    while index > 0:
+        parent = (index - 1) / 2
+        if heap[index] < heap[parent]:
+            swap(heap, index, parent)
+            index = parent
+        else: break
+```
+
+<Quiz question="Min-heap లో minimum element కనుగొనడం యొక్క time complexity ఎంత?" options="O(n)|O(log n)|O(1)|O(n log n)" answer="2" explanation="Minimum ఎల్లప్పుడూ min-heap యొక్క root లో ఉంటుంది, కాబట్టి దాన్ని access చేయడం O(1) — traversal అవసరం లేదు." />
+
+## నిజమైన AI Applications
+
+- **Decision trees** machine learning లో ప్రతి node వద్ద classes ను బాగా separate చేసే feature ద్వారా data ను split చేస్తాయి — tree structure యొక్క direct application.
+- **Syntax trees** NLP లో grammatical structure ను represent చేస్తాయి, sentiment analysis మరియు machine translation వంటి tasks ను enable చేస్తాయి.
+- **Monte Carlo Tree Search (MCTS)** AlphaGo వంటి game-playing AI ను power చేస్తుంది, possible moves ను game states tree గా explore చేస్తుంది.
+- **Huffman trees** frequent symbols కు shorter codes assign చేసి data compress చేస్తాయి — model weight compression లో వాడతారు.
+
+<FunFact>scikit-learn decision tree classifier ఒక tree నిర్మిస్తుంది, దీనిలో ప్రతి internal node ఒక feature threshold test చేస్తుంది. Depth 20 ఉన్న trained model పది లక్షలకు పైగా distinct decision paths represent చేయగలదు.</FunFact>
+
+<ThinkAboutIt>మీరు autocomplete system నిర్మిస్తుంటే, BST, heap, లేదా వేరే tree structure (trie వంటిది) — ఏది వాడతారు? ఏ operations వేగంగా ఉండాలో ఆలోచించండి.</ThinkAboutIt>
+
+## ముఖ్యమైన విషయాలు
+
+1. BSTs O(log n) search, insert, మరియు delete అందిస్తాయి — కానీ balanced అయినప్పుడు మాత్రమే.
+2. Traversal order tree నుండి ఏ information extract చేస్తారో నిర్ణయిస్తుంది.
+3. Heaps extreme value కు O(1) access మరియు O(log n) insertion ఇస్తాయి — priority-based AI algorithms కు ideal.
+4. Trees ML, databases, compilers, మరియు game AI లో decision-making కు ఆధారం.
+
+<Quiz question="Already-sorted data ను plain (unbalanced) BST లో insert చేస్తే performance problems ఎందుకు వస్తాయి?" options="Duplicate nodes ఏర్పడతాయి|Tree linked list గా మారి O(n) operations అవుతాయి|Hash collisions జరుగుతాయి|Root node overflow అవుతుంది" answer="1" explanation="ప్రతి కొత్త value ఎల్లప్పుడూ మునుపటి దాని కంటే పెద్దది (లేదా చిన్నది), కాబట్టి ప్రతి insertion ఒకే వైపు వెళ్తుంది, balanced tree బదులు linear chain ఏర్పడుతుంది." />

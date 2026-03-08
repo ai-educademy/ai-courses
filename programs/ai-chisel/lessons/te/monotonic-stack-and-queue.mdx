@@ -1,0 +1,150 @@
+---
+title: "Monotonic Stack మరియు Queue — Next Greater Element మరియు అంతకు మించి"
+description: "Next greater element, daily temperatures, histogram మరియు sliding window సమస్యలను O(n) సమయంలో పరిష్కరించడానికి monotonic stack మరియు queue patterns నేర్చుకోండి."
+order: 8
+difficulty: "advanced"
+duration: 19
+icon: "📊"
+published: true
+---
+
+## Stack ను Monotonic గా మార్చేది ఏమిటి?
+
+ఒక **monotonic stack** elements ను bottom నుండి top వరకు strictly increasing లేదా decreasing order లో maintain చేస్తుంది. కొత్త element push చేయడానికి ముందు, invariant ను violate చేసే అన్ని elements ను pop చేస్తారు. ఈ ఒక్క idea O(n²) అవసరమని అనిపించే problems ను O(n) లో solve చేస్తుంది.
+
+```
+Decreasing stack processing [2, 1, 5, 3, 4]:
+
+Push 2 → [2]
+Push 1 → [2, 1]         (1 < 2, invariant holds)
+Pop 1, Pop 2, Push 5 → [5]  (5 > both)
+Push 3 → [5, 3]
+Pop 3, Push 4 → [5, 4]  (4 > 3)
+```
+
+## Next Greater Element
+
+ప్రతి element కి, దాని కుడి వైపు మొదటి పెద్ద element ను కనుగొనాలి. Brute force ప్రతి position నుండి కుడి వైపు scan చేస్తుంది — O(n²). ఒక monotonic decreasing stack ఇది ఒక్క pass లో చేస్తుంది.
+
+```python
+def next_greater(nums):
+    result = [-1] * len(nums)
+    stack = []
+    for i, num in enumerate(nums):
+        while stack and nums[stack[-1]] < num:
+            result[stack.pop()] = num
+        stack.append(i)
+    return result
+```
+
+మనం index `j` ను pop చేసినప్పుడు, current element దాని next greater — ఇది guarantee ఎందుకంటే మధ్యలో ఉన్నవన్నీ చిన్నవి (అవి ముందే pop అయ్యాయి లేదా `j` ను ఎప్పుడూ block చేయలేదు).
+
+<Quiz
+  question="Input [4, 2, 1, 5] కి, 5 ను process చేయడానికి ముందు monotonic stack లో ఏమి ఉంటుంది?"
+  options="[4, 2, 1]|[4]|[1]|[5]"
+  answer="0"
+  explanation="4 > 2 > 1, కాబట్టి మూడూ decreasing stack లో ఉంటాయి. 5 వచ్చినప్పుడు, 5 అన్నింటికంటే పెద్దది కాబట్టి అన్నీ pop అవుతాయి."
+/>
+
+## Daily Temperatures (LeetCode 739)
+
+*Daily temperatures ఇవ్వబడితే, వెచ్చని రోజు రావడానికి ఎన్ని రోజులు పడుతుందో కనుగొనండి.* ఇది indices తో next-greater-element — index `j` యొక్క answer `i − j` అవుతుంది, index `i` `j` ను pop చేసినప్పుడు.
+
+## Stock Span Problem
+
+*ప్రతి రోజుకి, ఈ రోజుతో సహా ఎన్ని వరుస రోజుల price ≤ ఈ రోజు price?* `(price, index)` store చేసే monotonic decreasing stack వాడండి. Pop చేసినప్పుడు, current index మరియు కొత్త stack top మధ్య gap span ఇస్తుంది.
+
+<ThinkAboutIt>Stock span problem elements ను left నుండి right కి process చేస్తుంది, అయినా left side గురించి information కనుగొంటుంది. Stack ముందుకు వెళ్తూ "వెనక్కి చూడడం" ఎలా encode చేస్తుంది?</ThinkAboutIt>
+
+## Largest Rectangle in Histogram
+
+LeetCode యొక్క **Largest Rectangle in Histogram** monotonic stack problems లో అత్యుత్తమ problem.
+
+**Key insight:** ప్రతి bar కి, అది shortest bar గా ఎంత left మరియు right extend కాగలదో కనుగొనండి. ఒక increasing stack వాడండి — ఒక bar pop అయినప్పుడు, popping bar దాని right boundary define చేస్తుంది, మరియు కొత్త stack top left boundary define చేస్తుంది.
+
+```python
+def largest_rectangle(heights):
+    stack, max_area = [], 0
+    for i, h in enumerate(heights + [0]):
+        while stack and heights[stack[-1]] > h:
+            height = heights[stack.pop()]
+            width = i if not stack else i - stack[-1] - 1
+            max_area = max(max_area, height * width)
+        stack.append(i)
+    return max_area
+```
+
+చివరలో sentinel `[0]` మిగిలిన అన్ని bars process అయ్యేలా force చేస్తుంది.
+
+<Illustration src="/images/lessons/monotonic-stack-and-queue.svg" alt="Histogram bars with largest rectangle highlighted" caption="Monotonic stack ప్రతి bar shortest bar గా support చేయగల అత్యంత వెడల్పైన rectangle ను కనుగొంటుంది." />
+
+## Trapping Rain Water — Stack Approach
+
+Classic two-pointer method బదులు, ఒక monotonic decreasing stack trapped water ను layer by layer calculate చేస్తుంది. ఒక పొడవైన bar వచ్చినప్పుడు, పొట్టి bars ను pop చేసి, popped bar, current bar మరియు కొత్త stack top మధ్య trapped water calculate చేయండి.
+
+```
+Heights:  [3, 1, 2, 1, 3]
+Water:       [2, 1, 2]  → total = 5
+```
+
+<FunFact>Trapping Rain Water కి కనీసం నాలుగు విభిన్న O(n) solutions ఉన్నాయి — two-pointer, monotonic stack, prefix max arrays మరియు single-pass optimised approach. Interviewers multiple strategies చూడడం ఇష్టపడతారు.</FunFact>
+
+## Monotonic Queue — Sliding Window Maximum
+
+ఒక **monotonic deque** (double-ended queue) decreasing order maintain చేస్తుంది మరియు రెండు ends నుండి efficiently remove చేయగలదు. **Sliding Window Maximum** (LeetCode 239) కోసం:
+
+1. Index `i` add చేయడానికి ముందు, `nums[i]` కంటే చిన్న back elements అన్నింటినీ pop చేయండి
+2. `i` ను back కి push చేయండి
+3. Front ఎల్లప్పుడూ current window యొక్క maximum
+4. Front window బయటకు వెళ్ళిపోతే దాన్ని remove చేయండి
+
+```python
+from collections import deque
+
+def max_sliding_window(nums, k):
+    dq, result = deque(), []
+    for i, num in enumerate(nums):
+        while dq and nums[dq[-1]] <= num:
+            dq.pop()
+        dq.append(i)
+        if dq[0] <= i - k:
+            dq.popleft()
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+    return result
+```
+
+ప్రతి element deque లో గరిష్టంగా ఒక్కసారి enter మరియు leave అవుతుంది — మొత్తం **O(n)**.
+
+<Quiz
+  question="Sliding window maximum కోసం monotonic deque FRONT నుండి ఎందుకు remove చేస్తుంది?"
+  options="Sorted order maintain చేయడానికి|Minimum element తొలగించడానికి|Window బయటకు వెళ్ళిన elements ను తొలగించడానికి|Queue ను reverse చేయడానికి"
+  answer="2"
+  explanation="Front లో ఉన్న elements యొక్క indices current window బయట ఉండవచ్చు. వాటిని remove చేయడం వల్ల valid candidates మాత్రమే మిగులుతారు."
+/>
+
+## Pattern — Process చేస్తూ Invariant Maintain చేయండి
+
+ప్రతి monotonic stack/queue problem ఒకే template follow చేస్తుంది:
+
+1. **Invariant define చేయండి** (increasing లేదా decreasing)
+2. **Violators ను pop చేయండి** — మరియు ప్రతి pop నుండి useful information extract చేయండి
+3. **Current element push చేయండి**
+4. *Pop event* — answer compute అయ్యే చోటు అదే
+
+<Quiz
+  question="Monotonic increasing stack లో, element X element Y ను pop చేసినప్పుడు, ఏ relationship ఉంటుంది?"
+  options="X < Y|X > Y|X = Y|Guaranteed relationship లేదు"
+  answer="0"
+  explanation="Increasing stack incoming element చిన్నదిగా ఉన్నప్పుడు pop చేస్తుంది, ఎందుకంటే Y > X bottom నుండి top వరకు increasing invariant ను violate చేస్తుంది."
+/>
+
+<ThinkAboutIt>Next-greater-element template లో comparison operator మార్చడం ద్వారా "Next Smaller Element" solve చేయగలరా? Invariant ఏమి అవుతుంది?</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+
+- [Monotonic Stack — LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) — Practice కోసం curated problem set
+- [Largest Rectangle in Histogram — LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) — Monotonic stack యొక్క definitive challenge
+- [Sliding Window Maximum — LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) — Classic monotonic deque application

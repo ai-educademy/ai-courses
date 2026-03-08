@@ -1,0 +1,147 @@
+---
+title: "Notification System Design करें — Push, Email, और SMS Billion Scale पर"
+description: "एक scalable multi-channel notification system design करें जो push, email, SMS, और in-app notifications को message queues, deduplication, और user preference management के साथ handle करता है।"
+order: 7
+difficulty: "advanced"
+duration: 22
+icon: "🔔"
+published: true
+---
+
+# Notification System Design करें — Push, Email, और SMS Billion Scale पर
+
+Modern applications हर दिन अरबों notifications भेजती हैं, वो भी कई channels पर। इस system को design करना आपको message queues, third-party integrations, और scale पर failures को gracefully handle करना सिखाता है।
+
+## Step 1 — Requirements Gathering
+
+### Functional Requirements
+- Multiple channels support करें: push notifications, email, SMS, और in-app
+- Users अपनी notification preferences configure कर सकें और per channel opt out कर सकें
+- Templated messages with personalisation (जैसे, "Hi {name}, आपका order ship हो गया है")
+- Scheduled और immediate notifications का support
+
+### Non-Functional Requirements
+- **Scalability** — 10 million+ notifications प्रतिदिन handle करें
+- **Reliability** — कोई notification lost न हो; at-least-once delivery
+- **Low latency** — urgent notifications सेकंडों में deliver हों
+- **Extensible** — नए channels (WhatsApp, Slack) आसानी से add करें
+
+<ThinkAboutIt>Notification delivery exactly-once होनी चाहिए या at-least-once? सोचिए — duplicate SMS मिलने का experience बनाम एक critical security alert miss हो जाने का।</ThinkAboutIt>
+
+## Step 2 — High-Level Architecture
+
+```
+Caller Services → Notification Service → Validation + Preference Check
+                                              ↓
+                                    Message Queue (Kafka)
+                                    ↓       ↓       ↓       ↓
+                                 Push    Email    SMS    In-App
+                                Worker   Worker  Worker  Worker
+                                  ↓        ↓       ↓       ↓
+                                 FCM   SendGrid  Twilio  WebSocket
+```
+
+<Illustration src="/images/lessons/design-notification-system.svg" alt="Notification system architecture जिसमें caller services, notification service, Kafka message queues, channel-specific workers, और third-party providers हैं" caption="Message queues notification service को delivery workers से decouple करते हैं, जिससे हर channel independently scale हो सके" />
+
+### Core Components
+1. **Notification Service** — requests validate करता है, user preferences check करता है, templates render करता है, और messages enqueue करता है
+2. **Message Queues** — हर channel के लिए अलग queue ताकि independent scaling और isolation मिले
+3. **Delivery Workers** — channel-specific workers जो third-party API calls handle करते हैं
+4. **Template Service** — notification templates store और render करता है variable substitution के साथ
+
+## Step 3 — Deep Dive: Key Components
+
+### User Preferences और Opt-Out
+हर user और notification type के लिए preferences store करें:
+
+```
+user_preferences:
+  user_id: "u123"
+  channels:
+    email: { enabled: true, quiet_hours: "22:00-08:00" }
+    push: { enabled: true }
+    sms: { enabled: false }
+  categories:
+    marketing: { enabled: false }
+    security: { enabled: true, override_quiet_hours: true }
+```
+
+Notification service enqueue करने **से पहले** preferences check करता है — जो user नहीं चाहता वो कभी send न करें।
+
+### Priority Queues
+सभी notifications equal नहीं होतीं। Priority levels use करें:
+- **Critical** — security alerts, OTP codes → तुरंत process
+- **High** — order confirmations, payment receipts → सेकंडों में
+- **Medium** — social interactions, comments → मिनटों में ठीक है
+- **Low** — marketing, recommendations → batch किया जा सकता है
+
+<Quiz question="Notification system को एक shared queue की जगह per channel अलग message queues क्यों use करनी चाहिए?" options="Storage costs कम करने के लिए|Independent scaling allow करने और एक slow channel को बाकियों को block करने से रोकने के लिए|क्योंकि Kafka को per consumer अलग topics चाहिए|System को simple बनाने के लिए" answer="1" explanation="अगर Twilio outage की वजह से SMS delivery slow हो जाए, तो shared queue में backlog बनेगा जो push और email delivery को भी delay करेगा। Per channel अलग queues fault isolation देते हैं और हर channel को independently scale करने देते हैं।" />
+
+## Step 4 — Reliability और Failure Handling
+
+### Deduplication
+Duplicate notifications रोकने के लिए idempotency key use करें। Process करने से पहले check करें कि notification ID deduplication store (Redis with TTL) में exist करती है या नहीं:
+
+```
+Key: "dedup:{notification_id}" → TTL: 24 hours
+If key exists → skip (already sent)
+If not → process and set key
+```
+
+### Retry with Exponential Backoff
+Third-party services fail होती हैं। बढ़ते delays के साथ retries implement करें:
+
+```
+Attempt 1: immediate
+Attempt 2: wait 1 second
+Attempt 3: wait 4 seconds
+Attempt 4: wait 16 seconds
+Attempt 5: move to dead-letter queue
+```
+
+### Per User Rate Limiting
+Users को notification fatigue से बचाएं:
+- Maximum 3 push notifications per hour per user
+- Maximum 1 marketing email per day
+- Security notifications rate limits bypass करती हैं
+
+<FunFact>Facebook रोज़ 10 billion से ज़्यादा push notifications भेजता है। इसके लिए उन्होंने एक custom notification pipeline बनाया जो per second millions of messages process कर सकता है, iOS (APNs) और Android (FCM) के लिए अलग delivery paths के साथ।</FunFact>
+
+## Step 5 — Third-Party Integration
+
+| Channel | Provider | Protocol | Challenges |
+|---------|----------|----------|------------|
+| Push (iOS) | APNs | HTTP/2 | Token management, silent push limits |
+| Push (Android) | FCM | HTTP | Topic-based broadcasting |
+| Email | SendGrid/SES | SMTP/API | Deliverability, spam filters |
+| SMS | Twilio | REST API | Per message cost, regional compliance |
+| In-App | WebSocket | WS | Connection management, offline buffering |
+
+### Analytics Pipeline
+हर message का notification lifecycle track करें:
+- **Created** → **Queued** → **Sent** → **Delivered** → **Opened** → **Clicked**
+
+Dashboard reporting के लिए events को time-series database या event stream में store करें: delivery rates, open rates, और click-through rates per channel और notification type।
+
+<Quiz question="एक notification system failed SMS delivery को 3 बार retry करता है। बिना deduplication के, अगर पहला attempt actually succeed हो गया लेकिन acknowledgement lost हो गया तो क्या होगा?" options="Message permanently lost हो जाएगा|User को same SMS की 4 copies तक मिल सकती हैं|System automatically duplicate detect कर लेगा|Retry mechanism इस scenario को prevent करता है" answer="1" explanation="अगर provider ने request process कर दी लेकिन acknowledgement lost हो गया, तो system सोचता है कि fail हो गया और retry करता है। बिना provider-level deduplication या idempotency keys के, user को same SMS कई बार मिल सकता है।" />
+
+## Step 6 — Bottlenecks और Optimisations
+
+| Bottleneck | Solution |
+|-----------|----------|
+| Third-party rate limits | Per provider controlled throughput वाली queue |
+| Scale पर template rendering | Common templates pre-render और cache करें |
+| Per message preference lookups | Redis में user preferences cache करें |
+| Peak traffic spikes | Queue depth के basis पर workers auto-scale करें |
+| Cross-region delivery | Provider endpoints के पास workers deploy करें |
+
+<ThinkAboutIt>आप एक ऐसा notification system कैसे design करेंगे जो Black Friday sale के लिए 2 घंटे के अंदर 50 million personalised emails भेज सके, और साथ ही real-time security alerts sub-second latency के साथ deliver करे?</ThinkAboutIt>
+
+<Quiz question="User notification preferences कौन सा component check करे?" options="Delivery worker, third-party API call से ठीक पहले|Caller service, notification service को भेजने से पहले|Notification service, message enqueue करने से पहले|Message queue, routing के दौरान" answer="2" explanation="Notification service में enqueue करने से पहले preferences check करने से queue capacity और worker processing waste नहीं होती उन notifications पर जो user नहीं चाहता। यह सबसे पहला point है जहाँ centralised preference logic apply हो सकती है।" />
+
+---
+
+## 📚 और पढ़ें
+- [Notification System — System Design Interview Vol. 1, Ch. 10](https://bytebytego.com/) — Alex Xu का comprehensive notification system design
+- [How Airbnb Built a Notification Platform](https://medium.com/airbnb-engineering) — real-world multi-channel notification architecture
+- [Firebase Cloud Messaging Docs](https://firebase.google.com/docs/cloud-messaging) — push notification delivery mechanics को समझें

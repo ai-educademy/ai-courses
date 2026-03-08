@@ -1,0 +1,146 @@
+---
+title: "Hoe machines leren — Het geheim achter slimme software"
+description: "Ontdek de drie belangrijkste manieren waarop machines leren van data om voorspellingen en beslissingen te maken"
+order: 2
+difficulty: "beginner"
+duration: 12
+icon: "🧠"
+published: true
+---
+
+# Hoe machines leren 🧠
+
+In de vorige les leerden we dat AI software is die **leert van ervaring**. Maar hoe werkt dat eigenlijk? Hoe gaat een machine van niets weten naar het herkennen van je gezicht of het aanbevelen van je volgende favoriete nummer?
+
+Laten we het geheim achter slimme software ontdekken.
+
+---
+
+## 🔄 De leercyclus
+
+Elk machine learning-systeem volgt dezelfde basiscyclus:
+
+1. **Data** — De machine krijgt veel voorbeelden
+2. **Patronen** — Het zoekt naar terugkerende patronen in die voorbeelden
+3. **Voorspellingen** — Het gebruikt die patronen om schattingen te maken over nieuwe data
+4. **Feedback** — Het ontdekt of de schattingen goed of fout waren
+5. **Verbetering** — Het past zich aan en probeert opnieuw, elke keer beter
+
+Zie het als leren koken. Je volgt recepten (data), merkt op wat werkt (patronen), probeert je eigen variaties (voorspellingen), proeft het resultaat (feedback) en past de kruiden aan voor de volgende keer (verbetering).
+
+<Illustration src="/images/lessons/how-machines-learn.svg" alt="Cirkeldiagram dat de machine learning-cyclus toont: Data stroomt naar Patroonherkenning, dan naar Voorspelling, dan naar Feedback, dan naar Verbetering, die terugloopt naar Patroonherkenning" caption="De machine learning-cyclus: data, patronen, voorspellingen, feedback en voortdurende verbetering" />
+
+<FunFact>
+Google's AI voor het detecteren van spam-e-mail verwerkt elke minuut meer dan 10 miljoen verdachte berichten. Elke keer dat een gebruiker iets markeert als "spam" of "geen spam" leert het systeem en werkt het zijn patronen bij — het wordt slimmer bij elke klik.
+</FunFact>
+
+---
+
+## 📚 Supervised learning — Leren met een leraar
+
+Het meest voorkomende type machine learning heet **supervised learning**. Het werkt precies zoals studeren met een leraar die je de antwoorden geeft.
+
+Zo werkt het:
+
+1. Je geeft de machine duizenden voorbeelden **met labels** (de juiste antwoorden)
+2. De machine bestudeert deze gelabelde voorbeelden
+3. Het leert de patronen die de invoer verbinden met het juiste label
+4. Wanneer het nieuwe, ongelabelde data ziet, voorspelt het het antwoord
+
+### Voorbeeld uit de praktijk: spamfilter voor e-mail
+
+Stel je voor dat je de machine 100.000 e-mails laat zien. Elk ervan is door mensen gelabeld als **"spam"** of **"geen spam"**.
+
+De machine ontdekt patronen:
+- E-mails met "WIN GRATIS GELD" zijn vaak spam
+- E-mails van contacten in je adresboek zijn meestal echt
+- E-mails met tientallen uitroeptekens zijn vaak spam
+
+Na genoeg voorbeelden bestudeerd te hebben, kan het naar een **gloednieuwe e-mail** kijken die het nog nooit heeft gezien en voorspellen of het spam is — zonder dat iemand specifieke regels heeft geschreven.
+
+<ThinkAboutIt>
+Supervised learning is afhankelijk van gelabelde data — iemand moet de juiste antwoorden geven zodat de machine ervan kan leren. Wie labelt al die data volgens jou? In veel gevallen zijn het duizenden menselijke medewerkers die zorgvuldig afbeeldingen, tekst en audio taggen. De "intelligentie" van AI begint vaak met heel veel menselijk werk.
+</ThinkAboutIt>
+
+<Quiz question="Wat betekent 'supervised learning' in machine learning?" options="Een mens kijkt altijd mee met de computer|De machine leert van gelabelde voorbeelden waarbij het juiste antwoord is gegeven|De machine is verbonden met de computer van een supervisor|De AI houdt toezicht op andere AI-systemen" answer="1" explanation="Bij supervised learning wordt de machine getraind op voorbeelden die voorzien zijn van juiste antwoorden (labels). Net als een leerling die leert van het antwoordenblad van de leraar, gebruikt de machine deze gelabelde voorbeelden om patronen te ontdekken die het kan toepassen op nieuwe data." />
+
+---
+
+## 🔍 Unsupervised learning — Verborgen patronen vinden
+
+Wat als je de antwoorden niet hebt? Wat als je gewoon een grote berg data hebt en je wilt dat de machine zelf interessante patronen vindt?
+
+Dat is **unsupervised learning**. Er is geen leraar, geen labels, geen juiste antwoorden. De machine verkent de data en groepeert vergelijkbare dingen bij elkaar.
+
+### Voorbeeld uit de praktijk: klantgroepen
+
+Stel je voor dat een supermarkt aankoopdata heeft van miljoenen klanten, maar geen labels. De AI analyseert de data en ontdekt natuurlijke groepen:
+
+- **Groep A**: Koopt biologische groenten, scharreleieren en havermelk
+- **Groep B**: Koopt diepvriespizza's, chips en frisdrank
+- **Groep C**: Koopt luiers, babyvoeding en billendoekjes
+
+Niemand heeft de machine verteld dat deze groepen bestonden. Het heeft ze zelf gevonden door patronen in de aankoopdata te herkennen. De supermarkt kan nu elke groep relevante aanbiedingen sturen.
+
+<Quiz question="Hoe verschilt unsupervised learning van supervised learning?" options="Het gebruikt krachtigere computers|Het werkt zonder gelabelde data en vindt zelf patronen|Het werkt alleen met afbeeldingen, niet met tekst|Het vereist dat een mens het constant in de gaten houdt" answer="1" explanation="Het belangrijkste verschil zijn de labels. Bij supervised learning worden data gebruikt waarbij het juiste antwoord is gegeven. Unsupervised learning werkt met ongelabelde data, en de machine ontdekt zelf verborgen patronen en groeperingen." />
+
+---
+
+## 🐕 Reinforcement learning — Vallen en opstaan
+
+Het derde type is **reinforcement learning**, en het werkt veel als het trainen van een hond.
+
+Wanneer een hond op commando zit, geef je hem een snoepje (beloning). Wanneer hij op je schoen kauwt, zeg je "nee" (straf). Na verloop van tijd leert de hond welk gedrag tot snoepjes leidt en welk tot problemen.
+
+Reinforcement learning werkt op dezelfde manier:
+
+1. De AI neemt een **actie** in een omgeving
+2. Het ontvangt een **beloning** (positief) of **straf** (negatief)
+3. Het past de strategie aan om **beloningen te maximaliseren** over tijd
+4. Het probeert miljoenen verschillende benaderingen totdat het de beste vindt
+
+### Voorbeeld uit de praktijk: game-spelende AI
+
+Google's AlphaGo leerde het oude bordspel Go door **miljoenen partijen tegen zichzelf** te spelen. Elke overwinning was een beloning; elk verlies een straf. Het probeerde wilde strategieën, leerde van mislukkingen en werd uiteindelijk beter dan elke menselijke speler in de geschiedenis.
+
+Dezelfde aanpak wordt gebruikt om robots te leren lopen, zelfrijdende auto's te leren navigeren en het energieverbruik in datacenters te optimaliseren.
+
+<FunFact>
+AlphaGo speelde meer dan 30 miljoen partijen tegen zichzelf tijdens de training. Een mens die één partij per dag speelt, zou ongeveer 82.000 jaar nodig hebben om zoveel partijen te spelen. De AI comprimeerde al die ervaring in slechts een paar weken.
+</FunFact>
+
+---
+
+## 🗺️ De drie typen vergeleken
+
+| Type | Labels? | Vergelijking | Voorbeeld |
+|------|---------|-------------|-----------|
+| **Supervised** | Ja | Studeren met een antwoordenblad | Spamfilters, medische diagnose |
+| **Unsupervised** | Nee | Een rommelige la sorteren | Klantgroepen, afwijkingsdetectie |
+| **Reinforcement** | Nee (gebruikt beloningen) | Een hond trainen met snoepjes | Game-AI, robotica, zelfrijdende auto's |
+
+<ThinkAboutIt>
+Denk eens na over hoe je leerde fietsen. Was het supervised (iemand vertelde je precies wat je moest doen), unsupervised (je ontdekte zelf je balans), of reinforcement (je viel, paste aan en probeerde opnieuw)? Het meeste menselijke leren is eigenlijk een mix van alle drie. AI-leerstijlen zijn geïnspireerd op hoe wij zelf leren.
+</ThinkAboutIt>
+
+---
+
+## 🔑 Belangrijkste punten
+
+- Machines leren via een cyclus: data → patronen → voorspellingen → feedback → verbetering
+- **Supervised learning** gebruikt gelabelde voorbeelden — als studeren met een leraar
+- **Unsupervised learning** vindt verborgen patronen in data zonder labels
+- **Reinforcement learning** gebruikt beloningen en straffen — als het trainen van een hond
+- Alle drie de typen drijven de AI-systemen aan die je dagelijks gebruikt
+
+<Quiz question="Welk type machine learning lijkt het meest op het trainen van een huisdier met snoepjes en commando's?" options="Supervised learning|Unsupervised learning|Reinforcement learning|Algemeen leren" answer="2" explanation="Reinforcement learning werkt via beloningen (snoepjes) en straffen (correcties), net als het trainen van een huisdier. De AI probeert verschillende acties, ontvangt feedback en leert geleidelijk welk gedrag tot de beste resultaten leidt." />
+
+<Callout>
+Je hoeft geen wiskundige of programmeur te zijn om machine learning te begrijpen. In de kern gaat het om **leren van ervaring** — iets wat elk mens van nature doet vanaf de dag dat ze geboren worden. AI doet het alleen met data in plaats van levenservaringen.
+</Callout>
+
+---
+
+## Wat volgt?
+
+Nu je begrijpt hoe machines leren, onthult de volgende les de AI die al in je zak zit. Je smartphone zit vol met intelligente functies — laten we ze ontdekken.

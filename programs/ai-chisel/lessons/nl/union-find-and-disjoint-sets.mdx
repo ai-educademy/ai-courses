@@ -1,0 +1,149 @@
+---
+title: "Union-Find — Connected Components en netwerkdetectie"
+description: "Leer de Union-Find (disjoint set) datastructuur met path compression en union by rank. Los connectivity-, MST- en graph component-problemen efficiënt op."
+order: 7
+difficulty: "advanced"
+duration: 17
+icon: "🔗"
+published: true
+---
+
+## Het connectiviteitsprobleem
+
+Gegeven een netwerk van nodes ontvang je voortdurend twee soorten queries: *verbind node A met node B* en *zijn A en B verbonden?* Dit met BFS/DFS doen betekent de graph doorlopen bij elke query — veel te traag voor miljoenen operaties.
+
+**Union-Find** beantwoordt beide in bijna constante tijd.
+
+## Naïeve aanpak — Quick Find
+
+Sla een component-ID op voor elke node. Om connectiviteit te controleren, vergelijk je ID's in O(1). Maar twee componenten samenvoegen dwingt je om elk lid van een groep bij te werken — O(n) per union.
+
+```
+IDs:  [0, 0, 0, 3, 3]
+       └─group 0─┘ └group 3┘
+union(0, 3) → update all 3s to 0 → O(n)
+```
+
+We hebben iets beters nodig.
+
+## De Union-Find datastructuur
+
+Elke node wijst naar een **parent**. De root van elke boom is de vertegenwoordiger van de component. Twee nodes zijn verbonden als en alleen als ze dezelfde root delen.
+
+```python
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+```
+
+## Find met Path Compression
+
+Parent-pointers volgen kan traag zijn in een diepe boom. **Path compression** maakt de boom plat door elke bezochte node direct naar de root te laten wijzen.
+
+```python
+def find(self, x):
+    if self.parent[x] != x:
+        self.parent[x] = self.find(self.parent[x])
+    return self.parent[x]
+```
+
+Voor en na het zoeken van node 4:
+
+```
+Before:  0←1←2←3←4     After:  0←1
+                                0←2
+                                0←3
+                                0←4
+```
+
+## Union by Rank
+
+Hang altijd de kortere boom onder de langere. Dit houdt de boomhoogte logaritmisch en voorkomt ontaarde ketens.
+
+```python
+def union(self, x, y):
+    rx, ry = self.find(x), self.find(y)
+    if rx == ry:
+        return False
+    if self.rank[rx] < self.rank[ry]:
+        rx, ry = ry, rx
+    self.parent[ry] = rx
+    if self.rank[rx] == self.rank[ry]:
+        self.rank[rx] += 1
+    return True
+```
+
+<Quiz
+  question="Wat is de geamortiseerde tijd per operatie met zowel path compression als union by rank?"
+  options="O(log n)|O(n)|O(α(n)) — bijna O(1)|O(√n)"
+  answer="2"
+  explanation="De inverse Ackermann-functie α(n) groeit zo langzaam dat deze voor elke praktische invoer nooit boven 4 uitkomt, waardoor operaties effectief O(1) zijn."
+/>
+
+<Illustration src="/images/lessons/union-find-and-disjoint-sets.svg" alt="Union-Find bomen voor en na path compression" caption="Path compression maakt diepe ketens plat, waardoor toekomstige lookups snel blijven." />
+
+## Kruskal's MST-algoritme
+
+Union-Find drijft **Kruskal's algoritme** aan voor Minimum Spanning Trees:
+
+1. Sorteer alle edges op gewicht
+2. Voor elke edge (u, v): als `find(u) ≠ find(v)`, voeg deze toe en doe `union(u, v)`
+3. Stop wanneer je n − 1 edges hebt
+
+Union-Find voorkomt cycles door edges te weigeren waarvan de eindpunten al dezelfde root delen. Totale tijd: **O(E log E)**, gedomineerd door het sorteren.
+
+<ThinkAboutIt>Kruskal's gebruikt Union-Find om cycles te detecteren. Hoe zou je een cycle detecteren met DFS, en waarom is Union-Find hier natuurlijker?</ThinkAboutIt>
+
+## Klassieke problemen
+
+### Aantal Connected Components
+
+Initialiseer Union-Find met n nodes. Verwerk elke edge met `union`. Tel de unieke roots aan het einde.
+
+### Accounts Merge (LeetCode 721)
+
+Elk account heeft e-mailadressen. Als twee accounts een e-mail delen, behoren ze tot dezelfde persoon. Verenig accounts op gedeelde e-mails en groepeer en sorteer vervolgens.
+
+### Redundant Connection (LeetCode 684)
+
+Gegeven een boom plus één extra edge, vind de overbodige edge. Verwerk edges op volgorde — de eerste edge waarbij `union` `False` retourneert (al verbonden) is het antwoord.
+
+<FunFact>Het bewijs dat Union-Find met beide optimalisaties in O(α(n)) draait, werd in 1975 door Tarjan gepubliceerd en wordt beschouwd als een van de meest elegante geamortiseerde analyses in de informatica.</FunFact>
+
+## Wanneer Union-Find vs BFS/DFS kiezen
+
+| Scenario | Beste keuze |
+|----------|-------------|
+| Herhaalde connectivity queries | Union-Find |
+| Enkele traversal / kortste pad | BFS/DFS |
+| Incrementele edge-toevoegingen | Union-Find |
+| Edge-verwijderingen (dynamische graph) | BFS/DFS (of offline UF) |
+| Kruskal's MST | Union-Find |
+| Topologische sortering / cycle in gerichte graph | DFS |
+
+Union-Find blinkt uit wanneer je edges *incrementeel* verwerkt en snelle connectivity checks nodig hebt. Als je slechts één keer traverseert of padinformatie nodig hebt, gebruik dan BFS/DFS.
+
+<Quiz
+  question="Je krijgt edges één voor één en moet de eerste edge detecteren die een cycle creëert. Welke aanpak is het beste?"
+  options="BFS from scratch na elke edge|DFS from scratch na elke edge|Union-Find — union retourneert False bij de cycle-edge|Topologische sortering"
+  answer="2"
+  explanation="Union-Find detecteert cycles incrementeel in bijna O(1) per edge, terwijl BFS/DFS de hele graph opnieuw zou doorlopen."
+/>
+
+<Quiz
+  question="Wat voorkomt union by rank in Union-Find?"
+  options="Dubbele edges|Losgekoppelde componenten|Ontaarde lineaire ketens (hoge bomen)|Negatieve edge-gewichten"
+  answer="2"
+  explanation="Union by rank houdt bomen gebalanceerd door altijd de kortere boom onder de langere te hangen, waardoor O(n) find-operaties worden voorkomen."
+/>
+
+<ThinkAboutIt>Sommige problemen vereisen het *ongedaan maken* van unions (dynamische connectiviteit met verwijderingen). Waarom is standaard Union-Find hiervoor onvoldoende, en welke aanpassingen bestaan er?</ThinkAboutIt>
+
+---
+
+## 📚 Verder lezen
+
+- [Disjoint-Set Data Structure — Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) — Theorie, bewijzen en geschiedenis van Union-Find
+- [Union-Find — Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) — Sedgewick's gezaghebbende behandeling met Java-voorbeelden
+- [Redundant Connection — LeetCode 684](https://leetcode.com/problems/redundant-connection/) — Een heldere toepassing van cycle-detectie met Union-Find

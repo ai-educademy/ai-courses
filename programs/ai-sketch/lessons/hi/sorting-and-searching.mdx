@@ -1,0 +1,143 @@
+---
+title: "Sorting और Searching — AI Results कैसे Rank और ढूँढता है"
+description: "जानिए sorting और searching algorithms AI recommendations rank करने और जवाब ढूँढने में क्यों fundamental हैं।"
+order: 3
+difficulty: "intermediate"
+duration: 15
+icon: "🔍"
+published: true
+---
+
+## चीज़ें तेज़ी से ढूँढना
+
+Google पर search करो तो results एक second से कम में आते हैं — relevance से ranked। Netflix films recommend करता है तो हज़ारों titles आपकी पसंद से sort करता है। हर fast lookup और ranked list के पीछे sorting या searching algorithm है।
+
+## Sorting क्यों ज़रूरी है
+
+Sorted data powerful data है। List order में आ जाए तो:
+
+- **Binary search** से efficiently ढूँढ सकते हो।
+- **Duplicates** ढूँढना आसान — एक-दूसरे के बगल में होंगे।
+- **Top-N results** — बस पहले N items उठा लो।
+- **Datasets merge** करना — दो sorted lists combine करना unsorted से काफ़ी तेज़ है।
+
+<Illustration src="/images/lessons/sorting-and-searching.svg" alt="Unsorted array sorted array में बदल रहा है, magnifying glass binary search highlight कर रहा है" caption="Sorting chaotic data को searchable और structured बनाता है।" />
+
+## Bubble Sort — Simple लेकिन Slow
+
+Bubble sort list में बार-बार adjacent items compare करता है और गलत order में हों तो swap करता है। बड़ी values "bubble" करके end पर पहुँचती हैं।
+
+```
+[5, 3, 8, 1, 2]
+ ↕
+[3, 5, 8, 1, 2]  → swapped 5 and 3
+[3, 5, 1, 8, 2]  → swapped 8 and 1
+[3, 5, 1, 2, 8]  → swapped 8 and 2
+... जब तक कोई swap ज़रूरी न हो
+```
+
+**Time complexity**: O(n²) — 1,000 items पर 10 लाख comparisons। 10 लाख items पर? एक trillion। AI workloads के लिए practical नहीं।
+
+<ThinkAboutIt>
+अगर bubble sort ~n² comparisons लेता है, तो 10 लाख items sort करना 1,000 items से कितना slow होगा? Ratio सोचो: (1,000,000)² vs (1,000)²। 10 लाख गुना slow — सिर्फ 1,000 गुना ज़्यादा data होने से।
+</ThinkAboutIt>
+
+## Merge Sort — Divide and Conquer
+
+Merge sort smarter approach अपनाता है: list आधी तोड़ो, दोनों halves sort करो, फिर दो sorted halves merge करो।
+
+```
+[5, 3, 8, 1, 2, 7, 4, 6]
+         split
+[5, 3, 8, 1]   [2, 7, 4, 6]
+    split            split
+[5, 3] [8, 1]  [2, 7] [4, 6]
+  ↓       ↓       ↓       ↓
+[3, 5] [1, 8]  [2, 7] [4, 6]
+    merge            merge
+[1, 3, 5, 8]   [2, 4, 6, 7]
+         merge
+[1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+**Time complexity**: O(n log n) — बहुत तेज़। 10 लाख items पर ~2 करोड़ comparisons, trillion नहीं। यही algorithms real AI systems possible बनाते हैं।
+
+<FunFact>
+Python का built-in sort Timsort इस्तेमाल करता है — merge sort और insertion sort का hybrid। Tim Peters ने 2002 में बनाया और अब Python, Java, और Android में इस्तेमाल होता है। Real-world partially sorted data पर बेहतर perform करने के लिए designed है।
+</FunFact>
+
+### Bubble Sort vs Merge Sort at Scale
+
+| Items | Bubble Sort (O(n²)) | Merge Sort (O(n log n)) |
+|-------|---------------------|-------------------------|
+| 100 | 10,000 ops | ~700 ops |
+| 10,000 | 100,000,000 ops | ~130,000 ops |
+| 1,000,000 | 1,000,000,000,000 ops | ~20,000,000 ops |
+
+फ़र्क academic नहीं है — "एक second में खत्म" vs "अगले हफ़्ते खत्म" का अंतर है।
+
+<Quiz question="AI applications में large datasets के लिए merge sort bubble sort से क्यों preferred है?" options="Merge sort कम memory इस्तेमाल करता है|Merge sort O(n log n) है जबकि bubble sort O(n²), जो scale पर dramatically तेज़ है|Merge sort ज़्यादा recently invent हुआ|Merge sort सिर्फ numbers पर काम करता है जो AI इस्तेमाल करता है" answer="1" explanation="Scale पर O(n²) और O(n log n) में बहुत बड़ा फ़र्क है। 10 लाख items पर merge sort ~2 करोड़ operations करता है vs bubble sort की trillion — AI workloads के लिए essential।" />
+
+## Binary Search — Phone Book Trick
+
+सोचो "Smith" phone book में ढूँढ रहे हो। Page 1 से शुरू करके हर नाम नहीं पढ़ोगे। बीच में खोलोगे, देखोगे कहाँ हो, और सही half में jump करोगे। Repeat।
+
+यही **binary search** है — और यह सिर्फ sorted data पर काम करता है।
+
+```
+sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+target = 23
+
+Step 1: Middle = 16 → 23 > 16, search right half
+Step 2: Middle = 38 → 23 < 38, search left half
+Step 3: Middle = 23 → Found it!
+```
+
+**Time complexity**: O(log n)। 10 लाख items की sorted list में कोई भी item maximum 20 steps में मिल जाएगा।
+
+<Quiz question="10 लाख records की sorted database में binary search को worst case में कितनी comparisons चाहिए?" options="10,00,000|5,00,000|लगभग 20|लगभग 1,000" answer="2" explanation="Binary search हर step पर search space आधा करता है। log₂(1,000,000) ≈ 20, तो maximum 20 comparisons।" />
+
+## AI Sorting और Searching कैसे इस्तेमाल करता है
+
+### Search Results Ranking
+
+Google query process करते वक्त हर relevant page score करता है और relevance से sort करता है। Top 10 page one पर दिखते हैं।
+
+### Recommendation Systems
+
+Netflix viewing history से हज़ारों titles का "match score" calculate करता है, फिर sort करके best matches पहले दिखाता है।
+
+### K-Nearest Neighbours
+
+Classic AI algorithm जो दिए input के K सबसे similar items ढूँढता है। सबसे distances calculate करता है, फिर partially sort करके K smallest distances निकालता है।
+
+<Callout>
+हमेशा पूरा sort ज़रूरी नहीं। 10 लाख items से सिर्फ top 10 चाहिए तो **partial sort** या **heap** O(n log k) time में ढूँढ सकता है — पूरा sort करने से काफ़ी तेज़।
+</Callout>
+
+## Sort कब, Hash Map कब
+
+| Scenario | Best Choice | क्यों |
+|----------|------------|-------|
+| Key से एक item ढूँढना | Hash map | O(1) lookup |
+| Top-10 items | Sort | Ordered results चाहिए |
+| Item exist करता है check | Hash map | O(1) vs O(log n) |
+| Items order में चाहिए | Sort | Hash maps में order नहीं |
+| Range queries (A और B के बीच) | Sorted array + binary search | Hash maps ranges नहीं कर सकते |
+
+<ThinkAboutIt>
+Music streaming service को "Top 50 most played songs" दिखाना है। पूरी listening history sort करोगे, या ऐसा data structure maintain करोगे जो हमेशा top 50 जानता हो? दोनों के trade-offs क्या हैं?
+</ThinkAboutIt>
+
+<FunFact>
+Google रोज़ 8.5 billion+ searches process करता है। हर search में सैकड़ों results milliseconds में sort और rank होते हैं। Sorting algorithms की efficiency directly affect करती है Google के data centres कितनी बिजली खर्च करते हैं।
+</FunFact>
+
+<Quiz question="Binary search कब appropriate नहीं होगा?" options="जब data sorted हो|जब एक specific item ढूँढना हो|जब data unsorted हो और बार-बार बदलता हो|जब dataset बहुत बड़ा हो" answer="2" explanation="Binary search sorted data चाहिए। अगर data बार-बार बदलता है, sorted order maintain करना महंगा है। Unsorted dynamic data में hash map बेहतर।" />
+
+## मुख्य बातें
+
+- **Sorting** chaotic data को structured, searchable बनाता है — ranking और recommendations के लिए essential।
+- **O(n²)** algorithms जैसे bubble sort educational हैं लेकिन scale पर impractical; **O(n log n)** algorithms जैसे merge sort real systems power करते हैं।
+- **Binary search** sorted data पर extraordinarily efficient है — 10 लाख items में 20 steps।
+- Sorting और hash maps में choose करो based on **ordered results** चाहिए या **instant lookups**।

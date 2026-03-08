@@ -1,0 +1,129 @@
+---
+title: "Trees en binair zoeken — Hoe AI snelle beslissingen neemt"
+description: "Ontdek tree-structuren die besluitvorming mogelijk maken, van databases tot machine learning."
+order: 2
+difficulty: "intermediate"
+duration: 18
+icon: "🌲"
+published: true
+---
+
+## Trees zijn overal in AI
+
+Elke keer dat een spamfilter een e-mail classificeert of een database je bestelling in milliseconden ophaalt, doet een tree-datastructuur het zware werk. Trees modelleren **hiërarchische beslissingen** — elke node verkleint de zoekruimte totdat je een antwoord bereikt.
+
+<Illustration src="/images/lessons/trees-and-binary-search.svg" alt="Een binary search tree met nodes gelabeld op waarde, met de eigenschap links-kleiner en rechts-groter" caption="In een BST is elk left child kleiner en elk right child groter dan zijn parent." />
+
+## Binary Search Trees (BSTs)
+
+Een BST slaat elementen zo op dat voor elke node alle waarden in de **linker** subtree kleiner zijn en alle waarden in de **rechter** subtree groter.
+
+### Zoeken
+
+```
+function search(node, target):
+    if node is null: return null
+    if target == node.value: return node
+    if target < node.value: return search(node.left, target)
+    return search(node.right, target)
+```
+
+Elke vergelijking elimineert ongeveer de helft van de resterende nodes — O(log n) bij een gebalanceerde tree.
+
+### Invoegen
+
+```
+function insert(node, value):
+    if node is null: return new Node(value)
+    if value < node.value:
+        node.left = insert(node.left, value)
+    else:
+        node.right = insert(node.right, value)
+    return node
+```
+
+### Verwijderen
+
+Verwijderen is de lastigste operatie. Er zijn drie gevallen:
+
+1. **Leaf node** — gewoon verwijderen.
+2. **Eén child** — vervang de node door zijn child.
+3. **Twee children** — wissel de waarde van de node met zijn in-order successor (kleinste waarde in de rechter subtree), en verwijder dan die successor.
+
+<Quiz question="Wat is de in-order successor van een node in een BST?" options="De parent van de node|De grootste node in de linker subtree|De kleinste node in de rechter subtree|De root van de tree" answer="2" explanation="De in-order successor is de kleinste waarde in de rechter subtree — ga één keer naar rechts en dan zo ver mogelijk naar links." />
+
+## Gebalanceerd vs ongebalanceerd
+
+Als je gesorteerde data in een gewone BST invoegt, degenereert deze tot een linked list — O(n) per operatie. **Zelfbalancerende** trees lossen dit op:
+
+| Tree | Balanceringsregel | Typisch gebruik |
+|------|-------------------|-----------------|
+| AVL | Hoogteverschil ≤ 1 tussen subtrees | In-memory lookups |
+| Red-Black | Rotatie-regels op basis van kleur | Standaardbibliotheken (bijv. Java TreeMap) |
+| B-Tree | Meerdere keys per node, alle leaves op dezelfde diepte | Databases en bestandssystemen |
+
+<FunFact>PostgreSQL en MySQL gebruiken beide B-tree-varianten als hun standaard indexstructuur. Een B-tree met branching factor 100 kan een miljard rijen indexeren in slechts vijf niveaus.</FunFact>
+
+## Tree Traversals
+
+Traversals bezoeken elke node precies één keer. De drie klassieke volgordes verschillen alleen in **wanneer** je de huidige node verwerkt ten opzichte van zijn children.
+
+| Traversal | Volgorde | Toepassing |
+|-----------|----------|------------|
+| **In-order** | Links → Node → Rechts | Produceert gesorteerde output uit een BST |
+| **Pre-order** | Node → Links → Rechts | Een tree serialiseren / klonen |
+| **Post-order** | Links → Rechts → Node | Een tree veilig verwijderen; expression trees evalueren |
+
+```
+function inOrder(node):
+    if node is null: return
+    inOrder(node.left)
+    process(node)
+    inOrder(node.right)
+```
+
+<ThinkAboutIt>Een compiler ontleedt je code in een Abstract Syntax Tree (AST). Welke traversal-volgorde zou je gebruiken om de expressie `(3 + 5) * 2` opgeslagen als tree te evalueren? Waarom?</ThinkAboutIt>
+
+## Heaps en priority queues
+
+Een **heap** is een complete binary tree waarbij elke parent groter (max-heap) of kleiner (min-heap) is dan zijn children. Het ondersteunt:
+
+- **Insert** — voeg toe aan het einde, bubble up. O(log n).
+- **Extract min/max** — verwijder de root, verplaats het laatste element naar de root, sift down. O(log n).
+
+Priority queues gebouwd op heaps drijven het volgende aan:
+- **Dijkstra's algorithm** (volgende les!) — breid altijd de dichtstbijzijnde onbezochte node uit.
+- **Taakplanning** — OS-schedulers kiezen het proces met de hoogste prioriteit.
+- **Beam search in NLP** — bewaar de top-k meest veelbelovende zinsaanvullingen.
+
+```
+function siftUp(heap, index):
+    while index > 0:
+        parent = (index - 1) / 2
+        if heap[index] < heap[parent]:
+            swap(heap, index, parent)
+            index = parent
+        else: break
+```
+
+<Quiz question="Wat is de tijdscomplexiteit van het vinden van het minimale element in een min-heap?" options="O(n)|O(log n)|O(1)|O(n log n)" answer="2" explanation="Het minimum bevindt zich altijd aan de root van een min-heap, dus het opvragen ervan is O(1) — geen traversal nodig." />
+
+## Echte AI-toepassingen
+
+- **Decision trees** in machine learning splitsen data bij elke node op basis van het kenmerk dat klassen het beste scheidt — een directe toepassing van tree-structuur.
+- **Syntax trees** in NLP vertegenwoordigen grammaticale structuur en maken taken mogelijk zoals sentimentanalyse en machinevertaling.
+- **Monte Carlo Tree Search (MCTS)** drijft game-playing AI aan zoals AlphaGo, door mogelijke zetten te verkennen als een tree van speltoestanden.
+- **Huffman trees** comprimeren data door kortere codes toe te kennen aan frequente symbolen — gebruikt bij compressie van modelgewichten.
+
+<FunFact>De decision tree classifier van scikit-learn bouwt een tree waarin elke interne node een feature-drempel test. Een getraind model met diepte 20 kan meer dan een miljoen verschillende beslissingspaden vertegenwoordigen.</FunFact>
+
+<ThinkAboutIt>Als je een autocomplete-systeem zou bouwen, zou je dan een BST, een heap of een andere tree-structuur (zoals een trie) gebruiken? Bedenk welke operaties snel moeten zijn.</ThinkAboutIt>
+
+## Belangrijkste punten
+
+1. BSTs bieden O(log n) zoeken, invoegen en verwijderen — maar alleen wanneer ze gebalanceerd zijn.
+2. De traversal-volgorde bepaalt welke informatie je uit een tree haalt.
+3. Heaps geven O(1) toegang tot de extreme waarde en O(log n) invoeging — ideaal voor prioriteitsgebaseerde AI-algoritmen.
+4. Trees vormen de basis van besluitvorming in ML, databases, compilers en game-AI.
+
+<Quiz question="Waarom veroorzaakt het invoegen van reeds gesorteerde data in een gewone (ongebalanceerde) BST prestatieproblemen?" options="Het creëert dubbele nodes|De tree wordt een linked list met O(n) operaties|Er treden hash-collisions op|De root node loopt over" answer="1" explanation="Elke nieuwe waarde is altijd groter (of kleiner) dan de vorige, dus elke invoeging gaat naar dezelfde kant, wat een lineaire keten oplevert in plaats van een gebalanceerde tree." />

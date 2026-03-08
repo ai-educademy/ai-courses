@@ -1,0 +1,130 @@
+---
+title: "Vision par ordinateur — Comment l'IA apprend à voir le monde"
+description: "Découvrez comment les machines interprètent les images et la vidéo, des grilles de pixels aux voitures autonomes."
+order: 1
+difficulty: "intermediate"
+duration: 18
+icon: "👁️"
+published: true
+---
+
+# Vision par ordinateur — Comment l'IA apprend à voir le monde
+
+Vous jetez un coup d'œil à une photo et savez instantanément qu'elle montre un chien sur une plage. Pour un ordinateur, cette même image n'est rien de plus qu'une immense grille de nombres. La **vision par ordinateur** est la branche de l'IA qui apprend aux machines à extraire du sens de ces nombres — et elle transforme déjà les industries autour de vous.
+
+## Comment les ordinateurs « voient »
+
+Lorsque vous regardez une photographie, votre cerveau reconnaît instantanément les formes, les couleurs et la profondeur. Un ordinateur
+n'a rien de cette intuition. À la place, il travaille avec des nombres bruts.
+
+Une image numérique est une grille de **pixels**. Chaque pixel stocke des valeurs de couleur — généralement trois
+**canaux** : rouge, vert et bleu (RGB). Une image HD de 1920 × 1080 contient plus de deux millions de pixels,
+chacun avec trois valeurs allant de 0 à 255. Multipliez le tout et même une seule image
+contient des millions de nombres.
+
+<Illustration src="/images/lessons/computer-vision.svg" alt="Schéma montrant une image décomposée en une grille de pixels avec des canaux RGB" caption="Chaque image n'est qu'une grille de nombres répartis sur les canaux rouge, vert et bleu." />
+
+La **résolution** détermine la quantité de détails que la grille capture. Une résolution plus élevée signifie plus de pixels
+et des détails plus riches — mais aussi beaucoup plus de données à traiter pour l'IA. Une image 4K a quatre fois plus de
+pixels qu'une image HD, ce qui signifie quatre fois le coût computationnel.
+
+Les images en niveaux de gris n'ont qu'un seul canal (la luminosité), tandis que certains formats spécialisés — comme
+l'imagerie satellite ou les scanners médicaux — peuvent avoir des dizaines de canaux capturant des longueurs d'onde invisibles
+à l'œil humain.
+
+<FunFact>
+L'œil humain peut distinguer environ 10 millions de couleurs. Une image RGB standard en 8 bits peut représenter plus de 16,7 millions de combinaisons de couleurs uniques — plus que ce que nous pouvons réellement percevoir !
+</FunFact>
+
+## Réseaux de neurones convolutifs (CNNs)
+
+Les premières tentatives en vision par ordinateur reposaient sur des règles artisanales — « chercher des contours ici, faire correspondre ce
+modèle là ». Ces approches fragiles échouaient dès que la scène changeait. Les systèmes modernes utilisent
+des **réseaux de neurones convolutifs (CNNs)**, qui apprennent leurs propres règles à partir de milliers d'exemples
+étiquetés.
+
+Imaginez un CNN comme une chaîne de montage de détecteurs de motifs, chaque couche s'appuyant sur la précédente :
+
+1. Les **couches convolutives** font glisser de petits filtres sur l'image, détectant des motifs simples comme
+   les contours, les coins et les textures.
+2. Les **couches de pooling** réduisent la taille des données, ne conservant que les signaux les plus importants et éliminant
+   les détails redondants.
+3. Les **couches convolutives plus profondes** combinent ces motifs simples en caractéristiques plus complexes — yeux,
+   roues, lettres.
+4. Les **couches entièrement connectées** rassemblent toutes les caractéristiques pour prendre une décision finale — « c'est un
+   chat » ou « c'est une tumeur ».
+
+La beauté de la chose, c'est que personne ne programme ces filtres à la main. Le réseau les **apprend** pendant l'entraînement, partant d'un bruit aléatoire et s'affinant progressivement pour devenir des détecteurs utiles.
+
+<ThinkAboutIt>
+Quand vous apprenez à reconnaître le visage d'un ami, vous ne mémorisez pas chaque pixel — vous repérez des caractéristiques clés comme la forme des yeux, la coiffure et l'expression. Les CNNs font quelque chose de remarquablement similaire. Quelles caractéristiques pensez-vous qu'un CNN apprendrait en premier ?
+</ThinkAboutIt>
+
+## Classification, détection et segmentation
+
+La vision par ordinateur s'attaque à trois tâches progressivement plus difficiles :
+
+| Tâche | Question à laquelle elle répond | Exemple |
+|------|-------------------|---------|
+| **Classification d'images** | Qu'y a-t-il dans cette image ? | « Cette radiographie montre une pneumonie. » |
+| **Détection d'objets** | Qu'y a-t-il dans cette image et où ? | Dessiner des cadres autour de chaque piéton dans une scène de rue. |
+| **Segmentation sémantique** | Quels pixels appartiennent à quel objet ? | Colorier chaque pixel de la route, du trottoir, de la voiture et du ciel différemment. |
+
+Les voitures autonomes ont besoin des trois simultanément — classifier les objets, les localiser précisément et
+comprendre la scène entière pixel par pixel.
+
+Chaque tâche nécessite progressivement plus de puissance de calcul et de données d'entraînement. La classification était
+en grande partie résolue en 2015 ; la segmentation en temps réel sur la vidéo reste un domaine de recherche actif aujourd'hui.
+
+<Quiz question="Quelle tâche de vision par ordinateur attribue une étiquette à chaque pixel individuel d'une image ?" options="Classification d'images|Détection d'objets|Segmentation sémantique|Extraction de caractéristiques" answer="2" explanation="La segmentation sémantique étiquette chaque pixel avec sa classe d'objet correspondante, offrant la compréhension la plus détaillée d'une scène." />
+
+## Applications dans le monde réel
+
+La vision par ordinateur est déjà intégrée dans des industries auxquelles vous ne vous attendriez pas :
+
+- **Tesla Autopilot** utilise huit caméras et une IA basée sur la vision pour détecter les voies, les feux de circulation et
+  les obstacles en temps réel — traitant des millions d'images par trajet.
+- **Imagerie médicale** — les modèles d'IA égalent ou surpassent désormais les radiologues pour détecter le cancer du sein
+  à un stade précoce sur les mammographies, détectant parfois ce que six experts humains avaient manqué.
+- **Contrôle qualité** — les usines utilisent des systèmes de vision pour inspecter des milliers de produits par minute,
+  repérant des défauts trop subtils ou trop rapides pour les inspecteurs humains.
+- **Agriculture** — des drones équipés de vision par ordinateur identifient les cultures malades sur de vastes champs,
+  permettant un traitement ciblé qui réduit l'utilisation de pesticides jusqu'à 90 %.
+- **Commerce de détail** — les magasins Amazon Go utilisent la vision par ordinateur pour suivre les produits que les clients
+  prennent, permettant des achats sans passage en caisse.
+
+<FunFact>
+DeepMind de Google a développé une IA capable de détecter plus de 50 maladies oculaires à partir de scans rétiniens avec autant de précision que les meilleurs ophtalmologistes du monde — en quelques secondes plutôt qu'en quelques semaines.
+</FunFact>
+
+## Préoccupations éthiques
+
+La vision par ordinateur est puissante, mais elle soulève des questions graves auxquelles la société est encore confrontée :
+
+- **Surveillance** — la reconnaissance faciale permet le suivi de masse des citoyens. Plusieurs villes,
+  dont San Francisco et certaines parties de l'UE, ont interdit ou restreint son utilisation par la police.
+- **Biais** — des études marquantes de Joy Buolamwini au MIT ont montré que les systèmes commerciaux de reconnaissance
+  faciale étaient nettement moins précis pour les visages à peau foncée et les femmes, car les données d'entraînement ont historiquement surreprésenté les hommes à peau claire.
+- **Consentement** — votre visage devrait-il être scanné à votre insu dans les magasins, les aéroports ou les espaces
+  publics ? De nombreux pays élaborent encore une législation pour traiter cette question.
+- **Deepfakes** — les images et vidéos truquées générées par l'IA peuvent propager la désinformation et nuire aux
+  réputations, rendant les preuves visuelles moins fiables.
+
+<ThinkAboutIt>
+Imaginez qu'une école installe des caméras de reconnaissance faciale pour prendre les présences automatiquement. Quels sont les avantages ? Que pourrait-il mal se passer ? Seriez-vous à l'aise avec ce système ?
+</ThinkAboutIt>
+
+<Quiz question="Pourquoi certains systèmes de reconnaissance faciale fonctionnent-ils moins bien pour certains groupes démographiques ?" options="Ces groupes ont des traits faciaux plus complexes|Les caméras utilisées sont de qualité inférieure|Les jeux de données d'entraînement sont souvent biaisés et manquent de diversité|Les algorithmes sont intentionnellement discriminatoires" answer="2" explanation="Lorsque les données d'entraînement surreprésentent certains groupes (par ex. les hommes à peau claire), le modèle apprend mieux ces caractéristiques et fonctionne mal sur les groupes sous-représentés." />
+
+## Points clés à retenir
+
+- Les images sont des grilles de valeurs de pixels réparties sur des canaux de couleur — les ordinateurs voient des nombres, pas des images.
+- Les CNNs apprennent à extraire des caractéristiques automatiquement grâce à l'entraînement, en commençant par les contours et en construisant
+  jusqu'aux objets complexes.
+- La classification, la détection et la segmentation représentent des niveaux croissants de compréhension visuelle.
+- La vision par ordinateur est à l'origine d'avancées majeures, du diagnostic médical aux véhicules autonomes en passant par
+  l'agriculture de précision.
+- Les biais dans les données d'entraînement et les préoccupations liées à la surveillance exigent un déploiement prudent et éthique — la technologie
+  seule ne suffit jamais sans une gouvernance responsable.
+
+<Quiz question="Dans un CNN, quel est le rôle des couches de pooling ?" options="Ajouter de la couleur à l'image|Réduire les dimensions spatiales tout en conservant les caractéristiques clés|Convertir l'image en texte|Augmenter le nombre de pixels" answer="1" explanation="Les couches de pooling sous-échantillonnent les cartes de caractéristiques, réduisant le coût computationnel tout en préservant les informations les plus importantes détectées par les filtres convolutifs." />

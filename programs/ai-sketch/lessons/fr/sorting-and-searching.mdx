@@ -1,0 +1,147 @@
+---
+title: "Tri et Recherche — Comment l'IA classe et trouve des résultats"
+description: "Découvrez pourquoi les algorithmes de tri et de recherche sont fondamentaux dans la façon dont l'IA classe les recommandations et trouve des réponses."
+order: 3
+difficulty: "intermediate"
+duration: 15
+icon: "🔍"
+published: true
+---
+
+## Trouver vite
+
+Quand vous cherchez sur Google, les résultats apparaissent en moins d'une seconde — classés du plus au moins pertinent. Quand Netflix recommande des films, il trie des milliers de titres par probabilité de vous plaire. Derrière chaque recherche rapide et chaque liste classée se cache un algorithme de tri ou de recherche.
+
+## Pourquoi le tri compte
+
+Des données triées sont des données puissantes. Une fois une liste ordonnée, on peut :
+
+- **La rechercher efficacement** grâce à la recherche binaire.
+- **Trouver les doublons** — ils sont côte à côte.
+- **Identifier les N meilleurs résultats** — il suffit de prendre les N premiers.
+- **Fusionner des jeux de données** — combiner deux listes triées est bien plus rapide que combiner des listes non triées.
+
+<Illustration src="/images/lessons/sorting-and-searching.svg" alt="Un tableau non trié transformé en tableau trié, avec une loupe illustrant la recherche binaire" caption="Le tri transforme des données chaotiques en quelque chose de recherchable et structuré." />
+
+## Tri à bulles (Bubble Sort) — Simple mais lent
+
+Le tri à bulles parcourt la liste de façon répétée, comparant les éléments adjacents et les échangeant s'ils sont dans le mauvais ordre. Les plus grandes valeurs « remontent » vers la fin.
+
+```
+[5, 3, 8, 1, 2]
+ ↕
+[3, 5, 8, 1, 2]  → swapped 5 and 3
+[3, 5, 1, 8, 2]  → swapped 8 and 1
+[3, 5, 1, 2, 8]  → swapped 8 and 2
+... keep going until no swaps needed
+```
+
+**Complexité** : O(n²) — pour chacun des n éléments, on peut comparer avec tous les autres. Avec 1 000 éléments, c'est jusqu'à 1 000 000 de comparaisons. Avec 1 000 000 d'éléments ? Un billion. Impraticable pour les charges IA.
+
+<ThinkAboutIt>
+Si le tri à bulles effectue environ n² comparaisons, combien de fois serait-il plus lent de trier un million d'éléments par rapport à mille ? Pensez au ratio : (1 000 000)² vs (1 000)². C'est un million de fois plus lent — juste pour mille fois plus de données.
+</ThinkAboutIt>
+
+## Tri fusion (Merge Sort) — Diviser pour régner
+
+Le tri fusion adopte une approche plus astucieuse : couper la liste en deux, trier chaque moitié, puis fusionner les deux moitiés triées.
+
+```
+[5, 3, 8, 1, 2, 7, 4, 6]
+         split
+[5, 3, 8, 1]   [2, 7, 4, 6]
+    split            split
+[5, 3] [8, 1]  [2, 7] [4, 6]
+  ↓       ↓       ↓       ↓
+[3, 5] [1, 8]  [2, 7] [4, 6]
+    merge            merge
+[1, 3, 5, 8]   [2, 4, 6, 7]
+         merge
+[1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+**Complexité** : O(n log n) — drastiquement plus rapide. Pour un million d'éléments, c'est environ 20 millions de comparaisons au lieu d'un billion. C'est ce type d'algorithme qui rend les vrais systèmes d'IA possibles.
+
+<FunFact>
+Le tri natif de Python utilise Timsort — un hybride combinant tri fusion et tri par insertion. Inventé par Tim Peters en 2002, il est maintenant utilisé en Python, Java et Android. Il est conçu pour bien fonctionner sur des données réelles souvent partiellement triées.
+</FunFact>
+
+### Bubble Sort vs Merge Sort à grande échelle
+
+| Éléments | Bubble Sort (O(n²)) | Merge Sort (O(n log n)) |
+|----------|---------------------|-------------------------|
+| 100 | 10 000 ops | ~700 ops |
+| 10 000 | 100 000 000 ops | ~130 000 ops |
+| 1 000 000 | 1 000 000 000 000 ops | ~20 000 000 ops |
+
+La différence n'est pas théorique — c'est la différence entre « fini en une seconde » et « fini la semaine prochaine ».
+
+<Quiz question="Pourquoi le tri fusion est-il préféré au tri à bulles pour les grands jeux de données en IA ?" options="Le tri fusion utilise moins de mémoire|Le tri fusion est en O(n log n) contre O(n²) pour le tri à bulles, ce qui le rend radicalement plus rapide à grande échelle|Le tri fusion a été inventé plus récemment|Le tri fusion ne fonctionne qu'avec des nombres, ce qu'utilise l'IA" answer="1" explanation="À grande échelle, la différence entre O(n²) et O(n log n) est énorme. Pour un million d'éléments, le tri fusion effectue environ 20 millions d'opérations contre un billion pour le tri à bulles." />
+
+## Recherche binaire (Binary Search) — L'astuce de l'annuaire
+
+Imaginez chercher « Smith » dans un annuaire. Vous ne commenceriez pas à la page 1 en lisant chaque nom. Vous ouvririez au milieu, verriez où vous en êtes, et sauteriez dans la bonne moitié. Puis vous recommenceriez.
+
+C'est la **recherche binaire** — et elle ne fonctionne que sur des données triées.
+
+```
+sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+target = 23
+
+Step 1: Middle = 16 → 23 > 16, search right half
+Step 2: Middle = 38 → 23 < 38, search left half
+Step 3: Middle = 23 → Found it!
+```
+
+**Complexité** : O(log n). Dans une liste triée d'un million d'éléments, la recherche binaire trouve n'importe quel élément en 20 étapes maximum. Une recherche linéaire prendrait jusqu'à un million d'étapes.
+
+<Quiz question="Une base de données triée contient 1 000 000 d'enregistrements. Combien de comparaisons la recherche binaire nécessite-t-elle dans le pire cas ?" options="1 000 000|500 000|Environ 20|Environ 1 000" answer="2" explanation="La recherche binaire divise l'espace par deux à chaque étape. log₂(1 000 000) ≈ 20, donc il faut au maximum environ 20 comparaisons." />
+
+## Comment l'IA utilise le tri et la recherche
+
+### Classement des résultats de recherche
+
+Quand Google traite votre requête, il note chaque page pertinente et les trie par pertinence. Les 10 premiers résultats apparaissent en page 1. Sans tri efficace, cela prendrait des minutes.
+
+### Systèmes de recommandation
+
+Netflix calcule un « score de correspondance » pour des milliers de titres, puis les trie pour vous montrer les meilleurs en premier. L'algorithme de tri affecte directement ce que vous voyez sur votre écran d'accueil.
+
+### K plus proches voisins
+
+Cet algorithme classique d'IA trouve les K éléments les plus similaires à une entrée donnée. Il calcule les distances, puis trie partiellement pour trouver les K plus petites.
+
+<Callout>
+On n'a pas toujours besoin de tout trier. Si vous ne voulez que les 10 meilleurs résultats parmi un million, un **tri partiel** ou un **tas** les trouve en O(n log k) — bien plus vite qu'un tri complet.
+</Callout>
+
+### Préparation des données d'entraînement
+
+Avant l'entraînement, on trie souvent les données pour créer des lots équilibrés — un mélange d'exemples faciles et difficiles, ou une distribution équilibrée de catégories.
+
+## Quand trier vs quand utiliser une hash map
+
+| Scénario | Meilleur choix | Pourquoi |
+|----------|---------------|----------|
+| Trouver un élément par clé | Hash map | Recherche en O(1) |
+| Trouver les 10 meilleurs | Tri | Besoin de résultats ordonnés |
+| Vérifier l'existence | Hash map | O(1) vs O(log n) |
+| Obtenir les éléments en ordre | Tri | Les hash maps n'ont pas d'ordre |
+| Requêtes d'intervalle | Tableau trié + binary search | Les hash maps ne gèrent pas les intervalles |
+
+<ThinkAboutIt>
+Un service de streaming musical doit afficher vos « 50 titres les plus écoutés ». Trieriez-vous tout l'historique d'écoute, ou maintiendriez-vous une structure qui connaît toujours le top 50 ?
+</ThinkAboutIt>
+
+<FunFact>
+Google traite plus de 8,5 milliards de recherches par jour. Chaque recherche implique le tri et le classement de centaines de résultats en millisecondes. L'efficacité des algorithmes de tri impacte directement la consommation électrique des centres de données de Google — de meilleurs algorithmes économisent littéralement des mégawatts.
+</FunFact>
+
+<Quiz question="Quand la recherche binaire ne serait-elle PAS appropriée ?" options="Quand les données sont triées|Quand on cherche un élément spécifique|Quand les données sont non triées et changent fréquemment|Quand le jeu de données est très grand" answer="2" explanation="La recherche binaire nécessite des données triées. Si vos données changent fréquemment, maintenir l'ordre trié coûte cher. Une hash map serait préférable." />
+
+## Points clés à retenir
+
+- Le **tri** transforme des données chaotiques en données structurées — essentiel pour le classement et les recommandations.
+- Les algorithmes **O(n²)** comme le tri à bulles sont pédagogiques mais impraticables ; les algorithmes **O(n log n)** comme le tri fusion alimentent les vrais systèmes.
+- La **recherche binaire** est extraordinairement efficace sur les données triées — 20 étapes pour un million d'éléments.
+- Choisissez entre tri et hash map selon que vous avez besoin de **résultats ordonnés** ou de **recherches instantanées**.

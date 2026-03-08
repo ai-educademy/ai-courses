@@ -1,0 +1,137 @@
+---
+title: "Rate Limiter డిజైన్ చేయండి — APIs ను Scale లో ప్రొటెక్ట్ చేయడం"
+description: "Token bucket, sliding window మరియు Redis-backed algorithms ఉపయోగించి distributed rate limiter ఎలా డిజైన్ చేయాలో నేర్చుకోండి — APIs ను abuse నుండి రక్షించడానికి మరియు fair usage నిర్ధారించడానికి."
+order: 6
+difficulty: "advanced"
+duration: 20
+icon: "🛡️"
+published: true
+---
+
+# Rate Limiter డిజైన్ చేయండి — APIs ను Scale లో ప్రొటెక్ట్ చేయడం
+
+Rate limiting అనేది అత్యంత practical system design topics లో ఒకటి. ప్రతి production API — GitHub నుండి Stripe వరకు — abuse నివారించడానికి, fair usage నిర్ధారించడానికి మరియు backend services overload కాకుండా రక్షించడానికి దీనిపై ఆధారపడుతుంది.
+
+## Step 1 — Requirements సేకరణ
+
+### Functional Requirements
+- Configurable rules ఆధారంగా requests limit చేయండి (per user, IP లేదా API key)
+- Client throttle అయినప్పుడు clear feedback ఇవ్వండి (HTTP 429)
+- ఏకకాలంలో multiple rate limiting rules support చేయండి
+
+### Non-Functional Requirements
+- **Low latency** — limiter significant overhead add చేయకూడదు
+- **Distributed** — multiple servers లో పనిచేయాలి
+- **Fault-tolerant** — limiter fail అయితే, traffic flow అవుతూనే ఉండాలి (fail-open)
+
+<ThinkAboutIt>Rate limiter crash అయినప్పుడు fail-open (traffic allow చేయడం) అవ్వాలా లేదా fail-closed (traffic block చేయడం) అవ్వాలా? E-commerce site vs banking API కి trade-offs ఏమిటి?</ThinkAboutIt>
+
+## Step 2 — Rate Limiting Algorithms
+
+### Fixed Window Counter
+Time ను fixed windows గా divide చేయండి (ఉదా., 60-second intervals). ప్రతి request కి counter increment చేయండి. Window boundaries వద్ద reset చేయండి. **సమస్య:** window edges వద్ద burst traffic 2× limit ని allow చేయవచ్చు.
+
+### Sliding Window Log
+ప్రతి request యొక్క timestamp store చేయండి. Trailing window లోని entries count చేయండి. Precise కానీ **memory-intensive** — scale లో ప్రతి timestamp store చేయడం expensive.
+
+### Sliding Window Counter
+ఒక hybrid approach: current window count ను previous window యొక్క weighted portion తో combine చేయండి. Accuracy మరియు memory efficiency ని balance చేస్తుంది.
+
+### Token Bucket Algorithm (అత్యంత Popular)
+ఒక bucket maximum capacity వరకు tokens hold చేస్తుంది. Tokens fixed rate లో add అవుతాయి. ప్రతి request ఒక token consume చేస్తుంది. Bucket empty అయితే, request reject అవుతుంది.
+
+```
+Bucket: capacity=10, refill_rate=2/sec
+
+Time 0s: [🪙🪙🪙🪙🪙🪙🪙🪙🪙🪙] → 10 tokens
+Burst of 8 requests → [🪙🪙] → 2 tokens remain
+Time 1s: refill +2 → [🪙🪙🪙🪙] → 4 tokens
+```
+
+### Algorithm పోలిక
+
+| Algorithm | Memory | Accuracy | Burst Handling |
+|-----------|--------|----------|----------------|
+| Fixed Window | తక్కువ | తక్కువ (edge bursts) | బలహీనం |
+| Sliding Log | ఎక్కువ | Exact | మంచిది |
+| Sliding Counter | మధ్యస్థం | Approximate | మంచిది |
+| Token Bucket | తక్కువ | మంచిది | అద్భుతం |
+
+<Quiz question="ఏ algorithm controlled bursts ను allow చేస్తూ steady long-term rate maintain చేస్తుంది?" options="Fixed Window Counter|Sliding Window Log|Token Bucket|Sliding Window Counter" answer="2" explanation="Token Bucket, bucket capacity వరకు short bursts ను allow చేస్తుంది మరియు refill mechanism ద్వారా average rate enforce చేస్తుంది. Bursty traffic patterns handle చేయవలసిన APIs కి ఇది ideal." />
+
+## Step 3 — High-Level Architecture
+
+```
+Client → API Gateway (Rate Limiter Middleware) → Backend Services
+                    ↕
+              Redis Cluster
+         (counters + token buckets)
+```
+
+<Illustration src="/images/lessons/design-rate-limiter.svg" alt="Rate limiter architecture — clients, rate limiting middleware తో API gateway, distributed state కోసం Redis cluster మరియు backend services చూపిస్తోంది" caption="Rate limiter API gateway లో ఉంటుంది, distributed counter storage కోసం Redis ఉపయోగిస్తుంది" />
+
+### Rate Limiter ఎక్కడ ఉంచాలి
+- **Client-side** — spoof చేయడం సులభం, నమ్మదగినది కాదు
+- **Server-side** — per-instance మాత్రమే, scale కాదు
+- **API Gateway / Middleware** — distributed systems కి అత్యుత్తమ approach; అన్ని instances లో centralised enforcement
+
+## Step 4 — Deep Dive: Distributed Rate Limiting
+
+### Redis + Lua Scripts
+Distributed setup లో, multiple servers rate limiting state share చేయాలి. Redis standard choice ఎందుకంటే దాని atomic operations మరియు sub-millisecond latency.
+
+Lua script atomicity నిర్ధారిస్తుంది — check-and-decrement ఒకే Redis operation లో జరుగుతుంది, race conditions నివారిస్తుంది:
+
+```
+-- Token Bucket in Redis (pseudocode)
+local tokens = redis.call('GET', key)
+local last_refill = redis.call('GET', key..':time')
+-- Calculate tokens to add based on elapsed time
+-- If tokens > 0: decrement and ALLOW
+-- Else: DENY
+```
+
+### Response Headers
+బాగా డిజైన్ చేసిన rate limiters clients కి state communicate చేస్తాయి:
+- `X-RateLimit-Limit: 100` — per window maximum requests
+- `X-RateLimit-Remaining: 42` — మిగిలిన requests
+- `X-RateLimit-Reset: 1672531200` — window reset అయ్యే UTC epoch
+- HTTP `429 Too Many Requests` తో `Retry-After` header
+
+<Quiz question="Rate limiting లో Redis తో Lua scripts ఎందుకు వాడతారు, విడివిడిగా GET మరియు SET commands బదులు?" options="Lua, Redis commands కంటే faster|Lua scripts Redis పై atomically execute అవుతాయి, race conditions నివారిస్తాయి|Redis natively GET/SET support చేయదు|Lua network bandwidth తగ్గిస్తుంది" answer="1" explanation="Lua scripts Redis server పై atomically run అవుతాయి. Atomicity లేకుండా, రెండు concurrent requests ఒకే token count read చేయవచ్చు, రెండూ tokens available గా చూడవచ్చు, మరియు రెండూ decrement చేయవచ్చు — limit కంటే ఎక్కువ requests allow అవుతాయి." />
+
+## Step 5 — Edge Cases Handle చేయడం
+
+### Race Conditions
+Atomic operations లేకుండా, concurrent requests limits bypass చేయవచ్చు. Solutions: Redis Lua scripts లేదా Redis `MULTI/EXEC` transactions.
+
+### Rate Limiting Dimensions
+ఏకకాలంలో multiple levels లో limits apply చేయండి:
+- **Per user** — authenticated users కి 100 requests/minute
+- **Per IP** — anonymous traffic కి 50 requests/minute
+- **Per API key** — tiered plans (free: 10/min, pro: 1000/min)
+
+### Distributed Clock Skew
+Servers clocks కొంచెం different గా ఉండవచ్చు. Application server timestamps పై ఆధారపడకుండా Redis server time ను single source of truth గా వాడండి.
+
+<FunFact>GitHub REST API authenticated users కి గంటకు 5,000 requests allow చేస్తుంది కానీ unauthenticated requests కి గంటకు 60 మాత్రమే. Stripe sliding window approach వాడుతుంది, live మరియు test mode API keys కి separate limits తో.</FunFact>
+
+## Step 6 — Bottlenecks మరియు Optimisations
+
+| Bottleneck | Solution |
+|-----------|----------|
+| Redis single point of failure | Replication తో Redis Cluster |
+| Redis కి network latency | Periodic sync తో local in-memory cache |
+| Hot keys (popular API keys) | Multiple Redis nodes లో shard చేయండి |
+| Rule evaluation overhead | Rules pre-compile చేయండి, configurations cache చేయండి |
+
+<Quiz question="ఒక rate limiter 60 seconds fixed window వాడుతుంది, limit 100 requests. ఒక user second 59 లో 100 requests పంపుతాడు మరియు second 61 లో మరో 100. ఎన్ని requests through అవుతాయి?" options="100|150|200|Algorithm పై ఆధారపడుతుంది" answer="2" explanation="Fixed window counters తో, అన్ని 200 requests pass అవుతాయి ఎందుకంటే 100 window 1 (seconds 0-59) లో మరియు 100 window 2 (seconds 60-119) లో వస్తాయి. ఈ edge-burst problem వల్లనే sliding window లేదా token bucket algorithms prefer చేస్తారు." />
+
+<ThinkAboutIt>మీరు London, New York మరియు Tokyo లో data centres ఉన్న global API కోసం rate limiting డిజైన్ చేస్తుంటే — single centralised Redis వాడతారా లేదా regional Redis clusters వాడతారా? ఏ consistency trade-offs accept చేస్తారు?</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+- [Rate Limiting — System Design Interview, Ch. 4](https://bytebytego.com/) — Alex Xu యొక్క step-by-step rate limiter design
+- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) — Stripe production లో rate limiting ఎలా handle చేస్తుందో
+- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) — real-world API gateway implementation

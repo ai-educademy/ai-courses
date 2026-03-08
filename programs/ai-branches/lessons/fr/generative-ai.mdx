@@ -1,0 +1,141 @@
+---
+title: "IA générative — Comment les machines créent de l'art, de la musique et du code"
+description: "Découvrez comment l'IA génère des images, de la musique et du code à partir de rien — des GANs aux modèles de diffusion et au-delà."
+order: 6
+difficulty: "intermediate"
+duration: 16
+icon: "🎨"
+published: true
+---
+
+# IA générative — Comment les machines créent de l'art, de la musique et du code
+
+La plupart des IA que vous avez rencontrées jusqu'ici sont **discriminatives** — elles classifient, prédisent ou étiquettent des données existantes. L'IA générative inverse le paradigme : au lieu d'analyser le monde, elle **crée** du contenu nouveau qui n'a jamais existé auparavant. Des images photoréalistes au code fonctionnel, les modèles génératifs redéfinissent ce que les machines peuvent accomplir.
+
+## Le faussaire et le détective — GANs
+
+Un **Generative Adversarial Network (GAN)** est constitué de deux réseaux de neurones engagés dans un duel :
+
+- **Générateur** — le faussaire. Il prend du bruit aléatoire et tente de produire des données
+  (par ex., une image) qui paraissent réelles.
+- **Discriminateur** — le détective. Il examine les données et tente de distinguer les vrais
+  échantillons des faux.
+
+Le générateur s'améliore en trompant le discriminateur ; le discriminateur s'améliore en détectant
+les contrefaçons. Après des milliers de cycles, le générateur devient remarquablement doué pour
+produire des résultats réalistes — et le discriminateur devient un expert dans la détection des
+défauts.
+
+<Illustration src="/images/lessons/generative-ai.svg" alt="Diagramme montrant la boucle d'entraînement GAN : le générateur crée des images, le discriminateur juge le vrai du faux" caption="Les GANs opposent un générateur à un discriminateur dans une boucle d'entraînement adversariale." />
+
+Cette danse adversariale, introduite par Ian Goodfellow en 2014, a lancé tout un domaine. StyleGAN
+de NVIDIA, par exemple, peut générer des visages humains si réalistes que la plupart des gens ne
+peuvent pas les distinguer de photographies. Chaque itération d'entraînement affine les deux
+réseaux — le générateur apprend des détails plus fins tandis que le discriminateur développe un œil
+plus aiguisé pour repérer les artefacts.
+
+<FunFact>Le site thispersondoesnotexist.com a affiché des millions de visages humains générés par GAN — chacun d'entre eux entièrement fictif.</FunFact>
+
+## Autoencodeurs variationnels — Apprendre un monde compressé
+
+Un **Variational Autoencoder (VAE)** adopte une approche différente. Il apprend à compresser les données dans un **espace latent** compact puis à les reconstruire. Contrairement à un autoencodeur standard, un VAE ajoute de l'aléatoire lors de la compression, ce qui signifie que vous pouvez échantillonner de nouveaux points dans l'espace latent et les décoder en résultats entièrement nouveaux.
+
+Imaginez que vous apprenez l'« essence » d'un chat : l'espace latent capture des caractéristiques
+abstraites — longueur du pelage, forme des oreilles, couleur — et vous pouvez combiner ces
+caractéristiques pour générer des chats qui n'ont jamais existé.
+
+Les VAEs tendent à produire des résultats légèrement plus flous que les GANs, mais ils sont plus
+stables à entraîner et offrent une génération fluide et contrôlable. Comme l'espace latent est
+continu et bien organisé, vous pouvez interpoler entre deux points — disons, un chat tigré et un
+Persan — et obtenir des résultats intermédiaires plausibles à chaque étape.
+
+## Modèles de diffusion — Du bruit au chef-d'œuvre
+
+Les modèles derrière **Stable Diffusion**, **DALL·E 3** et **Midjourney** reposent sur une idée d'une élégante simplicité : partir de bruit pur et le retirer progressivement jusqu'à ce qu'une image apparaisse.
+
+### Comment ça fonctionne
+
+1. **Processus direct** — Prenez une image réelle et ajoutez progressivement du bruit gaussien
+   jusqu'à ce qu'elle devienne indiscernable du bruit statique.
+2. **Processus inverse** — Entraînez un réseau de neurones à prédire et supprimer le bruit à
+   chaque étape, apprenant effectivement à inverser la corruption.
+
+Au moment de la génération, vous partez de bruit aléatoire pur et exécutez le processus inverse.
+Étape par étape, une structure cohérente émerge — d'abord des formes grossières, puis des détails
+fins. Le nombre d'étapes est configurable : plus d'étapes donnent une meilleure qualité mais
+prennent plus de temps. Les planificateurs modernes optimisent ce compromis, produisant souvent
+d'excellents résultats en seulement 20 à 50 étapes.
+
+### Pipeline texte-vers-image
+
+Lorsque vous tapez un prompt comme *« un coucher de soleil sur une ville cyberpunk, style peinture à l'huile »*, un encodeur de texte (souvent CLIP) convertit vos mots en une représentation numérique. Cette représentation **guide** le processus de débruitage, orientant l'image vers votre description à chaque étape.
+
+Le résultat : une image haute résolution qui correspond à votre intention, créée en quelques
+secondes. Les prompts négatifs (décrivant ce que vous ne voulez *pas*) et la force du guidage sans
+classificateur vous permettent d'affiner le résultat sans réentraîner le modèle.
+
+<Quiz question="Dans un modèle de diffusion, que fait le processus inverse ?" options="Ajoute du bruit à une image|Supprime le bruit étape par étape pour générer une image|Compresse une image dans un espace latent|Classe les images en catégories" answer="1" explanation="Le processus inverse est entraîné à supprimer le bruit de manière incrémentale, transformant du bruit statique aléatoire en une image cohérente." />
+
+## Génération de code — Votre programmeur binôme IA
+
+L'IA générative ne se limite pas aux images. Les grands modèles de langage entraînés sur de vastes dépôts de code peuvent écrire, compléter et même déboguer du code.
+
+- **GitHub Copilot** (propulsé par OpenAI Codex et des modèles ultérieurs) suggère des fonctions entières pendant que vous tapez.
+- **Amazon CodeWhisperer** et **Google Gemini Code Assist** offrent des capacités similaires dans de multiples langages.
+
+Ces outils ne se contentent pas de copier-coller depuis les données d'entraînement — ils
+généralisent des patterns pour produire du code nouveau qui s'adapte à votre contexte spécifique.
+Ils gèrent le code standard, suggèrent des algorithmes et détectent les erreurs courantes. Des
+études montrent que les développeurs utilisant des assistants de code IA terminent leurs tâches
+jusqu'à 55 % plus vite, bien qu'une relecture attentive reste essentielle pour détecter les erreurs
+subtiles.
+
+<ThinkAboutIt>Si une IA génère du code qui ressemble fortement à un projet open source, à qui appartient le code résultant ? Comment devrait fonctionner l'attribution ?</ThinkAboutIt>
+
+## Génération de musique et d'audio
+
+Des modèles comme **Google MusicLM**, **Meta's MusicGen** et **Suno AI** génèrent de la musique à
+partir de prompts textuels. Décrivez un genre, une ambiance et des instruments, et le modèle
+compose un morceau original. L'approche sous-jacente combine souvent la tokenisation audio avec des
+architectures transformer — similaire dans l'esprit à la façon dont les modèles de langage génèrent
+du texte, mais opérant sur des tokens audio. Certains modèles peuvent même prolonger ou remixer des
+morceaux existants, ouvrant de nouveaux flux de travail créatifs pour les producteurs et
+compositeurs.
+
+## Deepfakes et préoccupations éthiques
+
+La puissance de l'IA générative s'accompagne de risques sérieux :
+
+- **Deepfakes** — Les GANs et les modèles de diffusion peuvent générer des vidéos truquées
+  convaincantes de personnes réelles, facilitant la désinformation et la fraude.
+- **Propriété intellectuelle** — Les modèles entraînés sur les œuvres d'artistes peuvent produire
+  des résultats dans leur style sans consentement ni rémunération.
+- **Amplification des biais** — Si les données d'entraînement contiennent des biais, le contenu
+  généré les reflétera et les amplifiera potentiellement.
+- **Coût environnemental** — L'entraînement de grands modèles génératifs nécessite une puissance de
+  calcul énorme, contribuant à une consommation d'énergie et des émissions de carbone significatives.
+
+L'industrie répond avec le tatouage numérique (comme Google SynthID), les standards de provenance du contenu (C2PA) et la législation — mais la technologie devance constamment la réglementation.
+
+<Quiz question="Qu'est-ce qu'un deepfake ?" options="Un type d'architecture GAN|Un média généré par IA qui représente de manière convaincante de vraies personnes faisant ou disant des choses qu'elles n'ont jamais faites|Un algorithme de compression vidéo|Une technique pour améliorer la résolution des images" answer="1" explanation="Les deepfakes utilisent l'IA générative pour créer des médias convaincants mais fabriqués de personnes réelles, soulevant de sérieuses préoccupations éthiques et de désinformation." />
+
+## Où va l'IA générative
+
+La trajectoire est claire : les modèles deviennent plus rapides, moins chers et plus contrôlables.
+La génération vidéo (OpenAI Sora, Runway Gen-3), la création d'actifs 3D et la conception de
+molécules médicamenteuses sont autant de frontières actives. Les industries créatives — design,
+publicité, divertissement — sont déjà en pleine transformation. La génération de contenu
+personnalisé à grande échelle devient routinière, et la frontière entre le travail créé par l'humain
+et celui créé par l'IA s'estompe chaque mois.
+
+<ThinkAboutIt>L'art généré par IA devrait-il être éligible à la protection par le droit d'auteur ? Que signifie la « créativité » quand c'est une machine qui produit l'œuvre ?</ThinkAboutIt>
+
+<Quiz question="Quelle technique Stable Diffusion utilise-t-il principalement pour générer des images ?" options="Generative Adversarial Networks|Variational Autoencoders|Modèles de diffusion (débruitage)|Recurrent Neural Networks" answer="2" explanation="Stable Diffusion utilise des modèles de diffusion qui apprennent à débruiter itérativement du bruit statique aléatoire en images cohérentes, guidés par des embeddings textuels." />
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Comment fonctionnent les modèles de diffusion — Lilian Weng](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) — Présentation technique approfondie des mathématiques et de l'intuition des modèles de diffusion
+- [Generative Adversarial Networks — Article original d'Ian Goodfellow](https://arxiv.org/abs/1406.2661) — L'article de 2014 qui a lancé la révolution des GANs
+- [Standard de provenance du contenu C2PA](https://c2pa.org/) — Initiative menée par l'industrie pour vérifier l'origine et l'authenticité du contenu numérique

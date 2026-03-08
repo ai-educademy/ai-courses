@@ -1,0 +1,134 @@
+---
+title: "Entraîner des modèles d'IA — Apprendre aux machines à progresser"
+description: "Comprenez la boucle d'entraînement, les fonctions de perte, le surapprentissage, et comment savoir quand votre modèle d'IA est prêt."
+order: 4
+difficulty: "beginner"
+duration: 15
+icon: "🏋️"
+published: true
+---
+
+# Entraîner des modèles d'IA
+
+Vous savez maintenant que les réseaux de neurones apprennent en ajustant des poids et des biais. Mais comment fonctionne réellement le processus complet d'entraînement ? Comment savoir quand un modèle a suffisamment appris — ou trop appris ? Dans cette leçon, nous allons parcourir l'ensemble du parcours d'entraînement.
+
+## La boucle d'entraînement
+
+L'entraînement d'un modèle d'IA suit un cycle qui se répète encore et encore :
+
+1. **Prédire** — Faire passer les données à travers le modèle et obtenir une prédiction.
+2. **Comparer** — Vérifier à quel point la prédiction est éloignée de la bonne réponse.
+3. **Ajuster** — Mettre à jour les poids pour réduire l'erreur.
+4. **Répéter** — Recommencer avec le prochain lot de données.
+
+Cette boucle s'exécute des milliers, voire des millions de fois. Chaque répétition rapproche légèrement le modèle des bonnes réponses.
+
+<Illustration src="/images/lessons/training-ai-models.svg" alt="Un diagramme circulaire montrant la boucle d'entraînement : Prédire, Comparer, Ajuster, Répéter, avec des flèches reliant chaque étape dans un cycle" caption="La boucle d'entraînement est le battement de cœur de l'apprentissage de l'IA — prédire, comparer, ajuster et répéter." />
+
+<FunFact>
+L'entraînement de GPT-4 aurait coûté plus de 100 millions de dollars en puissance de calcul seule. La boucle d'entraînement s'est exécutée sur des milliers de puces spécialisées pendant des mois.
+</FunFact>
+
+## Fonctions de perte : à quel point le modèle se trompe-t-il ?
+
+Après chaque prédiction, nous avons besoin d'un moyen de mesurer *à quel point* le modèle s'est trompé. Cette mesure est appelée la **perte** (ou le **coût**), et la formule qui la calcule est la **fonction de perte**.
+
+- **Perte faible** = la prédiction était proche de la bonne réponse.
+- **Perte élevée** = la prédiction était très éloignée.
+
+Pensez-y comme une cible de fléchettes. Le centre est la bonne réponse. La perte est la distance entre l'endroit où votre fléchette a atterri et le centre. L'objectif de l'entraînement est de minimiser cette distance au fil du temps.
+
+Les fonctions de perte courantes incluent :
+
+- **Erreur quadratique moyenne (MSE)** — mesure la distance quadratique moyenne entre les prédictions et les valeurs réelles. Utilisée pour prédire des nombres.
+- **Perte d'entropie croisée (Cross-Entropy Loss)** — mesure à quel point les probabilités prédites correspondent aux vraies catégories. Utilisée pour les tâches de classification.
+
+<Quiz question="Que mesure une fonction de perte dans l'entraînement de l'IA ?" options="La vitesse d'exécution du modèle|La quantité de mémoire utilisée par le modèle|L'écart entre les prédictions du modèle et les bonnes réponses|Le nombre de couches du modèle" answer="2" explanation="Une fonction de perte quantifie la différence entre ce que le modèle a prédit et la bonne réponse réelle. Le processus d'entraînement cherche à minimiser cette valeur." />
+
+## Epochs : combien de passages sur les données ?
+
+Un passage complet à travers l'ensemble des données d'entraînement est appelé un **epoch**. L'entraînement implique généralement de nombreux epochs — le modèle voit les mêmes données plusieurs fois, s'améliorant légèrement à chaque tour.
+
+- **Epoch 1 :** Le modèle fait beaucoup d'erreurs ; la perte est élevée.
+- **Epoch 10 :** Le modèle s'est considérablement amélioré ; la perte diminue.
+- **Epoch 50 :** Les améliorations ralentissent ; le modèle approche de son meilleur niveau.
+- **Epoch 200 :** Le modèle pourrait commencer à mémoriser — ce qui nous amène à notre sujet suivant.
+
+<ThinkAboutIt>
+Réviser pour un examen est comme exécuter des epochs. La première lecture est déroutante, mais chaque relecture construit la compréhension. Cependant, si vous relisez les mêmes notes cent fois, vous pourriez mémoriser le texte exact sans vraiment comprendre les concepts. L'IA a le même problème.
+</ThinkAboutIt>
+
+## Surapprentissage : l'étudiant qui mémorise
+
+Le **surapprentissage** (overfitting) est l'un des problèmes les plus courants dans l'entraînement de l'IA. Il survient lorsque le modèle apprend les données d'entraînement *trop bien* — y compris leur bruit et leurs particularités — et échoue sur des données nouvelles, jamais vues.
+
+Imaginez un étudiant qui mémorise chaque ancien sujet d'examen mot pour mot. Il obtient des résultats parfaits sur les anciens sujets mais peine dès que les questions changent, même légèrement. L'étudiant n'a pas appris la matière — il a mémorisé les réponses.
+
+Signes de surapprentissage :
+
+- L'exactitude sur les données d'entraînement est très élevée (par exemple, 99 %).
+- Les performances sur de nouvelles données sont bien pires (par exemple, 75 %).
+- Le modèle a essentiellement mémorisé les exemples d'entraînement.
+
+<Callout>
+L'objectif de l'entraînement n'est pas d'obtenir un score parfait sur des données que le modèle a déjà vues. C'est de bien performer sur des données qu'il n'a *jamais* vues. C'est le véritable test de l'apprentissage.
+</Callout>
+
+## Sous-apprentissage : l'étudiant qui ne révise pas
+
+Le problème inverse est le **sous-apprentissage** (underfitting). Il survient lorsque le modèle n'a pas suffisamment appris des données. Il performe mal à la fois sur les données d'entraînement *et* sur les nouvelles données.
+
+Les causes du sous-apprentissage incluent :
+
+- Le modèle est trop simple pour la complexité du problème.
+- L'entraînement s'est arrêté trop tôt (pas assez d'epochs).
+- Les caractéristiques des données ne sont pas assez informatives.
+
+Si le surapprentissage est comme mémoriser les anciens sujets, le sous-apprentissage est comme arriver à l'examen en ayant à peine ouvert le manuel.
+
+<Quiz question="Un modèle obtient 98 % d'exactitude sur les données d'entraînement mais seulement 60 % sur de nouvelles données. Quel est le problème le plus probable ?" options="Sous-apprentissage|Surapprentissage|Les données sont trop petites|Le modèle est trop simple" answer="1" explanation="Un écart important entre les performances sur les données d'entraînement (98 %) et sur de nouvelles données (60 %) est le signe classique du surapprentissage — le modèle a mémorisé les données d'entraînement au lieu d'apprendre des motifs généralisables." />
+
+## Jeux de validation et de test
+
+Pour détecter le surapprentissage et le sous-apprentissage, nous divisons nos données en trois parties :
+
+| Jeu | Objectif | Quand il est utilisé |
+|-----|----------|---------------------|
+| **Jeu d'entraînement** | Le modèle apprend à partir de ces données | Pendant l'entraînement |
+| **Jeu de validation** | Utilisé pour vérifier la progression et ajuster les paramètres | Pendant l'entraînement |
+| **Jeu de test** | Évaluation finale sur des données complètement inédites | Après l'entraînement |
+
+Une répartition courante est 70 % entraînement, 15 % validation et 15 % test. Le modèle ne voit *jamais* le jeu de test avant la toute fin — c'est l'examen final.
+
+<ThinkAboutIt>
+Le jeu de validation est comme un examen blanc que vous passez entre les sessions de révision. Il vous indique à quel point vous apprenez bien sans gâcher le vrai examen. Si vos scores aux examens blancs commencent à baisser alors que vos scores sur les notes de cours continuent d'augmenter, vous savez que quelque chose ne va pas.
+</ThinkAboutIt>
+
+## Quand arrêter l'entraînement
+
+Savoir quand s'arrêter est crucial. Entraîner trop peu et le modèle sous-apprend. Entraîner trop et il surapprend. Le juste milieu est l'endroit où la **perte de validation cesse de s'améliorer**.
+
+Une technique appelée **arrêt précoce** (early stopping) automatise cela :
+
+1. Surveiller la perte de validation après chaque epoch.
+2. Si elle ne s'est pas améliorée pendant un nombre défini d'epochs (appelé **patience**), arrêter l'entraînement.
+3. Revenir aux poids du meilleur epoch.
+
+Cela empêche le modèle de dépasser le point d'apprentissage utile et de glisser vers la mémorisation.
+
+<Quiz question="Qu'est-ce que l'« arrêt précoce » dans l'entraînement de l'IA ?" options="Arrêter l'entraînement avant que les données ne soient traitées|Arrêter quand l'ordinateur manque de mémoire|Arrêter l'entraînement quand les performances de validation cessent de s'améliorer|Supprimer les neurones qui ne contribuent pas" answer="2" explanation="L'arrêt précoce surveille la perte de validation et arrête l'entraînement lorsqu'elle cesse de s'améliorer, empêchant le modèle de surapprendre en s'entraînant trop longtemps." />
+
+<FunFact>
+Certains entraînements modernes utilisent une technique appelée planification du taux d'apprentissage, qui réduit progressivement l'amplitude des modifications des poids à chaque étape — comme faire des pas de plus en plus petits et prudents à mesure que vous approchez du sommet d'une montagne.
+</FunFact>
+
+## Points clés à retenir
+
+- La **boucle d'entraînement** se répète : prédire → comparer → ajuster → répéter.
+- Une **fonction de perte** mesure à quel point les prédictions sont éloignées de la vérité.
+- Un **epoch** est un passage complet à travers les données d'entraînement.
+- Le **surapprentissage** signifie mémoriser les données ; le **sous-apprentissage** signifie ne pas avoir assez appris.
+- Les données sont divisées en jeux d'**entraînement**, de **validation** et de **test**.
+- L'**arrêt précoce** empêche l'entraînement d'aller trop loin.
+
+Dans la dernière leçon, nous explorerons les **dimensions éthiques** de l'IA — le biais, l'équité, la vie privée et ce à quoi ressemble une IA responsable.

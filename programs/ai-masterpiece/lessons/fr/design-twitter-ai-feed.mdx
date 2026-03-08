@@ -1,0 +1,159 @@
+---
+title: "Concevoir le fil IA de Twitter — Une étude de cas complète"
+description: "Décortiquez l'architecture d'un fil personnalisé servant des milliards de tweets à des centaines de millions d'utilisateurs."
+order: 3
+difficulty: "advanced"
+duration: 30
+icon: "🐦"
+published: true
+---
+
+# Concevoir le fil IA de Twitter
+
+Imaginez qu'on vous confie une seule mission : à chaque fois qu'un utilisateur ouvre l'application, lui montrer les tweets les plus pertinents — parmi des milliards de possibilités — en moins de 200 millisecondes.
+
+C'est l'un des problèmes de recommandation les plus complexes de l'industrie. Concevons-le de zéro.
+
+<Illustration src="/images/lessons/design-twitter-ai-feed.svg" alt="Schéma du pipeline montrant les tweets candidats passant par des étapes de classement et de filtrage pour produire un fil personnalisé" caption="Le parcours d'un tweet, de sa création à votre fil d'actualité" />
+
+## Le problème à grande échelle
+
+Twitter (désormais X) traite environ 500 millions de tweets par jour. Chacun de ses 350+ millions d'utilisateurs actifs mensuels attend un fil qui semble **personnellement sélectionné** — pertinent, actuel et engageant.
+
+Un fil chronologique ne fonctionne pas à cette échelle. Si vous suivez 500 comptes, vous pourriez avoir 10 000 tweets non lus. La plupart sont sans intérêt. Le rôle du fil IA est de faire remonter les 50 qui comptent le plus pour **vous**.
+
+<Callout>
+Ce n'est pas qu'un problème de classement — c'est un système multi-étapes impliquant la génération de candidats, l'ingénierie de features, le scoring en temps réel, la sécurité du contenu et un service à très grande échelle.
+</Callout>
+
+## Étape 1 : Génération de candidats
+
+Impossible de scorer les 500 millions de tweets quotidiens pour chaque utilisateur. Il faut d'abord **réduire le champ**.
+
+### Sources de candidats :
+- **Intra-réseau** : Tweets des comptes que vous suivez (rappel élevé, pertinence modérée).
+- **Hors-réseau** : Tweets aimés ou retweetés par des personnes que vous suivez, ou en tendance dans votre graphe d'intérêts.
+- **Par sujet** : Tweets correspondant à des thèmes avec lesquels vous avez interagi récemment.
+
+### Comment ça fonctionne :
+Un modèle de récupération léger (souvent basé sur des embeddings) génère un ensemble de 1 000 à 5 000 tweets candidats par utilisateur. Cela s'exécute de façon planifiée ou se déclenche à l'ouverture de l'application.
+
+<Quiz question="Pourquoi Twitter utilise-t-il la génération de candidats au lieu de scorer chaque tweet pour chaque utilisateur ?" options="Parce que scorer chaque tweet serait trop rapide|Parce qu'il est impossible en termes de calcul d'exécuter un modèle de classement lourd sur des milliards de tweets par requête|Parce que les utilisateurs préfèrent des tweets aléatoires|Parce que le modèle de classement ne fonctionne que sur de petits jeux de données" answer="1" explanation="Avec 500 millions de tweets par jour et 350 millions d'utilisateurs, scorer chaque tweet pour chaque utilisateur nécessiterait une puissance de calcul astronomique. La génération de candidats réduit l'ensemble à une taille gérable avant l'exécution du modèle de classement coûteux." />
+
+## Étape 2 : Le modèle de classement
+
+Une fois les quelques milliers de candidats obtenus, un **modèle de classement lourd** attribue un score à chacun. C'est là que réside la véritable intelligence.
+
+### Features utilisées par le modèle :
+
+**Features utilisateur :**
+- Centres d'intérêt déduits de l'engagement passé (likes, retweets, réponses, temps de lecture).
+- Graphe social : avec qui vous interagissez le plus.
+- Données démographiques et préférences linguistiques.
+
+**Features du tweet :**
+- Contenu : embeddings textuels, type de média, hashtags.
+- Auteur : nombre d'abonnés, taux d'engagement, score de confiance.
+- Fraîcheur : âge du tweet en minutes.
+
+**Features croisées :**
+- Affinité utilisateur-auteur : à quelle fréquence interagissez-vous avec cet auteur ?
+- Affinité utilisateur-sujet : le sujet du tweet correspond-il à votre profil d'intérêts ?
+- Preuve sociale : des personnes similaires à vous ont-elles interagi avec ce tweet ?
+
+### Architecture du modèle :
+Un réseau neuronal profond (souvent un modèle multi-tâches) prédit simultanément plusieurs types d'engagement :
+
+- Probabilité de like.
+- Probabilité de retweet.
+- Probabilité de réponse.
+- Probabilité de temps de lecture prolongé (plus de deux secondes).
+
+Le score final est une **combinaison pondérée** de ces prédictions, calibrée pour optimiser un objectif au niveau de la plateforme comme l'« engagement sain ».
+
+<ThinkAboutIt>
+Si vous optimisez uniquement pour les clics et les likes, vous risquez de promouvoir du contenu sensationnaliste ou indigné. Comment concevriez-vous la formule de scoring pour équilibrer l'engagement et la qualité du contenu ?
+</ThinkAboutIt>
+
+## Étape 3 : Features en temps réel
+
+Les features statiques ne suffisent pas. Le fil doit réagir à ce qui se passe **en ce moment**.
+
+- **Décroissance temporelle** : Un tweet de 30 secondes reçoit un bonus par rapport à un tweet de trois heures.
+- **Sujets tendance** : Si un événement majeur se déroule, faire remonter les tweets liés même s'ils sortent des intérêts habituels de l'utilisateur.
+- **Contexte de session** : Si un utilisateur scrolle depuis dix minutes, diversifier le contenu pour réduire la lassitude.
+- **Signaux d'engagement en temps réel** : Un tweet qui devient viral dans les cinq dernières minutes reçoit un boost temporaire.
+
+Ces features nécessitent une **infrastructure de streaming** — souvent Apache Kafka alimentant un feature store comme Redis ou Feast — mise à jour en quasi temps réel.
+
+<FunFact>
+L'équipe d'ingénierie de Twitter a rapporté que l'ajout de features en temps réel à leur modèle de classement a augmenté l'engagement de 8 % — une amélioration massive à leur échelle, soit des millions d'interactions quotidiennes supplémentaires.
+</FunFact>
+
+## L'algorithme « Pour vous » : Explorer vs Exploiter
+
+Le fil fait face au dilemme classique **exploration-exploitation** :
+
+- **Exploiter** : Montrer du contenu similaire à ce avec quoi l'utilisateur a déjà interagi. Sûr, prévisible, fort engagement à court terme.
+- **Explorer** : Introduire de nouveaux sujets, de nouveaux auteurs et de nouveaux formats. Plus risqué, mais essentiel pour la rétention à long terme et la diversité du contenu.
+
+L'approche de Twitter combine les deux :
+
+- Environ 80 % du fil est de l'exploitation — du contenu dont le modèle est confiant que l'utilisateur appréciera.
+- Environ 20 % est de l'exploration — du contenu nouveau injecté pour tester l'évolution des intérêts.
+
+Le ratio d'exploration est lui-même un paramètre ajusté par A/B testing sur des millions d'utilisateurs.
+
+<Quiz question="Quel est le principal risque d'un fil qui ne fait qu'« exploiter » sans jamais « explorer » ?" options="Le fil devient trop diversifié et confus|L'utilisateur se retrouve enfermé dans une bulle de filtre et la plateforme ne peut pas découvrir l'évolution de ses intérêts|Le système consomme trop de calcul|Le fil se charge trop lentement" answer="1" explanation="L'exploitation pure crée des bulles de filtre — l'utilisateur ne voit que ce qu'il aime déjà, la plateforme ne peut pas s'adapter aux goûts changeants, et la diversité du contenu s'effondre. L'exploration est essentielle pour la santé à long terme." />
+
+## Modération de contenu et sécurité
+
+Avant qu'un tweet n'atteigne le fil, il passe par une **couche de sécurité** :
+
+1. **Filtre pré-classement** : Le spam connu, le harcèlement et le contenu enfreignant les règles sont retirés avant le classement.
+2. **Filtre post-classement** : Après le classement, une vérification secondaire attrape les cas limites — par exemple, un tweet individuellement acceptable mais nuisible lorsqu'il est regroupé avec du contenu similaire.
+3. **Contrôles utilisateur** : Les utilisateurs peuvent masquer des sujets, bloquer des comptes et signaler du contenu « pas intéressé », alimentant ainsi leur modèle de personnalisation.
+
+La couche de sécurité doit être **rapide** (pas plus de 10–20 ms de latence supplémentaire) et **prudente** (en cas de doute, filtrer et renvoyer vers une revue humaine).
+
+<Callout>
+La modération de contenu n'est pas un système séparé greffé après coup. Elle est profondément intégrée au pipeline de classement, influençant les scores et le filtrage à chaque étape.
+</Callout>
+
+## Mise à l'échelle : Fan-out en lecture vs Fan-out en écriture
+
+C'est la décision architecturale qui définit l'infrastructure de Twitter.
+
+### Fan-out en écriture :
+Quand un utilisateur tweete, **pousser** ce tweet dans le cache du fil de chaque abonné. Lectures rapides, mais écritures coûteuses — surtout pour les comptes avec des millions d'abonnés.
+
+### Fan-out en lecture :
+Quand un utilisateur ouvre l'app, **récupérer** les derniers tweets de tous les comptes suivis et les classer à la volée. Écritures peu coûteuses, mais lectures coûteuses.
+
+### L'approche hybride de Twitter :
+- Pour la plupart des utilisateurs (moins de 10 000 abonnés) : fan-out en écriture. Pré-calcul et mise en cache du fil.
+- Pour les comptes célébrités (millions d'abonnés) : fan-out en lecture. Calcul du fil au moment de la requête pour éviter d'inonder des millions de caches à chaque tweet.
+
+Cette stratégie hybride équilibre l'amplification en écriture et la latence en lecture, gérant efficacement aussi bien le tweet d'un utilisateur normal que le post viral d'une célébrité.
+
+<FunFact>
+Quand une célébrité avec 50 millions d'abonnés tweete, le fan-out en écriture nécessiterait 50 millions d'insertions en cache — prenant des minutes et consommant une bande passante énorme. L'approche hybride gère cela en millisecondes en reportant le travail au moment de la lecture.
+</FunFact>
+
+## Vue d'ensemble
+
+Le pipeline complet pour une seule requête de fil :
+
+1. L'utilisateur ouvre l'app → la requête atteint le service de fil.
+2. La génération de candidats récupère ~3 000 tweets des sources intra et hors réseau.
+3. Le feature store fournit les features temps réel et batch pour chaque candidat.
+4. Le modèle de classement score tous les candidats en un seul appel d'inférence par batch.
+5. Les filtres de sécurité retirent le contenu enfreignant les règles.
+6. La logique d'exploration injecte 20 % de contenu diversifié.
+7. La liste finale classée est renvoyée au client en moins de 200 ms.
+
+<ThinkAboutIt>
+On vous demande en entretien : « Si vous pouviez ajouter un nouveau signal pour améliorer le fil, lequel choisiriez-vous et pourquoi ? » Pensez à des signaux rarement évoqués — peut-être liés au bien-être des utilisateurs ou à la crédibilité du contenu.
+</ThinkAboutIt>
+
+<Quiz question="Dans la stratégie hybride de fan-out de Twitter, comment sont traités les tweets des comptes célébrités ?" options="Ils sont poussés immédiatement dans le cache de chaque abonné|Ils sont calculés au moment de la lecture quand un abonné ouvre son fil|Ils sont entièrement exclus du fil IA|Ils ne sont montrés qu'aux utilisateurs vérifiés" answer="1" explanation="Les tweets de célébrités utilisent le fan-out en lecture — le fil est calculé quand un abonné le demande, évitant le coût énorme de pousser un seul tweet vers des millions de caches." />

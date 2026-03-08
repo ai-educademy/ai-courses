@@ -1,0 +1,170 @@
+---
+title: "Chat Application డిజైన్ చేయండి — Real-Time Communication at Scale"
+description: "Millions of concurrent users కు real-time delivery అందించే WhatsApp లాంటి chat system డిజైన్ చేయండి."
+order: 3
+difficulty: "advanced"
+duration: 25
+icon: "💬"
+published: true
+---
+
+## Interview Prompt
+
+*"WhatsApp లేదా Slack లాంటి chat application డిజైన్ చేయండి — one-to-one messaging, group chats, మరియు online presence indicators support చేయాలి."*
+
+System design interviews లో ఇది చాలా popular question ఎందుకంటే ఒకే problem లో real-time communication, connection management, storage at scale, మరియు distributed system trade-offs — అన్నీ test చేస్తుంది.
+
+## Step 1: Requirements Gathering
+
+**Functional requirements:**
+- Delivery మరియు read receipts తో one-to-one messaging
+- Group chat (500 members వరకు)
+- Online/offline presence indicators
+- Message history మరియు search
+- Offline users కు push notifications
+
+**Non-functional requirements:**
+- Low latency: messages 200ms లోపు deliver అవ్వాలి
+- High availability: 99.99% uptime
+- ఒక conversation లో message ordering guaranteed
+- 50 million concurrent connections support
+
+<Callout>
+Non-functional requirements ను ఎల్లప్పుడూ specific numbers తో quantify చేయండి. "Fast delivery" vague — "sub-200ms delivery" అంటే మీకు domain అర్థమైందని చూపిస్తుంది.
+</Callout>
+
+## Step 2: API Design
+
+REST-only systems కు భిన్నంగా, chat కు **bidirectional communication** అవసరం. మనకు రెండు protocols కావాలి:
+
+**REST API** (non-real-time operations కోసం):
+```
+POST /api/users/login
+GET  /api/conversations
+GET  /api/conversations/:id/messages?before=timestamp&limit=50
+POST /api/groups
+```
+
+**WebSocket** (real-time messaging కోసం):
+```
+CONNECT  ws://chat.example.com/ws?token=jwt
+SEND     { type: "message", to: "user_456", content: "Hello!" }
+RECEIVE  { type: "message", from: "user_123", content: "Hello!", ts: 1706000000 }
+SEND     { type: "ack", messageId: "msg_789", status: "read" }
+```
+
+## Step 3: WebSocket Connection Management
+
+ప్రతి connected user ఒక persistent WebSocket connection maintain చేస్తారు. 50 million concurrent users వద్ద ఇది పెద్ద engineering challenge.
+
+**Connection servers** (gateway servers అని కూడా అంటారు) WebSocket connections hold చేస్తాయి. ప్రతి server సుమారు 50,000-100,000 concurrent connections handle చేయగలదు, అంటే మనకు 500-1,000 connection servers కావాలి.
+
+ఒక **connection registry** (Redis cluster) ప్రతి user ని వారి connection server కు map చేస్తుంది:
+```
+user_123 → ws-server-042
+user_456 → ws-server-187
+```
+
+User A, user B కి message పంపినప్పుడు flow ఇలా ఉంటుంది:
+1. Message, A యొక్క connection server కి WebSocket ద్వారా వస్తుంది
+2. Server, Redis లో B యొక్క connection server ను look up చేస్తుంది
+3. Message internal messaging ద్వారా B యొక్క connection server కు route అవుతుంది
+4. B యొక్క server, B యొక్క WebSocket లో message push చేస్తుంది
+
+<Illustration src="/images/lessons/design-chat-application.svg" alt="WebSocket connection servers, message routing, మరియు storage layers చూపించే chat architecture" caption="Messages connection servers ద్వారా flow అవుతాయి, Redis ఏ user ఎక్కడ connected అనేది track చేస్తుంది." />
+
+## Step 4: Message Storage
+
+Chat applications చాలా పెద్ద volumes లో data generate చేస్తాయి. WhatsApp రోజుకు 100 billion కంటే ఎక్కువ messages process చేస్తుంది.
+
+**Storage strategy:**
+- **Recent messages** — fast datastore (Cassandra లేదా HBase) లో, conversation ID తో partitioned
+- **Message index** — Elasticsearch ద్వారా search enable చేస్తుంది
+- **Media files** — object storage (S3) లో CDN delivery తో
+
+**Schema design (Cassandra):**
+```
+Table: messages
+  partition_key: conversation_id
+  clustering_key: message_timestamp (descending)
+  columns: sender_id, content, type, status
+```
+
+ఈ design వల్ల ఒక conversation లోని అన్ని messages ఒకే partition లో co-located అవుతాయి, "పాత messages load చేయి" queries చాలా efficient అవుతాయి — ఒకే partition లో sequential read.
+
+<Quiz question="Chat message storage కోసం PostgreSQL లాంటి relational database కంటే Cassandra ఎందుకు మంచి choice?" options="Cassandra complex queries కోసం SQL joins support చేస్తుంది|Cassandra strong ACID transactions provide చేస్తుంది|Cassandra massive write throughput handle చేస్తుంది మరియు design ప్రకారం horizontally scale అవుతుంది|Cassandra automatically అన్ని data at rest encrypt చేస్తుంది" answer="2" explanation="Chat systems write-heavy (రోజుకు billions messages). Cassandra యొక్క distributed architecture massive write throughput handle చేస్తుంది మరియు nodes add చేసి horizontally scale అవుతుంది, PostgreSQL single primary మీద ఈ write volume తో struggle చేస్తుంది." />
+
+## Step 5: Presence System
+
+ఎవరు online లో ఉన్నారో చూపించడం simple గా అనిపిస్తుంది కానీ scale వద్ద surprisingly tricky. మీ contact list లోని ప్రతి user కోసం ప్రతి కొన్ని seconds కు database poll చేయడం సాధ్యం కాదు.
+
+**Heartbeat approach:**
+1. Connected clients ప్రతి 30 seconds కు WebSocket ద్వారా heartbeat పంపుతాయి
+2. Server ఒక Redis key ను 60 seconds TTL తో update చేస్తుంది: `presence:user_123 → online (TTL 60s)`
+3. Heartbeat రాకపోతే key expire అవుతుంది మరియు user offline గా కనిపిస్తారు
+
+**Status updates కోసం fan-out:**
+ఒక user online వచ్చినప్పుడు, వారి status online ఉన్న అన్ని contacts కు push అవ్వాలి. 500 contacts ఉన్న user కోసం, ఏ contacts online లో ఉన్నారో check చేసి వారికి మాత్రమే presence updates పంపాలి — **lazy fan-out** offline users కు broadcast చేయడం నివారిస్తుంది.
+
+<FunFact>
+WhatsApp యొక్క "last seen" feature ప్రపంచవ్యాప్తంగా unexpected social drama కలిగించింది. కొన్ని దేశాల్లో relationship disputes పెరిగాయి ఎందుకంటే partners ఒకరినొకరి exact last-active timestamps చూడగలిగారు. WhatsApp చివరకు ఈ information దాచడానికి privacy controls add చేసింది.
+</FunFact>
+
+## Step 6: Push Notifications
+
+User offline అయినప్పుడు (active WebSocket లేదు), messages push notifications ద్వారా చేరాలి.
+
+Message flow మారుతుంది:
+1. Connection registry user B offline అని చూపిస్తుంది
+2. Message database లో "undelivered" status తో store అవుతుంది
+3. Notification service APNs (iOS) లేదా FCM (Android) ద్వారా push పంపుతుంది
+4. User B reconnect అయినప్పుడు, undelivered messages fetch చేసి WebSocket ద్వారా పంపబడతాయి
+5. Receipt confirm చేయడానికి delivery receipts తిరిగి పంపబడతాయి
+
+<ThinkAboutIt>
+500 members ఉన్న group chats లో fan-out challenge ఉంటుంది. 400 members offline ఉన్న group కు message పంపితే, 400 push notifications పంపాలి. Peak hours లో notification services ను overwhelm చేయకుండా వీటిని ఎలా batch మరియు rate-limit చేస్తారు?
+</ThinkAboutIt>
+
+## Step 7: E2E Encryption Basics
+
+Interview discussions లో E2E encryption గురించి mention చేయడం security awareness చూపిస్తుంది:
+
+- ప్రతి user తమ device మీద **public/private key pair** generate చేస్తారు
+- Messages sender device నుండి బయటకు వెళ్ళే ముందు recipient యొక్క public key తో encrypt అవుతాయి
+- Server కు ciphertext మాత్రమే కనిపిస్తుంది — message content చదవలేదు
+- Group chats ఒక **shared group key** వాడతాయి, members join లేదా leave అయినప్పుడు rotate అవుతుంది
+
+అంటే server యొక్క message storage లో encrypted blobs మాత్రమే ఉంటాయి, data compliance దృష్ట్యా ఇది actually simpler.
+
+## Step 8: Millions కు Scale చేయడం
+
+**Key scaling strategies:**
+- **Connection servers** horizontally scale అవుతాయి — users పెరిగేకొద్దీ servers add చేయండి
+- **Message routing** inter-server communication కోసం Kafka లేదా Redis Pub/Sub వాడుతుంది
+- **Database sharding** conversation ID ద్వారా storage load distribute చేస్తుంది
+- **Geographic distribution** — latency తగ్గించడానికి multiple regions లో connection servers deploy చేయండి
+- **Message queue buffering** — peak usage hours లో spikes absorb చేస్తుంది
+
+<Quiz question="London లో ఉన్న user Tokyo లో ఉన్న user కు message పంపుతారు. Delivery latency minimize చేయడానికి అత్యంత effective మార్గం ఏది?" options="అన్ని messages ఒకే centralised database లో store చేయడం|రెండు regions లో connection servers deploy చేసి inter-region message routing వాడటం|అన్ని WebSocket connections ను London servers ద్వారా force చేయడం|అన్ని messages ను CDN edge వద్ద cache చేయడం" answer="1" explanation="Multiple regions లో connection servers deploy చేయడం వల్ల ప్రతి user nearby server కు connect అవుతారు. Messages optimised inter-region links ద్వారా route అవుతాయి, ప్రతి user అనుభవించే latency minimize అవుతుంది." />
+
+<Quiz question="పెద్ద sporting event సమయంలో message volume 10 రెట్లు పెరుగుతుంది. ఏ component bottleneck అయ్యే risk ఎక్కువ?" options="Static assets serve చేసే CDN|WebSocket connection servers (ఇప్పటికే established connections)|Message storage write path (database writes)|User authentication service" answer="2" explanation="Message volume spikes storage write path ను ఎక్కువగా hit చేస్తాయి. Connections ఇప్పటికే established, CDN static content handle చేస్తుంది, auth login సమయంలో మాత్రమే run అవుతుంది. Database sudden write surge absorb చేయాలి." />
+
+## Interview Tips
+
+1. **WebSocket decision తో start చేయండి** — ఈ scale వద్ద HTTP polling ఎందుకు work కాదో explain చేయండి
+2. **Connection capacity quantify చేయండి** — server limits అర్థమయ్యాయని చూపించండి (~50-100K connections per server)
+3. **Offline delivery address చేయండి** — చాలా candidates users ఎల్లప్పుడూ connected ఉండరని మరచిపోతారు
+4. **Message ordering mention చేయండి** — timestamp-based ordering with conflict resolution
+
+<ThinkAboutIt>
+Slack మరియు WhatsApp message history కోసం చాలా భిన్నమైన approaches తీసుకుంటాయి. WhatsApp messages ను device మీద store చేస్తుంది మరియు new devices కు full history sync చేయదు. Slack అంతా server-side store చేసి full search అందిస్తుంది. ప్రతి approach యొక్క privacy, cost, మరియు user experience trade-offs ఏమిటి?
+</ThinkAboutIt>
+
+## Key Takeaways
+
+- Chat systems కు real-time bidirectional communication కోసం WebSockets అవసరం
+- Scale వద్ద connection management కు users-to-servers mapping registry అవసరం
+- Cassandra యొక్క write throughput మరియు partition-based queries chat message storage కు సరిపోతాయి
+- Presence systems Redis లో TTL-based expiry తో heartbeats వాడతాయి
+- Push notifications offline message delivery handle చేస్తాయి
+- Geographic distribution మరియు horizontal scaling global latency requirements address చేస్తాయి

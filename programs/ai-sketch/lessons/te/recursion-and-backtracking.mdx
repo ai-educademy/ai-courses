@@ -1,0 +1,160 @@
+---
+title: "Recursion మరియు Backtracking — కంప్యూటర్ లాగా Puzzles పరిష్కరించడం"
+description: "Call stack నుండి recursion అర్థం చేసుకోండి, తర్వాత permutations, N-Queens మరియు మరిన్నింటిని పరిష్కరించే backtracking template నేర్చుకోండి."
+order: 8
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+---
+
+## Recursion పునాదులు
+
+Recursive function **base case** చేరుకునే వరకు సమస్య యొక్క **చిన్న** రూపంతో తనను తాను call చేసుకుంటుంది.
+
+ప్రతి recursion కి రెండు విషయాలు కావాలి:
+1. **Base case** — నేరుగా return చేసే సరళమైన input.
+2. **Recursive case** — సమస్యను విభజించి తనను తాను call చేసుకోవడం.
+
+```python
+def factorial(n):
+    if n <= 1:        # base case
+        return 1
+    return n * factorial(n - 1)  # recursive case
+```
+
+## Call Stack — దృశ్యీకరణ
+
+ప్రతి recursive call call stack పైకి frame push చేస్తుంది. Base case return అయినప్పుడు, frames రివర్స్ క్రమంలో pop అవుతాయి.
+
+```
+factorial(4)
+  → factorial(3)
+    → factorial(2)
+      → factorial(1) → 1 return చేస్తుంది
+    ← 2 return చేస్తుంది
+  ← 6 return చేస్తుంది
+← 24 return చేస్తుంది
+```
+
+Base case లేకపోతే, stack overflow అవుతుంది. Python default recursion limit 1,000 frames.
+
+<FunFact>Python 1,000 recursion limit ఉద్దేశపూర్వకంగా conservative. sys.setrecursionlimit() తో పెంచవచ్చు, కానీ deep recursion కి iterative solutions సాధారణంగా ఇష్టపడతారు.</FunFact>
+
+## Fibonacci — క్లాసిక్ ఉచ్చు
+
+Naïve recursive Fibonacci O(2ⁿ) ఎందుకంటే ఇది అదే sub-problems ను మళ్ళీ మళ్ళీ compute చేస్తుంది. Memoisation దీన్ని O(n) time మరియు space లో పరిష్కరిస్తుంది.
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+<Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Fibonacci కోసం recursion tree, పునరావృత sub-problems చూపిస్తూ" caption="Memoisation లేకుండా fib(5) 15 calls చేస్తుంది. Memoisation తో కేవలం 5." />
+
+## Backtracking — అన్నీ ప్రయత్నించు, తర్వాత రద్దు చేయి
+
+Backtracking అనేది twist తో recursion: మీరు **ఎంపిక చేసి**, recurse చేసి, తదుపరి option ప్రయత్నించే ముందు **ఎంపికను రద్దు చేస్తారు**. Maze explore చేయడం అనుకోండి — ముందుకు నడవండి, dead end తగిలితే వెనక్కి, తదుపరి path ప్రయత్నించండి.
+
+### Backtracking Template
+
+```python
+def backtrack(state, choices):
+    if is_solution(state):
+        result.append(state.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            state.add(choice)       # ఎంచుకో
+            backtrack(state, ...)   # explore చేయి
+            state.remove(choice)    # రద్దు చేయి
+```
+
+ఈ మూడు-దశల pattern — **ఎంచుకో, explore చేయి, రద్దు చేయి** — దాదాపు ప్రతి backtracking సమస్య యొక్క వెన్నెముక.
+
+<Quiz question="Backtracking template లో, recursive call తర్వాత ఎంపికను ఎందుకు రద్దు చేస్తాం?" options="Memory free చేయడానికి|తదుపరి exploration branch కోసం state ను reset చేయడానికి|ఎంపిక తప్పు కాబట్టి|Stack overflow నివారించడానికి" answer="1" explanation="ఎంపికను రద్దు చేయడం state ను restore చేస్తుంది, తద్వారా loop యొక్క తదుపరి iteration అదే starting point నుండి వేరే branch explore చేయగలదు." />
+
+## Permutations
+
+`[1, 2, 3]` యొక్క అన్ని వరుసక్రమాలు generate చేయండి. ప్రతి level లో, ఉపయోగించని number ఎంచుకోండి, recurse చేయండి, తర్వాత un-pick చేయండి.
+
+```
+         []
+      /   |   \
+    [1]  [2]  [3]
+    / \   ...
+ [1,2] [1,3]
+   |      |
+[1,2,3] [1,3,2]  ... (6 మొత్తం)
+```
+
+**n!** permutations ఉంటాయి, కాబట్టి time complexity O(n × n!).
+
+## Combinations మరియు Subsets
+
+**Combinations (n choose k):** ప్రతి element వద్ద, దాన్ని చేర్చండి లేదా skip చేయండి, duplicates నివారించడానికి ముందుకు మాత్రమే recurse చేయండి.
+
+**Subsets:** size constraint లేకుండా అదే ఆలోచన — recursion tree లో ప్రతి node valid subset. **2ⁿ** subsets ఉంటాయి.
+
+<ThinkAboutIt>Permutations n! results ఇస్తాయి, subsets 2ⁿ ఇస్తాయి. n=10 కి, అది 3,628,800 vs 1,024 — భారీ తేడా. ఎందుకు?</ThinkAboutIt>
+
+## N-Queens — వివరణ
+
+N×N board పై N queens ను ఒకరినొకరు attack చేయకుండా ఉంచండి. N=4 కి:
+
+```
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**వ్యూహం:** ప్రతి row కి ఒక queen ఉంచండి. ప్రతి row కి ప్రతి column ప్రయత్నించండి. Column, main diagonal మరియు anti-diagonal conflicts తనిఖీ చేయండి. Safe అయితే ఉంచి తదుపరి row కి recurse చేయండి. Stuck అయితే backtrack.
+
+మూడు sets తో conflicts track చేయండి: `cols`, `diag` (row − col) మరియు `anti_diag` (row + col).
+
+<Quiz question="N-Queens సమస్యలో diagonal conflicts ను సమర్థవంతంగా ఎలా తనిఖీ చేస్తాం?" options="ప్రతి ఉంచిన queen స్థానం తనిఖీ|Sets ఉపయోగించి (row-col) మరియు (row+col) track చేయడం|ప్రతిసారి మొత్తం board scan చేయడం|2D boolean matrix ఉపయోగించడం" answer="1" explanation="అదే diagonal పై ఉన్న queens అదే (row-col) విలువ share చేస్తాయి; అదే anti-diagonal (row+col) share చేస్తాయి. Sets O(1) lookup ఇస్తాయి." />
+
+## Sudoku Solver — భావన
+
+ఖాళీ cell కనుగొని, 1–9 digits ప్రయత్నించండి. ప్రతి digit కి row, column మరియు 3×3 box constraints తనిఖీ చేయండి. Valid అయితే ఉంచి recurse చేయండి. ఏ digit పనిచేయకపోతే, undo చేసి backtrack. Constraints నుండి pruning భారీ search space ఉన్నప్పటికీ దీన్ని సాధ్యం చేస్తుంది.
+
+## Grid లో Word Search
+
+2D letters board మరియు target word ఇచ్చినప్పుడు, ప్రతి cell నుండి ప్రారంభించి నాలుగు దిశలలో DFS చేయండి, ఒక character చొప్పున match చేస్తూ. Recursion సమయంలో cells ను visited గా mark చేసి, **backtrack చేసేటప్పుడు unmark** చేయండి.
+
+## Backtracking యొక్క Time Complexity
+
+ఖర్చు **branching factor** (ప్రతి step లో choices) మరియు **depth** (solution కి steps) పై ఆధారపడుతుంది. b branches మరియు d depth కి: O(bᵈ).
+
+| సమస్య | Branching | Depth | Complexity |
+|--------|-----------|-------|------------|
+| Permutations | n, n−1, … | n | O(n!) |
+| Subsets | 2 | n | O(2ⁿ) |
+| N-Queens | ~n | n | O(n!) worst case |
+
+## Pruning ద్వారా Optimisation
+
+**Pruning** అంటే విఫలమవుతాయని తెలిసిన branches ను skip చేయడం. ఉదాహరణలు:
+- N-Queens: ఇప్పటికే occupied columns skip.
+- Sudoku: constraints ఉల్లంఘించే digits skip.
+- Combination sum: remaining sum < 0 అయితే skip.
+
+మంచి pruning అసాధ్యమైన search ను వేగవంతమైనదిగా మార్చగలదు.
+
+<Quiz question="Backtracking algorithm లో pruning ఏమి చేస్తుంది?" options="Recursion depth తగ్గిస్తుంది|Valid solution కి దారితీయలేని branches ను eliminate చేస్తుంది|Recursion ను iteration గా మారుస్తుంది|Explore చేయడానికి ముందు choices sort చేస్తుంది" answer="1" explanation="Pruning search tree భాగాలను ముందుగానే cut చేస్తుంది, విఫలమయ్యే paths పై వృథా పనిని నివారిస్తుంది." />
+
+<ThinkAboutIt>చాలా backtracking సమస్యలు dynamic programming తో కూడా పరిష్కరించవచ్చు. రెండింటి మధ్య విధానంలో కీలక తేడా ఏమిటి?</ThinkAboutIt>
+
+---
+
+## 📚 మరింత చదవండి
+
+- [NeetCode — Backtracking playlist](https://neetcode.io/roadmap) — video walkthroughs తో సమస్యలు
+- [Tech Interview Handbook — Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) — patterns మరియు సాధారణ pitfalls
+- [LeetCode Backtracking study plan](https://leetcode.com/tag/backtracking/) — క్రమానుగత సమస్యల సెట్

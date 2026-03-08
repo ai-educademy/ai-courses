@@ -1,0 +1,173 @@
+---
+title: "Tries et arbres de préfixes — Autocomplete, correcteur orthographique et routage IP"
+description: "Maîtrisez la structure de données trie pour des recherches de préfixes ultra-rapides. Construisez un autocomplete, une recherche par wildcard, et explorez les tries compressés et le routage IP."
+order: 6
+difficulty: "advanced"
+duration: 18
+icon: "🌳"
+published: true
+---
+
+## Qu'est-ce qu'un trie ?
+
+Un **trie** (prononcé « traï ») est une structure arborescente où chaque nœud représente un seul caractère. Les chemins de la racine aux nœuds marqués épellent les mots stockés. Contrairement aux hash maps, les tries permettent d'interroger *tous les mots partageant un préfixe* sans parcourir chaque clé.
+
+```
+        root
+       / | \
+      a   b   c
+     /     \
+    p       a
+   / \       \
+  p   e      t
+  |
+  l
+  e
+```
+
+Chaque chemin encode un mot : **apple**, **ape**, **bat**, **cat**.
+
+## La classe TrieNode
+
+Chaque nœud contient un dictionnaire d'enfants et un indicateur de fin de mot.
+
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+```
+
+Un trie complet encapsule cette classe avec des opérations d'insertion, de recherche et de préfixe.
+
+## Opérations fondamentales
+
+### Insertion — O(m) où m = longueur du mot
+
+Parcourez caractère par caractère, créez les nœuds nécessaires, puis marquez le dernier nœud.
+
+```python
+def insert(self, word):
+    node = self.root
+    for ch in word:
+        if ch not in node.children:
+            node.children[ch] = TrieNode()
+        node = node.children[ch]
+    node.is_end = True
+```
+
+### Search et startsWith
+
+**Search** suit le chemin et vérifie `is_end`. **startsWith** vérifie uniquement si le chemin existe — il ne nécessite pas `is_end = True`.
+
+<Quiz
+  question="Quelle est la différence entre search('app') et startsWith('app') lorsque 'apple' est stocké mais pas 'app' ?"
+  options="search renvoie True, startsWith renvoie False|Les deux renvoient True|search renvoie False, startsWith renvoie True|Les deux renvoient False"
+  answer="2"
+  explanation="search vérifie is_end (False pour 'app'), tandis que startsWith a seulement besoin que le chemin existe."
+/>
+
+## Autocomplete avec DFS
+
+Pour suggérer des complétions d'un préfixe, naviguez jusqu'au nœud du préfixe, puis lancez un DFS collectant tous les mots en dessous.
+
+```python
+def autocomplete(self, prefix):
+    node = self._find(prefix)
+    if not node:
+        return []
+    results = []
+    self._dfs(node, prefix, results)
+    return results
+```
+
+Le helper `_dfs` parcourt récursivement les enfants et ajoute aux résultats chaque fois que `is_end` est `True`.
+
+<ThinkAboutIt>Comment limiteriez-vous l'autocomplete aux top-k suggestions les plus fréquentes ? Quelles données supplémentaires chaque nœud devrait-il stocker ?</ThinkAboutIt>
+
+## Recherche par wildcard — Dictionnaire de mots
+
+Le problème LeetCode **Design Add and Search Words Data Structure** demande de gérer `.` comme un wildcard correspondant à n'importe quel caractère.
+
+Lors de la recherche, quand vous rencontrez un `.`, explorez *chaque* enfant et continuez récursivement. Cela transforme un simple parcours en une recherche par backtracking borné.
+
+```python
+def search_wild(self, node, word, i):
+    if i == len(word):
+        return node.is_end
+    if word[i] == '.':
+        return any(
+            self.search_wild(c, word, i + 1)
+            for c in node.children.values()
+        )
+    if word[i] not in node.children:
+        return False
+    return self.search_wild(
+        node.children[word[i]], word, i + 1
+    )
+```
+
+## Plus long préfixe commun
+
+Parcourez le trie depuis la racine. Le plus long préfixe commun se termine au premier nœud ayant plus d'un enfant ou un indicateur `is_end`.
+
+<Illustration src="/images/lessons/tries-and-prefix-trees.svg" alt="Structure d'un trie montrant les chemins de préfixes partagés en surbrillance" caption="Les chemins de préfixes partagés convergent en une seule branche jusqu'à ce qu'une séparation se produise." />
+
+## Routage IP avec les tries
+
+Les routeurs stockent les préfixes IP dans un **binary trie** — chaque bit (0 ou 1) forme une branche. Le longest prefix match trouve la route la plus spécifique. C'est ainsi que vos paquets trouvent leur chemin à travers Internet.
+
+<FunFact>Les routeurs du backbone Internet effectuent des milliards de lookups longest-prefix-match par seconde grâce à des tries optimisés en matériel, intégrés dans des puces spécialisées appelées TCAMs.</FunFact>
+
+## Tries compressés (radix trees)
+
+Les tries standard gaspillent de l'espace sur les chaînes à enfant unique. Un **radix tree** fusionne ces chaînes en arêtes uniques stockant des labels multi-caractères.
+
+```
+Standard:  r → u → n → n → i → n → g
+Radix:     r → "unning"
+```
+
+Cela réduit considérablement le nombre de nœuds et est utilisé dans les tables de routage du noyau Linux et les routeurs HTTP comme `httprouter` de Go.
+
+## Complexité en temps et en espace
+
+| Opération       | Trie   | Hash Map |
+|-----------------|--------|----------|
+| Insertion       | O(m)   | O(m)     |
+| Recherche       | O(m)   | O(m)     |
+| Requête préfixe | O(m+k) | O(n·m)   |
+
+Ici *m* est la longueur du mot, *k* le nombre de résultats et *n* le nombre total de clés. Les tries dominent pour les charges de travail orientées préfixes.
+
+<Quiz
+  question="Quel scénario bénéficie LE MOINS d'un trie par rapport à un hash map ?"
+  options="Suggestions d'autocomplete|Recherches exactes clé-valeur|Correcteur orthographique avec correspondance par préfixe|Trouver tous les mots commençant par 'pre'"
+  answer="1"
+  explanation="Pour les recherches exactes sans requêtes de préfixes, un hash map est plus simple et tout aussi rapide."
+/>
+
+## Quand utiliser un trie
+
+- Requêtes basées sur les préfixes (autocomplete, type-ahead)
+- Correspondance par wildcard ou de type regex sur les chaînes
+- Plus long préfixe commun dans un ensemble
+- Routage IP / longest prefix match
+- Correction orthographique avec variations de distance d'édition
+
+<Quiz
+  question="Insérer n mots de longueur moyenne m dans un trie a quelle complexité temporelle ?"
+  options="O(n)|O(m)|O(n × m)|O(n × m²)"
+  answer="2"
+  explanation="Chaque mot prend O(m) à insérer, et on le fait n fois, ce qui donne O(n × m)."
+/>
+
+<ThinkAboutIt>Si la mémoire est votre goulot d'étranglement, quand choisiriez-vous un hash map stockant les clés complètes plutôt qu'un trie, et quand un trie compressé l'emporterait-il ?</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Trie Data Structure — Wikipédia](https://en.wikipedia.org/wiki/Trie) — Vue d'ensemble complète des variantes et de l'histoire des tries
+- [Implement Trie — LeetCode 208](https://leetcode.com/problems/implement-trie-prefix-tree/) — Le problème classique d'implémentation de trie
+- [Radix Trees in the Linux Kernel](https://lwn.net/Articles/175432/) — Comment les tries compressés alimentent les composants internes du noyau

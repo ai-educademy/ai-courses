@@ -1,0 +1,143 @@
+---
+title: "Linked Lists మరియు Stacks — AI వెనుక ఉన్న Dynamic నిర్మాణాలు"
+description: "Linked lists, stacks మరియు queues AI వ్యవస్థలలో dynamic data ను ఎలా నిర్వహిస్తాయో అర్థం చేసుకోండి."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+---
+
+## Arrays కు మించి — Dynamic Data
+
+మీ data పరిమాణం ముందుగా తెలిసినప్పుడు arrays అద్భుతంగా పనిచేస్తాయి. కానీ data అనూహ్యంగా వస్తే — sensor readings స్ట్రీమ్, AI ప్రాసెస్ చేయాల్సిన tasks queue, లేదా ప్రతి సందేశంతో పెరిగే సంభాషణ చరిత్ర? అప్పుడు సులభంగా పెరిగి తగ్గే నిర్మాణాలు కావాలి.
+
+**Linked lists**, **stacks** మరియు **queues** — dynamic త్రయాన్ని పరిచయం చేసుకోండి.
+
+## Linked Lists — Nodes మరియు Pointers
+
+Linked list అంశాలను **nodes** గొలుసుగా నిల్వ చేస్తుంది. ప్రతి node రెండు విషయాలు కలిగి ఉంటుంది: data మరియు గొలుసులో తదుపరి node కి pointer (సూచన).
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Arrays లా కాకుండా, linked list nodes మెమరీలో పక్కపక్కనే ఉండవు. అవి ఎక్కడైనా ఉండవచ్చు — pointer తదుపరిది ఎక్కడ ఉందో చెబుతుంది.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="బాణాలతో అనుసంధానమైన మూడు nodes ఉన్న linked list, పక్కపక్కన blocks ఉన్న array తో పోల్చబడింది" caption="Linked list nodes pointers ద్వారా అనుసంధానమవుతాయి, array elements పక్కపక్కనే ఉంటాయి." />
+
+### Linked Lists vs Arrays
+
+| కార్యకలాపం | Array | Linked List |
+|-----------|-------|-------------|
+| Index ద్వారా ప్రాప్యత | O(1) ⚡ | O(n) 🐢 |
+| మొదట చేర్చడం | O(n) 🐢 | O(1) ⚡ |
+| మధ్యలో చేర్చడం | O(n) 🐢 | O(1)* ⚡ |
+| మధ్య నుండి తొలగించడం | O(n) 🐢 | O(1)* ⚡ |
+| మెమరీ వాడకం | సంక్షిప్తం | అదనపు (pointers) |
+
+*స్థానం కనుగొన్న తర్వాత — కనుగొనడం ఇంకా O(n).
+
+### Linked Lists ఎప్పుడు గెలుస్తాయి
+
+- **తరచు insertions మరియు deletions**: మధ్యలో నిరంతరం అంశాలు చేర్చడం/తొలగించడం జరిగితే, linked lists arrays లో ఖరీదైన shifting ను నివారిస్తాయి.
+- **తెలియని పరిమాణం**: ఎన్ని అంశాలు నిల్వ చేయాలో తెలియనప్పుడు, linked lists resize అవసరం లేకుండా ఒక్కో node గా పెరుగుతాయి.
+- **ఇతర నిర్మాణాల ఆధారం**: Stacks, queues మరియు సంక్లిష్ట నిర్మాణాలు తరచుగా linked lists పైన నిర్మించబడతాయి.
+
+<ThinkAboutIt>
+మీ browser tab bar tabs ను స్వేచ్ఛగా తెరవడం, మూసివేయడం మరియు పునర్వ్యవస్థీకరించడం అనుమతిస్తుంది. Open tabs జాబితా నిర్వహించడానికి array లేదా linked list ఏది మెరుగు? మధ్యలో tab మూసివేసినప్పుడు ఏమి జరుగుతుందో ఆలోచించండి.
+</ThinkAboutIt>
+
+## Stacks — Last In, First Out (LIFO)
+
+**Stack** సరిగ్గా plates stack లాగే పనిచేస్తుంది: పైన పెడతారు మరియు పై నుండి తీస్తారు. చివరిగా పెట్టిన item మొదట తీయబడుతుంది.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (తొలగించబడింది: "C")
+Pop      → [A]     (తొలగించబడింది: "B")
+```
+
+రెండు operations stack ను నిర్వచిస్తాయి:
+- **Push**: పైన item చేర్చడం.
+- **Pop**: పై item తొలగించడం.
+
+రెండూ **O(1)** — stack పరిమాణంతో సంబంధం లేకుండా తక్షణం.
+
+### నిజ ప్రపంచంలో Stacks
+
+- **Undo/Redo**: ప్రతి text editor actions stack నిర్వహిస్తుంది. Ctrl+Z నొక్కితే అత్యంత ఇటీవలి action pop అయి రివర్స్ అవుతుంది.
+- **Browser back button**: మీ browsing history ఒక stack. ప్రతి కొత్త page push అవుతుంది; "back" click చేస్తే ప్రస్తుత page pop అవుతుంది.
+- **Call stacks**: మీ code function call చేసినప్పుడు, ఆ function call stack పైకి push అవుతుంది. పూర్తయినప్పుడు pop అవుతుంది.
+
+<FunFact>
+"Stack overflow" error కనిపించినప్పుడు, అది అక్షరాలా call stack కు స్థలం అయిపోయిందని అర్థం — సాధారణంగా function ఆగకుండా తనను తాను call చేసుకోవడం వల్ల (infinite recursion). ప్రసిద్ధ Q&A సైట్ Stack Overflow ఈ error పేరు మీదే పెట్టబడింది.
+</FunFact>
+
+### AI లో Stacks
+
+- **Expression evaluation**: AI compilers మరియు interpreters neural network computation graphs లో గణిత expressions evaluate చేయడానికి stacks ఉపయోగిస్తాయి.
+- **Backtracking algorithms**: AI సాధ్యమైన పరిష్కారాలను అన్వేషించేటప్పుడు (maze solve చేయడం వంటివి), ఎక్కడ ఉన్నదో గుర్తుంచుకోవడానికి stack ఉపయోగిస్తుంది.
+- **Depth-first search**: Trees మరియు graphs ను depth-first traverse చేయడం సహజంగా stack ఉపయోగిస్తుంది.
+
+<Quiz question="Drawing application కోసం 'undo' feature implement చేస్తున్నారు. Actions చరిత్రకు ఏ data structure ఉత్తమం?" options="Timestamp ప్రకారం sorted array|Action IDs hash map|Stack — అత్యంత ఇటీవలి action ముందు undo చేయాలి|Queue — అతి పాత action ముందు undo చేయాలి" answer="2" explanation="Undo కి Last In, First Out (LIFO) ప్రవర్తన కావాలి — మీరు ఎల్లప్పుడూ అత్యంత ఇటీవలి action ను ముందు undo చేస్తారు. Stack సరిగ్గా ఇదే O(1) push మరియు pop తో అందిస్తుంది." />
+
+## Queues — First In, First Out (FIFO)
+
+**Queue** దుకాణంలో వరుసలా పనిచేస్తుంది: మొదట చేరిన వ్యక్తి మొదట సేవ అందుకుంటాడు. అంశాలు వెనుక చేర్చబడతాయి మరియు ముందు నుండి తొలగించబడతాయి.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (తొలగించబడింది: "A")
+Dequeue     → [C]     (తొలగించబడింది: "B")
+```
+
+### నిజ ప్రపంచంలో Queues
+
+- **Print queues**: Documents submit చేసిన క్రమంలో print అవుతాయి.
+- **Task scheduling**: ఏ process తర్వాత run అవ్వాలో operating systems queues ఉపయోగించి నిర్వహిస్తాయి.
+- **Message queues**: Web applications ఒక్క request కూడా కోల్పోకుండా వేలాది requests నిర్వహించడానికి queues (RabbitMQ లేదా Kafka వంటివి) ఉపయోగిస్తాయి.
+
+### AI లో Queues
+
+- **Breadth-first search (BFS)**: Graph ను level-by-level explore చేయడం queue ఉపయోగిస్తుంది.
+- **Training data pipelines**: GPU కి ఎల్లప్పుడూ తదుపరి batch సిద్ధంగా ఉండేలా training data queues లో load చేస్తారు.
+- **Request handling**: వేలాది users ఏకకాలంలో AI API ను query చేసినప్పుడు, requests queue లో ప్రవేశించి క్రమంలో process అవుతాయి.
+
+<Quiz question="AI API సెకనుకు 10,000 requests అందుకుంటుంది. Requests వచ్చిన క్రమంలో process అవ్వడానికి ఏ structure?" options="Stack — కొత్త request ముందు process చేయి|Hash map — ప్రతి request ను ID ద్వారా చూడు|Queue — మొదట వచ్చింది, మొదట బయటకు|Array — అన్ని requests నిల్వ చేసి random గా process చేయి" answer="2" explanation="Queue యొక్క FIFO (First In, First Out) ప్రవర్తన న్యాయం guarantee చేస్తుంది — requests రాక క్రమంలో process అవుతాయి." />
+
+<Callout>
+**Priority queue** కూడా ఉంది, ఇందులో items రాక క్రమం కాకుండా priority ఆధారంగా dequeue అవుతాయి. AI systems అత్యవసర tasks ను ముందు process చేయడానికి priority queues ఉపయోగిస్తాయి — self-driving car route planning కంటే obstacle detection కు priority ఇవ్వవచ్చు.
+</Callout>
+
+## AI ఉపయోగం: Sequence Processing మరియు Memory Management
+
+### Sequence Processing
+
+భాషా నమూనాలు text ను sequences గా process చేస్తాయి. PyTorch మరియు TensorFlow వంటి frameworks **computation graphs** నిర్మించడానికి linked-list వంటి నిర్మాణాలను ఉపయోగిస్తాయి — ప్రతి step తదుపరి దానిని సూచించే operations గొలుసులు.
+
+### ML Frameworks లో Memory Management
+
+Neural network train చేసేటప్పుడు, tensors సృష్టించబడుతూ నాశనమవుతూ ఉన్నప్పుడు memory నిరంతరం allocate మరియు free అవుతుంది. Memory allocators కొత్త tensors కోసం తగిన స్థలం కనుగొనడానికి free memory blocks యొక్క linked lists ఉపయోగిస్తాయి.
+
+<ThinkAboutIt>
+Chatbot సంభాషణలో చివరి 10 సందేశాలను గుర్తుంచుకోవాలి కానీ పాతవి తొలగించాలి. Stack, queue లేదా మరేదైనా ఉపయోగిస్తారా? 11వ సందేశం వచ్చినప్పుడు ఏమి జరుగుతుంది?
+</ThinkAboutIt>
+
+<Quiz question="Linked lists గురించి ఏ statement తప్పు?" options="Linked lists మొదట O(1) insertion అనుమతిస్తాయి|Linked lists pointers కోసం అదనపు memory ఉపయోగిస్తాయి|Linked lists index ద్వారా ఏ element కైనా O(1) ప్రాప్యత అందిస్తాయి|Linked lists resize లేకుండా dynamically పెరుగుతాయి" answer="2" explanation="Linked list లో index ద్వారా element access చేయడానికి head నుండి traverse చేయాలి — O(n) సమయం. Arrays లా k స్థానానికి నేరుగా jump చేయడం సాధ్యం కాదు." />
+
+<FunFact>
+చాలా applications లో undo history కి పరిమితి ఉంటుంది — సాధారణంగా 100 నుండి 1,000 actions. ఈ పరిమితి లేకుండా stack ఎల్లప్పుడూ పెరిగే memory వినియోగిస్తుంది. కొన్ని advanced systems ఇటీవలి actions ఉంచడానికి మరియు పాతవి తొలగించడానికి stack మరియు queue కలయిక ("deque") ఉపయోగిస్తాయి.
+</FunFact>
+
+## ముఖ్య అంశాలు
+
+- **Linked lists** తరచు insertions మరియు deletions ఉన్న dynamic data లో రాణిస్తాయి, కానీ direct index access కోల్పోతాయి.
+- **Stacks** (LIFO) undo systems, backtracking మరియు depth-first traversal కు శక్తినిస్తాయి.
+- **Queues** (FIFO) task scheduling, BFS మరియు request handling లో న్యాయమైన క్రమాన్ని guarantee చేస్తాయి.
+- ఈ నిర్మాణాలు AI frameworks లో memory management మరియు sequence processing నిర్వహిస్తూ తెరవెనుక పనిచేస్తాయి.
+- Arrays మరియు linked structures మధ్య ఎంపిక మీ access patterns పై ఆధారపడుతుంది — random access కి arrays, dynamic modification కి linked lists.

@@ -1,0 +1,124 @@
+---
+title: "Attention et Transformers — L'architecture qui a tout changé"
+description: "Plongée approfondie dans le self-attention, le multi-head attention, l'encodage positionnel et l'architecture Transformer qui sous-tend tous les grands modèles de langage modernes."
+order: 6
+difficulty: "advanced"
+duration: 20
+icon: "🔦"
+published: true
+---
+
+# Attention et Transformers — L'architecture qui a tout changé
+
+Tous les grands modèles de langage actuels — GPT-4, Claude, Gemini, LLaMA — reposent sur l'architecture Transformer. Publiée dans l'article fondateur de 2017 *Attention Is All You Need*, elle a remplacé la récurrence par un mécanisme appelé **self-attention**, libérant un parallélisme et des performances sans précédent.
+
+## Pourquoi les RNN ont atteint leurs limites
+
+Les réseaux de neurones récurrents (RNN) traitent les séquences un token à la fois, en propageant un état caché. Cela crée deux problèmes rédhibitoires :
+
+- **Disparition du gradient** — Le temps que le gradient se propage à travers des centaines de pas temporels, il se réduit quasiment à zéro, rendant impossible l'apprentissage de dépendances à longue portée.
+- **Goulot d'étranglement séquentiel** — Chaque pas dépend du précédent, rendant impossible la parallélisation de l'entraînement sur une séquence. Une entrée de 1 000 tokens nécessite 1 000 opérations sérielles.
+
+Les LSTM et GRU ont introduit des mécanismes de portes qui atténuaient la disparition du gradient, mais n'ont jamais résolu le problème de parallélisation. L'entraînement restait fondamentalement lent.
+
+## L'intuition derrière l'attention
+
+Imaginez que vous lisiez un long paragraphe et qu'on vous demande *« Qu'a annoncé le PDG ? »*. Vos yeux ne relisent pas chaque mot séquentiellement — ils **sautent à la phrase pertinente**. L'attention fonctionne de la même façon : elle permet à chaque token d'examiner tous les autres et de déterminer lesquels comptent le plus pour son contexte actuel.
+
+Pensez-y comme un **projecteur sur une scène**. Au lieu d'éclairer toute la scène uniformément, le modèle apprend à braquer un faisceau lumineux sur les tokens qui portent l'information la plus pertinente pour la tâche en cours.
+
+<Illustration src="/images/lessons/attention-and-transformers.svg" alt="Diagramme montrant le self-attention : un token query assiste à tous les tokens key avec des poids variables, produisant une somme pondérée des values" caption="Le self-attention permet à chaque token d'assister à tous les autres, avec des poids appris déterminant la pertinence." />
+
+## Query, Key, Value — Le mécanisme fondamental
+
+Le self-attention emprunte sa terminologie à la recherche d'information. Pour chaque token, le modèle calcule trois vecteurs :
+
+- **Query (Q)** — *« Que cherché-je ? »*
+- **Key (K)** — *« Quelle information est-ce que je contiens ? »*
+- **Value (V)** — *« Que contribué-je concrètement si je suis sélectionné ? »*
+
+Le score d'attention entre deux tokens est le **produit scalaire de Q et K**, mis à l'échelle par √d_k (la dimension des clés) pour éviter une explosion des valeurs. L'application du softmax produit des poids normalisés, et la sortie est une somme pondérée de tous les vecteurs V :
+
+```
+Attention(Q, K, V) = softmax(Q·Kᵀ / √d_k) · V
+```
+
+**Exemple concret :** Considérons la phrase *« Le chat s'est assis sur le tapis parce qu'il était fatigué. »* Lors du traitement de *« il »*, la query pour *« il »* accorde le plus d'attention à *« chat »* (score Q·K élevé), résolvant le pronom ambigu — sans aucune récurrence.
+
+<Quiz question="Dans la formule du self-attention, pourquoi divise-t-on par √d_k ?" options="Pour accélérer l'exécution du modèle sur les GPU|Pour empêcher les produits scalaires de devenir trop grands, ce qui pousserait le softmax dans des régions à gradients minuscules|Pour réduire le nombre de paramètres du modèle|Pour normaliser en fonction de séquences de longueur variable" answer="1" explanation="Quand d_k est grand, les produits scalaires peuvent atteindre des magnitudes très élevées, amenant le softmax à produire des gradients quasi nuls (zone de saturation). Diviser par √d_k maintient les valeurs dans une plage où les gradients du softmax restent sains." />
+
+## Multi-Head Attention
+
+Une seule tête d'attention ne peut capturer qu'un seul type de relation à la fois. Le **multi-head attention** exécute plusieurs têtes en parallèle, chacune avec ses propres projections Q, K, V apprises, puis concatène et projette les résultats :
+
+```
+MultiHead(Q, K, V) = Concat(head₁, ..., headₕ) · Wᴼ
+```
+
+Différentes têtes apprennent différents patrons linguistiques — l'une peut détecter les dépendances syntaxiques, une autre la similarité sémantique, et une troisième la proximité positionnelle. GPT-3 utilise 96 têtes ; chacune voit une tranche de 128 dimensions de l'espace complet de 12 288 dimensions.
+
+<FunFact>
+Des chercheurs chez Google ont découvert que les têtes d'attention individuelles dans BERT se spécialisent de manière remarquable — certaines suivent l'accord sujet-verbe, d'autres gèrent la résolution de coréférence, et quelques-unes apprennent même l'analyse en dépendances, le tout sans supervision explicite.
+</FunFact>
+
+## Encodage positionnel
+
+Le self-attention est **invariant par permutation** — il traite *« le chien mord l'homme »* de la même façon que *« l'homme mord le chien »* à moins d'injecter de l'information positionnelle. Le Transformer original utilisait des encodages sinusoïdaux :
+
+```
+PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```
+
+Chaque position reçoit un motif unique d'ondes sinus et cosinus à différentes fréquences. Cela permet au modèle d'apprendre les positions relatives car `PE(pos+k)` peut s'exprimer comme une fonction linéaire de `PE(pos)`. Les modèles modernes (GPT, LLaMA) utilisent les **Rotary Positional Embeddings (RoPE)**, qui encodent la position relative directement dans le produit scalaire Q/K.
+
+## L'architecture Transformer complète
+
+Le Transformer original possède une structure **encoder-decoder** :
+
+- **Encoder** — Traite l'entrée complète avec un self-attention bidirectionnel (chaque token assiste à tous les autres). Empile N couches de self-attention + blocs feed-forward avec des connexions résiduelles et une normalisation de couche.
+- **Decoder** — Génère la sortie de manière auto-régressive avec un **self-attention causal (masqué)** (chaque token ne peut assister qu'aux tokens précédents) plus un cross-attention sur la sortie de l'encoder.
+
+Chaque sous-couche suit le schéma : `LayerNorm(x + Sublayer(x))`, où la connexion résiduelle garantit que les gradients circulent librement à travers des empilements profonds.
+
+<ThinkAboutIt>
+Les connexions résiduelles du Transformer permettent aux gradients de circuler directement à travers plus de 100 couches. Sans elles, un GPT-3 à 96 couches serait quasi impossible à entraîner. Quel parallèle peut-on faire avec les skip connections qui ont rendu les ResNets viables pour la vision par ordinateur profonde ?
+</ThinkAboutIt>
+
+## Pourquoi les Transformers se parallélisent
+
+L'idée clé : le self-attention calcule toutes les interactions par paires de tokens en **une seule multiplication matricielle**. Pour une séquence de longueur n, la matrice d'attention n×n entière est calculée simultanément sur le matériel GPU. Comparez avec les RNN, qui nécessitent n étapes séquentielles quelle que soit la puissance de calcul disponible.
+
+Cette profondeur en O(1) (opérations séquentielles constantes) versus la profondeur O(n) des RNN explique précisément pourquoi les Transformers passent à l'échelle pour des séquences de milliers de tokens à l'entraînement.
+
+## Decoder-only vs Encoder-only vs Encoder-Decoder
+
+Trois variantes architecturales ont émergé du design original :
+
+| Variante | Attention | Exemple | Idéal pour |
+|----------|-----------|---------|------------|
+| **Encoder-only** | Bidirectionnel | BERT, RoBERTa | Classification, NER, embeddings |
+| **Decoder-only** | Causal (gauche-à-droite) | GPT, LLaMA, Claude | Génération de texte, chat, raisonnement |
+| **Encoder-decoder** | Les deux | T5, BART, Whisper | Traduction, résumé |
+
+Les modèles decoder-only dominent aujourd'hui car **la génération est l'interface universelle** — toute tâche de NLP peut être formulée comme une génération de texte. Cette simplicité architecturale passe aussi mieux à l'échelle de manière prévisible.
+
+<Quiz question="Pourquoi les modèles decoder-only utilisent-ils une attention causale (masquée) durant l'entraînement ?" options="Pour réduire l'utilisation mémoire de moitié|Pour empêcher les tokens d'assister aux tokens futurs, ce qui divulguerait la réponse durant l'entraînement auto-régressif|Pour rendre le modèle bidirectionnel|Pour accélérer l'inférence en sautant des calculs d'attention" answer="1" explanation="Durant l'entraînement, le modèle prédit le prochain token à chaque position simultanément. Le masquage causal garantit que chaque position ne voit que les tokens précédents, empêchant la fuite d'information depuis les positions futures qui trivialiserait la tâche de prédiction." />
+
+<Quiz question="Sur quelle variante du Transformer BERT est-il basé, et pourquoi est-il inadapté à la génération de texte libre ?" options="Decoder-only ; il manque de couches de cross-attention|Encoder-decoder ; il nécessite un decoder séparé pour générer du texte|Encoder-only ; son attention bidirectionnelle signifie qu'il voit toute la séquence, rendant la génération auto-régressive impossible|Encoder-only ; il a trop peu de paramètres pour les tâches de génération" answer="2" explanation="BERT utilise une attention bidirectionnelle (encoder-only), ce qui signifie que chaque token assiste à tous les autres, y compris les futurs. C'est parfait pour les tâches de compréhension mais rend la génération auto-régressive impossible — il ne peut pas prédire « le prochain token » quand il voit déjà tous les tokens." />
+
+<FunFact>
+L'article original *Attention Is All You Need* a été rejeté d'une première conférence avant d'être accepté à NeurIPS 2017. En 2024, il cumule plus de 130 000 citations — en faisant l'un des articles d'informatique les plus cités de l'histoire.
+</FunFact>
+
+<ThinkAboutIt>
+Le self-attention a une complexité en O(n²) par rapport à la longueur de la séquence — doubler la fenêtre de contexte quadruple le calcul. Les recherches sur l'attention linéaire, l'attention sparse et le ring attention visent à briser cette barrière. Quels compromis ces approximations pourraient-elles introduire ?
+</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762) — L'article fondateur introduisant l'architecture Transformer
+- [Andrej Karpathy — Let's build GPT: from scratch, in code](https://www.youtube.com/watch?v=kCc8FmEb1nY) — Parcours complet de construction d'un Transformer de zéro
+- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/) — Explication visuelle et intuitive de chaque composant du Transformer

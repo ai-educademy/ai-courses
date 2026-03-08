@@ -1,0 +1,173 @@
+---
+title: "Tries en prefix trees — Autocomplete, spellingcontrole en IP-routing"
+description: "Beheers de trie-datastructuur voor razendsnelle prefix lookups. Bouw autocomplete, wildcard search, en verken compressed tries en IP-routing."
+order: 6
+difficulty: "advanced"
+duration: 18
+icon: "🌳"
+published: true
+---
+
+## Wat is een trie?
+
+Een **trie** (uitgesproken als "try") is een boomachtige structuur waarin elke node één enkel karakter voorstelt. Paden van de root naar gemarkeerde nodes spellen opgeslagen woorden. In tegenstelling tot hash maps kun je met tries *alle woorden met een gemeenschappelijke prefix* opvragen zonder elke key te doorlopen.
+
+```
+        root
+       / | \
+      a   b   c
+     /     \
+    p       a
+   / \       \
+  p   e      t
+  |
+  l
+  e
+```
+
+Elk pad codeert een woord: **apple**, **ape**, **bat**, **cat**.
+
+## De TrieNode-klasse
+
+Elke node bevat een map van children en een vlag die het einde van een woord aangeeft.
+
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+```
+
+Een volledige trie omhult dit met insert-, search- en prefix-operaties.
+
+## Kernoperaties
+
+### Insert — O(m) waarbij m = woordlengte
+
+Loop karakter voor karakter, maak nodes aan waar nodig en markeer de laatste node.
+
+```python
+def insert(self, word):
+    node = self.root
+    for ch in word:
+        if ch not in node.children:
+            node.children[ch] = TrieNode()
+        node = node.children[ch]
+    node.is_end = True
+```
+
+### Search en startsWith
+
+**Search** volgt het pad en controleert `is_end`. **startsWith** controleert alleen of het pad bestaat — het vereist geen `is_end = True`.
+
+<Quiz
+  question="Wat is het verschil tussen search('app') en startsWith('app') wanneer 'apple' is opgeslagen maar 'app' niet?"
+  options="search geeft True, startsWith geeft False|Beide geven True|search geeft False, startsWith geeft True|Beide geven False"
+  answer="2"
+  explanation="search controleert is_end (False voor 'app'), terwijl startsWith alleen nodig heeft dat het pad bestaat."
+/>
+
+## Autocomplete met DFS
+
+Om suggesties voor een prefix te geven, navigeer je naar de prefix-node en voer je vervolgens een DFS uit die alle onderliggende woorden verzamelt.
+
+```python
+def autocomplete(self, prefix):
+    node = self._find(prefix)
+    if not node:
+        return []
+    results = []
+    self._dfs(node, prefix, results)
+    return results
+```
+
+De `_dfs`-helper doorloopt recursief de children en voegt toe aan de resultaten wanneer `is_end` `True` is.
+
+<ThinkAboutIt>Hoe zou je autocomplete beperken tot de top-k meest frequente suggesties? Welke extra data zou elke node nodig hebben?</ThinkAboutIt>
+
+## Wildcard search — Woordenboek
+
+LeetCode's **Design Add and Search Words Data Structure** vraagt je om `.` als wildcard te behandelen die elk willekeurig karakter matcht.
+
+Wanneer je tijdens het zoeken een `.` tegenkomt, vertakt je naar *elke* child en ga je recursief verder. Dit verandert een eenvoudige traversal in een begrensde backtracking search.
+
+```python
+def search_wild(self, node, word, i):
+    if i == len(word):
+        return node.is_end
+    if word[i] == '.':
+        return any(
+            self.search_wild(c, word, i + 1)
+            for c in node.children.values()
+        )
+    if word[i] not in node.children:
+        return False
+    return self.search_wild(
+        node.children[word[i]], word, i + 1
+    )
+```
+
+## Langste gemeenschappelijke prefix
+
+Doorloop de trie vanaf de root. De langste gemeenschappelijke prefix eindigt bij de eerste node met meer dan één child of een `is_end`-vlag.
+
+<Illustration src="/images/lessons/tries-and-prefix-trees.svg" alt="Trie-structuur met gemarkeerde gedeelde prefix-paden" caption="Gedeelde prefix-paden komen samen in één enkele tak totdat een splitsing optreedt." />
+
+## IP-routing met tries
+
+Routers slaan IP-prefixen op in een **binary trie** — elke bit (0 of 1) vormt een branch. Longest prefix match vindt de meest specifieke route. Zo vinden je pakketten hun weg over het internet.
+
+<FunFact>Backbone-routers op het internet voeren miljarden longest-prefix-match lookups per seconde uit met hardware-geoptimaliseerde tries die zijn ingebouwd in gespecialiseerde chips genaamd TCAMs.</FunFact>
+
+## Compressed tries (radix trees)
+
+Standaard tries verspillen ruimte aan ketens met slechts één child. Een **radix tree** voegt deze ketens samen tot enkele edges met multi-karakter labels.
+
+```
+Standard:  r → u → n → n → i → n → g
+Radix:     r → "unning"
+```
+
+Dit vermindert het aantal nodes drastisch en wordt gebruikt door Linux-kernel routingtabellen en HTTP-routers zoals Go's `httprouter`.
+
+## Tijd- en ruimtecomplexiteit
+
+| Operatie       | Trie   | Hash Map |
+|----------------|--------|----------|
+| Insert         | O(m)   | O(m)     |
+| Search         | O(m)   | O(m)     |
+| Prefix query   | O(m+k) | O(n·m)   |
+
+Hierbij is *m* de woordlengte, *k* het aantal resultaten en *n* het totale aantal keys. Tries domineren bij prefix-intensieve workloads.
+
+<Quiz
+  question="Welk scenario heeft het MINST baat bij een trie ten opzichte van een hash map?"
+  options="Autocomplete-suggesties|Exacte key-value lookups|Spellingcontrole met prefix matching|Alle woorden vinden die beginnen met 'pre'"
+  answer="1"
+  explanation="Voor exacte lookups zonder prefix-queries is een hash map eenvoudiger en even snel."
+/>
+
+## Wanneer kies je voor een trie?
+
+- Prefix-gebaseerde queries (autocomplete, type-ahead)
+- Wildcard- of regex-achtige matching op strings
+- Langste gemeenschappelijke prefix in een verzameling
+- IP-routing / longest prefix match
+- Spellingcontrole met edit-distance variaties
+
+<Quiz
+  question="Het invoegen van n woorden met een gemiddelde lengte m in een trie heeft welke tijdscomplexiteit?"
+  options="O(n)|O(m)|O(n × m)|O(n × m²)"
+  answer="2"
+  explanation="Elk woord kost O(m) om in te voegen, en je doet dit n keer, wat O(n × m) oplevert."
+/>
+
+<ThinkAboutIt>Als geheugen je bottleneck is, wanneer zou je een hash map met volledige keys verkiezen boven een trie, en wanneer wint een compressed trie?</ThinkAboutIt>
+
+---
+
+## 📚 Verder lezen
+
+- [Trie Data Structure — Wikipedia](https://en.wikipedia.org/wiki/Trie) — Uitgebreid overzicht van trie-varianten en geschiedenis
+- [Implement Trie — LeetCode 208](https://leetcode.com/problems/implement-trie-prefix-tree/) — Het klassieke trie-implementatieprobleem
+- [Radix Trees in the Linux Kernel](https://lwn.net/Articles/175432/) — Hoe compressed tries de interne werking van de kernel aandrijven

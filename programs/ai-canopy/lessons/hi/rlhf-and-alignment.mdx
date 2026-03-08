@@ -1,0 +1,122 @@
+---
+title: "RLHF और Alignment — ChatGPT कैसे सीखता है Human Values"
+description: "समझिए कैसे raw language models को supervised fine-tuning, reward modelling और reinforcement learning from human feedback के ज़रिए helpful, harmless assistants में बदला जाता है।"
+order: 8
+difficulty: "advanced"
+duration: 18
+icon: "🎯"
+published: true
+---
+
+# RLHF और Alignment — ChatGPT कैसे सीखता है Human Values
+
+एक pre-trained language model एक powerful लेकिन uncontrolled engine है। यह poetry लिख सकता है, code generate कर सकता है, physics पर reason कर सकता है — लेकिन toxic content भी produce कर सकता है, confidently facts fabricate कर सकता है, और user instructions ignore कर सकता है। **Alignment** वह process है जिसमें इस raw capability को genuinely helpful, honest और harmless बनने की दिशा में steer किया जाता है।
+
+## Alignment Problem
+
+Pre-training एक single objective optimise करती है: **next token predict करो**। इससे model को broad knowledge मिलती है लेकिन यह समझ नहीं आती कि human actually *क्या चाहता है*। Base model से सवाल पूछो और वह text को ऐसे complete कर सकता है जैसे forum post लिख रहा हो, advertisement हो, या conspiracy theory — क्योंकि ये सभी patterns उसके training data में हैं।
+
+"Capable" और "useful" के बीच का gap alignment problem है। जो model medical advice लिख सकता है लेकिन refuse करना नहीं जानता, वह potentially dangerous है। इस gap को पाटने के लिए model को **human preferences** सिखानी होंगी — सिर्फ यह नहीं कि आगे क्या *आ सकता* है, बल्कि यह कि आगे क्या *आना चाहिए*।
+
+<Illustration src="/images/lessons/rlhf-and-alignment.svg" alt="तीन-stage pipeline: SFT demonstrations पर train करता है, reward model preferences सीखता है, PPO reward model के against policy optimise करता है" caption="RLHF pipeline base model को तीन stages में aligned assistant में बदलती है: SFT, reward modelling, और RL optimisation।" />
+
+## Stage 1: Supervised Fine-Tuning (SFT)
+
+पहला step straightforward है: हज़ारों high-quality **demonstration examples** collect करो — user और assistant के बीच ideal conversations — और base model को उन पर fine-tune करो। इससे model helpful होने का *format* सीखता है: सवालों का directly जवाब देना, instructions follow करना, uncertainty acknowledge करना, और harmful requests refuse करना।
+
+SFT अकेला noticeably better model produce करता है, लेकिन इसकी limitations हैं। Human demonstrators सीमित examples ही लिख सकते हैं, और model उन demonstrations की *average* quality imitate करना सीखता है, consistently best possible response produce करने की बजाय।
+
+## Stage 2: Reward Model Training
+
+Ideal responses लिखने की बजाय, human labellers को **model outputs के pairs** दिए जाते हैं और पूछा जाता है कौन सा बेहतर है। यह cognitively आसान है — compare करना create करने से simpler है — और काफ़ी ज़्यादा preference data collect करने देता है।
+
+ये ranked pairs एक **reward model (RM)** train करते हैं: एक अलग neural network जो prompt और response input लेता है और human preference represent करने वाला scalar score output करता है। RM ऐसे patterns सीखता है:
+
+- Accurate, sourced responses vague ones से higher score पाते हैं
+- Uncertainty acknowledge करने वाले responses confident fabrications से higher score पाते हैं
+- Helpful refusals harmful requests comply करने से higher score पाते हैं
+
+<Quiz question="Comparison data (दो outputs rank करना) collect करना demonstration data (ideal outputs लिखना) से आसान और ज़्यादा scalable क्यों है?" options="Comparison को कम computational power चाहिए|Humans relative quality बहुत तेज़ और consistently judge कर सकते हैं, expert-level text scratch से produce करने की तुलना में|Comparison data को कम labellers चाहिए|Demonstration data language models के लिए use नहीं हो सकता" answer="1" explanation="Perfect assistant response लिखने के लिए expertise और काफ़ी समय चाहिए। दो responses compare करके judge करना कि कौन बेहतर है, बहुत तेज़ cognitive task है और different annotators में ज़्यादा consistent labels produce करता है, जिससे यह कहीं ज़्यादा scalable है।" />
+
+## Stage 3: Reinforcement Learning (PPO)
+
+Reward model तैयार होने पर, SFT model को **Proximal Policy Optimisation (PPO)** से further optimise किया जाता है:
+
+1. Model एक prompt पर response generate करता है
+2. Reward model response score करता है
+3. PPO model weights update करता है ताकि expected reward बढ़े
+4. **KL divergence penalty** model को SFT baseline से बहुत दूर drift होने से रोकती है (reward hacking avoid करने के लिए)
+
+KL penalty critical है। इसके बिना, model reward model की quirks exploit करना सीख जाएगा — ऐसे responses generate करेगा जो highly score होते हैं लेकिन nonsensical या repetitive होते हैं। Policy को SFT model से कितना diverge हो सकती है यह constrain करके, PPO alignment improve करते हुए outputs coherent रखता है।
+
+यह तीन-stage process — SFT → Reward Model → PPO — बिल्कुल वही है जिससे OpenAI ने GPT-3.5 को ChatGPT में transform किया, जैसा उनके **InstructGPT** paper में describe है।
+
+<FunFact>
+InstructGPT paper ने एक striking result reveal किया: RLHF से aligned 1.3B parameter model को human judges ने unaligned 175B GPT-3 — 100× बड़े model — के ऊपर prefer किया। Alignment raw scale से ज़्यादा matter कर सकती है।
+</FunFact>
+
+## DPO: बिचौलिया हटाना
+
+**Direct Preference Optimisation (DPO)** RLHF pipeline को simplify करता है separate reward model पूरी तरह eliminate करके। DPO alignment को classification problem के रूप में frame करता है: preferred response और rejected response दिए जाने पर, language model के weights directly update करो ताकि preferred response की probability बढ़े।
+
+DPO loss function implicitly language model के अंदर ही reward model define करता है:
+
+```
+L_DPO = -log σ(β · (log π(y_w|x)/π_ref(y_w|x) - log π(y_l|x)/π_ref(y_l|x)))
+```
+
+जहाँ `y_w` preferred response है, `y_l` rejected है, और `π_ref` reference (SFT) model है। DPO simpler, ज़्यादा stable, और train करने में सस्ता है — कोई reward model नहीं, कोई RL loop नहीं, कोई hyperparameter-sensitive PPO नहीं। Meta का LLaMA 2 और कई open-source models अब DPO या इसके variants use करते हैं।
+
+<ThinkAboutIt>
+DPO reward model eliminate करता है लेकिन inference time पर arbitrary new responses score करने की ability भी खो देता है। किन scenarios में explicit reward model (full RLHF pipeline) रखना DPO की simplicity से ज़्यादा valuable हो सकता है?
+</ThinkAboutIt>
+
+## Constitutional AI: Scale पर Self-Supervision
+
+Anthropic ने **Constitutional AI (CAI)** introduce किया ताकि human labellers पर निर्भरता कम हो। Approach:
+
+1. Principles का set define करो (एक "constitution") — जैसे *"Choose the response that is most helpful while being honest and harmless"*
+2. Response pairs generate करो और **model खुद** judge करे कि कौन सा response constitution को बेहतर follow करता है
+3. इन AI-generated preferences से reward model train करो (RLAIF — RL from AI Feedback)
+
+CAI preference collection dramatically scale करता है — AI millions of comparisons human labelling के fraction cost पर generate और evaluate कर सकता है। यह alignment criteria को **explicit और auditable** भी बनाता है।
+
+<Quiz question="Standard RLHF की तुलना में Constitutional AI का core innovation क्या है?" options="यह बहुत बड़ा base model use करता है|यह human preference labellers को AI model से ही replace करता है, explicit written principles द्वारा guided|यह किसी fine-tuning की ज़रूरत eliminate करता है|यह सिर्फ synthetic data पर train करता है" answer="1" explanation="Constitutional AI model खुद से preference judgements generate करता है, explicitly written principles (constitution) द्वारा guided। इससे preference data collection enormously scale होती है जबकि alignment criteria transparent और modifiable रहते हैं।" />
+
+## Red Teaming
+
+कोई alignment technique perfect नहीं है। **Red teaming** में deliberately model से harmful, biased, या untruthful outputs produce करवाने की कोशिश की जाती है। Red teamers probe करते हैं:
+
+- Safety training bypass करने वाले jailbreaks
+- Demographics के across responses में systematic biases
+- High-stakes domains (medical, legal) में factual errors
+- Refusal boundaries में inconsistencies
+
+Major labs अब models release करने से पहले extensive red teaming conduct करते हैं, अक्सर external security researchers और domain experts को involve करते हुए।
+
+## Alignment Tax
+
+Alignment एक cost लेकर आती है। RLHF-trained models कभी-कभी **ज़रूरत से ज़्यादा cautious** हो जाते हैं — benign requests refuse करते हैं, unnecessary caveats add करते हैं, या perceived risk avoid करने के लिए bland responses produce करते हैं। यह "alignment tax" एक real engineering challenge है:
+
+- बहुत कम alignment → harmful outputs
+- बहुत ज़्यादा alignment → unhelpful, annoying refusals
+
+Alignment research का frontier ऐसी techniques ढूँढना है जो genuine safety boundaries maintain करते हुए helpfulness maximise करें।
+
+<Quiz question="RLHF-trained models के context में 'alignment tax' क्या है?" options="Human labellers hire करने की financial cost|Safety training से model helpfulness और capability में कमी जो model को ज़रूरत से ज़्यादा cautious बना देती है|PPO optimisation चलाने की computational cost|Governments द्वारा AI companies पर safety compliance के लिए लगाया tax" answer="1" explanation="Alignment tax उस capability या helpfulness के loss को refer करता है जो safety training model को excessively cautious बनाने पर होता है — benign requests refuse करना, unnecessarily hedge करना, या generic responses produce करना।" />
+
+<FunFact>
+OpenAI ने GPT-4 के base model को public release version में transform करने के लिए alignment work (SFT data collection, reward modelling, और RLHF training) पर लगभग छह महीने खर्च किए। Pre-training compute का fraction होते हुए भी alignment phase को हज़ारों घंटों की specialised human labelling चाहिए थी।
+</FunFact>
+
+<ThinkAboutIt>
+Human labellers inevitably अपने biases, cultural perspectives और inconsistencies preference data में लेकर आते हैं। अगर alignment ultimately "humans क्या prefer करते हैं यह सीखना" है, तो किसकी preferences count होनी चाहिए — और cultures के बीच values पर fundamental disagreements कैसे handle करें?
+</ThinkAboutIt>
+
+---
+
+## 📚 आगे पढ़ें
+
+- [Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — OpenAI का foundational RLHF paper
+- [Direct Preference Optimization (Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290) — DPO paper जिसने alignment training simplify किया
+- [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073) — AI self-supervision से scalable alignment पर Anthropic का approach

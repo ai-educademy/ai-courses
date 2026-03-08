@@ -1,0 +1,159 @@
+---
+title: "Ontwerp Twitter's AI-Feed — Een End-to-End Casestudy"
+description: "Ontleed de architectuur achter een gepersonaliseerde tijdlijn die miljarden tweets serveert aan honderden miljoenen gebruikers."
+order: 3
+difficulty: "advanced"
+duration: 30
+icon: "🐦"
+published: true
+---
+
+# Ontwerp Twitter's AI-Feed
+
+Stel je voor dat je één opdracht krijgt: elke keer dat een gebruiker de app opent, laat je de tweets zien die voor hen het meest waardevol zijn — uit miljarden mogelijkheden — in minder dan 200 milliseconden.
+
+Dit is een van de moeilijkste aanbevelingsproblemen in de industrie. Laten we het vanaf nul ontwerpen.
+
+<Illustration src="/images/lessons/design-twitter-ai-feed.svg" alt="Pipeline-diagram dat tweetkandidaten toont die door ranking- en filterfases stromen tot een gepersonaliseerde feed" caption="De reis van een tweet van creatie tot jouw tijdlijn" />
+
+## Het Probleem op Schaal
+
+Twitter (nu X) verwerkt dagelijks circa 500 miljoen tweets. Elk van de 350+ miljoen maandelijks actieve gebruikers verwacht een feed die **persoonlijk samengesteld** aanvoelt — relevant, actueel en boeiend.
+
+Een chronologische feed werkt niet op deze schaal. Als je 500 accounts volgt, heb je misschien 10.000 ongelezen tweets. De meeste zijn irrelevant. De AI-feed moet de 50 naar boven halen die er het meest toe doen voor **jou**.
+
+<Callout>
+Dit is niet alleen een rankingprobleem — het is een meerfasig systeem met candidate generation, feature engineering, realtime scoring, contentveiligheid en serving op enorme schaal.
+</Callout>
+
+## Fase 1: Candidate Generation
+
+Je kunt niet alle 500 miljoen dagelijkse tweets scoren voor elke gebruiker. In plaats daarvan **beperk je het speelveld** eerst.
+
+### Bronnen van kandidaten:
+- **In-netwerk**: Tweets van accounts die je volgt (hoogste recall, gemiddelde relevantie).
+- **Buiten-netwerk**: Tweets geliket of geretweet door mensen die je volgt, of trending in je interessegrafiek.
+- **Onderwerpgebaseerd**: Tweets die aansluiten bij onderwerpen waarmee je recent interactie hebt gehad.
+
+### Hoe het werkt:
+Een lichtgewicht retrieval-model (vaak op basis van embeddings) genereert een kandidatenset van circa 1.000–5.000 tweets per gebruiker. Dit draait op een schema of wordt getriggerd wanneer de gebruiker de app opent.
+
+<Quiz question="Waarom gebruikt Twitter candidate generation in plaats van elke tweet voor elke gebruiker te scoren?" options="Omdat het scoren van elke tweet te snel zou gaan|Omdat het rekenkundig onmogelijk is om een zwaar rankingmodel op miljarden tweets per gebruikersverzoek te draaien|Omdat gebruikers de voorkeur geven aan willekeurige tweets|Omdat het rankingmodel alleen werkt op kleine datasets" answer="1" explanation="Met 500 miljoen tweets per dag en 350 miljoen gebruikers zou het scoren van elke tweet per gebruiker astronomische rekenkracht vereisen. Candidate generation verkleint de set tot een behapbare omvang voordat het zware rankingmodel draait." />
+
+## Fase 2: Het Rankingmodel
+
+Zodra je een paar duizend kandidaten hebt, scoort een **zwaar rankingmodel** elk ervan. Hier zit de echte intelligentie.
+
+### Features die het model gebruikt:
+
+**Gebruikersfeatures:**
+- Interesses afgeleid uit eerdere interactie (likes, retweets, replies, leestijd).
+- Sociale grafiek: met wie je het meest interacteert.
+- Demografie en taalvoorkeuren.
+
+**Tweetfeatures:**
+- Inhoud: text embeddings, mediatype, hashtags.
+- Auteur: aantal volgers, interactieratio, vertrouwensscore.
+- Versheid: leeftijd van de tweet in minuten.
+
+**Kruisfeatures:**
+- Gebruiker-auteuraffiniteit: hoe vaak je interactie hebt met deze auteur.
+- Gebruiker-onderwerpaffiniteit: sluit het tweetonderwerp aan bij je interesseprofiel?
+- Sociaal bewijs: hebben mensen die op jou lijken interactie gehad met deze tweet?
+
+### Modelarchitectuur:
+Een diep neuraal netwerk (vaak een multi-task model) voorspelt meerdere interactietypes tegelijk:
+
+- Kans op een like.
+- Kans op een retweet.
+- Kans op een reply.
+- Kans op langere leestijd (langer dan twee seconden lezen).
+
+De eindscore is een **gewogen combinatie** van deze voorspellingen, afgestemd op een platformbreed doel zoals "gezonde interactie".
+
+<ThinkAboutIt>
+Als je puur optimaliseert voor klikken en likes, riskeer je sensationele of verontwaardiging-uitlokkende content te promoten. Hoe zou jij de scoringsformule ontwerpen om interactie in balans te brengen met contentkwaliteit?
+</ThinkAboutIt>
+
+## Fase 3: Realtime Features
+
+Statische features zijn niet genoeg. De feed moet reageren op wat er **nu** gebeurt.
+
+- **Versheidsverval**: Een tweet van 30 seconden geleden krijgt een boost ten opzichte van een tweet van drie uur geleden.
+- **Trending topics**: Bij een groot evenement worden gerelateerde tweets getoond, zelfs als ze buiten de gebruikelijke interesses van de gebruiker vallen.
+- **Sessiecontext**: Als een gebruiker al tien minuten scrollt, diversifieer de content om vermoeidheid te verminderen.
+- **Realtime interactiesignalen**: Een tweet die de afgelopen vijf minuten viraal gaat, krijgt een tijdelijke boost.
+
+Deze features vereisen een **streaming-infrastructuur** — vaak Apache Kafka dat een feature store zoals Redis of Feast voedt — die nagenoeg realtime wordt bijgewerkt.
+
+<FunFact>
+Het engineeringteam van Twitter meldde dat het toevoegen van realtime features aan hun rankingmodel de gebruikersinteractie met 8 procent verhoogde — een enorme verbetering op hun schaal, goed voor miljoenen extra dagelijkse interacties.
+</FunFact>
+
+## Het "Voor Jou"-Algoritme: Explore vs Exploit
+
+De feed heeft te maken met het klassieke **exploratie-exploitatiedilemma**:
+
+- **Exploit**: Toon content vergelijkbaar met waar de gebruiker eerder mee interacteerde. Veilig, voorspelbaar, hoge kortetermijninteractie.
+- **Explore**: Introduceer nieuwe onderwerpen, nieuwe auteurs en nieuwe formats. Riskanter, maar essentieel voor langetermijnretentie en contentdiversiteit.
+
+Twitter's aanpak combineert beide:
+
+- Circa 80 procent van de feed is exploitatie — content waarvan het model zeker weet dat de gebruiker het waardeert.
+- Circa 20 procent is exploratie — nieuwe content die wordt geïnjecteerd om de veranderende interesses van de gebruiker te testen.
+
+De exploratieratio is zelf een parameter die wordt afgestemd via A/B-testing over miljoenen gebruikers.
+
+<Quiz question="Wat is het grootste risico van een feed die alleen 'exploiteert' en nooit 'exploreert'?" options="De feed wordt te divers en verwarrend|De gebruiker raakt opgesloten in een filterbubbel en het platform kan de veranderende interesses niet ontdekken|Het systeem gebruikt te veel rekenkracht|De feed laadt te langzaam" answer="1" explanation="Pure exploitatie creëert filterbubbels — de gebruiker ziet alleen wat ze al leuk vinden, het platform kan zich niet aanpassen aan veranderende smaak en contentdiversiteit stort in. Exploratie is essentieel voor de gezondheid op lange termijn." />
+
+## Contentmoderatie en Veiligheid
+
+Voordat een tweet in de feed verschijnt, passeert deze een **veiligheidslaag**:
+
+1. **Pre-rankingfilter**: Bekende spam, intimidatie en beleidsschendende content wordt verwijderd vóór ranking.
+2. **Post-rankingfilter**: Na ranking vangt een secundaire controle randgevallen op — bijvoorbeeld een tweet die individueel acceptabel is maar schadelijk in combinatie met vergelijkbare content.
+3. **Gebruikerscontroles**: Gebruikers kunnen onderwerpen dempen, accounts blokkeren en content markeren als "niet geïnteresseerd", wat allemaal terugvloeit in hun personalisatiemodel.
+
+De veiligheidslaag moet **snel** zijn (maximaal 10–20ms extra latency) en **conservatief** (bij twijfel filteren en doorsturen naar menselijke beoordeling).
+
+<Callout>
+Contentmoderatie is geen apart systeem dat er achteraf aan wordt geplakt. Het is diep geïntegreerd in de ranking-pipeline en beïnvloedt scores en filtering in elke fase.
+</Callout>
+
+## Schalen: Fan-Out on Read vs Fan-Out on Write
+
+Dit is de architectuurbeslissing die Twitter's infrastructuur definieert.
+
+### Fan-out on write:
+Wanneer een gebruiker tweet, **push** die tweet naar de feedcache van elke volger. Snelle reads, maar dure writes — vooral voor accounts met miljoenen volgers.
+
+### Fan-out on read:
+Wanneer een gebruiker de app opent, **pull** de nieuwste tweets van alle gevolgde accounts en rank ze ter plekke. Goedkope writes, maar dure reads.
+
+### Twitter's hybride aanpak:
+- Voor de meeste gebruikers (minder dan 10.000 volgers): fan-out on write. Voorbereken en cache de feed.
+- Voor beroemdheden (miljoenen volgers): fan-out on read. Bereken de feed op het moment van het verzoek om te voorkomen dat miljoenen caches worden overspoeld bij elke tweet.
+
+Deze hybride strategie balanceert write-amplificatie tegen read-latency, en handelt zowel een gewone tweet als een virale post van een popster efficiënt af.
+
+<FunFact>
+Wanneer een beroemdheid met 50 miljoen volgers tweet, zou fan-out on write 50 miljoen cache-invoegingen vereisen — minuten durend en enorm veel bandbreedte. De hybride aanpak handelt dit in milliseconden af door het werk uit te stellen naar leestijd.
+</FunFact>
+
+## Alles Samenvoegen
+
+De volledige pipeline voor een enkel feedverzoek:
+
+1. Gebruiker opent de app → verzoek bereikt de feedservice.
+2. Candidate generation haalt ~3.000 tweets op uit in-netwerk- en buiten-netwerkbronnen.
+3. De feature store levert realtime en batch features voor elke kandidaat.
+4. Het rankingmodel scoort alle kandidaten in één gebatchte inference-aanroep.
+5. Veiligheidsfilters verwijderen beleidsschendende content.
+6. Exploratielogica injecteert 20 procent diverse content.
+7. De uiteindelijke gerangschikte lijst wordt in minder dan 200ms aan de client geretourneerd.
+
+<ThinkAboutIt>
+In een sollicitatiegesprek wordt je gevraagd: "Als je één nieuw signaal kon toevoegen om de feed te verbeteren, welk zou dat zijn en waarom?" Denk aan signalen die niet vaak besproken worden — misschien iets gerelateerd aan gebruikerswelzijn of contentgeloofwaardigheid.
+</ThinkAboutIt>
+
+<Quiz question="Hoe worden tweets van beroemdheidsaccounts behandeld in Twitter's hybride fan-out-strategie?" options="Ze worden direct naar de cache van elke volger gepusht|Ze worden berekend op leestijd wanneer een volger de feed opent|Ze worden volledig uitgesloten van de AI-feed|Ze worden alleen aan geverifieerde gebruikers getoond" answer="1" explanation="Tweets van beroemdheden gebruiken fan-out on read — de feed wordt berekend wanneer een volger erom vraagt, om de enorme kosten te vermijden van het pushen van één tweet naar miljoenen caches." />

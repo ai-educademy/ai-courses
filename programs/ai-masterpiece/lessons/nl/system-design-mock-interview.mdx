@@ -1,0 +1,189 @@
+---
+title: "System Design Oefeninterview — Een 45 Minuten Senior Engineer Simulatie"
+description: "Een complete system design-uitwerking voor een maaltijdbezorgplatform — requirements, API-ontwerp, architectuur, deep dives en schaling — gestructureerd zoals een echt senior engineer-interview."
+order: 9
+difficulty: "advanced"
+duration: 25
+icon: "🏗️"
+published: true
+---
+
+# System Design Oefeninterview — Een 45 Minuten Senior Engineer Simulatie
+
+System design-interviews scheiden senior engineers van de rest. Er is geen enkel juist antwoord — interviewers beoordelen je **gestructureerde denkwijze**, analyse van afwegingen en vermogen om met ambiguïteit om te gaan. Deze les is een complete simulatie van 45 minuten.
+
+## 🎯 Het Probleem: Ontwerp een Maaltijdbezorgsysteem
+
+*"Ontwerp een maaltijdbezorgplatform zoals Uber Eats of Deliveroo dat klanten, restaurants en bezorgers verbindt."*
+
+<Illustration src="/images/lessons/system-design-mock-interview.svg" alt="High-level architectuur van een maaltijdbezorgsysteem met gebruikers-, restaurant-, order- en bezorgservices" caption="De vier kerndomeinen van een maaltijdbezorgplatform — elk is een bounded context met een eigen service." />
+
+## Fase 1: Requirements Verzamelen (5 minuten)
+
+**Begin nooit direct met het tekenen van blokken.** Stel eerst verhelderende vragen:
+
+**Functionele requirements:**
+- Klanten bladeren door restaurants, bekijken menu's, plaatsen bestellingen, volgen bezorging in realtime
+- Restaurants beheren menu's, accepteren/weigeren bestellingen, updaten bereidingsstatus
+- Bezorgers ontvangen bezorgverzoeken, navigeren naar ophaal-/afleveradres, bevestigen levering
+- Realtime geschatte bezorgtijd (EBT) wordt gedurende de hele orderlevenscyclus getoond
+
+**Niet-functionele requirements:**
+- **Beschikbaarheid**: 99,99% uptime (≈52 minuten downtime per jaar)
+- **Latency**: zoeken < 200ms, bestelling plaatsen < 500ms, locatie-updates < 1s
+- **Schaal**: 50M maandelijks actieve gebruikers, 5M bestellingen per dag, 500K gelijktijdige gebruikers bij piek
+- **Consistentie**: eventual consistency acceptabel voor zoeken; strong consistency voor betalingen
+
+<Quiz question="Waarom is eventual consistency acceptabel voor het zoeken van restaurants maar NIET voor betalingsverwerking?" options="Zoeken is minder belangrijk dan betalingen|Een enigszins verouderd menu tonen is aanvaardbaar; een gebruiker dubbel belasten niet|Eventual consistency is altijd sneller|Betaling-API's ondersteunen geen eventual consistency" answer="1" explanation="Een gebruiker die een restaurant ziet dat net gesloten is, is een klein ongemak — opnieuw proberen lost het op. Maar een betaling dubbel verwerken veroorzaakt echte financiële schade. De kosten van inconsistentie bepalen het consistentiemodel." />
+
+## Fase 2: API-ontwerp (5 minuten)
+
+Definieer de kerncontracten vóór de architectuur:
+
+```
+# Klant-API's
+GET    /api/v1/restaurants?lat={}&lng={}&cuisine={}  → Restaurant[]
+GET    /api/v1/restaurants/{id}/menu                  → Menu
+POST   /api/v1/orders                                 → Order
+GET    /api/v1/orders/{id}/track                      → OrderStatus + DriverLocation
+
+# Restaurant-API's
+PATCH  /api/v1/restaurants/{id}/menu/items/{itemId}   → MenuItem
+POST   /api/v1/orders/{id}/accept                     → Order
+POST   /api/v1/orders/{id}/ready                      → Order
+
+# Bezorger-API's
+POST   /api/v1/drivers/{id}/location                  → void (fire-and-forget)
+POST   /api/v1/deliveries/{id}/accept                 → Delivery
+POST   /api/v1/deliveries/{id}/complete               → Delivery
+```
+
+**Kernbeslissing**: gebruik WebSockets voor realtime bezorgertracking, REST voor al het andere.
+
+## Fase 3: High-Level Architectuur (10 minuten)
+
+### Kernservices
+
+| Service | Verantwoordelijkheid | Database |
+|---------|---------------------|----------|
+| **User Service** | Authenticatie, profielen, adressen | PostgreSQL |
+| **Restaurant Service** | Menu's, beschikbaarheid, openingstijden | PostgreSQL + Elasticsearch |
+| **Order Service** | Orderlevenscyclus, state machine | PostgreSQL (strong consistency) |
+| **Driver Service** | Bezorgerlocatie, beschikbaarheid, matching | Redis (locatie) + PostgreSQL |
+| **Payment Service** | Afschrijvingen, terugbetalingen, restaurantuitbetalingen | PostgreSQL (ACID vereist) |
+| **Notification Service** | Push, SMS, e-mailnotificaties | Message queue consumer |
+
+### Communicatiepatronen
+
+- **Synchroon**: API Gateway → individuele services (REST/gRPC)
+- **Asynchroon**: Ordergebeurtenissen gepubliceerd naar **Kafka** — geconsumeerd door Payment, Notification en Analytics services
+- **Realtime**: Locatie-updates van bezorgers via WebSocket → opgeslagen in **Redis** met geospatiale indexering
+
+<FunFact>Uber verwerkt wereldwijd meer dan 1 miljoen locatie-updates per seconde. Ze bouwden hun eigen geospatiale indexeringssysteem (H3) op basis van zeshoekige hiërarchische rasters, omdat traditionele breedte-/lengtegraadqueries het niet bijhielden op die schaal.</FunFact>
+
+## Fase 4: Deep Dive — Kritieke Componenten (15 minuten)
+
+### Bezorgerstoewijzingsalgoritme
+
+Wanneer een bestelling klaar is voor ophaling, moet de matching service de optimale bezorger toewijzen:
+
+```
+Score(bezorger) = w1 × (1 / afstand_tot_restaurant)
+                + w2 × bezorgerbeoordeling
+                + w3 × (1 / huidige_actieve_bestellingen)
+                + w4 × acceptatieratio
+```
+
+**Implementatie**: query Redis `GEORADIUS` voor bezorgers binnen 5km van het restaurant, scoor elke kandidaat, wijs de beschikbare bezorger met de hoogste score toe. Bij weigering: aanbieden aan de volgende bezorger met een timeout van 30 seconden.
+
+### Realtime Ordertracking
+
+```
+Client ←→ WebSocket Gateway ←→ Driver Service
+                                    ↑
+                              Redis GEO Store
+                            (GEOADD, GEOPOS)
+```
+
+Bezorgers publiceren elke 4 seconden hun GPS-coördinaten. De WebSocket gateway abonneert zich op locatie-updates voor actieve bestellingen en pusht ze naar het apparaat van de klant. **Redis Pub/Sub** regelt de fan-out efficiënt.
+
+### Geschatte Bezorgtijd
+
+EBT is een **meerstaps-voorspelling**:
+
+```
+EBT = restaurant_bereidtijd + bezorger_ophaaltijd + aflevertijd + buffer
+
+Waarbij:
+- restaurant_bereidtijd  → ML-model getraind op historische orderdata per restaurant
+- bezorger_ophaaltijd    → afstand/verkeer-API (Google Maps, Mapbox)
+- aflevertijd            → dezelfde routing-API
+- buffer                 → dynamisch, neemt toe bij regen/piekuren
+```
+
+<ThinkAboutIt>Het bovenstaande matching-algoritme gebruikt vaste gewichten (w1–w4). Hoe zou je dit laten evolueren naar een lerend systeem dat optimaliseert voor zowel bezorgsnelheid ALS bezorgertevredenheid?</ThinkAboutIt>
+
+### Betalingsverwerking
+
+Betalingen volgen een **tweefasenpatroon**:
+
+1. **Autoriseren** — reserveer het bedrag bij het plaatsen van de bestelling (vasthouden, niet afschrijven)
+2. **Afschrijven** — schrijf het werkelijke bedrag af na bevestiging van de levering
+
+Dit verwerkt orderwijzigingen, annuleringen en gedeeltelijke terugbetalingen op een elegante manier. Gebruik een **idempotency key** bij elk betalingsverzoek om dubbele afschrijvingen bij retries te voorkomen.
+
+<Quiz question="Waarom een tweefasen-betalingspatroon (autoriseren dan afschrijven) in plaats van direct afschrijven?" options="Het is sneller dan een enkele afschrijving|Het verwerkt annuleringen, wijzigingen en terugbetalingen zonder complexe terugdraailogica|Betalingsproviders vereisen het|Het verlaagt transactiekosten" answer="1" explanation="Autoriseren-dan-afschrijven stelt je in staat bedragen te reserveren zonder vast te leggen. Als het restaurant annuleert of de bestelling wijzigt, geef je de autorisatie simpelweg vrij — geen terugbetalingsverwerking nodig. Dit vereenvoudigt randgevallen aanzienlijk." />
+
+## Fase 5: Schaling en Knelpunten (10 minuten)
+
+### Database-schaling
+
+- **Order Service**: shard op `order_id` — bestellingen zijn onafhankelijk, horizontale schaling is eenvoudig
+- **Restaurant Service**: read replicas voor zoekopdrachten, Elasticsearch voor full-text en geospatiale zoekopdrachten
+- **Bezorgerlocatie**: Redis Cluster met geospatiale indexering — volledig in-memory, sub-milliseconde leestijden
+
+### Piekbelasting Opvangen (Surge)
+
+Bij piektijden (vrijdagavond 19:00, grote sportevenementen) kan het ordervolume 10× toenemen:
+
+- **Auto-scaling** van applicatiepods op basis van wachtrijdiepte, niet CPU
+- **Surge pricing** om vraag en aanbod in balans te brengen — verhoog bezorgkosten bij laag bezorgersaanbod
+- **Rate limiting** per gebruiker om misbruik tijdens piek te voorkomen
+- **Circuit breakers** op downstream services — graceful degradation boven cascadefouten
+
+### Single Points of Failure
+
+| Component | Mitigatie |
+|-----------|----------|
+| API Gateway | Meerdere instances achter een load balancer, health checks |
+| Kafka | Multi-broker cluster met replicatiefactor 3 |
+| Redis | Redis Sentinel voor automatische failover |
+| Betalingsprovider | Secundaire provider met automatische fallback |
+
+<Quiz question="Je schaalt de Order Service. Welke sharding key biedt de BESTE schrijfverdeling?" options="restaurant_id — alle bestellingen van een restaurant op één shard|user_id — alle bestellingen van een gebruiker op één shard|order_id — bestellingen willekeurig verdeeld over shards|city_id — alle bestellingen in een stad op één shard" answer="2" explanation="Sharding op order_id verdeelt schrijfbewerkingen gelijkmatig omdat order-ID's willekeurig worden gegenereerd (UUID's of snowflake-ID's). Sharding op restaurant_id of city_id creëert hotspots — populaire restaurants en steden krijgen onevenredig veel verkeer." />
+
+<ThinkAboutIt>Je interviewer vraagt: "Wat gebeurt er als de Payment Service 30 seconden uitvalt tijdens een piekperiode?" Loop het exacte faalscenario door: hoe bestellingen worden beïnvloed en hoe het herstel eruitziet.</ThinkAboutIt>
+
+## 💡 Interviewtips
+
+1. **Structureer je tijd** — besteed geen 30 minuten aan requirements
+2. **Benoem afwegingen expliciet** — "Ik koos X boven Y omdat..."
+3. **Begin simpel, schaal daarna** — ontwerp eerst voor 1× belasting, pak dan 100× aan
+4. **Teken terwijl je praat** — visuele communicatie is de helft van de beoordeling
+5. **Erken onzekerheden** — "Ik zou dit moeten benchmarken, maar mijn hypothese is..."
+
+## 🎯 Belangrijkste Inzichten
+
+- Begin altijd met requirements — functioneel en niet-functioneel
+- Ontwerp API-contracten vóór architectuurdiagrammen
+- Ga diep in op 2–3 componenten, niet oppervlakkig op alles
+- Elke architectuurkeuze brengt afwegingen met zich mee — benoem ze
+- Oefen met een timer: 45 minuten, geen verlengingen
+
+---
+
+## 📚 Verder Lezen
+
+- [System Design Interview door Alex Xu](https://www.amazon.co.uk/System-Design-Interview-insiders-guide/dp/B08CMF2CQF) — Het meest praktische system design-interviewvoorbereidingsboek
+- [Uber Engineering Blog](https://www.uber.com/en-GB/blog/engineering/) — Diepgaande artikelen over echte systemen op enorme schaal
+- [Designing Data-Intensive Applications door Martin Kleppmann](https://dataintensive.net/) — Hét naslagwerk over de fundamenten van gedistribueerde systemen

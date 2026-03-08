@@ -1,0 +1,133 @@
+---
+title: "Greedy Algorithms — जब Local Choice Global Solution दे दे"
+description: "जानिए कब हर step पर locally optimal choice लेने से globally optimal result मिलता है, और कब नहीं।"
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+---
+
+## Greedy Algorithm क्या होता है?
+
+Greedy algorithm solution **एक step** एक बार बनाता है, हमेशा वो option चुनता है जो **अभी** सबसे अच्छा लगे — बिना पुराने decisions पर दोबारा सोचे। न backtracking, न आगे देखना।
+
+यह तब काम करता है जब दो properties हों:
+1. **Greedy choice property** — locally optimal choice globally optimal solution तक ले जाए।
+2. **Optimal substructure** — हर choice के बाद बचा problem उसी problem का छोटा version हो।
+
+## Activity Selection — Classic Example
+
+Activities दी हैं जिनके start और end times हैं। **Maximum** non-overlapping activities चुनो।
+
+**Greedy strategy:** end time से sort करो, हमेशा सबसे पहले खत्म होने वाली activity चुनो।
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+यह क्यों काम करता है? सबसे पहले खत्म होने वाली activity चुनने से बाकी activities के लिए सबसे ज़्यादा जगह बचती है।
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Timeline पर earliest end time से activity selection दिखा रहा है" caption="Earliest end time से select करने पर non-overlapping activities की संख्या maximum होती है।" />
+
+## Huffman Coding — Concept
+
+Optimal prefix-free binary code बनाने के लिए बार-बार **दो सबसे कम frequency** वाले symbols merge करो। यह greedy है: हर step पर सबसे सस्ती pair merge करो। Result एक tree है जहाँ frequent symbols को short codes मिलते हैं।
+
+<FunFact>Huffman coding JPEG, MP3, और ZIP compression में इस्तेमाल होती है। David Huffman ने इसे 1952 में एक student के रूप में invent किया — यह एक homework assignment था!</FunFact>
+
+## Jump Game
+
+Array दिया है जहाँ `nums[i]` index `i` से maximum jump length है। बताओ last index तक पहुँच सकते हो या नहीं।
+
+**Greedy approach:** अब तक पहुँचने योग्य farthest index track करो। Left से right scan करो — अगर कभी पीछे रह गए, return false।
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="Jump Game में greedy variable 'farthest' क्या represent करता है?" options="Current position|Jumps की संख्या|किसी भी visited position से पहुँचने योग्य maximum index|सबसे लंबी jump की length" answer="2" explanation="'farthest' अब तक visit की गई किसी भी position से reachable rightmost index track करता है। अगर current index इससे आगे निकल जाए, तो आप फँस गए।" />
+
+## Gas Station
+
+Circular route पर gas stations हैं। Station `i` पर `gas[i]` fuel मिलता है और अगले station तक `cost[i]` खर्च होता है। वो starting station ढूँढो जिससे पूरा circuit complete हो, या −1 return करो।
+
+**Greedy insight:** अगर total gas ≥ total cost, तो solution ज़रूर है। Running surplus track करो; जब भी यह negative हो, answer उसके **बाद** से शुरू होगा।
+
+## Task Scheduler
+
+Tasks schedule करने हैं जिनमें identical tasks के बीच `n` cooldown हो। **Greedy:** हमेशा सबसे frequent remaining task चुनो।
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>Task scheduler में सबसे frequent task पहले चुनने से idle slots कम क्यों होते हैं? अगर सबसे कम frequent पहले चुनें तो क्या गलत होगा?</ThinkAboutIt>
+
+## Fractional Knapsack vs 0/1 Knapsack
+
+**Fractional knapsack:** items के टुकड़े ले सकते हो। Greedy काम करता है — value-per-weight से sort करो, best ratio पहले लो।
+
+**0/1 knapsack:** item पूरा लो या छोड़ो। Greedy यहाँ **fail** करता है क्योंकि भारी-but-valuable item छोड़ना दो हल्के items लेने से बुरा हो सकता है। इसके लिए dynamic programming चाहिए।
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): item 1 (w=3, v=4) → 1 बचा → बाकी fit नहीं → value = 4
+Optimal: items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fail!
+```
+
+<Quiz question="0/1 knapsack में greedy approach fail क्यों करता है?" options="Items split नहीं हो सकते, तो best ratio item capacity waste कर सकता है|Items sorted नहीं हैं|बहुत ज़्यादा items हैं|Greedy algorithms knapsack में कभी काम नहीं करते" answer="0" explanation="जब पूरे items लेने हों, best ratio पहले चुनने से बची capacity में छोटे items फिट हो सकते थे जो ज़्यादा profitable होते।" />
+
+## Greedy कब काम करता है?
+
+✅ **काम करता है** जब greedy choice property prove हो सके:
+- Interval scheduling, Huffman coding, minimum spanning trees, Dijkstra's algorithm
+
+❌ **Fail** जब local optima global optima न बनाएँ:
+- 0/1 knapsack, longest path, travelling salesman
+
+## Greedy Correctness — Exchange Argument
+
+Standard technique: मान लो एक optimal solution है जो greedy choice **नहीं** इस्तेमाल करता। दिखाओ कि उसकी एक choice को greedy choice से **exchange** करने पर solution बुरा नहीं होता। इससे साबित होता है greedy कम से कम उतना ही अच्छा है।
+
+<Quiz question="'Exchange argument' किसलिए इस्तेमाल होता है?" options="Array में दो elements swap करना|Greedy algorithm optimal solution देता है यह prove करना|Recursion को iteration में बदलना|Time complexity optimise करना" answer="1" explanation="Exchange argument correctness prove करता है — दिखाता है कि कोई भी optimal solution greedy solution से match करने के लिए transform हो सकता है बिना quality loss के।" />
+
+## Greedy vs Dynamic Programming
+
+| पहलू | Greedy | Dynamic Programming |
+|-------|--------|---------------------|
+| Choices | हर step पर एक best choice | सभी sub-problems explore करो |
+| Past revisit? | कभी नहीं | हाँ — sub-results store करता है |
+| Speed | आमतौर पर तेज़ | State space पर निर्भर |
+| Correctness | सिर्फ अगर prove हो | हमेशा (सही formulation पर) |
+
+Doubt हो तो greedy से शुरू करो — prove नहीं कर पाए तो DP पर switch करो।
+
+<FunFact>Dijkstra's shortest-path algorithm greedy है — हमेशा closest unvisited node process करता है। यह काम करता है क्योंकि edge weights non-negative हैं, जो greedy choice को safe बनाता है।</FunFact>
+
+<ThinkAboutIt>Coin denominations [1, 3, 4] हैं और 6 के लिए change बनाना है। Greedy 4+1+1=3 coins चुनता है, लेकिन optimal 3+3=2 coins है। इन denominations में greedy choice property क्यों टूटती है?</ThinkAboutIt>
+
+---
+
+## 📚 और पढ़ें
+
+- [NeetCode — Greedy playlist](https://neetcode.io/roadmap) — curated greedy problems with explanations
+- [Tech Interview Handbook — Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) — कब greedy इस्तेमाल करें और common patterns
+- [CP-Algorithms — Greedy algorithms](https://cp-algorithms.com/) — गहरी theory और proofs

@@ -1,0 +1,177 @@
+---
+title: "Open-Source AI Project Ship करें — आपकी Masterpiece"
+description: "Idea से launch तक: एक open-source AI project plan करें, build करें, document करें, publish करें, और promote करें जो career catalyst और portfolio की centerpiece बने।"
+order: 10
+difficulty: "advanced"
+duration: 24
+icon: "🚀"
+published: true
+---
+
+# Open-Source AI Project Ship करें — आपकी Masterpiece
+
+बस, यही आखिरी lesson है। आपने जो कुछ सीखा — ML pipelines, research implementation, system design, engineering craft — सब यहाँ मिलता है। आप एक **असली open-source AI project ship करेंगे** जो एक genuine problem solve करे और इस course से आगे भी जिए।
+
+## 💡 Project Idea चुनना
+
+सबसे अच्छे OSS projects **personal frustration** से शुरू होते हैं। AI वाला एक और TODO app मत बनाइए — gap खोजिए:
+
+- **अपनी ज़रूरत पूरी करें** — एक ऐसा tool जो आप चाहते थे कि आपके daily workflow में होता
+- **किसी existing tool को बेहतर करें** — popular library की limitation खोजें और solve करें
+- **Paper implement करें** — research breakthrough को usable library में बदलें
+- **Gap bridge करें** — दो ecosystems को जोड़ें जो एक-दूसरे से बात नहीं करते
+
+<Illustration src="/images/lessons/open-source-ai-project.svg" alt="Open-source project lifecycle — idea से launch से community growth तक" caption="OSS lifecycle — shipping बीच का पड़ाव है, अंत नहीं।" />
+
+**Build करने से पहले validate करें**: GitHub, PyPI, और npm पर search करें। अगर कुछ similar मिले, तो आपके project को एक clear differentiator चाहिए — तेज़, simpler API, बेहतर documentation, या novel approach।
+
+<FunFact>Hugging Face की शुरुआत teenagers के लिए chatbot company के रूप में हुई थी। जब उन्होंने अपनी Transformers library को side project के तौर पर open-source किया, तो यह इतनी popular हो गई कि उन्होंने पूरी company इसके इर्द-गिर्द pivot कर ली — अब $4.5 billion से ज़्यादा की valuation है।</FunFact>
+
+## 📋 Project Planning — MVP Scope
+
+अपना **Minimum Viable Project** बेरहमी से define करें:
+
+```markdown
+## MVP Scope (Week 1-2)
+- Core functionality: एक चीज़, अच्छी तरह
+- CLI या Python API interface
+- 3 working examples
+- Basic README with installation and quickstart
+
+## V1.0 Scope (Week 3-4)
+- Comprehensive documentation
+- Test coverage > 80%
+- CI/CD pipeline
+- Published to PyPI/npm
+- Demo deployed
+```
+
+**Anti-pattern**: महीनों code perfect करते रहना जो किसी ने देखा ही नहीं। जल्दी ship करें, feedback के basis पर iterate करें।
+
+<ThinkAboutIt>पिछले तीन tools के बारे में सोचिए जो आपने install किए। Alternatives के बजाय उन्हें क्यों चुना? README था, API design था, star count था, या कुछ और? इन insights को अपने project पर apply करें।</ThinkAboutIt>
+
+## 🏗️ Repository Setup
+
+पहला impression मायने रखता है। एक professional repository में चाहिए: code के लिए `src/` layout, `tests/`, `examples/`, `docs/`, `.github/workflows/ci.yml`, और root files — `LICENSE` (MIT या Apache 2.0), `README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, और `pyproject.toml`।
+
+### README — आपकी सबसे ज़रूरी File
+
+README एक sales page है। इसमें होना चाहिए: **एक-लाइन description**, **installation** (`pip install my-project`), **quickstart** (10 लाइनों से कम में working code), **key features** (bullet points), alternatives से **comparison table**, और **documentation link**।
+
+<Quiz question="Open-source project की README का सबसे ज़रूरी element क्या है?" options="एक detailed architecture diagram|एक working quickstart example जो users तुरंत copy-paste करके चला सकें|सभी features की comprehensive list|Project का star count और contributor badges" answer="1" explanation="Users 30 सेकंड में तय करते हैं कि project try करना है या नहीं। तुरंत काम करने वाला copy-pasteable quickstart browsers को users में बदलता है। बाकी सब उस पहले successful experience के बाद आता है।" />
+
+## 📦 PyPI पर Publish करना
+
+`pyproject.toml` के साथ modern Python packaging:
+
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "my-ai-project"
+version = "0.1.0"
+description = "One-line description of your project"
+requires-python = ">=3.9"
+license = "MIT"
+dependencies = ["torch>=2.0", "numpy>=1.24"]
+
+[project.urls]
+Documentation = "https://my-ai-project.readthedocs.io"
+Repository = "https://github.com/username/my-ai-project"
+```
+
+```bash
+# Build और publish
+pip install build twine
+python -m build
+twine upload dist/*
+```
+
+**Automated releases**: GitHub Actions से हर tagged release पर PyPI publish करें — पहली बार के बाद कभी manually publish न करें।
+
+## 🎨 Demos बनाना
+
+Demo संशयवादियों को users में बदलता है। तीन बेहतरीन platforms:
+
+| Platform | किसके लिए Best | Deployment |
+|----------|---------------|-----------|
+| **Hugging Face Spaces** | ML model demos | Git push, free GPU tier |
+| **Streamlit** | Data apps, dashboards | Streamlit Cloud, free tier |
+| **Gradio** | Quick ML interfaces | Hugging Face Spaces या standalone |
+
+```python
+# Gradio demo — 8 लाइनों में shareable interface
+import gradio as gr
+from my_ai_project import predict
+
+demo = gr.Interface(
+    fn=predict,
+    inputs=gr.Textbox(label="Enter text"),
+    outputs=gr.Label(label="Prediction"),
+    title="My AI Project Demo"
+)
+demo.launch()
+```
+
+<Quiz question="ML project की initial traction पाने के लिए कौन सा demo platform सबसे effective है?" options="Vercel पर deploy किया custom React frontend|Hugging Face Spaces — ML community द्वारा discoverable, built-in social features|Repository में एक Jupyter notebook|README में command-line demo" answer="1" explanation="Hugging Face Spaces लाखों ML practitioners द्वारा discoverable है, likes और comments support करता है, और search results में आता है। यह deployment simplicity को built-in distribution के साथ combine करता है — आपका demo users खोजता है, उल्टा नहीं।" />
+
+## 📖 Documentation लिखना
+
+**Diátaxis framework** follow करें — चार तरह की documentation: **Tutorials** (learning-oriented, step-by-step), **How-to guides** (task-oriented, practical), **Reference** (complete API docs), और **Explanation** (conceptual understanding)। Markdown से sites generate करने के लिए **MkDocs** या **Docusaurus** use करें। GitHub Pages या Read the Docs पर free deploy करें।
+
+## 📣 Project की Marketing
+
+Build करना आधी लड़ाई है। लोगों से use करवाना दूसरी आधी:
+
+1. **Hacker News** — launch day पर "Show HN: [description]" post
+2. **Reddit** — r/MachineLearning, r/Python, relevant subreddits
+3. **Twitter/X** — problem और solution explain करने वाला thread, GIF demo के साथ
+4. **Product Hunt** — अगर project में web interface है
+5. **Blog post** — personal site या Medium/Dev.to पर detailed technical writeup
+
+**Timing मायने रखती है**: मंगलवार–गुरुवार सुबह (GMT) launch करें। Weekends और holidays से बचें।
+
+<FunFact>FastAPI, LangChain, और Streamlit के creators सभी credit देते हैं कि एक well-timed Hacker News "Show HN" post उनकी initial adoption wave का सबसे बड़ा driver था।</FunFact>
+
+<ThinkAboutIt>आपके project को पहले हफ्ते में 500 GitHub stars मिलते हैं लेकिन external contributors से zero issues या PRs। क्या यह सफलता है? Passive stargazers को active contributors में convert करने के लिए क्या अलग करेंगे?</ThinkAboutIt>
+
+## 🔧 Project Maintain करना
+
+Sustainability, virality से ज़्यादा मायने रखती है:
+
+- **Issues label करें** — `good-first-issue`, `help-wanted`, `bug`, `enhancement`
+- **48 घंटों में issues respond करें** — "Thanks, I'll look into this" भी trust बनाता है
+- **CONTRIBUTING.md लिखें** — setup instructions, coding standards, PR guidelines
+- **Semantic versioning use करें** — breaking changes को major version bump मिले
+- **सब automate करें** — CI, releases, changelog generation, dependency updates
+
+## 💰 Monetisation Paths
+
+Open source का मतलब हमेशा मुफ्त मेहनत नहीं। Sustainable models: **GitHub Sponsors** (कम effort, recurring donations), **consulting** (paid setup और training), **SaaS wrapper** (enterprise features वाला hosted version — सबसे ज़्यादा effort लेकिन सबसे sustainable), **dual licensing** (open-source + commercial), और **corporate sponsorship** (paying companies के लिए priority features)।
+
+<Quiz question="Popular open-source AI library के लिए सबसे sustainable long-term monetisation strategy क्या है?" options="GitHub Sponsors donations पर depend रहना|Enterprise features और support वाला hosted SaaS version बनाना|Project को किसी बड़ी company को बेच देना|Documentation में advertisements लगाना" answer="1" explanation="SaaS wrapper (enterprise features, SLAs, और support वाला hosted version) users को मिलने वाली value से जुड़ा recurring revenue बनाता है। Donations unpredictable हैं, acquisitions one-time events हैं, और ads trust खत्म करते हैं।" />
+
+## 🎯 आपकी Masterpiece Checklist
+
+Ship कहने से पहले:
+
+- [ ] Core functionality काम करती है और tested है
+- [ ] README में installation, quickstart, और feature overview है
+- [ ] PyPI या npm पर publish किया
+- [ ] Hugging Face Spaces या Streamlit पर live demo
+- [ ] CI/CD pipeline हर PR पर tests चलाती है
+- [ ] Documentation में tutorials और API reference है
+- [ ] LICENSE, CONTRIBUTING.md, और CODE_OF_CONDUCT.md मौजूद
+- [ ] कम से कम दो platforms पर launch किया (HN, Reddit, Twitter)
+
+**यह project ही आपका portfolio है।** जब interviewer पूछे "आपने क्या बनाया है?", तो आपके पास एक live, documented, published जवाब होगा।
+
+---
+
+## 📚 आगे पढ़ें
+
+- [The Diátaxis Documentation Framework](https://diataxis.fr/) — बेहतर technical documentation लिखने का systematic approach
+- [Open Source Guides by GitHub](https://opensource.guide/) — OSS projects launch, grow और sustain करने की official guides
+- [Working in Public by Nadia Eghbal](https://www.amazon.co.uk/Working-Public-Making-Maintenance-Software/dp/0578675862) — Open-source maintenance की economics और sociology

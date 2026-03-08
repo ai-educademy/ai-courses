@@ -1,0 +1,134 @@
+---
+title: "Linked Lists और Stacks — AI के पीछे की Dynamic Structures"
+description: "समझिए कैसे linked lists, stacks, और queues AI systems और उससे आगे dynamic data handle करते हैं।"
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+---
+
+## Arrays से आगे — Dynamic Data
+
+Arrays तब शानदार हैं जब data का size पहले से पता हो। लेकिन जब data unpredictably आए — sensor readings की stream, AI के लिए tasks की queue, या हर message के साथ बढ़ती conversation history? ऐसे में structures चाहिए जो smoothly बड़े-छोटे हो सकें।
+
+यहाँ आते हैं **linked lists**, **stacks**, और **queues**।
+
+## Linked Lists — Nodes और Pointers
+
+Linked list items को **nodes** की chain में store करती है। हर node दो चीज़ें रखता है: data और अगले node का pointer।
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Arrays के विपरीत, linked list के nodes memory में अलग-अलग जगह हो सकते हैं — pointer बताता है अगला कहाँ मिलेगा।
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="तीन nodes वाली linked list arrows से connected, बगल में array जिसमें contiguous blocks हैं" caption="Linked list nodes pointers से जुड़े हैं, array elements एक साथ बैठे हैं।" />
+
+### Linked Lists vs Arrays
+
+| Operation | Array | Linked List |
+|-----------|-------|-------------|
+| Index से access | O(1) ⚡ | O(n) 🐢 |
+| शुरू में insert | O(n) 🐢 | O(1) ⚡ |
+| बीच में insert | O(n) 🐢 | O(1)* ⚡ |
+| बीच से delete | O(n) 🐢 | O(1)* ⚡ |
+| Memory usage | Compact | Extra (pointers) |
+
+*Position मिलने के बाद — ढूँढना अभी भी O(n) है।
+
+### Linked Lists कब जीतती हैं
+
+- **बार-बार insert/delete**: बीच में लगातार add-remove हो तो arrays का costly shifting बचता है।
+- **Unknown size**: कितने items store होंगे पता नहीं? Linked list एक-एक node करके बढ़ती है बिना resize के।
+- **दूसरी structures बनाना**: Stacks, queues, और complex structures अक्सर linked lists पर बनती हैं।
+
+<ThinkAboutIt>
+Browser का tab bar tabs खोलने, बंद करने, और rearrange करने देता है। Open tabs manage करने के लिए array बेहतर या linked list? बीच का tab बंद करने पर क्या होगा?
+</ThinkAboutIt>
+
+## Stacks — Last In, First Out (LIFO)
+
+**Stack** plates की stack जैसा काम करता है: ऊपर से रखो, ऊपर से उठाओ। आखिरी रखा item पहले निकलता है।
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+दो operations define करते हैं stack को:
+- **Push**: ऊपर item रखो।
+- **Pop**: ऊपर से item हटाओ।
+
+दोनों **O(1)** — stack कितना भी बड़ा हो, instant।
+
+### Real World में Stacks
+
+- **Undo/Redo**: Text editor actions की stack रखता है। Ctrl+Z दबाओ और latest action pop हो जाता है।
+- **Browser back button**: Browsing history एक stack है। नया page push होता है; "back" current page pop करता है।
+- **Call stacks**: Function call होने पर call stack पर push होता है। Finish होने पर pop। यही तरीका है programs track करते हैं कहाँ हैं।
+
+<FunFact>
+"Stack overflow" error का मतलब literally है call stack की space खत्म हो गई — usually infinite recursion की वजह से। मशहूर Q&A site Stack Overflow इसी error से named है!
+</FunFact>
+
+### AI में Stacks
+
+- **Expression evaluation**: AI compilers neural network computation graphs में mathematical expressions evaluate करने के लिए stacks इस्तेमाल करते हैं।
+- **Backtracking**: जब AI possible solutions explore करता है (जैसे maze solve करना), stack याद रखता है कहाँ गए थे।
+- **DFS**: Trees और graphs का depth-first traversal naturally stack इस्तेमाल करता है।
+
+<Quiz question="Drawing app के लिए 'undo' feature implement कर रहे हो। Actions की history के लिए कौन सा data structure सबसे अच्छा?" options="Timestamp से sorted array|Action IDs का hash map|Stack — सबसे recent action पहले undo होनी चाहिए|Queue — सबसे पुरानी action पहले undo होनी चाहिए" answer="2" explanation="Undo को Last In, First Out (LIFO) behaviour चाहिए — हमेशा सबसे recent action पहले undo। Stack O(1) push और pop के साथ exactly यही देता है।" />
+
+## Queues — First In, First Out (FIFO)
+
+**Queue** दुकान की line जैसी है: पहले आया, पहले served। Items पीछे से आते हैं और आगे से निकलते हैं।
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+### Real World में Queues
+
+- **Print queues**: Documents submission order में print होते हैं।
+- **Task scheduling**: OS queues से manage करता है कौन सा process next चलेगा।
+- **Message queues**: Web apps queues (RabbitMQ, Kafka) से हज़ारों requests handle करती हैं।
+
+### AI में Queues
+
+- **BFS**: Graph को level-by-level explore करना queue इस्तेमाल करता है।
+- **Training data pipelines**: Training data queues में load होता है ताकि GPU को हमेशा next batch ready मिले।
+- **Request handling**: हज़ारों users एक साथ AI API query करें तो requests queue में जाती हैं।
+
+<Quiz question="AI API 10,000 requests/second receive करती है। Arrival order में process करने के लिए कौन सा structure?" options="Stack — newest पहले|Hash map — ID से lookup|Queue — first in, first out|Array — random process" answer="2" explanation="Queue का FIFO behaviour fairness ensure करता है — requests arrival order में handle होती हैं।" />
+
+<Callout>
+**Priority queue** भी होती है, जहाँ items arrival order की जगह priority से dequeue होते हैं। AI systems urgent tasks पहले process करने में priority queues इस्तेमाल करते हैं।
+</Callout>
+
+## AI Use: Sequence Processing और Memory Management
+
+Language models text sequences process करते हैं। PyTorch और TensorFlow जैसे frameworks linked-list जैसी structures से **computation graphs** बनाते हैं — operations की chains जहाँ हर step अगले को point करता है।
+
+Neural network training में memory लगातार allocate और free होती है। Memory allocators अक्सर free blocks की linked lists इस्तेमाल करते हैं।
+
+<ThinkAboutIt>
+Chatbot को conversation की आखिरी 10 messages याद रखनी हैं, पुरानी discard करनी हैं। Stack इस्तेमाल करोगे, queue, या कुछ और? 11वीं message आए तो?
+</ThinkAboutIt>
+
+<Quiz question="Linked lists के बारे में कौन सा statement FALSE है?" options="Linked lists शुरू में O(1) insertion देती हैं|Linked lists pointers के लिए extra memory इस्तेमाल करती हैं|Linked lists index से किसी भी element को O(1) में access देती हैं|Linked lists resize बिना dynamically grow करती हैं" answer="2" explanation="Linked list में index से element access करने के लिए head से traverse करना पड़ता है — O(n) time। Arrays जैसा direct jump position k पर नहीं हो सकता।" />
+
+## मुख्य बातें
+
+- **Linked lists** dynamic data के लिए बेहतरीन हैं जहाँ बार-बार insert/delete हो, लेकिन direct index access sacrifice होता है।
+- **Stacks** (LIFO) undo systems, backtracking, और DFS power करते हैं।
+- **Queues** (FIFO) task scheduling, BFS, और request handling में fair ordering ensure करती हैं।
+- ये structures AI frameworks में behind the scenes काम करती हैं, memory manage करती हैं और sequences process करती हैं।

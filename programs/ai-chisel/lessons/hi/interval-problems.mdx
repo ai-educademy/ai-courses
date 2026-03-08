@@ -1,0 +1,162 @@
+---
+title: "Interval Problems — Merge, Insert, और Schedule"
+description: "Merge और insert से लेकर meeting rooms और sweep lines तक, interval-based problems में महारत हासिल करें। वो sorting strategies और patterns सीखें जो interviewers expect करते हैं।"
+order: 9
+difficulty: "advanced"
+duration: 16
+icon: "📅"
+published: true
+---
+
+## Interval Representation
+
+एक interval एक pair होता है `[start, end]`। ज़्यादातर interval problems एक critical step से शुरू होती हैं: **start time से sort करो**। इससे एक अव्यवस्थित list एक ऐसी sequence बन जाती है जिसे आप left से right simple comparisons से process कर सकते हैं।
+
+```
+Unsorted: [3,6] [1,4] [8,10] [2,5]
+Sorted:   [1,4] [2,5] [3,6] [8,10]
+```
+
+## Overlapping Intervals को Merge करना
+
+यह foundational interval problem है (LeetCode 56)। Sort करने के बाद, दो consecutive intervals overlap करते हैं अगर current start ≤ previous end हो।
+
+```python
+def merge(intervals):
+    intervals.sort()
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+```
+
+`[1,4] [2,5] [3,6] [8,10]` पर चलते हैं:
+- `[2,5]` `[1,4]` से overlap करता है → merge करो `[1,5]` में
+- `[3,6]` `[1,5]` से overlap करता है → merge करो `[1,6]` में
+- `[8,10]` कोई overlap नहीं → नया interval
+
+Result: `[1,6] [8,10]`
+
+<Quiz
+  question="Start से sort करने के बाद, कौन सी condition बताती है कि दो consecutive intervals overlap करते हैं?"
+  options="current.start > previous.end|current.start == previous.start|current.start <= previous.end|current.end < previous.start"
+  answer="2"
+  explanation="अगर current interval पिछले वाले के खत्म होने से पहले या ठीक उसी समय शुरू होता है, तो वे overlap करते हैं और उन्हें merge करना चाहिए।"
+/>
+
+## Insert Interval
+
+Sorted non-overlapping intervals और एक नया interval दिया गया है, इसे insert करो और ज़रूरत हो तो merge करो (LeetCode 57)। तीन phases में बाँटो:
+
+1. वो सब intervals add करो जो नए वाले के शुरू होने से पहले खत्म हो जाते हैं
+2. सब overlapping intervals को नए वाले के साथ merge करो
+3. बचे हुए intervals को unchanged add करो
+
+<ThinkAboutIt>Insert Interval अक्सर इस तरह present किया जाता है कि merge step obvious नहीं होता। Interview में आप इसे merge problem के रूप में कैसे पहचानेंगे?</ThinkAboutIt>
+
+## Meeting Rooms I — क्या सब Attend कर सकते हैं?
+
+Start time से sort करो। अगर किसी interval का start पिछले interval के end से पहले है, तो conflict है।
+
+```python
+def can_attend(intervals):
+    intervals.sort()
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < intervals[i - 1][1]:
+            return False
+    return True
+```
+
+## Meeting Rooms II — Minimum कितने Rooms चाहिए
+
+यहाँ **event-based approach** चमकता है। Starts और ends को दो sorted lists में अलग करो, फिर sweep करो:
+
+```python
+import heapq
+
+def min_rooms(intervals):
+    intervals.sort()
+    heap = []
+    for start, end in intervals:
+        if heap and heap[0] <= start:
+            heapq.heappop(heap)
+        heapq.heappush(heap, end)
+    return len(heap)
+```
+
+Heap सबसे जल्दी खत्म होने वाली meeting track करता है। अगर वो अगली meeting शुरू होने से पहले खत्म हो जाती है, तो हम room reuse कर लेते हैं। Heap का maximum size ही answer है।
+
+<Illustration src="/images/lessons/interval-problems.svg" alt="Timeline जिसमें overlapping meeting intervals दिखाए गए हैं जिनके लिए multiple rooms चाहिए" caption="हर vertical slice simultaneous meetings दिखाता है — peak ही minimum rooms है।" />
+
+<FunFact>Meeting Rooms II essentially वही problem है जो किसी भी point पर maximum overlapping intervals ढूँढना — यह concept CPU thread scheduling, bandwidth allocation, और hospital bed planning में use होता है।</FunFact>
+
+## Non-Overlapping Intervals — Minimum कितने Remove करें
+
+Intervals दिए गए हैं, minimum कितने remove करने होंगे ताकि कोई overlap न हो (LeetCode 435)। Greedy: **end time** से sort करो, हमेशा वो interval रखो जो सबसे पहले खत्म होता है — इससे future intervals के लिए सबसे ज़्यादा जगह बचती है।
+
+```python
+def erase_overlap(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, prev_end = 0, float('-inf')
+    for start, end in intervals:
+        if start >= prev_end:
+            prev_end = end
+        else:
+            count += 1
+    return count
+```
+
+<Quiz
+  question="Non-overlapping intervals problem में END time से sort करना (start time की जगह) क्यों काम करता है?"
+  options="यह time complexity कम करता है|सबसे पहले खत्म होने वाला interval बाद के intervals के लिए maximum जगह छोड़ता है|यह ties बेहतर handle करता है|यह negative intervals से बचाता है"
+  answer="1"
+  explanation="Greedily वो interval रखना जो सबसे जल्दी खत्म होता है, future non-overlapping intervals के लिए available timeline maximize करता है।"
+/>
+
+## Interval List Intersections
+
+दो sorted interval lists दी गई हैं, सब intersections ढूँढो (LeetCode 986)। दो pointers use करो — हर list के लिए एक। `[a1, a2]` और `[b1, b2]` का intersection `[max(a1, b1), min(a2, b2)]` है अगर यह valid है (start ≤ end)। जिस pointer का interval पहले खत्म हो, उसे आगे बढ़ाओ।
+
+## Sweep Line Technique
+
+Intervals को pairwise compare करने की जगह, हर interval को events में decompose करो:
+
+```
+[1,4] → +1 at 1, -1 at 4
+[2,6] → +1 at 2, -1 at 6
+```
+
+Events को time से sort करो। Left से right sweep करो, एक running count maintain करते हुए। Peak count "maximum overlap" questions का answer देता है। यह Meeting Rooms II को arbitrary event-processing problems तक generalise करता है।
+
+## Calendar Booking
+
+**My Calendar I** (LeetCode 729): booked intervals maintain करो और overlaps reject करो। **My Calendar II**: single overlaps allow करो लेकिन triple-bookings reject करो। Sweep line multi-layer overlap detection को straightforward बनाता है।
+
+## Pattern Recognition — Intervals कब Suspect करें
+
+Problem statements में ये clues देखो:
+
+- "overlapping", "conflicting", "schedule", "range" जैसे words
+- Start/end values के pairs
+- "how many simultaneous" या "minimum resources" जैसे questions
+- Data जो number line पर segments के रूप में represent हो सकता है
+
+<Quiz
+  question="'Minimum number of intervals to remove' problem के लिए कौन सी sorting strategy BEST है?"
+  options="Start time ascending से sort करो|End time ascending से sort करो|Interval length descending से sort करो|Sorting की ज़रूरत नहीं"
+  answer="1"
+  explanation="End time से sort करने से greedy approach possible होता है: हमेशा सबसे पहले खत्म होने वाला interval रखो ताकि बाकियों के लिए ज़्यादा जगह बचे।"
+/>
+
+<ThinkAboutIt>Sweep line technique interval problems को event-processing problems में convert करती है। क्या आप किसी real-world system (coding interviews के बाहर) के बारे में सोच सकते हैं जो exactly यही approach use करता है?</ThinkAboutIt>
+
+---
+
+## 📚 और पढ़ें
+
+- [Merge Intervals — LeetCode 56](https://leetcode.com/problems/merge-intervals/) — Interval mastery के लिए essential starting problem
+- [Sweep Line Algorithm — CP-Algorithms](https://cp-algorithms.com/geometry/intersecting_segments.html) — Sweep line paradigm की deeper exploration
+- [Meeting Rooms II — LeetCode 253](https://leetcode.com/problems/meeting-rooms-ii/) — Classic min-heap interval scheduling problem

@@ -1,0 +1,132 @@
+---
+title: "Tas et Files de priorité — Le couteau suisse des entretiens"
+description: "Maîtrisez les tas (heaps), l'abstraction de priority queue, et les patrons classiques comme les problèmes top-K et la fusion de listes triées."
+order: 6
+difficulty: "intermediate"
+duration: 18
+icon: "⛰️"
+published: true
+---
+
+## Qu'est-ce qu'un tas (heap) ?
+
+Un **tas** est un arbre binaire complet où chaque parent respecte la **propriété de tas** — toujours plus petit (min-heap) ou toujours plus grand (max-heap) que ses enfants. « Complet » signifie que chaque niveau est rempli sauf éventuellement le dernier, qui se remplit de gauche à droite.
+
+```
+       1            Min-heap
+      / \
+     3   5
+    / \
+   7   4
+```
+
+Comme il est complet, on le stocke dans un **tableau à plat** — pas besoin de pointeurs. Pour l'index `i` : enfant gauche = `2i + 1`, enfant droit = `2i + 2`, parent = `(i - 1) // 2`.
+
+## Min-Heap vs Max-Heap
+
+| Propriété | Min-Heap | Max-Heap |
+|-----------|----------|----------|
+| Racine | Plus petit élément | Plus grand élément |
+| Parent ≤ Enfants ? | ✅ Oui | ❌ Non (≥) |
+| Extraction donne | Minimum | Maximum |
+
+Le module `heapq` de Python est un **min-heap** par défaut. Pour un max-heap, on inverse les valeurs à l'insertion et à l'extraction.
+
+## Insertion et extraction — Étape par étape
+
+**Insertion** — ajouter en fin, puis **remonter** (échanger avec le parent tant que plus petit) :
+
+```python
+import heapq
+h = [1, 3, 5, 7]
+heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
+```
+
+**Extraction du minimum** — échanger la racine avec le dernier élément, retirer le dernier, puis **descendre** (échanger avec le plus petit enfant) :
+
+```python
+smallest = heapq.heappop(h)  # returns 1
+```
+
+Les deux opérations s'exécutent en **O(log n)** car la hauteur de l'arbre est log n.
+
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Schéma montrant la remontée à l'insertion et la descente à l'extraction dans un min-heap" caption="L'insertion remonte ; l'extraction du minimum descend." />
+
+## Heapify — Construire un tas en O(n)
+
+`heapq.heapify(arr)` convertit une liste en tas **sur place** en O(n), et non O(n log n). L'algorithme procède de bas en haut, faisant descendre chaque nœud interne. C'est l'un des résultats de complexité les plus surprenants en informatique.
+
+<FunFact>Construire un tas est en O(n), pas O(n log n). La plupart des nœuds sont proches du bas et n'ont presque pas besoin de descendre — le calcul donne un temps linéaire.</FunFact>
+
+## L'abstraction de file de priorité
+
+Une **file de priorité** (priority queue) permet d'accéder toujours à l'élément de plus haute priorité. Les tas sont l'implémentation de référence car l'insertion et l'extraction sont en O(log n). Utilisez-en une chaque fois que vous avez besoin du « meilleur élément vu jusqu'ici ».
+
+## Patron : problèmes Top-K
+
+> « Trouvez les K plus grands éléments d'un tableau non trié. »
+
+On maintient un **min-heap de taille K**. Pour chaque élément, on l'insère ; si le tas dépasse K, on retire le plus petit. Ce qui reste, ce sont les K plus grands.
+
+```python
+import heapq
+def top_k(nums, k):
+    return heapq.nlargest(k, nums)
+```
+
+Temps : **O(n log k)** — bien mieux qu'un tri complet quand k ≪ n.
+
+<Quiz question="Vous avez besoin des 5 meilleurs scores parmi 1 million d'entrées. Quel type et quelle taille de tas ?" options="Max-heap de taille 1 000 000|Min-heap de taille 5|Max-heap de taille 5|Min-heap de taille 1 000 000" answer="1" explanation="Un min-heap de taille 5 conserve les 5 plus grands vus jusqu'ici. La racine (le minimum des 5) sert de filtre — tout élément plus petit est rejeté." />
+
+## Patron : fusionner K listes triées
+
+Insérer la tête de chaque liste dans un min-heap. Extraire le plus petit, puis insérer l'élément suivant de cette même liste. Répéter jusqu'à épuisement. Temps : **O(N log K)** où N est le nombre total d'éléments.
+
+## Patron : médiane d'un flux de données
+
+Maintenir deux tas : un **max-heap** pour la moitié inférieure et un **min-heap** pour la moitié supérieure. Équilibrer leurs tailles pour qu'elles diffèrent d'au plus 1. La médiane est toujours à l'une ou aux deux racines.
+
+```
+Lower half (max-heap): [1, 2, 3]  ← max = 3
+Upper half (min-heap): [4, 5, 6]  ← min = 4
+Median = (3 + 4) / 2 = 3.5
+```
+
+<Quiz question="Dans l'approche à deux tas pour la médiane, où va d'abord un nouvel élément ?" options="Toujours le min-heap|Toujours le max-heap|Le tas le plus petit|Comparer avec la racine du max-heap d'abord, puis rééquilibrer" answer="3" explanation="On insère d'abord dans le max-heap (moitié inférieure), puis on déplace sa racine vers le min-heap si nécessaire et on rééquilibre les tailles." />
+
+## Problèmes d'ordonnancement
+
+Les tas excellent en ordonnancement : salles de réunion (suivre l'heure de fin la plus proche), planification de tâches avec refroidissement, files de jobs CPU. L'idée clé : un tas suit efficacement « ce qui finit en premier ».
+
+<ThinkAboutIt>Si vous avez besoin à la fois du minimum ET du maximum efficacement, un seul tas ne suffit pas. Quelle combinaison de structures utiliseriez-vous ?</ThinkAboutIt>
+
+## Quand utiliser un tas vs un tableau trié vs un BST
+
+| Besoin | Meilleur choix | Pourquoi |
+|--------|----------------|----------|
+| Extractions répétées du min/max | Tas | O(log n) insertion + extraction |
+| Données statiques, un seul tri | Tableau trié | O(n log n) une fois, O(1) accès |
+| Requêtes d'intervalle + statistiques d'ordre | BST équilibré | O(log n) pour tout |
+| Top-K depuis un flux | Tas de taille K | O(n log k) au total |
+
+<Quiz question="Quelle opération est en O(1) dans un min-heap ?" options="Trouver le minimum|Supprimer le minimum|Trouver le maximum|Trouver la médiane" answer="0" explanation="Le minimum est à la racine (index 0) d'un min-heap, donc le consulter est en O(1). Le supprimer coûte O(log n) car il faut faire descendre." />
+
+## Aide-mémoire complexité
+
+| Opération | Temps |
+|-----------|-------|
+| Insertion | O(log n) |
+| Extraction min/max | O(log n) |
+| Consulter min/max | O(1) |
+| Heapify | O(n) |
+| Top-K sur n éléments | O(n log k) |
+
+<ThinkAboutIt>Pourquoi ne peut-on pas faire de binary search sur un tas même s'il est stocké dans un tableau ? Réfléchissez à quel ordre trié la propriété de tas garantit réellement.</ThinkAboutIt>
+
+---
+
+## 📚 Pour aller plus loin
+
+- [NeetCode — Heap / Priority Queue](https://neetcode.io/roadmap) — feuille de route visuelle avec les problèmes de tas regroupés
+- [Tech Interview Handbook — Heap](https://www.techinterviewhandbook.org/algorithms/heap/) — patrons et astuces condensés
+- [Documentation Python heapq](https://docs.python.org/3/library/heapq.html) — référence officielle du module avec exemples

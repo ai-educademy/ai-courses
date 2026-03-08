@@ -1,0 +1,162 @@
+---
+title: "Interval-problemen — Merge, Insert en Scheduling"
+description: "Beheers interval-gebaseerde problemen van merge en insert tot meeting rooms en sweep lines. Leer de sorteerstrategieën en patronen die interviewers verwachten."
+order: 9
+difficulty: "advanced"
+duration: 16
+icon: "📅"
+published: true
+---
+
+## Interval-representatie
+
+Een interval is een paar `[start, end]`. De meeste interval-problemen beginnen met één cruciale stap: **sorteer op starttijd**. Dit verandert een chaotische lijst in een reeks die je van links naar rechts kunt verwerken met eenvoudige vergelijkingen.
+
+```
+Unsorted: [3,6] [1,4] [8,10] [2,5]
+Sorted:   [1,4] [2,5] [3,6] [8,10]
+```
+
+## Overlappende intervals mergen
+
+Het fundamentele interval-probleem (LeetCode 56). Na het sorteren overlappen twee opeenvolgende intervals als de huidige start ≤ het vorige einde is.
+
+```python
+def merge(intervals):
+    intervals.sort()
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+```
+
+Laten we `[1,4] [2,5] [3,6] [8,10]` doorlopen:
+- `[2,5]` overlapt met `[1,4]` → merge naar `[1,5]`
+- `[3,6]` overlapt met `[1,5]` → merge naar `[1,6]`
+- `[8,10]` geen overlap → nieuw interval
+
+Resultaat: `[1,6] [8,10]`
+
+<Quiz
+  question="Welke voorwaarde bepaalt, na het sorteren op starttijd, dat twee opeenvolgende intervals overlappen?"
+  options="current.start > previous.end|current.start == previous.start|current.start <= previous.end|current.end < previous.start"
+  answer="2"
+  explanation="Als het huidige interval begint vóór of precies wanneer het vorige eindigt, overlappen ze en moeten ze gemerged worden."
+/>
+
+## Insert Interval
+
+Gegeven gesorteerde niet-overlappende intervals en een nieuw interval: voeg het in en merge waar nodig (LeetCode 57). Verdeel in drie fasen:
+
+1. Voeg alle intervals toe die eindigen vóór het begin van het nieuwe
+2. Merge alle overlappende intervals met het nieuwe
+3. Voeg de resterende intervals ongewijzigd toe
+
+<ThinkAboutIt>Insert Interval wordt vaak gepresenteerd zonder dat de merge-stap duidelijk is. Hoe zou je het tijdens een interview herkennen als een merge-probleem?</ThinkAboutIt>
+
+## Meeting Rooms I — Kun je alles bijwonen?
+
+Sorteer op starttijd. Als de start van een interval vóór het einde van het vorige valt, is er een conflict.
+
+```python
+def can_attend(intervals):
+    intervals.sort()
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < intervals[i - 1][1]:
+            return False
+    return True
+```
+
+## Meeting Rooms II — Minimum aantal zalen
+
+Hier schittert de **event-based aanpak**. Scheid starts en einden in twee gesorteerde lijsten en sweep:
+
+```python
+import heapq
+
+def min_rooms(intervals):
+    intervals.sort()
+    heap = []
+    for start, end in intervals:
+        if heap and heap[0] <= start:
+            heapq.heappop(heap)
+        heapq.heappush(heap, end)
+    return len(heap)
+```
+
+De heap volgt de meeting die het vroegst eindigt. Als die eindigt vóór de volgende begint, hergebruiken we de zaal. De maximale grootte van de heap is het antwoord.
+
+<Illustration src="/images/lessons/interval-problems.svg" alt="Tijdlijn met overlappende vergaderingen die meerdere zalen vereisen" caption="Elke verticale doorsnede toont gelijktijdige vergaderingen — de piek is het minimum aantal benodigde zalen." />
+
+<FunFact>Meeting Rooms II is in wezen hetzelfde probleem als het vinden van het maximale aantal overlappende intervals op een willekeurig punt — een concept dat wordt gebruikt bij CPU-threadplanning, bandbreedtetoewijzing en ziekenhuisbedplanning.</FunFact>
+
+## Non-Overlapping Intervals — Minimum verwijderingen
+
+Gegeven intervals, vind het minimum aantal te verwijderen zodat er geen overlap is (LeetCode 435). Greedy: sorteer op **eindtijd**, behoud altijd het interval dat het vroegst eindigt — dit laat de meeste ruimte voor toekomstige intervals.
+
+```python
+def erase_overlap(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, prev_end = 0, float('-inf')
+    for start, end in intervals:
+        if start >= prev_end:
+            prev_end = end
+        else:
+            count += 1
+    return count
+```
+
+<Quiz
+  question="Waarom werkt sorteren op EINDtijd (in plaats van starttijd) voor het non-overlapping intervals probleem?"
+  options="Het vermindert de tijdscomplexiteit|Het vroegst eindigen laat maximale ruimte voor volgende intervals|Het gaat beter om met gelijke waarden|Het vermijdt negatieve intervals"
+  answer="1"
+  explanation="Greedy het interval behouden dat het vroegst eindigt, maximaliseert de resterende tijdlijn voor toekomstige niet-overlappende intervals."
+/>
+
+## Interval List Intersections
+
+Gegeven twee gesorteerde interval-lijsten, vind alle intersecties (LeetCode 986). Gebruik twee pointers — één per lijst. De intersectie van `[a1, a2]` en `[b1, b2]` is `[max(a1, b1), min(a2, b2)]` als deze geldig is (start ≤ einde). Verschuif de pointer waarvan het interval het eerst eindigt.
+
+## De Sweep Line-techniek
+
+In plaats van intervals paarsgewijs te vergelijken, ontleed elk interval in events:
+
+```
+[1,4] → +1 at 1, -1 at 4
+[2,6] → +1 at 2, -1 at 6
+```
+
+Sorteer events op tijd. Sweep van links naar rechts met een lopende telling. De piektelling beantwoordt vragen over "maximale overlap". Dit generaliseert Meeting Rooms II naar willekeurige event-processing problemen.
+
+## Calendar Booking
+
+**My Calendar I** (LeetCode 729): beheer geboekte intervals en wijs overlappingen af. **My Calendar II**: sta enkele overlappingen toe maar wijs triple-bookings af. De sweep line maakt meerlaagse overlapdetectie eenvoudig.
+
+## Patroonherkenning — Wanneer intervals vermoeden
+
+Let op deze aanwijzingen in probleemstellingen:
+
+- Woorden als "overlapping", "conflicting", "schedule", "range"
+- Paren van start/eind-waarden
+- Vragen over "hoeveel gelijktijdig" of "minimum resources"
+- Data die als segmenten op een getallenlijn kan worden weergegeven
+
+<Quiz
+  question="Welke sorteerstrategie is het BESTE voor het probleem 'minimum aantal te verwijderen intervals'?"
+  options="Sorteer op starttijd oplopend|Sorteer op eindtijd oplopend|Sorteer op intervallengte aflopend|Geen sortering nodig"
+  answer="1"
+  explanation="Sorteren op eindtijd maakt een greedy aanpak mogelijk: behoud altijd het interval dat het vroegst eindigt om maximale ruimte te laten voor de rest."
+/>
+
+<ThinkAboutIt>De sweep line-techniek converteert interval-problemen naar event-processing problemen. Kun je een real-world systeem bedenken (buiten coding interviews) dat precies deze aanpak gebruikt?</ThinkAboutIt>
+
+---
+
+## 📚 Verder lezen
+
+- [Merge Intervals — LeetCode 56](https://leetcode.com/problems/merge-intervals/) — Het essentiële startprobleem voor interval-beheersing
+- [Sweep Line Algorithm — CP-Algorithms](https://cp-algorithms.com/geometry/intersecting_segments.html) — Diepere verkenning van het sweep line-paradigma
+- [Meeting Rooms II — LeetCode 253](https://leetcode.com/problems/meeting-rooms-ii/) — Het klassieke min-heap interval scheduling probleem
