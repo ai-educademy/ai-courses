@@ -1,6 +1,6 @@
 ---
-title: "Reading Research Papers — How to Understand and Implement AI Papers"
-description: "A practical framework for reading, understanding, and implementing AI research papers — from decoding maths notation to turning algorithms into working code."
+title: "Reading Research Papers - How to Understand and Implement AI Papers"
+description: "A practical framework for reading, understanding, and implementing AI research papers - from decoding maths notation to turning algorithms into working code."
 order: 8
 difficulty: "advanced"
 duration: 20
@@ -8,16 +8,16 @@ icon: "📄"
 published: true
 ---
 
-# Reading Research Papers — How to Understand and Implement AI Papers
+# Reading Research Papers - How to Understand and Implement AI Papers
 
-The gap between "I use AI" and "I build AI" is bridged by reading research papers. Every breakthrough — transformers, diffusion models, RLHF — started as a paper. Engineers who read papers don't just follow trends; they **anticipate** them.
+The gap between "I use AI" and "I build AI" is bridged by reading research papers. Every breakthrough - transformers, diffusion models, RLHF - started as a paper. Engineers who read papers don't just follow trends; they **anticipate** them.
 
 ## 🤔 Why Read Papers?
 
-- **Stay current** — blog posts lag behind papers by months
-- **Understand fundamentals** — tutorials simplify; papers explain *why*
-- **Debug better** — when your model fails, the paper reveals edge cases
-- **Career leverage** — paper-literate engineers are rare and valued
+- **Stay current** - blog posts lag behind papers by months
+- **Understand fundamentals** - tutorials simplify; papers explain *why*
+- **Debug better** - when your model fails, the paper reveals edge cases
+- **Career leverage** - paper-literate engineers are rare and valued
 
 <Illustration src="/images/lessons/research-paper-reading.svg" alt="The three-pass paper reading approach showing skim, understand, and critique stages" caption="The three-pass method transforms a dense 12-page paper into structured understanding." />
 
@@ -30,8 +30,8 @@ Every ML paper follows a predictable structure. Knowing the blueprint accelerate
 | **Abstract** | 200-word summary of the entire contribution | 2 minutes |
 | **Introduction** | Problem motivation, why existing solutions fail | 5 minutes |
 | **Related Work** | What came before, how this paper differs | Skim on first pass |
-| **Method** | The core contribution — architecture, algorithm, maths | 60% of your time |
-| **Experiments** | Proof that it works — datasets, baselines, ablations | 20% of your time |
+| **Method** | The core contribution - architecture, algorithm, maths | 60% of your time |
+| **Experiments** | Proof that it works - datasets, baselines, ablations | 20% of your time |
 | **Conclusion** | Summary and future directions | 2 minutes |
 
 <FunFact>The original "Attention Is All You Need" paper (2017) has been cited over 130,000 times, making it one of the most influential computer science papers ever written. Its title has spawned countless parodies in subsequent paper titles.</FunFact>
@@ -52,11 +52,11 @@ If the answer to the third question is no, stop here. Not every paper deserves a
 
 Read the full paper, skipping dense proofs on first encounter. Focus on:
 
-- **Figures and tables** — authors distil their best ideas into visuals
-- **Method section** — trace the data flow from input to output
-- **Ablation studies** — these reveal which components actually matter
+- **Figures and tables** - authors distil their best ideas into visuals
+- **Method section** - trace the data flow from input to output
+- **Ablation studies** - these reveal which components actually matter
 
-Mark sections you don't understand. Move on and return to them after reading the experiments — results often clarify the method.
+Mark sections you don't understand. Move on and return to them after reading the experiments - results often clarify the method.
 
 ### Pass 3: Critique (1–2 hours)
 
@@ -71,18 +71,18 @@ Now read as a reviewer. Ask:
 
 ## 📚 Essential Papers Every AI Engineer Should Read
 
-These papers form the foundation of modern AI — reading them is non-negotiable:
+These papers form the foundation of modern AI - reading them is non-negotiable:
 
 **Architectures:**
-- *Attention Is All You Need* (Vaswani et al., 2017) — the transformer
-- *Deep Residual Learning for Image Recognition* (He et al., 2015) — ResNet and skip connections
+- *Attention Is All You Need* (Vaswani et al., 2017) - the transformer
+- *Deep Residual Learning for Image Recognition* (He et al., 2015) - ResNet and skip connections
 
 **Language Models:**
-- *BERT: Pre-training of Deep Bidirectional Transformers* (Devlin et al., 2018) — bidirectional pre-training
-- *Language Models are Few-Shot Learners* (Brown et al., 2020) — GPT-3 and in-context learning
+- *BERT: Pre-training of Deep Bidirectional Transformers* (Devlin et al., 2018) - bidirectional pre-training
+- *Language Models are Few-Shot Learners* (Brown et al., 2020) - GPT-3 and in-context learning
 
 **Training Techniques:**
-- *Adam: A Method for Stochastic Optimisation* (Kingma & Ba, 2014) — the default optimiser
+- *Adam: A Method for Stochastic Optimisation* (Kingma & Ba, 2014) - the default optimiser
 - *Dropout: A Simple Way to Prevent Neural Networks from Overfitting* (Srivastava et al., 2014)
 
 <ThinkAboutIt>If you could only read three papers from the list above, which three would give you the broadest understanding of modern AI? Why those three?</ThinkAboutIt>
@@ -92,14 +92,14 @@ These papers form the foundation of modern AI — reading them is non-negotiable
 Mathematical notation is a language. Here's your phrasebook for ML papers:
 
 ```
-θ (theta)      — model parameters (weights)
-∇ (nabla)      — gradient operator
-𝔼 (E)          — expected value (average over a distribution)
-argmax          — the input that maximises a function
-∑ (sigma)      — summation
-∏ (pi)         — product
-‖x‖            — norm (magnitude) of vector x
-softmax(z_i)   — e^(z_i) / Σ e^(z_j) — converts logits to probabilities
+θ (theta)      - model parameters (weights)
+∇ (nabla)      - gradient operator
+𝔼 (E)          - expected value (average over a distribution)
+argmax          - the input that maximises a function
+∑ (sigma)      - summation
+∏ (pi)         - product
+‖x‖            - norm (magnitude) of vector x
+softmax(z_i)   - e^(z_i) / Σ e^(z_j) - converts logits to probabilities
 ```
 
 **Pro tip**: when you see a complex equation, substitute actual numbers. If the paper says `L = -Σ y_i log(ŷ_i)`, plug in `y = [1, 0]` and `ŷ = [0.9, 0.1]` and compute by hand. Abstraction becomes concrete instantly.
@@ -167,6 +167,6 @@ class SelfAttention(nn.Module):
 
 ## 📚 Further Reading
 
-- [How to Read a Paper by S. Keshav](http://ccr.sigcomm.org/online/files/p83-keshavA.pdf) — The original three-pass method paper, widely cited in academia
-- [Papers With Code](https://paperswithcode.com/) — Browse papers with linked implementations and leaderboards
-- [The Illustrated Transformer by Jay Alammar](https://jalammar.github.io/illustrated-transformer/) — Visual walkthrough of the transformer architecture
+- [How to Read a Paper by S. Keshav](http://ccr.sigcomm.org/online/files/p83-keshavA.pdf) - The original three-pass method paper, widely cited in academia
+- [Papers With Code](https://paperswithcode.com/) - Browse papers with linked implementations and leaderboards
+- [The Illustrated Transformer by Jay Alammar](https://jalammar.github.io/illustrated-transformer/) - Visual walkthrough of the transformer architecture

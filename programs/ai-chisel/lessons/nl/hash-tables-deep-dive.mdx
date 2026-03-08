@@ -1,5 +1,5 @@
 ---
-title: "Hash Tables Deep Dive — De motor achter snelle AI-lookups"
+title: "Hash Tables Deep Dive - De motor achter snelle AI-lookups"
 description: "Begrijp hashing, collision handling en de probabilistische structuren die AI-systemen versnellen."
 order: 5
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Waarom hashing belangrijk is
 
-Wanneer een aanbevelingssysteem moet controleren of je een film al hebt gezien — uit miljoenen in de catalogus — kan het zich niet veroorloven om een lijst te doorlopen. Een **hash table** beantwoordt die vraag in gemiddeld O(1) tijd.
+Wanneer een aanbevelingssysteem moet controleren of je een film al hebt gezien - uit miljoenen in de catalogus - kan het zich niet veroorloven om een lijst te doorlopen. Een **hash table** beantwoordt die vraag in gemiddeld O(1) tijd.
 
 Hash tables zijn de meest gebruikte datastructuur in productiesoftware, en AI-systemen leunen er zwaar op voor feature lookups, caching en deduplicatie.
 
@@ -18,16 +18,16 @@ Hash tables zijn de meest gebruikte datastructuur in productiesoftware, en AI-sy
 
 ## Hoe hashing werkt
 
-Een **hash function** neemt een invoer (een string, getal of object) en geeft een geheel getal terug — de **hash code**. Die code wordt via modulo naar een **bucket index** gemapped:
+Een **hash function** neemt een invoer (een string, getal of object) en geeft een geheel getal terug - de **hash code**. Die code wordt via modulo naar een **bucket index** gemapped:
 
 ```
 index = hashFunction(key) % numberOfBuckets
 ```
 
 Een goede hash function is:
-- **Deterministisch** — dezelfde invoer levert altijd dezelfde uitvoer.
-- **Uniform** — verdeelt keys gelijkmatig over buckets.
-- **Snel** — berekenbaar in O(1) ten opzichte van de key-grootte.
+- **Deterministisch** - dezelfde invoer levert altijd dezelfde uitvoer.
+- **Uniform** - verdeelt keys gelijkmatig over buckets.
+- **Snel** - berekenbaar in O(1) ten opzichte van de key-grootte.
 
 ### Voorbeeld
 
@@ -39,9 +39,9 @@ function simpleHash(key, size):
     return total % size
 ```
 
-Dit is bewust naïef — hash functions in productie zoals MurmurHash3 of xxHash gebruiken bit-mixing voor een veel betere verdeling.
+Dit is bewust naïef - hash functions in productie zoals MurmurHash3 of xxHash gebruiken bit-mixing voor een veel betere verdeling.
 
-<Quiz question="Wat gebeurt er als een hash function veel verschillende keys naar dezelfde bucket index mapt?" options="De hash table wordt automatisch vergroot|Er treedt een collision op die opgelost moet worden|De dubbele keys worden stilletjes verwijderd|Het programma crasht" answer="1" explanation="Wanneer twee keys in dezelfde bucket terechtkomen, treedt er een collision op. De hash table moet dit oplossen — meestal via chaining of open addressing." />
+<Quiz question="Wat gebeurt er als een hash function veel verschillende keys naar dezelfde bucket index mapt?" options="De hash table wordt automatisch vergroot|Er treedt een collision op die opgelost moet worden|De dubbele keys worden stilletjes verwijderd|Het programma crasht" answer="1" explanation="Wanneer twee keys in dezelfde bucket terechtkomen, treedt er een collision op. De hash table moet dit oplossen - meestal via chaining of open addressing." />
 
 ## Collision Handling
 
@@ -104,13 +104,13 @@ Rehashing is O(n) maar komt zelden voor, dus de **geamortiseerde** kosten van in
 | **Caching-lagen** | Vooraf berekende modelvoorspellingen opslaan, geïndexeerd op input-hash |
 | **Count-min sketch** | Benaderde frequentietellingen in streamingdata met meerdere hash functions |
 
-<Quiz question="Waarom sta je bij de 'hashing trick' in machine learning bewust collisions toe?" options="Collisions verbeteren de nauwkeurigheid van het model|Het elimineert de noodzaak van een vast vocabulaire en bespaart geheugen|Hash collisions zijn sowieso onmogelijk te vermijden|Het versnelt de hash function" answer="1" explanation="Feature hashing mapt bewust een onbegrensde set features naar een array van vaste grootte, waarbij wat collision-ruis wordt geaccepteerd in ruil voor een constant geheugengebruik — geen vocabulaire-woordenboek nodig." />
+<Quiz question="Waarom sta je bij de 'hashing trick' in machine learning bewust collisions toe?" options="Collisions verbeteren de nauwkeurigheid van het model|Het elimineert de noodzaak van een vast vocabulaire en bespaart geheugen|Hash collisions zijn sowieso onmogelijk te vermijden|Het versnelt de hash function" answer="1" explanation="Feature hashing mapt bewust een onbegrensde set features naar een array van vaste grootte, waarbij wat collision-ruis wordt geaccepteerd in ruil voor een constant geheugengebruik - geen vocabulaire-woordenboek nodig." />
 
 ## Bloom Filters: probabilistisch lidmaatschap
 
 Een **Bloom filter** beantwoordt de vraag "Zit dit element in de verzameling?" met:
-- **Zeker nee** — het element is gegarandeerd afwezig.
-- **Waarschijnlijk ja** — het element is waarschijnlijk aanwezig (klein false-positive percentage).
+- **Zeker nee** - het element is gegarandeerd afwezig.
+- **Waarschijnlijk ja** - het element is waarschijnlijk aanwezig (klein false-positive percentage).
 
 Het gebruikt _k_ hash functions en een bit-array. Invoegen zet _k_ bits; opzoeken controleert of alle _k_ bits gezet zijn.
 
@@ -129,14 +129,14 @@ function bloomContains(filter, item):
 
 **AI-toepassingen:** controleren of een URL al gecrawld is, spam filteren, en overbodige database-queries in caching-lagen voorkomen.
 
-<FunFact>Google Chrome gebruikt een Bloom filter met miljoenen bekende schadelijke URLs. Voordat een pagina wordt geladen, controleert je browser het filter — als het "waarschijnlijk ja" zegt, haalt Chrome de volledige lijst op ter bevestiging.</FunFact>
+<FunFact>Google Chrome gebruikt een Bloom filter met miljoenen bekende schadelijke URLs. Voordat een pagina wordt geladen, controleert je browser het filter - als het "waarschijnlijk ja" zegt, haalt Chrome de volledige lijst op ter bevestiging.</FunFact>
 
 ## Sets vs Maps: wanneer welke gebruiken
 
 | Structuur | Slaat op | Gebruik wanneer |
 |-----------|----------|-----------------|
-| **Set** | Alleen keys | Je lidmaatschapscontroles nodig hebt — "heb ik dit al eerder gezien?" |
-| **Map** | Key–value-paren | Je data aan elke key wilt koppelen — "wat is de waarde voor deze key?" |
+| **Set** | Alleen keys | Je lidmaatschapscontroles nodig hebt - "heb ik dit al eerder gezien?" |
+| **Map** | Key–value-paren | Je data aan elke key wilt koppelen - "wat is de waarde voor deze key?" |
 
 Beide zijn gebaseerd op hash tables en bieden gemiddeld O(1)-operaties. Kies een **set** voor deduplicatie, bezochte items bijhouden en uniciteitscontroles. Kies een **map** voor lookups, caches en configuratie.
 
@@ -144,9 +144,9 @@ Beide zijn gebaseerd op hash tables en bieden gemiddeld O(1)-operaties. Kies een
 
 ## Belangrijkste punten
 
-1. Hash tables leveren gemiddeld O(1)-lookups — de ruggengraat van caching, indexering en feature engineering.
+1. Hash tables leveren gemiddeld O(1)-lookups - de ruggengraat van caching, indexering en feature engineering.
 2. Collisions worden beheerd via chaining of open addressing; de load factor bepaalt wanneer er gerehashed moet worden.
 3. Bloom filters ruilen een klein false-positive percentage in voor enorme geheugenbesparingen bij lidmaatschapsquery's.
-4. Inzicht in de werking van hashing helpt je het juiste hulpmiddel te kiezen — set, map of probabilistisch filter — voor elke AI-workload.
+4. Inzicht in de werking van hashing helpt je het juiste hulpmiddel te kiezen - set, map of probabilistisch filter - voor elke AI-workload.
 
-<Quiz question="Een Bloom filter meldt dat een element NIET in de verzameling zit. Wat kun je concluderen?" options="Het element zit zeker niet in de verzameling|Het element zou toch nog in de verzameling kunnen zitten|Het filter moet opnieuw worden opgebouwd|Niets — Bloom filters zijn onbetrouwbaar" answer="0" explanation="Bloom filters produceren nooit false negatives. Als een van de k bitposities 0 is, is het element nooit ingevoegd — gegarandeerd." />
+<Quiz question="Een Bloom filter meldt dat een element NIET in de verzameling zit. Wat kun je concluderen?" options="Het element zit zeker niet in de verzameling|Het element zou toch nog in de verzameling kunnen zitten|Het filter moet opnieuw worden opgebouwd|Niets - Bloom filters zijn onbetrouwbaar" answer="0" explanation="Bloom filters produceren nooit false negatives. Als een van de k bitposities 0 is, is het element nooit ingevoegd - gegarandeerd." />

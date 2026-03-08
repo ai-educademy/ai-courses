@@ -1,5 +1,5 @@
 ---
-title: "Ontwerp een Web Crawler — Hoe Google het internet indexeert"
+title: "Ontwerp een Web Crawler - Hoe Google het internet indexeert"
 description: "Ontwerp een gedistribueerde web crawler met URL frontier management, politeness policies, content deduplication met SimHash en distributed crawling met consistent hashing."
 order: 9
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🕷️"
 published: true
 ---
 
-# Ontwerp een Web Crawler — Hoe Google het internet indexeert
+# Ontwerp een Web Crawler - Hoe Google het internet indexeert
 
 Een web crawler doorzoekt systematisch het internet om webpagina's te downloaden en te indexeren. Het is de basis van elke zoekmachine, en het ontwerpen ervan leert je over distributed systems, graph traversal en het omgaan met de rommeligheid van het echte web.
 
-## Stap 1 — Requirements verzamelen
+## Stap 1 - Requirements verzamelen
 
 ### Functionele requirements
 - Webpagina's crawlen vanaf een set seed URLs
@@ -21,12 +21,12 @@ Een web crawler doorzoekt systematisch het internet om webpagina's te downloaden
 - robots.txt en crawl politeness-regels respecteren
 
 ### Niet-functionele requirements
-- **Scale** — 1 miljard pagina's per maand crawlen
-- **Politeness** — nooit een enkele webserver overbelasten
-- **Versheid** — belangrijke pagina's regelmatig opnieuw crawlen
-- **Robuustheid** — omgaan met malformed HTML, oneindige lussen en spider traps
+- **Scale** - 1 miljard pagina's per maand crawlen
+- **Politeness** - nooit een enkele webserver overbelasten
+- **Versheid** - belangrijke pagina's regelmatig opnieuw crawlen
+- **Robuustheid** - omgaan met malformed HTML, oneindige lussen en spider traps
 
-## Stap 2 — High-level architectuur
+## Stap 2 - High-level architectuur
 
 ```
 Seed URLs → URL Frontier (priority queue)
@@ -44,17 +44,17 @@ Seed URLs → URL Frontier (priority queue)
 
 <Illustration src="/images/lessons/design-web-crawler.svg" alt="Web crawler-architectuur die de crawl-loop toont van URL frontier via fetcher, parser, URL-extractie, deduplicatie en terug naar de frontier" caption="De crawler werkt als een continue loop: haal een pagina op, extraheer nieuwe URLs, deduplicate en voeg toe aan de wachtrij voor toekomstige crawls" />
 
-## Stap 3 — De crawl-loop
+## Stap 3 - De crawl-loop
 
 ### BFS vs DFS Crawling
-- **BFS (Breadth-First)** — de voorkeur voor web crawling. Ontdekt snel een breed scala aan domeinen en voorkomt dat je vast komt te zitten diep in één site
-- **DFS (Depth-First)** — risico om oneindig diep te gaan in dynamisch gegenereerde pagina's voordat andere domeinen ontdekt worden
+- **BFS (Breadth-First)** - de voorkeur voor web crawling. Ontdekt snel een breed scala aan domeinen en voorkomt dat je vast komt te zitten diep in één site
+- **DFS (Depth-First)** - risico om oneindig diep te gaan in dynamisch gegenereerde pagina's voordat andere domeinen ontdekt worden
 
 ### URL Frontier-ontwerp
-De frontier is geen simpele wachtrij — het is een geavanceerd prioriteitssysteem met twee subcomponenten:
+De frontier is geen simpele wachtrij - het is een geavanceerd prioriteitssysteem met twee subcomponenten:
 
-1. **Priority Queue (Front)** — rangschikt URLs op belangrijkheid. Factoren zijn onder andere PageRank, updatefrequentie en domeinautoriteit
-2. **Politeness Queue (Back)** — zorgt ervoor dat elk domein een eigen FIFO-wachtrij heeft. Een scheduler kiest uit verschillende domeinwachtrijen om te voorkomen dat één server overbelast wordt
+1. **Priority Queue (Front)** - rangschikt URLs op belangrijkheid. Factoren zijn onder andere PageRank, updatefrequentie en domeinautoriteit
+2. **Politeness Queue (Back)** - zorgt ervoor dat elk domein een eigen FIFO-wachtrij heeft. Een scheduler kiest uit verschillende domeinwachtrijen om te voorkomen dat één server overbelast wordt
 
 ```
 Front (Priority):       Back (Politeness):
@@ -67,9 +67,9 @@ Front (Priority):       Back (Politeness):
                         └───────────────────────┘
 ```
 
-<Quiz question="Waarom gebruikt een web crawler BFS in plaats van DFS voor algemeen crawlen?" options="BFS gebruikt minder geheugen|BFS ontdekt sneller meer unieke domeinen en voorkomt dat je vast komt te zitten diep in één website|BFS is sneller dan DFS|DFS werkt niet met URLs" answer="1" explanation="BFS verkent niveau voor niveau, wat betekent dat het snel pagina's op veel verschillende domeinen ontdekt. DFS kan links diep in één site volgen — en mogelijk miljoenen dynamisch gegenereerde pagina's raken — voordat het een ander domein bezoekt." />
+<Quiz question="Waarom gebruikt een web crawler BFS in plaats van DFS voor algemeen crawlen?" options="BFS gebruikt minder geheugen|BFS ontdekt sneller meer unieke domeinen en voorkomt dat je vast komt te zitten diep in één website|BFS is sneller dan DFS|DFS werkt niet met URLs" answer="1" explanation="BFS verkent niveau voor niveau, wat betekent dat het snel pagina's op veel verschillende domeinen ontdekt. DFS kan links diep in één site volgen - en mogelijk miljoenen dynamisch gegenereerde pagina's raken - voordat het een ander domein bezoekt." />
 
-## Stap 4 — Politeness en Robots.txt
+## Stap 4 - Politeness en Robots.txt
 
 ### Robots.txt respecteren
 Haal vóór het crawlen van een domein het `robots.txt`-bestand op en cache het:
@@ -88,11 +88,11 @@ Cache robots.txt per domein met een TTL (24 uur). Respecteer altijd `Disallow`-r
 Zelfs zonder expliciete `Crawl-delay`, handhaaf politeness:
 - Maximaal 1 request per seconde per domein (configureerbaar)
 - Gebruik aparte download-wachtrijen per domein
-- Monitor responstijden — als een server vertraagt, verminder dan automatisch het tempo
+- Monitor responstijden - als een server vertraagt, verminder dan automatisch het tempo
 
-<FunFact>Google's web crawler (Googlebot) crawlt honderden miljarden pagina's. Om beleefd te blijven, monitort het de responstijden van servers en verlaagt het crawltempo als een site langzamer begint te reageren — waardoor de website effectief kan "terugduwen" tegen de crawler.</FunFact>
+<FunFact>Google's web crawler (Googlebot) crawlt honderden miljarden pagina's. Om beleefd te blijven, monitort het de responstijden van servers en verlaagt het crawltempo als een site langzamer begint te reageren - waardoor de website effectief kan "terugduwen" tegen de crawler.</FunFact>
 
-## Stap 5 — Deduplicatie
+## Stap 5 - Deduplicatie
 
 ### URL-deduplicatie (Bloom Filter)
 Met miljarden URLs vereist het controleren of een URL eerder gezien is een efficiënte datastructuur. Een Bloom filter biedt O(1) lookups met een kleine geheugenvoetafdruk:
@@ -103,7 +103,7 @@ Met miljarden URLs vereist het controleren of een URL eerder gezien is een effic
 Normaliseer URLs vóór controle: verwijder fragments (#), sorteer queryparameters, maak de hostname lowercase en los relatieve paden op.
 
 ### Content-deduplicatie (SimHash)
-Verschillende URLs kunnen identieke content serveren (mirrors, gekopieerde artikelen). SimHash genereert een fingerprint van de pagina-inhoud — pagina's met vergelijkbare fingerprints (kleine Hamming-afstand) zijn waarschijnlijk duplicaten:
+Verschillende URLs kunnen identieke content serveren (mirrors, gekopieerde artikelen). SimHash genereert een fingerprint van de pagina-inhoud - pagina's met vergelijkbare fingerprints (kleine Hamming-afstand) zijn waarschijnlijk duplicaten:
 
 ```
 Page A content → SimHash → 10110010...
@@ -111,14 +111,14 @@ Page B content → SimHash → 10110011...
 Hamming distance = 1 → likely duplicate, skip storing
 ```
 
-<Quiz question="Een Bloom filter meldt dat een URL eerder gezien is. Wat kun je concluderen?" options="De URL is zeker gecrawld|De URL is waarschijnlijk gecrawld, maar er is een kleine kans op een false positive|De URL is niet gecrawld|De Bloom filter moet opnieuw worden opgebouwd" answer="1" explanation="Bloom filters hebben een klein false positive-percentage — ze kunnen 'ja, gezien' zeggen voor een niet-geziene URL, maar zeggen nooit 'nee' voor een URL die daadwerkelijk is toegevoegd. Dit betekent dat er af en toe een pagina opnieuw gecrawld wordt, wat acceptabel is voor de meeste crawlers." />
+<Quiz question="Een Bloom filter meldt dat een URL eerder gezien is. Wat kun je concluderen?" options="De URL is zeker gecrawld|De URL is waarschijnlijk gecrawld, maar er is een kleine kans op een false positive|De URL is niet gecrawld|De Bloom filter moet opnieuw worden opgebouwd" answer="1" explanation="Bloom filters hebben een klein false positive-percentage - ze kunnen 'ja, gezien' zeggen voor een niet-geziene URL, maar zeggen nooit 'nee' voor een URL die daadwerkelijk is toegevoegd. Dit betekent dat er af en toe een pagina opnieuw gecrawld wordt, wat acceptabel is voor de meeste crawlers." />
 
-## Stap 6 — Distributed crawling
+## Stap 6 - Distributed crawling
 
 ### Horizontaal schalen
 Eén machine kan geen miljard pagina's per maand crawlen. Verdeel het werk:
 
-- **Consistent hashing** op domeinnamen wijst elk domein toe aan een specifiek crawler-node. Dit garandeert politeness — slechts één node crawlt een bepaald domein
+- **Consistent hashing** op domeinnamen wijst elk domein toe aan een specifiek crawler-node. Dit garandeert politeness - slechts één node crawlt een bepaald domein
 - De **URL frontier** wordt over nodes gepartitioneerd op basis van de hash ring
 - **Coördinatie** via een lichtgewicht service die node-toewijzingen beheert en herbalanceert wanneer nodes toetreden of vertrekken
 
@@ -130,7 +130,7 @@ DNS lookups voegen 10-100ms toe per request. Op grote schaal is dit een groot kn
 
 ### Spider Trap-detectie
 Kwaadaardige of slecht gebouwde sites kunnen oneindige URL-ruimtes creëren:
-- `/page/1/page/1/page/1/...` — herhalende padpatronen
+- `/page/1/page/1/page/1/...` - herhalende padpatronen
 - Kalenderpagina's die URLs genereren voor elke toekomstige datum
 - Session IDs in URLs die unieke URLs creëren voor identieke content
 
@@ -138,7 +138,7 @@ Kwaadaardige of slecht gebouwde sites kunnen oneindige URL-ruimtes creëren:
 
 <ThinkAboutIt>Als je een zoekindex vers moet houden, hoe zou je dan beslissen welke pagina's je het eerst opnieuw crawlt? Denk aan een nieuwssite die elk uur bijwerkt versus een Wikipedia-artikel dat maandelijks verandert. Welke signalen zou je gebruiken om de re-crawl planning te prioriteren?</ThinkAboutIt>
 
-## Stap 7 — Knelpunten en optimalisaties
+## Stap 7 - Knelpunten en optimalisaties
 
 | Knelpunt | Oplossing |
 |-----------|----------|
@@ -153,6 +153,6 @@ Kwaadaardige of slecht gebouwde sites kunnen oneindige URL-ruimtes creëren:
 ---
 
 ## 📚 Verder lezen
-- [Web Crawler — System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) — Alex Xu's gedetailleerde uitleg van web crawler-ontwerp
-- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) — baanbrekend paper over schaalbare crawler-architectuur
-- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) — interactieve tutorial over hoe Bloom filters werken
+- [Web Crawler - System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) - Alex Xu's gedetailleerde uitleg van web crawler-ontwerp
+- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) - baanbrekend paper over schaalbare crawler-architectuur
+- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) - interactieve tutorial over hoe Bloom filters werken

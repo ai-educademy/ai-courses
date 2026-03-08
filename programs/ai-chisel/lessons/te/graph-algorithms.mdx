@@ -1,5 +1,5 @@
 ---
-title: "Graph Algorithms — AI నెట్‌వర్క్‌లలో ఎలా నావిగేట్ చేస్తుంది"
+title: "Graph Algorithms - AI నెట్‌వర్క్‌లలో ఎలా నావిగేట్ చేస్తుంది"
 description: "Maps, social networks మరియు web crawlers ను నడిపించే traversal మరియు shortest-path algorithms నేర్చుకోండి."
 order: 3
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Graphs అనుసంధానిత ప్రపంచాన్ని మోడల్ చేస్తాయి
 
-స్నేహాలు, రోడ్ నెట్‌వర్క్‌లు, hyperlinks, నాడీ మార్గాలు — entities సంబంధాల ద్వారా అనుసంధానమైనప్పుడల్లా, మీకు ఒక **graph** ఉంటుంది. అధికారికంగా, ఒక graph G = (V, E) vertices (nodes) మరియు edges (connections) తో కూడి ఉంటుంది.
+స్నేహాలు, రోడ్ నెట్‌వర్క్‌లు, hyperlinks, నాడీ మార్గాలు - entities సంబంధాల ద్వారా అనుసంధానమైనప్పుడల్లా, మీకు ఒక **graph** ఉంటుంది. అధికారికంగా, ఒక graph G = (V, E) vertices (nodes) మరియు edges (connections) తో కూడి ఉంటుంది.
 
 Graphs **directed** (ఏకదిశ వీధులు) లేదా **undirected** (ద్విదిశ) కావచ్చు, మరియు edges పై **weights** (దూరాలు, ఖర్చులు, latencies) ఉండవచ్చు.
 
@@ -37,7 +37,7 @@ graph = {
 
 ## Breadth-First Search (BFS)
 
-BFS **స్థాయి వారీగా** అన్వేషిస్తుంది — లోతుగా వెళ్ళే ముందు అన్ని పొరుగువారిని సందర్శిస్తుంది. ఇది ఒక **queue** ను ఉపయోగిస్తుంది.
+BFS **స్థాయి వారీగా** అన్వేషిస్తుంది - లోతుగా వెళ్ళే ముందు అన్ని పొరుగువారిని సందర్శిస్తుంది. ఇది ఒక **queue** ను ఉపయోగిస్తుంది.
 
 ```
 function bfs(graph, start):
@@ -56,9 +56,9 @@ function bfs(graph, start):
 
 ### BFS యొక్క AI Use Cases
 
-- **Social network friend suggestions** — 2–3 connections లోపల వ్యక్తులను కనుగొనడం.
-- **Web crawlers** — seed URL నుండి పొర పొరగా pages ను index చేయడం.
-- **Puzzle solvers** — కనీస సంఖ్యలో కదలికలు కనుగొనడం (ఉదా. Rubik's cube states).
+- **Social network friend suggestions** - 2–3 connections లోపల వ్యక్తులను కనుగొనడం.
+- **Web crawlers** - seed URL నుండి పొర పొరగా pages ను index చేయడం.
+- **Puzzle solvers** - కనీస సంఖ్యలో కదలికలు కనుగొనడం (ఉదా. Rubik's cube states).
 
 <Quiz question="BFS unweighted graph లో shortest path ను ఎందుకు guarantee చేస్తుంది?" options="ఇది ఎల్లప్పుడూ అత్యంత తేలికైన edge ను ఎంచుకుంటుంది|ఇది source నుండి పెరుగుతున్న దూరం క్రమంలో nodes ను అన్వేషిస్తుంది|ఇది backtracking కోసం stack ను ఉపయోగిస్తుంది|ఇది traversal కు ముందు అన్ని edges ను sort చేస్తుంది" answer="1" explanation="BFS distance d వద్ద ఉన్న అన్ని nodes ను distance d+1 వద్ద ఏ node కంటే ముందు ప్రాసెస్ చేస్తుంది, కాబట్టి ఇది ఒక node ను మొదటిసారి చేరుకున్నప్పుడు అది shortest path ద్వారా అవుతుంది." />
 
@@ -77,14 +77,14 @@ function dfs(graph, node, visited):
 
 ### DFS యొక్క Applications
 
-- **Topological sort** — ప్రతి dependency ముందు వచ్చేలా tasks ను క్రమం చేయడం (build systems, course prerequisites).
-- **Cycle detection** — DFS ప్రస్తుతం call stack పై ఉన్న node ను మళ్ళీ సందర్శిస్తే, cycle ఉన్నట్లు.
-- **Maze solving** — ప్రత్యామ్నాయాలను ప్రయత్నించే ముందు ఒక మార్గాన్ని పూర్తిగా అన్వేషించడం.
-- **Connected components** — ప్రతి సందర్శించని node నుండి DFS నడపడం ద్వారా వేర్వేరు clusters ను గుర్తించడం.
+- **Topological sort** - ప్రతి dependency ముందు వచ్చేలా tasks ను క్రమం చేయడం (build systems, course prerequisites).
+- **Cycle detection** - DFS ప్రస్తుతం call stack పై ఉన్న node ను మళ్ళీ సందర్శిస్తే, cycle ఉన్నట్లు.
+- **Maze solving** - ప్రత్యామ్నాయాలను ప్రయత్నించే ముందు ఒక మార్గాన్ని పూర్తిగా అన్వేషించడం.
+- **Connected components** - ప్రతి సందర్శించని node నుండి DFS నడపడం ద్వారా వేర్వేరు clusters ను గుర్తించడం.
 
 <ThinkAboutIt>ఒక package manager dependencies ను సరైన క్రమంలో install చేయాలి. BFS ఉపయోగించాలా లేదా DFS-based topological sort ఉపయోగించాలా? dependency graph లో cycle ఉంటే ఏమి జరుగుతుంది?</ThinkAboutIt>
 
-## Dijkstra's Algorithm — Weights తో Shortest Path
+## Dijkstra's Algorithm - Weights తో Shortest Path
 
 Edges కు వేర్వేరు costs ఉన్నప్పుడు, BFS సరిపోదు. Dijkstra's algorithm ఒక source నుండి అన్ని ఇతర nodes కు shortest weighted path కనుగొంటుంది.
 
@@ -107,13 +107,13 @@ function dijkstra(graph, source):
 
 **Time complexity:** Binary heap తో O((V + E) log V).
 
-<FunFact>Google Maps మొత్తం road network పై plain Dijkstra నడపదు. ఇది contraction hierarchies మరియు A* search ఉపయోగిస్తుంది — కానీ రెండూ Dijkstra యొక్క మౌలిక అంతర్దృష్టిపై ఆధారపడి ఉన్నాయి: shortest known distance ద్వారా greedy expansion.</FunFact>
+<FunFact>Google Maps మొత్తం road network పై plain Dijkstra నడపదు. ఇది contraction hierarchies మరియు A* search ఉపయోగిస్తుంది - కానీ రెండూ Dijkstra యొక్క మౌలిక అంతర్దృష్టిపై ఆధారపడి ఉన్నాయి: shortest known distance ద్వారా greedy expansion.</FunFact>
 
 ### Dijkstra యొక్క AI Use Cases
 
-- **Route planning** — అత్యంత వేగవంతమైన మార్గాన్ని కనుగొనే navigation apps.
-- **Network routing** — అత్యల్ప latency path ఎంచుకునే internet packets.
-- **Knowledge graphs** — concepts మధ్య shortest semantic connection కనుగొనడం.
+- **Route planning** - అత్యంత వేగవంతమైన మార్గాన్ని కనుగొనే navigation apps.
+- **Network routing** - అత్యల్ప latency path ఎంచుకునే internet packets.
+- **Knowledge graphs** - concepts మధ్య shortest semantic connection కనుగొనడం.
 
 <Quiz question="Dijkstra's algorithm తదుపరి node ను సమర్థవంతంగా ఎంచుకోవడానికి ఏ data structure అవసరం?" options="Stack|Queue|Min-heap (priority queue)|Hash table" answer="2" explanation="Min-heap Dijkstra కు అత్యల్ప tentative distance ఉన్న unvisited node ను O(log V) సమయంలో extract చేయడానికి అనుమతిస్తుంది." />
 
@@ -133,11 +133,11 @@ function dijkstra(graph, source):
 
 ## ముఖ్యమైన విషయాలు
 
-1. **BFS** స్థాయి వారీగా అన్వేషిస్తుంది — unweighted graphs లో shortest paths మరియు neighbour-based discovery కు అనువైనది.
-2. **DFS** లోతుగా వెళ్తుంది — topological sorting, cycle detection, మరియు component analysis కు వెన్నెముక.
-3. **Dijkstra** priority queue ఉపయోగించి BFS ను weighted graphs కు విస్తరిస్తుంది — ఆధునిక route planning కు పునాది.
+1. **BFS** స్థాయి వారీగా అన్వేషిస్తుంది - unweighted graphs లో shortest paths మరియు neighbour-based discovery కు అనువైనది.
+2. **DFS** లోతుగా వెళ్తుంది - topological sorting, cycle detection, మరియు component analysis కు వెన్నెముక.
+3. **Dijkstra** priority queue ఉపయోగించి BFS ను weighted graphs కు విస్తరిస్తుంది - ఆధునిక route planning కు పునాది.
 4. Graph algorithms maps, social networks, package managers, మరియు knowledge graphs వెనుక ఉన్న engine.
 
 <FunFact>World Wide Web లో 50 billion కంటే ఎక్కువ indexed pages ఉన్నాయి. Search engine crawlers pages ను కనుగొని మళ్ళీ index చేయడానికి BFS variations ఉపయోగిస్తాయి, page importance (PageRank) ఆధారంగా ప్రాధాన్యత ఇస్తూ.</FunFact>
 
-<Quiz question="ఒక directed task-dependency graph లో circular dependency ఉందో లేదో detect చేయడానికి ఏ algorithm ఉపయోగిస్తారు?" options="Dijkstra's algorithm|BFS shortest path|DFS with in-progress tracking|Binary search" answer="2" explanation="DFS three-state tracking (unvisited, in-progress, completed) తో back edges ను detect చేస్తుంది — in-progress node ను మళ్ళీ ఎదుర్కోవడం అంటే cycle ఉన్నట్లు." />
+<Quiz question="ఒక directed task-dependency graph లో circular dependency ఉందో లేదో detect చేయడానికి ఏ algorithm ఉపయోగిస్తారు?" options="Dijkstra's algorithm|BFS shortest path|DFS with in-progress tracking|Binary search" answer="2" explanation="DFS three-state tracking (unvisited, in-progress, completed) తో back edges ను detect చేస్తుంది - in-progress node ను మళ్ళీ ఎదుర్కోవడం అంటే cycle ఉన్నట్లు." />

@@ -1,5 +1,5 @@
 ---
-title: "Concevoir un Web Crawler — Comment Google indexe Internet"
+title: "Concevoir un Web Crawler - Comment Google indexe Internet"
 description: "Concevez un web crawler distribué couvrant la gestion du URL frontier, les politiques de politesse, la déduplication de contenu avec SimHash et le crawling distribué avec consistent hashing."
 order: 9
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🕷️"
 published: true
 ---
 
-# Concevoir un Web Crawler — Comment Google indexe Internet
+# Concevoir un Web Crawler - Comment Google indexe Internet
 
 Un web crawler parcourt systématiquement Internet pour télécharger et indexer des pages web. C'est la base de tout moteur de recherche, et sa conception vous enseigne les systèmes distribués, le parcours de graphes et la gestion du désordre du web réel.
 
-## Étape 1 — Recueil des exigences
+## Étape 1 - Recueil des exigences
 
 ### Exigences fonctionnelles
 - Crawler des pages web à partir d'un ensemble de seed URLs
@@ -21,12 +21,12 @@ Un web crawler parcourt systématiquement Internet pour télécharger et indexer
 - Respecter robots.txt et les règles de politesse de crawl
 
 ### Exigences non fonctionnelles
-- **Scale** — crawler 1 milliard de pages par mois
-- **Politesse** — ne jamais surcharger un seul serveur web
-- **Fraîcheur** — re-crawler régulièrement les pages importantes
-- **Robustesse** — gérer le HTML malformé, les boucles infinies et les spider traps
+- **Scale** - crawler 1 milliard de pages par mois
+- **Politesse** - ne jamais surcharger un seul serveur web
+- **Fraîcheur** - re-crawler régulièrement les pages importantes
+- **Robustesse** - gérer le HTML malformé, les boucles infinies et les spider traps
 
-## Étape 2 — Architecture de haut niveau
+## Étape 2 - Architecture de haut niveau
 
 ```
 Seed URLs → URL Frontier (priority queue)
@@ -44,17 +44,17 @@ Seed URLs → URL Frontier (priority queue)
 
 <Illustration src="/images/lessons/design-web-crawler.svg" alt="Architecture du web crawler montrant la boucle de crawl depuis le URL frontier en passant par le fetcher, le parser, l'extraction d'URLs, la déduplication et retour au frontier" caption="Le crawler fonctionne en boucle continue : récupérer une page, extraire de nouvelles URLs, dédupliquer et mettre en file d'attente pour le crawl futur" />
 
-## Étape 3 — La boucle de crawl
+## Étape 3 - La boucle de crawl
 
 ### Crawling BFS vs DFS
-- **BFS (Breadth-First)** — préféré pour le web crawling. Découvre rapidement un large ensemble de domaines et évite de s'enfoncer trop profondément dans un seul site
-- **DFS (Depth-First)** — risque de descendre infiniment dans des pages générées dynamiquement avant de découvrir d'autres domaines
+- **BFS (Breadth-First)** - préféré pour le web crawling. Découvre rapidement un large ensemble de domaines et évite de s'enfoncer trop profondément dans un seul site
+- **DFS (Depth-First)** - risque de descendre infiniment dans des pages générées dynamiquement avant de découvrir d'autres domaines
 
 ### Conception du URL Frontier
-Le frontier n'est pas une simple file d'attente — c'est un système de priorité sophistiqué avec deux sous-composants :
+Le frontier n'est pas une simple file d'attente - c'est un système de priorité sophistiqué avec deux sous-composants :
 
-1. **Priority Queue (Front)** — classe les URLs par importance. Les facteurs incluent le PageRank, la fréquence de mise à jour et l'autorité du domaine
-2. **Politeness Queue (Back)** — garantit que chaque domaine a sa propre file FIFO. Un scheduler pioche dans différentes files de domaines pour éviter de surcharger un seul serveur
+1. **Priority Queue (Front)** - classe les URLs par importance. Les facteurs incluent le PageRank, la fréquence de mise à jour et l'autorité du domaine
+2. **Politeness Queue (Back)** - garantit que chaque domaine a sa propre file FIFO. Un scheduler pioche dans différentes files de domaines pour éviter de surcharger un seul serveur
 
 ```
 Front (Priority):       Back (Politeness):
@@ -67,9 +67,9 @@ Front (Priority):       Back (Politeness):
                         └───────────────────────┘
 ```
 
-<Quiz question="Pourquoi un web crawler utilise-t-il BFS plutôt que DFS pour un crawling généraliste ?" options="BFS utilise moins de mémoire|BFS découvre plus rapidement davantage de domaines uniques et évite de s'enfoncer dans un seul site web|BFS est plus rapide que DFS|DFS ne fonctionne pas avec les URLs" answer="1" explanation="BFS explore niveau par niveau, ce qui signifie qu'il découvre rapidement des pages sur de nombreux domaines différents. DFS pourrait suivre des liens profondément dans un seul site — touchant potentiellement des millions de pages générées dynamiquement — avant de visiter un autre domaine." />
+<Quiz question="Pourquoi un web crawler utilise-t-il BFS plutôt que DFS pour un crawling généraliste ?" options="BFS utilise moins de mémoire|BFS découvre plus rapidement davantage de domaines uniques et évite de s'enfoncer dans un seul site web|BFS est plus rapide que DFS|DFS ne fonctionne pas avec les URLs" answer="1" explanation="BFS explore niveau par niveau, ce qui signifie qu'il découvre rapidement des pages sur de nombreux domaines différents. DFS pourrait suivre des liens profondément dans un seul site - touchant potentiellement des millions de pages générées dynamiquement - avant de visiter un autre domaine." />
 
-## Étape 4 — Politesse et Robots.txt
+## Étape 4 - Politesse et Robots.txt
 
 ### Respecter Robots.txt
 Avant de crawler un domaine, récupérez et mettez en cache son fichier `robots.txt` :
@@ -88,11 +88,11 @@ Mettez en cache robots.txt par domaine avec un TTL (24 heures). Respectez toujou
 Même sans `Crawl-delay` explicite, maintenez la politesse :
 - Maximum 1 requête par seconde par domaine (configurable)
 - Utilisez des files de téléchargement séparées par domaine
-- Surveillez les temps de réponse — si un serveur ralentit, réduisez automatiquement le rythme
+- Surveillez les temps de réponse - si un serveur ralentit, réduisez automatiquement le rythme
 
-<FunFact>Le web crawler de Google (Googlebot) parcourt des centaines de milliards de pages. Pour rester poli, il surveille les temps de réponse des serveurs et réduit son débit de crawl si un site commence à répondre lentement — laissant ainsi le site « repousser » le crawler.</FunFact>
+<FunFact>Le web crawler de Google (Googlebot) parcourt des centaines de milliards de pages. Pour rester poli, il surveille les temps de réponse des serveurs et réduit son débit de crawl si un site commence à répondre lentement - laissant ainsi le site « repousser » le crawler.</FunFact>
 
-## Étape 5 — Déduplication
+## Étape 5 - Déduplication
 
 ### Déduplication d'URLs (Bloom Filter)
 Avec des milliards d'URLs, vérifier si une URL a déjà été vue nécessite une structure de données efficace. Un Bloom filter offre des lookups en O(1) avec une empreinte mémoire réduite :
@@ -103,7 +103,7 @@ Avec des milliards d'URLs, vérifier si une URL a déjà été vue nécessite un
 Normalisez les URLs avant vérification : supprimez les fragments (#), triez les paramètres de requête, mettez le hostname en minuscules et résolvez les chemins relatifs.
 
 ### Déduplication de contenu (SimHash)
-Différentes URLs peuvent servir un contenu identique (miroirs, articles copiés). SimHash génère une empreinte du contenu de la page — les pages avec des empreintes similaires (faible distance de Hamming) sont probablement des doublons :
+Différentes URLs peuvent servir un contenu identique (miroirs, articles copiés). SimHash génère une empreinte du contenu de la page - les pages avec des empreintes similaires (faible distance de Hamming) sont probablement des doublons :
 
 ```
 Page A content → SimHash → 10110010...
@@ -111,14 +111,14 @@ Page B content → SimHash → 10110011...
 Hamming distance = 1 → likely duplicate, skip storing
 ```
 
-<Quiz question="Un Bloom filter indique qu'une URL a déjà été vue. Que pouvez-vous en conclure ?" options="L'URL a définitivement été crawlée|L'URL a probablement été crawlée, mais il y a une petite chance de faux positif|L'URL n'a pas été crawlée|Le Bloom filter doit être reconstruit" answer="1" explanation="Les Bloom filters ont un faible taux de faux positifs — ils peuvent dire « oui, vue » pour une URL non vue, mais ne disent jamais « non » pour une URL réellement ajoutée. Cela signifie qu'on re-crawle occasionnellement une page, ce qui est acceptable pour la plupart des crawlers." />
+<Quiz question="Un Bloom filter indique qu'une URL a déjà été vue. Que pouvez-vous en conclure ?" options="L'URL a définitivement été crawlée|L'URL a probablement été crawlée, mais il y a une petite chance de faux positif|L'URL n'a pas été crawlée|Le Bloom filter doit être reconstruit" answer="1" explanation="Les Bloom filters ont un faible taux de faux positifs - ils peuvent dire « oui, vue » pour une URL non vue, mais ne disent jamais « non » pour une URL réellement ajoutée. Cela signifie qu'on re-crawle occasionnellement une page, ce qui est acceptable pour la plupart des crawlers." />
 
-## Étape 6 — Crawling distribué
+## Étape 6 - Crawling distribué
 
 ### Mise à l'échelle horizontale
 Une seule machine ne peut pas crawler un milliard de pages par mois. Distribuez le travail :
 
-- **Consistent hashing** sur les noms de domaine assigne chaque domaine à un nœud crawler spécifique. Cela garantit la politesse — un seul nœud crawle un domaine donné
+- **Consistent hashing** sur les noms de domaine assigne chaque domaine à un nœud crawler spécifique. Cela garantit la politesse - un seul nœud crawle un domaine donné
 - Le **URL frontier** est partitionné entre les nœuds selon le hash ring
 - La **coordination** se fait via un service léger qui gère les affectations de nœuds et rééquilibre lorsque des nœuds rejoignent ou quittent le cluster
 
@@ -130,7 +130,7 @@ Les lookups DNS ajoutent 10-100 ms par requête. À grande échelle, c'est un go
 
 ### Détection des Spider Traps
 Les sites malveillants ou mal conçus peuvent créer des espaces d'URLs infinis :
-- `/page/1/page/1/page/1/...` — motifs de chemins répétitifs
+- `/page/1/page/1/page/1/...` - motifs de chemins répétitifs
 - Pages de calendrier générant des URLs pour chaque date future
 - Session IDs dans les URLs créant des URLs uniques pour un contenu identique
 
@@ -138,7 +138,7 @@ Les sites malveillants ou mal conçus peuvent créer des espaces d'URLs infinis 
 
 <ThinkAboutIt>Si vous devez garder un index de recherche à jour, comment décideriez-vous quelles pages re-crawler en premier ? Considérez un site d'actualités mis à jour toutes les heures vs un article Wikipédia qui change chaque mois. Quels signaux utiliseriez-vous pour prioriser la planification du re-crawl ?</ThinkAboutIt>
 
-## Étape 7 — Goulots d'étranglement et optimisations
+## Étape 7 - Goulots d'étranglement et optimisations
 
 | Goulot d'étranglement | Solution |
 |-----------|----------|
@@ -153,6 +153,6 @@ Les sites malveillants ou mal conçus peuvent créer des espaces d'URLs infinis 
 ---
 
 ## 📚 Pour aller plus loin
-- [Web Crawler — System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) — présentation détaillée de la conception d'un web crawler par Alex Xu
-- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) — article fondateur sur l'architecture de crawler scalable
-- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) — tutoriel interactif sur le fonctionnement des Bloom filters
+- [Web Crawler - System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) - présentation détaillée de la conception d'un web crawler par Alex Xu
+- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) - article fondateur sur l'architecture de crawler scalable
+- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) - tutoriel interactif sur le fonctionnement des Bloom filters

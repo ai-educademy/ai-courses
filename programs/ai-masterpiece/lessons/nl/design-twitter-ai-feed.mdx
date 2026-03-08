@@ -1,5 +1,5 @@
 ---
-title: "Ontwerp Twitter's AI-Feed — Een End-to-End Casestudy"
+title: "Ontwerp Twitter's AI-Feed - Een End-to-End Casestudy"
 description: "Ontleed de architectuur achter een gepersonaliseerde tijdlijn die miljarden tweets serveert aan honderden miljoenen gebruikers."
 order: 3
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 # Ontwerp Twitter's AI-Feed
 
-Stel je voor dat je één opdracht krijgt: elke keer dat een gebruiker de app opent, laat je de tweets zien die voor hen het meest waardevol zijn — uit miljarden mogelijkheden — in minder dan 200 milliseconden.
+Stel je voor dat je één opdracht krijgt: elke keer dat een gebruiker de app opent, laat je de tweets zien die voor hen het meest waardevol zijn - uit miljarden mogelijkheden - in minder dan 200 milliseconden.
 
 Dit is een van de moeilijkste aanbevelingsproblemen in de industrie. Laten we het vanaf nul ontwerpen.
 
@@ -18,12 +18,12 @@ Dit is een van de moeilijkste aanbevelingsproblemen in de industrie. Laten we he
 
 ## Het Probleem op Schaal
 
-Twitter (nu X) verwerkt dagelijks circa 500 miljoen tweets. Elk van de 350+ miljoen maandelijks actieve gebruikers verwacht een feed die **persoonlijk samengesteld** aanvoelt — relevant, actueel en boeiend.
+Twitter (nu X) verwerkt dagelijks circa 500 miljoen tweets. Elk van de 350+ miljoen maandelijks actieve gebruikers verwacht een feed die **persoonlijk samengesteld** aanvoelt - relevant, actueel en boeiend.
 
 Een chronologische feed werkt niet op deze schaal. Als je 500 accounts volgt, heb je misschien 10.000 ongelezen tweets. De meeste zijn irrelevant. De AI-feed moet de 50 naar boven halen die er het meest toe doen voor **jou**.
 
 <Callout>
-Dit is niet alleen een rankingprobleem — het is een meerfasig systeem met candidate generation, feature engineering, realtime scoring, contentveiligheid en serving op enorme schaal.
+Dit is niet alleen een rankingprobleem - het is een meerfasig systeem met candidate generation, feature engineering, realtime scoring, contentveiligheid en serving op enorme schaal.
 </Callout>
 
 ## Fase 1: Candidate Generation
@@ -84,10 +84,10 @@ Statische features zijn niet genoeg. De feed moet reageren op wat er **nu** gebe
 - **Sessiecontext**: Als een gebruiker al tien minuten scrollt, diversifieer de content om vermoeidheid te verminderen.
 - **Realtime interactiesignalen**: Een tweet die de afgelopen vijf minuten viraal gaat, krijgt een tijdelijke boost.
 
-Deze features vereisen een **streaming-infrastructuur** — vaak Apache Kafka dat een feature store zoals Redis of Feast voedt — die nagenoeg realtime wordt bijgewerkt.
+Deze features vereisen een **streaming-infrastructuur** - vaak Apache Kafka dat een feature store zoals Redis of Feast voedt - die nagenoeg realtime wordt bijgewerkt.
 
 <FunFact>
-Het engineeringteam van Twitter meldde dat het toevoegen van realtime features aan hun rankingmodel de gebruikersinteractie met 8 procent verhoogde — een enorme verbetering op hun schaal, goed voor miljoenen extra dagelijkse interacties.
+Het engineeringteam van Twitter meldde dat het toevoegen van realtime features aan hun rankingmodel de gebruikersinteractie met 8 procent verhoogde - een enorme verbetering op hun schaal, goed voor miljoenen extra dagelijkse interacties.
 </FunFact>
 
 ## Het "Voor Jou"-Algoritme: Explore vs Exploit
@@ -99,19 +99,19 @@ De feed heeft te maken met het klassieke **exploratie-exploitatiedilemma**:
 
 Twitter's aanpak combineert beide:
 
-- Circa 80 procent van de feed is exploitatie — content waarvan het model zeker weet dat de gebruiker het waardeert.
-- Circa 20 procent is exploratie — nieuwe content die wordt geïnjecteerd om de veranderende interesses van de gebruiker te testen.
+- Circa 80 procent van de feed is exploitatie - content waarvan het model zeker weet dat de gebruiker het waardeert.
+- Circa 20 procent is exploratie - nieuwe content die wordt geïnjecteerd om de veranderende interesses van de gebruiker te testen.
 
 De exploratieratio is zelf een parameter die wordt afgestemd via A/B-testing over miljoenen gebruikers.
 
-<Quiz question="Wat is het grootste risico van een feed die alleen 'exploiteert' en nooit 'exploreert'?" options="De feed wordt te divers en verwarrend|De gebruiker raakt opgesloten in een filterbubbel en het platform kan de veranderende interesses niet ontdekken|Het systeem gebruikt te veel rekenkracht|De feed laadt te langzaam" answer="1" explanation="Pure exploitatie creëert filterbubbels — de gebruiker ziet alleen wat ze al leuk vinden, het platform kan zich niet aanpassen aan veranderende smaak en contentdiversiteit stort in. Exploratie is essentieel voor de gezondheid op lange termijn." />
+<Quiz question="Wat is het grootste risico van een feed die alleen 'exploiteert' en nooit 'exploreert'?" options="De feed wordt te divers en verwarrend|De gebruiker raakt opgesloten in een filterbubbel en het platform kan de veranderende interesses niet ontdekken|Het systeem gebruikt te veel rekenkracht|De feed laadt te langzaam" answer="1" explanation="Pure exploitatie creëert filterbubbels - de gebruiker ziet alleen wat ze al leuk vinden, het platform kan zich niet aanpassen aan veranderende smaak en contentdiversiteit stort in. Exploratie is essentieel voor de gezondheid op lange termijn." />
 
 ## Contentmoderatie en Veiligheid
 
 Voordat een tweet in de feed verschijnt, passeert deze een **veiligheidslaag**:
 
 1. **Pre-rankingfilter**: Bekende spam, intimidatie en beleidsschendende content wordt verwijderd vóór ranking.
-2. **Post-rankingfilter**: Na ranking vangt een secundaire controle randgevallen op — bijvoorbeeld een tweet die individueel acceptabel is maar schadelijk in combinatie met vergelijkbare content.
+2. **Post-rankingfilter**: Na ranking vangt een secundaire controle randgevallen op - bijvoorbeeld een tweet die individueel acceptabel is maar schadelijk in combinatie met vergelijkbare content.
 3. **Gebruikerscontroles**: Gebruikers kunnen onderwerpen dempen, accounts blokkeren en content markeren als "niet geïnteresseerd", wat allemaal terugvloeit in hun personalisatiemodel.
 
 De veiligheidslaag moet **snel** zijn (maximaal 10–20ms extra latency) en **conservatief** (bij twijfel filteren en doorsturen naar menselijke beoordeling).
@@ -125,7 +125,7 @@ Contentmoderatie is geen apart systeem dat er achteraf aan wordt geplakt. Het is
 Dit is de architectuurbeslissing die Twitter's infrastructuur definieert.
 
 ### Fan-out on write:
-Wanneer een gebruiker tweet, **push** die tweet naar de feedcache van elke volger. Snelle reads, maar dure writes — vooral voor accounts met miljoenen volgers.
+Wanneer een gebruiker tweet, **push** die tweet naar de feedcache van elke volger. Snelle reads, maar dure writes - vooral voor accounts met miljoenen volgers.
 
 ### Fan-out on read:
 Wanneer een gebruiker de app opent, **pull** de nieuwste tweets van alle gevolgde accounts en rank ze ter plekke. Goedkope writes, maar dure reads.
@@ -137,7 +137,7 @@ Wanneer een gebruiker de app opent, **pull** de nieuwste tweets van alle gevolgd
 Deze hybride strategie balanceert write-amplificatie tegen read-latency, en handelt zowel een gewone tweet als een virale post van een popster efficiënt af.
 
 <FunFact>
-Wanneer een beroemdheid met 50 miljoen volgers tweet, zou fan-out on write 50 miljoen cache-invoegingen vereisen — minuten durend en enorm veel bandbreedte. De hybride aanpak handelt dit in milliseconden af door het werk uit te stellen naar leestijd.
+Wanneer een beroemdheid met 50 miljoen volgers tweet, zou fan-out on write 50 miljoen cache-invoegingen vereisen - minuten durend en enorm veel bandbreedte. De hybride aanpak handelt dit in milliseconden af door het werk uit te stellen naar leestijd.
 </FunFact>
 
 ## Alles Samenvoegen
@@ -153,7 +153,7 @@ De volledige pipeline voor een enkel feedverzoek:
 7. De uiteindelijke gerangschikte lijst wordt in minder dan 200ms aan de client geretourneerd.
 
 <ThinkAboutIt>
-In een sollicitatiegesprek wordt je gevraagd: "Als je één nieuw signaal kon toevoegen om de feed te verbeteren, welk zou dat zijn en waarom?" Denk aan signalen die niet vaak besproken worden — misschien iets gerelateerd aan gebruikerswelzijn of contentgeloofwaardigheid.
+In een sollicitatiegesprek wordt je gevraagd: "Als je één nieuw signaal kon toevoegen om de feed te verbeteren, welk zou dat zijn en waarom?" Denk aan signalen die niet vaak besproken worden - misschien iets gerelateerd aan gebruikerswelzijn of contentgeloofwaardigheid.
 </ThinkAboutIt>
 
-<Quiz question="Hoe worden tweets van beroemdheidsaccounts behandeld in Twitter's hybride fan-out-strategie?" options="Ze worden direct naar de cache van elke volger gepusht|Ze worden berekend op leestijd wanneer een volger de feed opent|Ze worden volledig uitgesloten van de AI-feed|Ze worden alleen aan geverifieerde gebruikers getoond" answer="1" explanation="Tweets van beroemdheden gebruiken fan-out on read — de feed wordt berekend wanneer een volger erom vraagt, om de enorme kosten te vermijden van het pushen van één tweet naar miljoenen caches." />
+<Quiz question="Hoe worden tweets van beroemdheidsaccounts behandeld in Twitter's hybride fan-out-strategie?" options="Ze worden direct naar de cache van elke volger gepusht|Ze worden berekend op leestijd wanneer een volger de feed opent|Ze worden volledig uitgesloten van de AI-feed|Ze worden alleen aan geverifieerde gebruikers getoond" answer="1" explanation="Tweets van beroemdheden gebruiken fan-out on read - de feed wordt berekend wanneer een volger erom vraagt, om de enorme kosten te vermijden van het pushen van één tweet naar miljoenen caches." />

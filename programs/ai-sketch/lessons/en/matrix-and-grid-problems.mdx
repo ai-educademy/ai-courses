@@ -1,5 +1,5 @@
 ---
-title: "Matrix and Grid Problems — BFS on Grids and Island Counting"
+title: "Matrix and Grid Problems - BFS on Grids and Island Counting"
 description: "Master 2D grid traversal with BFS, DFS, flood fill, multi-source BFS, spiral traversal, and dynamic programming on grids."
 order: 10
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## 2D Arrays as Grids
 
-A matrix is just a 2D array, but in interviews it often represents a **grid** — a map, a board, or a maze. Each cell `grid[r][c]` is a node, and its neighbours are adjacent cells.
+A matrix is just a 2D array, but in interviews it often represents a **grid** - a map, a board, or a maze. Each cell `grid[r][c]` is a node, and its neighbours are adjacent cells.
 
 ```
 grid = [
@@ -20,7 +20,7 @@ grid = [
 ]
 ```
 
-Row `r`, column `c`, dimensions `m × n`. Simple — but the patterns built on top are powerful.
+Row `r`, column `c`, dimensions `m × n`. Simple - but the patterns built on top are powerful.
 
 ## Directional Arrays
 
@@ -42,9 +42,9 @@ for dr, dc in dirs:
 
 This is the single most reusable snippet in grid problems.
 
-<FunFact>The direction array trick is sometimes called "delta encoding." It appears in game development, image processing, and competitive programming — anywhere grids are used.</FunFact>
+<FunFact>The direction array trick is sometimes called "delta encoding." It appears in game development, image processing, and competitive programming - anywhere grids are used.</FunFact>
 
-## BFS on a Grid — Shortest Path in a Maze
+## BFS on a Grid - Shortest Path in a Maze
 
 BFS finds the **shortest path** in an unweighted grid. Start from the source, explore all neighbours at distance 1, then distance 2, and so on.
 
@@ -70,7 +70,7 @@ def shortest_path(grid, start, end):
 
 <Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS expanding level by level across a grid maze" caption="BFS explores cells level by level, guaranteeing the shortest path." />
 
-## DFS on a Grid — Flood Fill and Number of Islands
+## DFS on a Grid - Flood Fill and Number of Islands
 
 **Flood fill** (like the paint bucket tool): from a starting cell, change all connected cells of the same colour. DFS or BFS both work.
 
@@ -89,7 +89,7 @@ def num_islands(grid):
 
 <Quiz question="In 'Number of Islands', why do we mark cells as visited during DFS?" options="To count them twice for accuracy|To avoid counting the same island multiple times|To sort the islands|To find the largest island" answer="1" explanation="Marking visited cells prevents the outer loop from starting a new DFS on the same island, which would overcount." />
 
-## Rotting Oranges — Multi-Source BFS
+## Rotting Oranges - Multi-Source BFS
 
 All initially rotten oranges are sources. Push them all into the queue at time 0, then BFS. Each level is one minute. When the queue empties, check if any fresh oranges remain.
 
@@ -150,8 +150,8 @@ Original → Transpose → Reverse rows
 ## Search in a Sorted 2D Matrix
 
 Two common variants:
-- **Rows and columns sorted independently** — start from the top-right corner. If the target is smaller, move left; if larger, move down. O(m + n).
-- **Fully sorted** (each row starts where the previous ends) — treat as a flat sorted array and binary search. O(log(m × n)).
+- **Rows and columns sorted independently** - start from the top-right corner. If the target is smaller, move left; if larger, move down. O(m + n).
+- **Fully sorted** (each row starts where the previous ends) - treat as a flat sorted array and binary search. O(log(m × n)).
 
 ## Dynamic Programming on Grids
 
@@ -181,6 +181,6 @@ These are often the gentlest introduction to 2D dynamic programming.
 
 ## 📚 Further Reading
 
-- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — grid DP problems with visual explanations
-- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — common patterns and techniques
-- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — hundreds of practice problems
+- [NeetCode - 2D Dynamic Programming](https://neetcode.io/roadmap) - grid DP problems with visual explanations
+- [Tech Interview Handbook - Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) - common patterns and techniques
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) - hundreds of practice problems

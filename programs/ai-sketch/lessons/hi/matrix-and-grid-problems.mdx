@@ -1,5 +1,5 @@
 ---
-title: "Matrix और Grid Problems — Grids पर BFS और Island Counting"
+title: "Matrix और Grid Problems - Grids पर BFS और Island Counting"
 description: "2D grid traversal master करो: BFS, DFS, flood fill, multi-source BFS, spiral traversal, और grids पर dynamic programming।"
 order: 10
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## 2D Arrays as Grids
 
-Matrix बस एक 2D array है, लेकिन interviews में यह अक्सर **grid** represent करता है — map, board, या maze। हर cell `grid[r][c]` एक node है, और उसके neighbours adjacent cells हैं।
+Matrix बस एक 2D array है, लेकिन interviews में यह अक्सर **grid** represent करता है - map, board, या maze। हर cell `grid[r][c]` एक node है, और उसके neighbours adjacent cells हैं।
 
 ```
 grid = [
@@ -20,7 +20,7 @@ grid = [
 ]
 ```
 
-Row `r`, column `c`, dimensions `m × n`। Simple — लेकिन इस पर बने patterns बहुत powerful हैं।
+Row `r`, column `c`, dimensions `m × n`। Simple - लेकिन इस पर बने patterns बहुत powerful हैं।
 
 ## Directional Arrays
 
@@ -42,9 +42,9 @@ for dr, dc in dirs:
 
 Grid problems में यह सबसे reusable snippet है।
 
-<FunFact>Direction array trick को "delta encoding" भी कहते हैं। Game development, image processing, और competitive programming में — जहाँ भी grids हों, यह दिखता है।</FunFact>
+<FunFact>Direction array trick को "delta encoding" भी कहते हैं। Game development, image processing, और competitive programming में - जहाँ भी grids हों, यह दिखता है।</FunFact>
 
-## Grid पर BFS — Maze में Shortest Path
+## Grid पर BFS - Maze में Shortest Path
 
 BFS unweighted grid में **shortest path** ढूँढता है। Source से शुरू करो, पहले distance 1 के सब neighbours explore करो, फिर distance 2, और आगे।
 
@@ -70,7 +70,7 @@ def shortest_path(grid, start, end):
 
 <Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS grid maze में level by level expand हो रहा है" caption="BFS cells को level by level explore करता है, shortest path guarantee करता है।" />
 
-## Grid पर DFS — Flood Fill और Number of Islands
+## Grid पर DFS - Flood Fill और Number of Islands
 
 **Flood fill** (paint bucket tool जैसा): starting cell से सभी connected same-colour cells बदलो। DFS या BFS दोनों काम करते हैं।
 
@@ -89,7 +89,7 @@ def num_islands(grid):
 
 <Quiz question="'Number of Islands' में DFS के दौरान cells को visited क्यों mark करते हैं?" options="Accuracy के लिए दो बार count करना|Same island को multiple बार count करने से बचना|Islands sort करना|सबसे बड़ा island ढूँढना" answer="1" explanation="Visited mark करने से outer loop उसी island पर नया DFS शुरू नहीं करता, जो overcount रोकता है।" />
 
-## Rotting Oranges — Multi-Source BFS
+## Rotting Oranges - Multi-Source BFS
 
 सभी शुरू से rotten oranges sources हैं। सबको time 0 पर queue में डालो, फिर BFS। हर level एक minute। Queue खाली होने पर check करो कोई fresh orange बचा तो नहीं। **Multi-source BFS** कई nodes से simultaneously शुरू होता है।
 
@@ -131,8 +131,8 @@ N×N matrix clockwise in-place rotate: **transpose** (swap `[r][c]` with `[c][r]
 ## Sorted 2D Matrix में Search
 
 दो common variants:
-- **Rows और columns independently sorted** — top-right corner से शुरू। Target छोटा हो तो left जाओ; बड़ा हो तो down। O(m + n)।
-- **Fully sorted** (हर row पिछली के बाद शुरू) — flat sorted array मानकर binary search। O(log(m × n))।
+- **Rows और columns independently sorted** - top-right corner से शुरू। Target छोटा हो तो left जाओ; बड़ा हो तो down। O(m + n)।
+- **Fully sorted** (हर row पिछली के बाद शुरू) - flat sorted array मानकर binary search। O(log(m × n))।
 
 ## Grids पर Dynamic Programming
 
@@ -160,6 +160,6 @@ N×N matrix clockwise in-place rotate: **transpose** (swap `[r][c]` with `[c][r]
 
 ## 📚 और पढ़ें
 
-- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — grid DP problems with visual explanations
-- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — common patterns और techniques
-- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — सैकड़ों practice problems
+- [NeetCode - 2D Dynamic Programming](https://neetcode.io/roadmap) - grid DP problems with visual explanations
+- [Tech Interview Handbook - Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) - common patterns और techniques
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) - सैकड़ों practice problems

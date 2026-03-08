@@ -1,5 +1,5 @@
 ---
-title: "Embeddings and Vector Databases — How AI Understands Meaning"
+title: "Embeddings and Vector Databases - How AI Understands Meaning"
 description: "Explore how AI represents words and sentences as vectors in high-dimensional space, enabling semantic search, recommendations, and RAG."
 order: 9
 difficulty: "intermediate"
@@ -8,9 +8,9 @@ icon: "🧭"
 published: true
 ---
 
-# Embeddings — How AI Understands Meaning
+# Embeddings - How AI Understands Meaning
 
-After tokenisation, each token is just a number — an index in a vocabulary. But index 4,821 tells the model nothing about *meaning*. How does AI know that "king" and "queen" are related, or that "bank" can mean a riverbank or a financial institution? The answer is **embeddings**.
+After tokenisation, each token is just a number - an index in a vocabulary. But index 4,821 tells the model nothing about *meaning*. How does AI know that "king" and "queen" are related, or that "bank" can mean a riverbank or a financial institution? The answer is **embeddings**.
 
 ## The Problem with One-Hot Encoding
 
@@ -21,7 +21,7 @@ This has two fatal flaws:
 - **No similarity:** "Cat" and "dog" are equally distant from each other as "cat" and "democracy." The encoding captures zero semantic information.
 - **Massive size:** With a 50,000-word vocabulary, every word needs a 50,000-dimensional vector. Wildly inefficient.
 
-## Word Embeddings — Meaning as Geometry
+## Word Embeddings - Meaning as Geometry
 
 An **embedding** maps each token to a dense vector of, say, 256 or 768 dimensions. Unlike one-hot vectors, these dimensions are learned during training and encode meaning.
 
@@ -29,13 +29,13 @@ Words used in similar contexts end up close together in this space. "Puppy" land
 
 <Illustration src="/images/lessons/embeddings-and-vectors.svg" alt="A 2D projection of word embeddings showing clusters: animals (cat, dog, fish) grouped together, cities (London, Paris, Tokyo) grouped together, and the famous king-queen analogy as vector arithmetic" caption="In embedding space, meaning becomes geometry. Similar concepts cluster together." />
 
-## Word2Vec — King − Man + Woman = Queen
+## Word2Vec - King − Man + Woman = Queen
 
 The 2013 **Word2Vec** paper showed something remarkable. Trained on large text corpora, the learned vectors exhibit arithmetic relationships:
 
 > `vector("king") − vector("man") + vector("woman") ≈ vector("queen")`
 
-The direction from "man" to "woman" captures the concept of gender. Adding it to "king" moves to "queen." This is not programmed — it emerges from patterns in language.
+The direction from "man" to "woman" captures the concept of gender. Adding it to "king" moves to "queen." This is not programmed - it emerges from patterns in language.
 
 Other examples: `Paris − France + Italy ≈ Rome`, `bigger − big + small ≈ smaller`.
 
@@ -64,36 +64,36 @@ Word embeddings represent individual words, but we often need to compare entire 
 
 "How do I reset my password?" and "I forgot my login credentials" would have very similar sentence embeddings, even though they share almost no words. The embedding captures *intent*, not just vocabulary.
 
-## Measuring Similarity — Cosine Similarity
+## Measuring Similarity - Cosine Similarity
 
-To compare two embeddings, we use **cosine similarity** — the cosine of the angle between two vectors. It ranges from −1 (opposite) to +1 (identical direction).
+To compare two embeddings, we use **cosine similarity** - the cosine of the angle between two vectors. It ranges from −1 (opposite) to +1 (identical direction).
 
 - "Happy" and "joyful": cosine ≈ 0.85 (very similar).
 - "Happy" and "table": cosine ≈ 0.10 (unrelated).
 - "Love" and "hate": cosine might be ≈ 0.40 (related but opposite).
 
-Cosine similarity ignores vector magnitude, focusing purely on direction — which is where meaning lives.
+Cosine similarity ignores vector magnitude, focusing purely on direction - which is where meaning lives.
 
 <ThinkAboutIt>
 "Love" and "hate" are opposites in meaning but might have moderate cosine similarity because they appear in similar contexts (emotions, relationships). What does this tell us about the limitations of embeddings trained purely on word co-occurrence?
 </ThinkAboutIt>
 
-## Vector Databases — Search by Meaning
+## Vector Databases - Search by Meaning
 
 A **vector database** stores millions of embeddings and retrieves the most similar ones blazingly fast. Instead of keyword matching ("find documents containing 'machine learning'"), you search by *meaning* ("find documents about AI education").
 
 Popular vector databases include:
 
-- **Pinecone** — fully managed, scales effortlessly.
-- **Weaviate** — open-source with hybrid search (vectors + keywords).
-- **ChromaDB** — lightweight, great for prototyping.
-- **pgvector** — adds vector search to PostgreSQL.
+- **Pinecone** - fully managed, scales effortlessly.
+- **Weaviate** - open-source with hybrid search (vectors + keywords).
+- **ChromaDB** - lightweight, great for prototyping.
+- **pgvector** - adds vector search to PostgreSQL.
 
 These databases use algorithms like **HNSW** (Hierarchical Navigable Small World) to search billions of vectors in milliseconds.
 
 <Quiz question="What advantage does vector search have over traditional keyword search?" options="It is always faster|It finds semantically similar content even when exact keywords differ|It requires less storage|It works without a database" answer="1" explanation="Vector search compares meaning (via embeddings) rather than exact words. A query about 'car maintenance' can match documents about 'vehicle servicing' because their embeddings are similar, even without shared keywords." />
 
-## RAG — Retrieval-Augmented Generation
+## RAG - Retrieval-Augmented Generation
 
 **RAG** is one of the most important patterns in modern AI. It combines vector search with language models:
 
@@ -103,7 +103,7 @@ These databases use algorithms like **HNSW** (Hierarchical Navigable Small World
 4. **Feed** those chunks to the language model as context.
 5. The model **generates** an answer grounded in your data.
 
-RAG lets language models answer questions about *your* specific data — company documents, product catalogues, research papers — without retraining. It dramatically reduces hallucination because the model has real sources to reference.
+RAG lets language models answer questions about *your* specific data - company documents, product catalogues, research papers - without retraining. It dramatically reduces hallucination because the model has real sources to reference.
 
 <Quiz question="In a RAG system, what role does the vector database play?" options="It generates the final answer|It trains the language model|It retrieves relevant context by finding document chunks most similar to the user's query|It stores the model's weights" answer="2" explanation="The vector database is the retrieval engine in RAG. It finds document chunks whose embeddings are closest to the query embedding, providing the language model with relevant context to generate an accurate, grounded answer." />
 
@@ -111,14 +111,14 @@ RAG lets language models answer questions about *your* specific data — company
 
 Embeddings power countless real-world systems:
 
-- **Semantic search** — find relevant results regardless of exact wording.
-- **Recommendations** — "users who liked this also liked..." via embedding similarity.
-- **Clustering** — group similar support tickets, reviews, or documents automatically.
-- **Anomaly detection** — spot outliers that are far from any cluster.
-- **Duplicate detection** — find near-identical content across large corpora.
+- **Semantic search** - find relevant results regardless of exact wording.
+- **Recommendations** - "users who liked this also liked..." via embedding similarity.
+- **Clustering** - group similar support tickets, reviews, or documents automatically.
+- **Anomaly detection** - spot outliers that are far from any cluster.
+- **Duplicate detection** - find near-identical content across large corpora.
 
 <FunFact>
-Spotify uses audio embeddings to recommend songs. Each track is embedded based on its acoustic features, and recommendations come from finding nearby vectors — songs that "sound similar" in embedding space.
+Spotify uses audio embeddings to recommend songs. Each track is embedded based on its acoustic features, and recommendations come from finding nearby vectors - songs that "sound similar" in embedding space.
 </FunFact>
 
 <ThinkAboutIt>
@@ -137,6 +137,6 @@ If you embedded every product in an online shop, how could you build a recommend
 
 ## 📚 Further Reading
 
-- [Jay Alammar — The Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/) — Visual, intuitive walkthrough of how word embeddings work
-- [Pinecone Learning Centre — What Are Embeddings?](https://www.pinecone.io/learn/vector-embeddings/) — Practical guide to embeddings and vector search
-- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings) — How to generate and use embeddings with the OpenAI API
+- [Jay Alammar - The Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/) - Visual, intuitive walkthrough of how word embeddings work
+- [Pinecone Learning Centre - What Are Embeddings?](https://www.pinecone.io/learn/vector-embeddings/) - Practical guide to embeddings and vector search
+- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings) - How to generate and use embeddings with the OpenAI API

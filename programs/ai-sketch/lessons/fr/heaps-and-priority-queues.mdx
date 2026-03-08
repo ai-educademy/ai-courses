@@ -1,5 +1,5 @@
 ---
-title: "Tas et Files de priorité — Le couteau suisse des entretiens"
+title: "Tas et Files de priorité - Le couteau suisse des entretiens"
 description: "Maîtrisez les tas (heaps), l'abstraction de priority queue, et les patrons classiques comme les problèmes top-K et la fusion de listes triées."
 order: 6
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Qu'est-ce qu'un tas (heap) ?
 
-Un **tas** est un arbre binaire complet où chaque parent respecte la **propriété de tas** — toujours plus petit (min-heap) ou toujours plus grand (max-heap) que ses enfants. « Complet » signifie que chaque niveau est rempli sauf éventuellement le dernier, qui se remplit de gauche à droite.
+Un **tas** est un arbre binaire complet où chaque parent respecte la **propriété de tas** - toujours plus petit (min-heap) ou toujours plus grand (max-heap) que ses enfants. « Complet » signifie que chaque niveau est rempli sauf éventuellement le dernier, qui se remplit de gauche à droite.
 
 ```
        1            Min-heap
@@ -20,7 +20,7 @@ Un **tas** est un arbre binaire complet où chaque parent respecte la **proprié
    7   4
 ```
 
-Comme il est complet, on le stocke dans un **tableau à plat** — pas besoin de pointeurs. Pour l'index `i` : enfant gauche = `2i + 1`, enfant droit = `2i + 2`, parent = `(i - 1) // 2`.
+Comme il est complet, on le stocke dans un **tableau à plat** - pas besoin de pointeurs. Pour l'index `i` : enfant gauche = `2i + 1`, enfant droit = `2i + 2`, parent = `(i - 1) // 2`.
 
 ## Min-Heap vs Max-Heap
 
@@ -32,9 +32,9 @@ Comme il est complet, on le stocke dans un **tableau à plat** — pas besoin de
 
 Le module `heapq` de Python est un **min-heap** par défaut. Pour un max-heap, on inverse les valeurs à l'insertion et à l'extraction.
 
-## Insertion et extraction — Étape par étape
+## Insertion et extraction - Étape par étape
 
-**Insertion** — ajouter en fin, puis **remonter** (échanger avec le parent tant que plus petit) :
+**Insertion** - ajouter en fin, puis **remonter** (échanger avec le parent tant que plus petit) :
 
 ```python
 import heapq
@@ -42,7 +42,7 @@ h = [1, 3, 5, 7]
 heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
 ```
 
-**Extraction du minimum** — échanger la racine avec le dernier élément, retirer le dernier, puis **descendre** (échanger avec le plus petit enfant) :
+**Extraction du minimum** - échanger la racine avec le dernier élément, retirer le dernier, puis **descendre** (échanger avec le plus petit enfant) :
 
 ```python
 smallest = heapq.heappop(h)  # returns 1
@@ -52,11 +52,11 @@ Les deux opérations s'exécutent en **O(log n)** car la hauteur de l'arbre est 
 
 <Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Schéma montrant la remontée à l'insertion et la descente à l'extraction dans un min-heap" caption="L'insertion remonte ; l'extraction du minimum descend." />
 
-## Heapify — Construire un tas en O(n)
+## Heapify - Construire un tas en O(n)
 
 `heapq.heapify(arr)` convertit une liste en tas **sur place** en O(n), et non O(n log n). L'algorithme procède de bas en haut, faisant descendre chaque nœud interne. C'est l'un des résultats de complexité les plus surprenants en informatique.
 
-<FunFact>Construire un tas est en O(n), pas O(n log n). La plupart des nœuds sont proches du bas et n'ont presque pas besoin de descendre — le calcul donne un temps linéaire.</FunFact>
+<FunFact>Construire un tas est en O(n), pas O(n log n). La plupart des nœuds sont proches du bas et n'ont presque pas besoin de descendre - le calcul donne un temps linéaire.</FunFact>
 
 ## L'abstraction de file de priorité
 
@@ -74,9 +74,9 @@ def top_k(nums, k):
     return heapq.nlargest(k, nums)
 ```
 
-Temps : **O(n log k)** — bien mieux qu'un tri complet quand k ≪ n.
+Temps : **O(n log k)** - bien mieux qu'un tri complet quand k ≪ n.
 
-<Quiz question="Vous avez besoin des 5 meilleurs scores parmi 1 million d'entrées. Quel type et quelle taille de tas ?" options="Max-heap de taille 1 000 000|Min-heap de taille 5|Max-heap de taille 5|Min-heap de taille 1 000 000" answer="1" explanation="Un min-heap de taille 5 conserve les 5 plus grands vus jusqu'ici. La racine (le minimum des 5) sert de filtre — tout élément plus petit est rejeté." />
+<Quiz question="Vous avez besoin des 5 meilleurs scores parmi 1 million d'entrées. Quel type et quelle taille de tas ?" options="Max-heap de taille 1 000 000|Min-heap de taille 5|Max-heap de taille 5|Min-heap de taille 1 000 000" answer="1" explanation="Un min-heap de taille 5 conserve les 5 plus grands vus jusqu'ici. La racine (le minimum des 5) sert de filtre - tout élément plus petit est rejeté." />
 
 ## Patron : fusionner K listes triées
 
@@ -127,6 +127,6 @@ Les tas excellent en ordonnancement : salles de réunion (suivre l'heure de fin 
 
 ## 📚 Pour aller plus loin
 
-- [NeetCode — Heap / Priority Queue](https://neetcode.io/roadmap) — feuille de route visuelle avec les problèmes de tas regroupés
-- [Tech Interview Handbook — Heap](https://www.techinterviewhandbook.org/algorithms/heap/) — patrons et astuces condensés
-- [Documentation Python heapq](https://docs.python.org/3/library/heapq.html) — référence officielle du module avec exemples
+- [NeetCode - Heap / Priority Queue](https://neetcode.io/roadmap) - feuille de route visuelle avec les problèmes de tas regroupés
+- [Tech Interview Handbook - Heap](https://www.techinterviewhandbook.org/algorithms/heap/) - patrons et astuces condensés
+- [Documentation Python heapq](https://docs.python.org/3/library/heapq.html) - référence officielle du module avec exemples

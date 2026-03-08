@@ -37,10 +37,10 @@ Your content here...
 
 ## Guidelines
 
-1. **Keep it simple** — explain concepts like you're teaching a friend
-2. **Use examples** — real-world analogies help concepts stick
-3. **Be inclusive** — avoid jargon without explanation
-4. **Stay accurate** — cite sources for claims about AI capabilities
+1. **Keep it simple** - explain concepts like you're teaching a friend
+2. **Use examples** - real-world analogies help concepts stick
+3. **Be inclusive** - avoid jargon without explanation
+4. **Stay accurate** - cite sources for claims about AI capabilities
 
 ## Process
 

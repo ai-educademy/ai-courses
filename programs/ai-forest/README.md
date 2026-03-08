@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌲 AI Forest — Level 5: Mastery
+# 🌲 AI Forest - Level 5: Mastery
 
 ### Master the AI ecosystem at [AI Educademy](https://aieducademy.org)
 
@@ -18,7 +18,7 @@ See the forest for the trees. Tackle advanced research topics, contribute to ope
 
 ## 📋 About
 
-AI Forest is **Level 5** — the final level of the AI Educademy learning path. This is a content-only repo consumed by [`ai-platform`](https://github.com/ai-educademy/ai-platform) via git submodules.
+AI Forest is **Level 5** - the final level of the AI Educademy learning path. This is a content-only repo consumed by [`ai-platform`](https://github.com/ai-educademy/ai-platform) via git submodules.
 
 ### What You'll Learn
 
@@ -43,7 +43,7 @@ lessons/
 
 ## 🚧 Status
 
-**Coming Soon** — Lessons are being written. Want to help? See [Contributing](#-contributing).
+**Coming Soon** - Lessons are being written. Want to help? See [Contributing](#-contributing).
 
 ## 🌱 Learning Path
 

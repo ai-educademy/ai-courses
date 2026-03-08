@@ -1,6 +1,6 @@
 ---
-title: "End-to-End ML Pipeline — Van Ruwe Data tot Gedeployd Model"
-description: "Beheers de volledige ML-levenscyclus: dataverzameling, feature engineering, modeltraining, deployment en monitoring — allemaal georkestreerd als reproduceerbare pipeline-code."
+title: "End-to-End ML Pipeline - Van Ruwe Data tot Gedeployd Model"
+description: "Beheers de volledige ML-levenscyclus: dataverzameling, feature engineering, modeltraining, deployment en monitoring - allemaal georkestreerd als reproduceerbare pipeline-code."
 order: 6
 difficulty: "advanced"
 duration: 22
@@ -8,28 +8,28 @@ icon: "🔄"
 published: true
 ---
 
-# End-to-End ML Pipeline — Van Ruwe Data tot Gedeployd Model
+# End-to-End ML Pipeline - Van Ruwe Data tot Gedeployd Model
 
-De meeste tutorials stoppen bij `model.fit()`. In productie is dat amper 20% van het werk. Deze les doorloopt de **volledige ML-levenscyclus** — dezelfde pipeline die aanbevelingssystemen bij Spotify, fraudedetectie bij Stripe en zoekranking bij Google aandrijft.
+De meeste tutorials stoppen bij `model.fit()`. In productie is dat amper 20% van het werk. Deze les doorloopt de **volledige ML-levenscyclus** - dezelfde pipeline die aanbevelingssystemen bij Spotify, fraudedetectie bij Stripe en zoekranking bij Google aandrijft.
 
 ## 🗺️ De ML-Levenscyclus in Vogelvlucht
 
-<Illustration src="/images/lessons/end-to-end-ml-pipeline.svg" alt="Diagram van de ML-pipelinefases van data-ingestie tot monitoring" caption="De acht fases van een productie-ML-pipeline — elke fase is een potentieel faalpunt." />
+<Illustration src="/images/lessons/end-to-end-ml-pipeline.svg" alt="Diagram van de ML-pipelinefases van data-ingestie tot monitoring" caption="De acht fases van een productie-ML-pipeline - elke fase is een potentieel faalpunt." />
 
 Elk productie-ML-systeem doorloopt deze fases:
 
-1. **Dataverzameling** — API's, databases, event streams, web scraping
-2. **Data opschonen** — null-waarden afhandelen, deduplicatie, type-conversie
-3. **Feature engineering** — ruwe signalen transformeren naar modelklare features
-4. **Modelselectie** — architecturen kiezen die bij je probleem passen
-5. **Training** — GPU/CPU-orkestratie, hyperparametertuning
-6. **Evaluatie** — offline metrics, A/B-testing, fairness-audits
-7. **Deployment** — serving-infrastructuur, latencybudgetten
-8. **Monitoring** — driftdetectie, alerting, de retraining-trigger
+1. **Dataverzameling** - API's, databases, event streams, web scraping
+2. **Data opschonen** - null-waarden afhandelen, deduplicatie, type-conversie
+3. **Feature engineering** - ruwe signalen transformeren naar modelklare features
+4. **Modelselectie** - architecturen kiezen die bij je probleem passen
+5. **Training** - GPU/CPU-orkestratie, hyperparametertuning
+6. **Evaluatie** - offline metrics, A/B-testing, fairness-audits
+7. **Deployment** - serving-infrastructuur, latencybudgetten
+8. **Monitoring** - driftdetectie, alerting, de retraining-trigger
 
 ## 📦 Dataverzameling en Versiebeheer
 
-Ruwe data is je fundament. Behandel het als broncode — **versieer alles**.
+Ruwe data is je fundament. Behandel het als broncode - **versieer alles**.
 
 ```bash
 # Initialiseer DVC in je repo
@@ -45,9 +45,9 @@ dvc push
 
 **DVC** (Data Version Control) laat je elke historische dataset `git checkout`-en. Gecombineerd met Git-tags kun je elk experiment vanuit elk moment in de tijd reproduceren.
 
-<FunFact>Netflix verwerkt dagelijks meer dan 1,5 biljoen events via hun datapipelines — zo'n 17 miljoen events per seconde die hun aanbevelingsmodellen voeden.</FunFact>
+<FunFact>Netflix verwerkt dagelijks meer dan 1,5 biljoen events via hun datapipelines - zo'n 17 miljoen events per seconde die hun aanbevelingsmodellen voeden.</FunFact>
 
-## 🛠️ Feature Engineering — Waar Wedstrijden Gewonnen Worden
+## 🛠️ Feature Engineering - Waar Wedstrijden Gewonnen Worden
 
 Features zijn belangrijker dan algoritmes. Een gradient-boosted tree met briljante features verslaat een diep neuraal netwerk met slechte features.
 
@@ -96,7 +96,7 @@ with mlflow.start_run(run_name="gbm-baseline"):
 
 Vergelijk runs in de MLflow-UI en promoot het beste model naar de **Model Registry** met staging → productie lifecycle-tags.
 
-## 🚀 Pipeline als Code — Orkestratie
+## 🚀 Pipeline als Code - Orkestratie
 
 Handmatige stappen gaan stuk. Leg je pipeline vast in code met orkestratieframeworks:
 
@@ -107,13 +107,13 @@ Handmatige stappen gaan stuk. Leg je pipeline vast in code met orkestratieframew
 | **Prefect** | Moderne Python-workflows | Pythonische API, uitstekende foutafhandeling |
 | **ZenML** | MLOps-abstractie | Stack-agnostisch, plug elke tool in |
 
-<ThinkAboutIt>Je hebt een pipeline die elke nacht opnieuw traint, maar je data verandert elk uur. Welke afwegingen maak je bij het bepalen van de hertrainingsfrequentie — kosten, veroudering, infrastructuurcomplexiteit?</ThinkAboutIt>
+<ThinkAboutIt>Je hebt een pipeline die elke nacht opnieuw traint, maar je data verandert elk uur. Welke afwegingen maak je bij het bepalen van de hertrainingsfrequentie - kosten, veroudering, infrastructuurcomplexiteit?</ThinkAboutIt>
 
 ## 🌐 Model Serving en Deployment
 
 Je model heeft een API nodig. Twee dominante patronen:
 
-**REST API** — eenvoudig, HTTP-gebaseerd, prima voor gemiddelde doorvoer:
+**REST API** - eenvoudig, HTTP-gebaseerd, prima voor gemiddelde doorvoer:
 ```python
 # FastAPI model server
 from fastapi import FastAPI
@@ -128,7 +128,7 @@ async def predict(features: dict):
     return {"prediction": int(prediction[0])}
 ```
 
-**gRPC** — binair protocol, 2–10× sneller dan REST, ideaal voor interne microservices en scenario's met hoge doorvoer.
+**gRPC** - binair protocol, 2–10× sneller dan REST, ideaal voor interne microservices en scenario's met hoge doorvoer.
 
 ### Canary Deployments
 
@@ -138,15 +138,15 @@ Stuur nooit 100% van het verkeer naar een nieuw model. Gebruik **canary releases
 
 ## 📊 Monitoring en de Feedbackloop
 
-Deployment is niet de finish — het is het startschot. Monitor op:
+Deployment is niet de finish - het is het startschot. Monitor op:
 
-- **Datadrift** — inputdistributies die verschuiven ten opzichte van trainingsdata
-- **Conceptdrift** — de relatie tussen features en target die verandert
-- **Prestatieverslechtering** — nauwkeurigheids-/latencymetrics die afnemen
+- **Datadrift** - inputdistributies die verschuiven ten opzichte van trainingsdata
+- **Conceptdrift** - de relatie tussen features en target die verandert
+- **Prestatieverslechtering** - nauwkeurigheids-/latencymetrics die afnemen
 
-Tools zoals **Evidently AI**, **WhyLabs** en **Arize** bieden driftdashboards. Wanneer drift de drempelwaarden overschrijdt, trigger je automatische hertraining met verse productiedata — en sluit je de feedbackloop.
+Tools zoals **Evidently AI**, **WhyLabs** en **Arize** bieden driftdashboards. Wanneer drift de drempelwaarden overschrijdt, trigger je automatische hertraining met verse productiedata - en sluit je de feedbackloop.
 
-<Quiz question="De precisie van een fraudedetectiemodel daalt van 95% naar 78% over drie maanden, maar de inputfeaturedistributies zijn niet veranderd. Welk type drift is dit?" options="Datadrift|Conceptdrift|Modeldrift|Featuredrift" answer="1" explanation="Wanneer inputdistributies stabiel blijven maar de prestaties afnemen, is de onderliggende relatie tussen features en target veranderd — dit is conceptdrift. Fraudeurs hebben hun tactieken aangepast, maar de datavorm ziet er hetzelfde uit." />
+<Quiz question="De precisie van een fraudedetectiemodel daalt van 95% naar 78% over drie maanden, maar de inputfeaturedistributies zijn niet veranderd. Welk type drift is dit?" options="Datadrift|Conceptdrift|Modeldrift|Featuredrift" answer="1" explanation="Wanneer inputdistributies stabiel blijven maar de prestaties afnemen, is de onderliggende relatie tussen features en target veranderd - dit is conceptdrift. Fraudeurs hebben hun tactieken aangepast, maar de datavorm ziet er hetzelfde uit." />
 
 <ThinkAboutIt>Je monitoring detecteert significante drift op een vrijdagavond. Trigger je automatische hertraining, wacht je op de handmatige review van maandag, of rol je terug naar een vorige modelversie? Welke factoren beïnvloeden je beslissing?</ThinkAboutIt>
 
@@ -154,7 +154,7 @@ Tools zoals **Evidently AI**, **WhyLabs** en **Arize** bieden driftdashboards. W
 
 - Versieer **alles**: code, data, modellen en pipeline-configuraties
 - Feature engineering levert meer ROI op dan architectuurwijzigingen
-- Leg pipelines vast als code — handmatige stappen zijn technische schuld
+- Leg pipelines vast als code - handmatige stappen zijn technische schuld
 - Deploy met canary releases en monitor onophoudelijk
 - De feedbackloop (productiedata → hertraining) is wat demo's onderscheidt van productiesystemen
 
@@ -162,6 +162,6 @@ Tools zoals **Evidently AI**, **WhyLabs** en **Arize** bieden driftdashboards. W
 
 ## 📚 Verder Lezen
 
-- [Made With ML — MLOps Course](https://madewithml.com/) — Uitgebreid, gratis MLOps-curriculum dat de volledige levenscyclus behandelt
-- [Designing Machine Learning Systems door Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) — Hét boek over productie-ML-systeemontwerp
-- [MLflow Documentation](https://mlflow.org/docs/latest/index.html) — Officiële handleidingen voor experiment tracking en model registry
+- [Made With ML - MLOps Course](https://madewithml.com/) - Uitgebreid, gratis MLOps-curriculum dat de volledige levenscyclus behandelt
+- [Designing Machine Learning Systems door Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) - Hét boek over productie-ML-systeemontwerp
+- [MLflow Documentation](https://mlflow.org/docs/latest/index.html) - Officiële handleidingen voor experiment tracking en model registry

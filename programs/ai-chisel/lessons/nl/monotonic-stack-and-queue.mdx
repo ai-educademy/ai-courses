@@ -1,5 +1,5 @@
 ---
-title: "Monotonic Stack en Queue — Next Greater Element en meer"
+title: "Monotonic Stack en Queue - Next Greater Element en meer"
 description: "Leer de monotonic stack- en queue-patronen om next greater element, dagelijkse temperaturen, histogram en sliding window-problemen op te lossen in O(n) tijd."
 order: 8
 difficulty: "advanced"
@@ -24,7 +24,7 @@ Pop 3, Push 4 → [5, 4]  (4 > 3)
 
 ## Next Greater Element
 
-Zoek voor elk element het eerste grotere element rechts ervan. Brute force scant naar rechts voor elke positie — O(n²). Een monotoon dalende stack doet het in één doorgang.
+Zoek voor elk element het eerste grotere element rechts ervan. Brute force scant naar rechts voor elke positie - O(n²). Een monotoon dalende stack doet het in één doorgang.
 
 ```python
 def next_greater(nums):
@@ -37,7 +37,7 @@ def next_greater(nums):
     return result
 ```
 
-Wanneer we index `j` poppen, is het huidige element zijn next greater — gegarandeerd omdat alles ertussen kleiner was (ze waren eerder gepopt of blokkeerden `j` nooit).
+Wanneer we index `j` poppen, is het huidige element zijn next greater - gegarandeerd omdat alles ertussen kleiner was (ze waren eerder gepopt of blokkeerden `j` nooit).
 
 <Quiz
   question="Wat bevat de monotonic stack vlak VOOR het verwerken van 5 bij input [4, 2, 1, 5]?"
@@ -48,7 +48,7 @@ Wanneer we index `j` poppen, is het huidige element zijn next greater — gegara
 
 ## Daily Temperatures (LeetCode 739)
 
-*Gegeven dagelijkse temperaturen, vind hoeveel dagen het duurt tot een warmere dag.* Dit is next-greater-element met indices — het antwoord voor index `j` is `i − j` wanneer `j` gepopt wordt door index `i`.
+*Gegeven dagelijkse temperaturen, vind hoeveel dagen het duurt tot een warmere dag.* Dit is next-greater-element met indices - het antwoord voor index `j` is `i − j` wanneer `j` gepopt wordt door index `i`.
 
 ## Stock Span Problem
 
@@ -60,7 +60,7 @@ Wanneer we index `j` poppen, is het huidige element zijn next greater — gegara
 
 LeetCode's **Largest Rectangle in Histogram** is het kroonjuweel van monotonic stack-problemen.
 
-**Kernidee:** zoek voor elke balk hoe ver die naar links en rechts kan uitstrekken als de kortste balk. Gebruik een stijgende stack — wanneer een balk gepopt wordt, definieert de poppende balk de rechtergrens, en de nieuwe stack top definieert de linkergrens.
+**Kernidee:** zoek voor elke balk hoe ver die naar links en rechts kan uitstrekken als de kortste balk. Gebruik een stijgende stack - wanneer een balk gepopt wordt, definieert de poppende balk de rechtergrens, en de nieuwe stack top definieert de linkergrens.
 
 ```python
 def largest_rectangle(heights):
@@ -78,7 +78,7 @@ De sentinel `[0]` aan het einde dwingt de verwerking van alle resterende balken 
 
 <Illustration src="/images/lessons/monotonic-stack-and-queue.svg" alt="Histogrambalken met de grootste rechthoek gemarkeerd" caption="De monotonic stack vindt de breedste rechthoek die elke balk kan ondersteunen als de kortste balk." />
 
-## Trapping Rain Water — Stack-aanpak
+## Trapping Rain Water - Stack-aanpak
 
 In plaats van de klassieke two-pointer-methode berekent een monotoon dalende stack het opgevangen water laag voor laag. Wanneer een hogere balk verschijnt, pop je kortere balken en bereken je het water dat gevangen zit tussen de gepopte balk, de huidige balk en de nieuwe stack top.
 
@@ -87,9 +87,9 @@ Heights:  [3, 1, 2, 1, 3]
 Water:       [2, 1, 2]  → total = 5
 ```
 
-<FunFact>Trapping Rain Water heeft minstens vier verschillende O(n)-oplossingen — two-pointer, monotonic stack, prefix max-arrays en een geoptimaliseerde single-pass-aanpak. Interviewers zien graag meerdere strategieën.</FunFact>
+<FunFact>Trapping Rain Water heeft minstens vier verschillende O(n)-oplossingen - two-pointer, monotonic stack, prefix max-arrays en een geoptimaliseerde single-pass-aanpak. Interviewers zien graag meerdere strategieën.</FunFact>
 
-## Monotonic Queue — Sliding Window Maximum
+## Monotonic Queue - Sliding Window Maximum
 
 Een **monotonic deque** (dubbelzijdige queue) houdt een dalende volgorde aan en ondersteunt efficiënte verwijdering aan beide uiteinden. Voor **Sliding Window Maximum** (LeetCode 239):
 
@@ -114,7 +114,7 @@ def max_sliding_window(nums, k):
     return result
 ```
 
-Elk element komt hoogstens één keer in de deque en verlaat deze hoogstens één keer — **O(n)** totaal.
+Elk element komt hoogstens één keer in de deque en verlaat deze hoogstens één keer - **O(n)** totaal.
 
 <Quiz
   question="Waarom verwijdert de monotonic deque voor sliding window maximum aan de VOORKANT?"
@@ -123,12 +123,12 @@ Elk element komt hoogstens één keer in de deque en verlaat deze hoogstens éé
   explanation="Elementen aan de voorkant kunnen indices hebben die buiten het huidige venster vallen. Door ze te verwijderen blijven alleen geldige kandidaten over."
 />
 
-## Het patroon — Invariant behouden tijdens verwerking
+## Het patroon - Invariant behouden tijdens verwerking
 
 Elk monotonic stack/queue-probleem volgt één sjabloon:
 
 1. **Definieer de invariant** (stijgend of dalend)
-2. **Pop overtreders** — en haal nuttige informatie uit elke pop
+2. **Pop overtreders** - en haal nuttige informatie uit elke pop
 3. **Push het huidige element**
 4. Het *pop-event* is waar het antwoord berekend wordt
 
@@ -145,6 +145,6 @@ Elk monotonic stack/queue-probleem volgt één sjabloon:
 
 ## 📚 Verder lezen
 
-- [Monotonic Stack — LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) — Samengestelde probleemset om te oefenen
-- [Largest Rectangle in Histogram — LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) — Dé monotonic stack-uitdaging
-- [Sliding Window Maximum — LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) — Klassieke monotonic deque-toepassing
+- [Monotonic Stack - LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) - Samengestelde probleemset om te oefenen
+- [Largest Rectangle in Histogram - LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Dé monotonic stack-uitdaging
+- [Sliding Window Maximum - LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) - Klassieke monotonic deque-toepassing

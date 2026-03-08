@@ -1,5 +1,5 @@
 ---
-title: "Design a Recommendation Engine — AI-Powered Personalisation at Scale"
+title: "Design a Recommendation Engine - AI-Powered Personalisation at Scale"
 description: "Architect a production recommendation system combining collaborative filtering, embeddings, and real-time serving."
 order: 4
 difficulty: "advanced"
@@ -12,7 +12,7 @@ published: true
 
 *"Design a recommendation engine for an e-commerce platform that serves personalised product suggestions to 100 million users."*
 
-This question tests your ability to blend **machine learning pipelines** with **scalable system design** — a combination increasingly common in senior-level interviews.
+This question tests your ability to blend **machine learning pipelines** with **scalable system design** - a combination increasingly common in senior-level interviews.
 
 ## Step 1: Requirements Gathering
 
@@ -29,38 +29,38 @@ This question tests your ability to blend **machine learning pipelines** with **
 - Graceful degradation: show popular items if personalisation fails
 
 <Callout>
-Always define a fallback strategy. Interviewers love hearing "if the ML model fails, we degrade gracefully to popularity-based recommendations" — it shows production thinking.
+Always define a fallback strategy. Interviewers love hearing "if the ML model fails, we degrade gracefully to popularity-based recommendations" - it shows production thinking.
 </Callout>
 
 ## Step 2: Recommendation Approaches
 
 Three core techniques power most recommendation systems:
 
-**Collaborative filtering** — "users similar to you liked these items"
+**Collaborative filtering** - "users similar to you liked these items"
 - Analyse user-item interaction matrices (views, purchases, ratings)
 - Find similar users or similar items using matrix factorisation
 - Works well with sufficient interaction data
 
-**Content-based filtering** — "because you liked items with these features"
+**Content-based filtering** - "because you liked items with these features"
 - Use product attributes (category, brand, price range, description)
 - Generate embeddings from product descriptions using transformer models
 - Compute similarity between items in embedding space
 
-**Hybrid approach** — combine both signals for stronger recommendations
+**Hybrid approach** - combine both signals for stronger recommendations
 - Most production systems use a hybrid: collaborative signals for personalisation, content signals for diversity and cold-start coverage
 
-<Quiz question="A new user signs up and has no purchase or browsing history. Which recommendation approach handles this 'cold-start' scenario best?" options="Collaborative filtering based on similar users|Content-based filtering using the user's stated preferences|Matrix factorisation of the interaction matrix|Popularity-based recommendations only" answer="1" explanation="Content-based filtering can leverage initial signals like stated preferences, selected categories, or demographic data to recommend items with matching attributes — even without interaction history." />
+<Quiz question="A new user signs up and has no purchase or browsing history. Which recommendation approach handles this 'cold-start' scenario best?" options="Collaborative filtering based on similar users|Content-based filtering using the user's stated preferences|Matrix factorisation of the interaction matrix|Popularity-based recommendations only" answer="1" explanation="Content-based filtering can leverage initial signals like stated preferences, selected categories, or demographic data to recommend items with matching attributes - even without interaction history." />
 
 ## Step 3: The Recommendation Pipeline
 
 Production recommendation systems typically use a **two-stage architecture**:
 
-**Stage 1 — Candidate Generation (offline/near-real-time)**
+**Stage 1 - Candidate Generation (offline/near-real-time)**
 - Narrow 10 million products down to ~1,000 candidates per user
 - Uses lightweight models: collaborative filtering, embedding similarity
 - Runs as batch jobs (hourly/daily) or near-real-time with streaming
 
-**Stage 2 — Ranking (real-time)**
+**Stage 2 - Ranking (real-time)**
 - Score the ~1,000 candidates using a richer model
 - Considers context: time of day, device, recent activity, cart contents
 - Returns the top-20 ranked items
@@ -77,9 +77,9 @@ Recommendations depend on rich features computed from multiple data sources:
 **Interaction features:** click-through rates, time spent viewing, add-to-cart rates
 
 A **feature store** (e.g., Feast, Tecton) provides:
-- **Offline features** — precomputed batch features for model training
-- **Online features** — low-latency feature retrieval for real-time ranking
-- **Consistency** — same feature definitions used in training and serving
+- **Offline features** - precomputed batch features for model training
+- **Online features** - low-latency feature retrieval for real-time ranking
+- **Consistency** - same feature definitions used in training and serving
 
 ```
 Feature Store Schema:
@@ -114,14 +114,14 @@ When you browse a product on Amazon, recommendations update almost instantly. Bu
 
 Recommendation systems need rigorous experimentation:
 
-- **Traffic splitting** — route a percentage of users to the new model
-- **Metrics** — click-through rate (CTR), conversion rate, revenue per session, diversity
-- **Statistical significance** — run tests long enough to reach reliable conclusions
-- **Guardrail metrics** — ensure new models don't degrade overall revenue or engagement
+- **Traffic splitting** - route a percentage of users to the new model
+- **Metrics** - click-through rate (CTR), conversion rate, revenue per session, diversity
+- **Statistical significance** - run tests long enough to reach reliable conclusions
+- **Guardrail metrics** - ensure new models don't degrade overall revenue or engagement
 
 A typical setup uses a **feature flag service** to assign users to experiment buckets consistently (same user always sees the same variant during a test).
 
-<Quiz question="You deploy a new recommendation model that increases CTR by 15% but decreases purchase conversion by 5%. What should you do?" options="Ship it — higher CTR means better engagement|Roll it back — conversion is more important than clicks|Investigate — the model may be recommending clickbait over genuinely relevant products|Run the test longer — the results aren't significant yet" answer="2" explanation="Higher CTR with lower conversion suggests the model recommends attention-grabbing items that users click but don't buy. Investigating the disconnect reveals whether the model optimises for the wrong metric." />
+<Quiz question="You deploy a new recommendation model that increases CTR by 15% but decreases purchase conversion by 5%. What should you do?" options="Ship it - higher CTR means better engagement|Roll it back - conversion is more important than clicks|Investigate - the model may be recommending clickbait over genuinely relevant products|Run the test longer - the results aren't significant yet" answer="2" explanation="Higher CTR with lower conversion suggests the model recommends attention-grabbing items that users click but don't buy. Investigating the disconnect reveals whether the model optimises for the wrong metric." />
 
 ## Step 7: Cold-Start Solutions
 
@@ -141,12 +141,12 @@ The cold-start problem appears for both new users and new items:
 ## Step 8: Scaling the System
 
 **Architecture for 50K requests per second:**
-- **API gateway** — rate limiting, authentication, request routing
-- **Recommendation service** — stateless, horizontally scaled behind a load balancer
-- **Feature store** — Redis cluster for low-latency feature retrieval
-- **Model serving** — pre-loaded models in memory (TensorFlow Serving, Triton)
-- **Pre-computed cache** — Redis cache of top recommendations per user, refreshed by batch jobs
-- **Fallback** — if cache miss and model timeout, return popularity-based defaults
+- **API gateway** - rate limiting, authentication, request routing
+- **Recommendation service** - stateless, horizontally scaled behind a load balancer
+- **Feature store** - Redis cluster for low-latency feature retrieval
+- **Model serving** - pre-loaded models in memory (TensorFlow Serving, Triton)
+- **Pre-computed cache** - Redis cache of top recommendations per user, refreshed by batch jobs
+- **Fallback** - if cache miss and model timeout, return popularity-based defaults
 
 <Quiz question="Your recommendation service averages 40ms latency but spikes to 500ms under peak load. What's the most effective first optimisation?" options="Upgrade to faster GPUs for model inference|Add a Redis cache layer for pre-computed recommendations|Rewrite the ranking model in a faster language|Increase the candidate generation pool size" answer="1" explanation="Caching pre-computed recommendations for most users eliminates real-time inference entirely during peak load. Only cache misses (new activity, expired TTL) require live model inference." />
 
@@ -163,6 +163,6 @@ Recommendation engines can create "filter bubbles" where users only see items si
 - Use a two-stage architecture: candidate generation (broad) → ranking (precise)
 - Hybrid approaches (collaborative + content-based) outperform single-method systems
 - Feature stores ensure consistency between model training and real-time serving
-- A/B testing is essential — optimise for business metrics, not just ML metrics
+- A/B testing is essential - optimise for business metrics, not just ML metrics
 - Cold-start strategies prevent poor experiences for new users and items
 - Cache aggressively and degrade gracefully to handle peak traffic

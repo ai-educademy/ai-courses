@@ -1,5 +1,5 @@
 ---
-title: "Concevoir une plateforme de streaming vidéo — Architecture YouTube/Netflix"
+title: "Concevoir une plateforme de streaming vidéo - Architecture YouTube/Netflix"
 description: "Concevez une plateforme de streaming vidéo scalable couvrant les pipelines d'upload, le transcoding adaptive bitrate, la distribution CDN et l'architecture de live streaming."
 order: 8
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🎬"
 published: true
 ---
 
-# Concevoir une plateforme de streaming vidéo — Architecture YouTube/Netflix
+# Concevoir une plateforme de streaming vidéo - Architecture YouTube/Netflix
 
-Le streaming vidéo représente plus de 65 % du trafic internet mondial. La conception de ce système couvre les pipelines de traitement de fichiers, l'architecture CDN et l'adaptive streaming — des concepts qui s'appliquent bien au-delà de la vidéo.
+Le streaming vidéo représente plus de 65 % du trafic internet mondial. La conception de ce système couvre les pipelines de traitement de fichiers, l'architecture CDN et l'adaptive streaming - des concepts qui s'appliquent bien au-delà de la vidéo.
 
-## Étape 1 — Recueil des exigences
+## Étape 1 - Recueil des exigences
 
 ### Exigences fonctionnelles
 - Upload de vidéos (jusqu'à 1 Go par fichier)
@@ -21,12 +21,12 @@ Le streaming vidéo représente plus de 65 % du trafic internet mondial. La conc
 - Suivi des compteurs de vues et métriques d'engagement
 
 ### Exigences non fonctionnelles
-- **Disponibilité** — 99,99 % d'uptime pour le streaming
-- **Faible latence** — la lecture vidéo démarre en moins de 2 secondes
-- **Portée mondiale** — servir efficacement les utilisateurs sur tous les continents
-- **Coût optimisé** — optimiser le stockage et la bande passante (les deux coûts les plus importants)
+- **Disponibilité** - 99,99 % d'uptime pour le streaming
+- **Faible latence** - la lecture vidéo démarre en moins de 2 secondes
+- **Portée mondiale** - servir efficacement les utilisateurs sur tous les continents
+- **Coût optimisé** - optimiser le stockage et la bande passante (les deux coûts les plus importants)
 
-## Étape 2 — Architecture de haut niveau
+## Étape 2 - Architecture de haut niveau
 
 ```
 Upload Flow:
@@ -43,16 +43,16 @@ Streaming Flow:
 Client → CDN Edge → (cache miss) → CDN Origin → Object Storage
 ```
 
-<Illustration src="/images/lessons/design-video-streaming.svg" alt="Architecture de streaming vidéo montrant le pipeline d'upload avec transcoding, object storage, distribution CDN et flux de streaming vers les clients" caption="Les flux d'upload et de streaming sont complètement séparés — les uploads sont asynchrones et orientés écriture tandis que le streaming est orienté lecture et sensible à la latence" />
+<Illustration src="/images/lessons/design-video-streaming.svg" alt="Architecture de streaming vidéo montrant le pipeline d'upload avec transcoding, object storage, distribution CDN et flux de streaming vers les clients" caption="Les flux d'upload et de streaming sont complètement séparés - les uploads sont asynchrones et orientés écriture tandis que le streaming est orienté lecture et sensible à la latence" />
 
-## Étape 3 — Pipeline d'upload vidéo
+## Étape 3 - Pipeline d'upload vidéo
 
 ### Traitement étape par étape
-1. **Upload** — le client envoie la vidéo brute vers l'object storage (ex. S3) via des pre-signed URLs avec des uploads résumables pour les fichiers volumineux
-2. **Transcoding** — convertir la vidéo source en plusieurs résolutions (1080p, 720p, 480p, 360p) et codecs (H.264, VP9, AV1)
-3. **Adaptive Bitrate Packaging** — découper chaque niveau de qualité en petits segments (2-10 secondes) pour le streaming HLS/DASH
-4. **Génération de miniatures** — extraire des frames à intervalles réguliers pour les vignettes de prévisualisation
-5. **Mise à jour des métadonnées** — marquer la vidéo comme « prête » dans la base de données une fois le traitement terminé
+1. **Upload** - le client envoie la vidéo brute vers l'object storage (ex. S3) via des pre-signed URLs avec des uploads résumables pour les fichiers volumineux
+2. **Transcoding** - convertir la vidéo source en plusieurs résolutions (1080p, 720p, 480p, 360p) et codecs (H.264, VP9, AV1)
+3. **Adaptive Bitrate Packaging** - découper chaque niveau de qualité en petits segments (2-10 secondes) pour le streaming HLS/DASH
+4. **Génération de miniatures** - extraire des frames à intervalles réguliers pour les vignettes de prévisualisation
+5. **Mise à jour des métadonnées** - marquer la vidéo comme « prête » dans la base de données une fois le traitement terminé
 
 ### Transcoding à grande échelle
 Une seule vidéo 4K de 10 minutes peut prendre plus de 30 minutes à transcoder sur une machine. Pour gérer des milliers d'uploads simultanés :
@@ -61,7 +61,7 @@ Une seule vidéo 4K de 10 minutes peut prendre plus de 30 minutes à transcoder 
 
 <Quiz question="Pourquoi le transcoding vidéo est-il effectué de manière asynchrone plutôt que pendant l'upload ?" options="Pour réduire le temps d'upload pour l'utilisateur|Le transcoding est CPU-intensive et bloquerait le service d'upload, dégradant la disponibilité|Pour économiser de l'espace de stockage|Parce que les navigateurs ne peuvent pas lire les formats vidéo bruts" answer="1" explanation="Transcoder une seule vidéo en plusieurs niveaux de qualité est extrêmement CPU-intensive (de quelques minutes à plusieurs heures). Le faire de manière synchrone bloquerait le service d'upload, créerait une expérience utilisateur désastreuse et nécessiterait des ressources de calcul énormes pour le service d'upload." />
 
-## Étape 4 — Protocoles de streaming et CDN
+## Étape 4 - Protocoles de streaming et CDN
 
 ### Adaptive Bitrate Streaming
 Le lecteur change automatiquement de qualité en fonction du débit réseau du spectateur :
@@ -88,7 +88,7 @@ User in London → London Edge PoP (cache hit: 95%)
 
 <FunFact>Netflix diffuse plus de 700 millions d'heures de vidéo par semaine. Son CDN Open Connect place des appliances matérielles personnalisées directement dans les data centres des FAI, mettant en cache le contenu populaire au dernier kilomètre et réduisant le trafic du backbone internet de plus de 90 %.</FunFact>
 
-## Étape 5 — Services de support
+## Étape 5 - Services de support
 
 ### Service de métadonnées vidéo
 Stocke le titre, la description, les tags, la date d'upload, les compteurs de vues et l'état du traitement. Utilisez une base de données relationnelle (PostgreSQL) pour les requêtes structurées et l'indexation de recherche.
@@ -103,11 +103,11 @@ L'approche naïve (incrémenter à chaque vue) crée un hotspot en écriture. À
 
 ### Architecture de live streaming
 Le live streaming diffère du contenu à la demande sur plusieurs points :
-- **Pas de pre-transcoding** — la vidéo doit être transcodée en temps réel
-- **Latence ultra-faible** — les spectateurs attendent un délai inférieur à 5 secondes
-- **Protocole d'ingestion** — les streamers envoient via RTMP ; les spectateurs reçoivent via HLS/DASH avec des extensions low-latency
+- **Pas de pre-transcoding** - la vidéo doit être transcodée en temps réel
+- **Latence ultra-faible** - les spectateurs attendent un délai inférieur à 5 secondes
+- **Protocole d'ingestion** - les streamers envoient via RTMP ; les spectateurs reçoivent via HLS/DASH avec des extensions low-latency
 
-## Étape 6 — Répartition des coûts et optimisations
+## Étape 6 - Répartition des coûts et optimisations
 
 Les plateformes vidéo sont **extrêmement coûteuses** à exploiter. Les trois postes de coûts principaux :
 
@@ -121,9 +121,9 @@ Les plateformes vidéo sont **extrêmement coûteuses** à exploiter. Les trois 
 
 ### Protection de contenu (DRM)
 Le contenu premium nécessite le Digital Rights Management :
-- **Widevine** (Google) — Chrome, Android
-- **FairPlay** (Apple) — Safari, iOS
-- **PlayReady** (Microsoft) — Edge, Windows
+- **Widevine** (Google) - Chrome, Android
+- **FairPlay** (Apple) - Safari, iOS
+- **PlayReady** (Microsoft) - Edge, Windows
 
 Chaque système DRM requiert un chiffrement séparé et une intégration avec un serveur de licences, ajoutant une complexité significative.
 
@@ -132,6 +132,6 @@ Chaque système DRM requiert un chiffrement séparé et une intégration avec un
 ---
 
 ## 📚 Pour aller plus loin
-- [YouTube System Design — System Design Interview Vol. 2, Ch. 14](https://bytebytego.com/) — l'analyse approfondie d'Alex Xu sur l'architecture des plateformes vidéo
-- [Netflix Tech Blog: Content Delivery](https://netflixtechblog.com/) — comment Netflix a construit Open Connect et sert le trafic mondial
-- [HLS vs DASH Streaming](https://www.cloudflare.com/learning/video/what-is-http-live-streaming/) — comprendre les protocoles adaptive bitrate
+- [YouTube System Design - System Design Interview Vol. 2, Ch. 14](https://bytebytego.com/) - l'analyse approfondie d'Alex Xu sur l'architecture des plateformes vidéo
+- [Netflix Tech Blog: Content Delivery](https://netflixtechblog.com/) - comment Netflix a construit Open Connect et sert le trafic mondial
+- [HLS vs DASH Streaming](https://www.cloudflare.com/learning/video/what-is-http-live-streaming/) - comprendre les protocoles adaptive bitrate

@@ -1,8 +1,8 @@
 <div align="center">
 
-# 💎 AI Polish — Behavioral Interview Mastery
+# 💎 AI Polish - Behavioral Interview Mastery
 
-**Refining Excellence — Structured Frameworks for Behavioral Rounds**
+**Refining Excellence - Structured Frameworks for Behavioral Rounds**
 
 Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
@@ -18,13 +18,13 @@ Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.or
 
 ## 📚 What You'll Learn
 
-Master the behavioral interview with structured frameworks — from STAR storytelling to system design communication to leading teams through the AI era.
+Master the behavioral interview with structured frameworks - from STAR storytelling to system design communication to leading teams through the AI era.
 
 | # | Lesson | Duration | Difficulty |
 |---|--------|----------|------------|
-| 1 | ⭐ The STAR Framework — Structure Your Stories | 15 min | Beginner |
-| 2 | 💬 Communicating System Design — Think Out Loud | 20 min | Intermediate |
-| 3 | 🧭 AI-Era Leadership — Navigate the New Normal | 20 min | Intermediate |
+| 1 | ⭐ The STAR Framework - Structure Your Stories | 15 min | Beginner |
+| 2 | 💬 Communicating System Design - Think Out Loud | 20 min | Intermediate |
+| 3 | 🧭 AI-Era Leadership - Navigate the New Normal | 20 min | Intermediate |
 
 **Estimated total time: ~4 hours** (including practice exercises)
 
@@ -33,7 +33,7 @@ Master the behavioral interview with structured frameworks — from STAR storyte
 ## 🎯 Lesson Topics
 
 <details>
-<summary><strong>⭐ Lesson 1 — The STAR Framework</strong></summary>
+<summary><strong>⭐ Lesson 1 - The STAR Framework</strong></summary>
 
 Learn the universal skeleton for behavioral answers. Structure compelling stories about your engineering impact using **Situation → Task → Action → Result**.
 
@@ -46,7 +46,7 @@ Learn the universal skeleton for behavioral answers. Structure compelling storie
 </details>
 
 <details>
-<summary><strong>💬 Lesson 2 — System Design Communication</strong></summary>
+<summary><strong>💬 Lesson 2 - System Design Communication</strong></summary>
 
 System design interviews test **how you think**, not just what you know. Master the art of thinking out loud and structuring your presentation.
 
@@ -58,9 +58,9 @@ System design interviews test **how you think**, not just what you know. Master 
 </details>
 
 <details>
-<summary><strong>🧭 Lesson 3 — AI-Era Leadership</strong></summary>
+<summary><strong>🧭 Lesson 3 - AI-Era Leadership</strong></summary>
 
-Prepare for leadership questions in the age of AI — ethics, build-vs-buy decisions, team upskilling, and responsible AI strategy.
+Prepare for leadership questions in the age of AI - ethics, build-vs-buy decisions, team upskilling, and responsible AI strategy.
 
 - Common AI-era behavioral questions
 - Build vs buy decision frameworks
@@ -78,11 +78,11 @@ AI Polish is **Level 4** in the five-program Craft Engineering track:
 
 | Level | Program | Focus |
 |-------|---------|-------|
-| 1 | [✏️ Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations — Data Structures & Patterns |
-| 2 | [🪨 Chisel](https://github.com/ai-educademy/ai-chisel) | Shaping — Algorithm Problem-Solving |
-| 3 | [⚒️ Craft](https://github.com/ai-educademy/ai-craft) | Building — System Design Mastery |
-| 4 | **[💎 Polish](https://github.com/ai-educademy/ai-polish)** | **Refining — Behavioral Interview Mastery** |
-| 5 | [🏆 Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Perfecting — Mock Interviews & Synthesis |
+| 1 | [✏️ Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations - Data Structures & Patterns |
+| 2 | [🪨 Chisel](https://github.com/ai-educademy/ai-chisel) | Shaping - Algorithm Problem-Solving |
+| 3 | [⚒️ Craft](https://github.com/ai-educademy/ai-craft) | Building - System Design Mastery |
+| 4 | **[💎 Polish](https://github.com/ai-educademy/ai-polish)** | **Refining - Behavioral Interview Mastery** |
+| 5 | [🏆 Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Perfecting - Mock Interviews & Synthesis |
 
 ```mermaid
 graph LR
@@ -112,11 +112,11 @@ graph LR
 
 ## 🚀 How to Use
 
-**Option 1 — Web Platform (Recommended)**
+**Option 1 - Web Platform (Recommended)**
 
 Visit **[aieducademy.org](https://aieducademy.org)** for the full interactive experience with progress tracking and AI-assisted practice.
 
-**Option 2 — Browse Locally**
+**Option 2 - Browse Locally**
 
 Lessons are self-contained MDX files you can read directly:
 
@@ -139,10 +139,10 @@ SVG framework diagrams are in [`public/images/`](public/images/).
 
 Contributions are welcome! Here's how you can help:
 
-1. **Fix typos or improve clarity** — open a PR directly
-2. **Add new examples or scenarios** — open an issue first to discuss
-3. **Translate lessons** — create a new folder under `lessons/` (e.g., `lessons/es/`)
-4. **Suggest new diagrams** — SVG format preferred
+1. **Fix typos or improve clarity** - open a PR directly
+2. **Add new examples or scenarios** - open an issue first to discuss
+3. **Translate lessons** - create a new folder under `lessons/` (e.g., `lessons/es/`)
+4. **Suggest new diagrams** - SVG format preferred
 
 Please read the [AI Educademy contributing guidelines](https://github.com/ai-educademy) before submitting.
 

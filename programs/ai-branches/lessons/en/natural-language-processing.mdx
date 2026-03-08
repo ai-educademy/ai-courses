@@ -1,5 +1,5 @@
 ---
-title: "Natural Language Processing — How AI Understands Human Language"
+title: "Natural Language Processing - How AI Understands Human Language"
 description: "Explore how machines read, write, and interpret the messy complexity of human language."
 order: 2
 difficulty: "intermediate"
@@ -8,22 +8,22 @@ icon: "💬"
 published: true
 ---
 
-# Natural Language Processing — How AI Understands Human Language
+# Natural Language Processing - How AI Understands Human Language
 
-You have probably asked a voice assistant a question, used Google Translate, or watched YouTube auto-captions appear in real time. Behind every one of those experiences is **Natural Language Processing (NLP)** — the branch of AI that helps machines work with human language.
+You have probably asked a voice assistant a question, used Google Translate, or watched YouTube auto-captions appear in real time. Behind every one of those experiences is **Natural Language Processing (NLP)** - the branch of AI that helps machines work with human language.
 
 ## Why Language is Hard for Machines
 
 Language seems effortless to us, yet it is spectacularly messy for computers:
 
-- **Ambiguity** — "I saw her duck" — did she crouch, or did you see her pet bird?
-- **Context** — "That's sick!" can mean something is disgusting or something is brilliant,
+- **Ambiguity** - "I saw her duck" - did she crouch, or did you see her pet bird?
+- **Context** - "That's sick!" can mean something is disgusting or something is brilliant,
   depending entirely on who is speaking and when.
-- **Sarcasm** — "Oh great, another Monday" carries the opposite of its literal meaning, but
+- **Sarcasm** - "Oh great, another Monday" carries the opposite of its literal meaning, but
   there is no explicit marker to signal this.
-- **Structure** — the same words rearranged can change meaning entirely: "Dog bites man" versus
+- **Structure** - the same words rearranged can change meaning entirely: "Dog bites man" versus
   "Man bites dog."
-- **Evolving slang** — new words and meanings emerge constantly, making static dictionaries
+- **Evolving slang** - new words and meanings emerge constantly, making static dictionaries
   insufficient.
 
 Machines cannot rely on intuition or life experience the way humans do. NLP systems must learn
@@ -46,7 +46,7 @@ patterns from enormous volumes of text, often billions of sentences.
 ## Turning Words into Numbers
 
 Machines work with numbers, not words. So how do you represent the richness of language
-mathematically? The breakthrough insight was representing words as **vectors** — lists of numbers
+mathematically? The breakthrough insight was representing words as **vectors** - lists of numbers
 that capture meaning and relationships.
 
 **Word2Vec** (2013) showed that words used in similar contexts get similar vectors. Famously, the maths worked out so that:
@@ -55,22 +55,22 @@ that capture meaning and relationships.
 
 This proved that word embeddings capture genuine semantic relationships.
 
-**BERT** (2018) went further by making embeddings **contextual** — the vector for "bank" changes depending on whether the sentence is about rivers or finance.
+**BERT** (2018) went further by making embeddings **contextual** - the vector for "bank" changes depending on whether the sentence is about rivers or finance.
 
 <FunFact>
-BERT was trained on the entire English Wikipedia and the BookCorpus — roughly 3.3 billion words. Yet the model itself has "only" 340 million parameters, meaning it compresses a vast library of human knowledge into patterns far smaller than the original text.
+BERT was trained on the entire English Wikipedia and the BookCorpus - roughly 3.3 billion words. Yet the model itself has "only" 340 million parameters, meaning it compresses a vast library of human knowledge into patterns far smaller than the original text.
 </FunFact>
 
 ## How ChatGPT Works (The Short Version)
 
-ChatGPT is built on a **transformer** architecture — the same family of models behind Google
+ChatGPT is built on a **transformer** architecture - the same family of models behind Google
 Translate, GitHub Copilot, and many other AI tools. Here is the simplified pipeline:
 
 1. **Tokenise** your message into sub-word pieces.
-2. Use **attention mechanisms** to figure out which words relate to which — even across very long
+2. Use **attention mechanisms** to figure out which words relate to which - even across very long
    passages with thousands of tokens.
 3. Predict the next word, one token at a time, based on everything that came before it.
-4. The model was fine-tuned using **Reinforcement Learning from Human Feedback (RLHF)** — real
+4. The model was fine-tuned using **Reinforcement Learning from Human Feedback (RLHF)** - real
    people rated outputs to teach the model helpfulness, accuracy, and safety.
 
 The "attention" idea is the magic ingredient. It lets the model focus on the most relevant parts
@@ -83,11 +83,11 @@ When ChatGPT writes a paragraph, it generates one word at a time, always predict
 
 ## Real-World Applications
 
-- **Spam filters** — Gmail uses NLP to block over 10 million spam emails every minute.
-- **Chatbots** — customer service bots handle routine queries, freeing human agents for complex problems.
-- **Search engines** — Google's search now understands full questions, not just keyword matches.
-- **Legal tech** — AI reviews thousands of legal documents in hours, a task that once took lawyers weeks.
-- **Accessibility** — real-time captioning helps deaf and hard-of-hearing users follow live events.
+- **Spam filters** - Gmail uses NLP to block over 10 million spam emails every minute.
+- **Chatbots** - customer service bots handle routine queries, freeing human agents for complex problems.
+- **Search engines** - Google's search now understands full questions, not just keyword matches.
+- **Legal tech** - AI reviews thousands of legal documents in hours, a task that once took lawyers weeks.
+- **Accessibility** - real-time captioning helps deaf and hard-of-hearing users follow live events.
 
 <FunFact>
 Google Translate processes over 100 billion words per day across 133 languages. Before neural NLP, it relied on phrase tables and produced famously awkward translations. Modern transformer-based translation is remarkably fluent.
@@ -99,24 +99,24 @@ Google Translate processes over 100 billion words per day across 133 languages. 
 
 Despite remarkable progress, NLP is far from a solved problem:
 
-- **Hallucinations** — language models can generate confident-sounding text that is factually
+- **Hallucinations** - language models can generate confident-sounding text that is factually
   wrong. They have no built-in way to verify truth.
-- **Bias** — models trained on internet text absorb societal biases present in that data,
+- **Bias** - models trained on internet text absorb societal biases present in that data,
   sometimes producing sexist, racist, or otherwise harmful outputs.
-- **Low-resource languages** — NLP works best for English; many of the world's 7,000+ languages
+- **Low-resource languages** - NLP works best for English; many of the world's 7,000+ languages
   have very little digital text for training.
-- **Privacy** — processing personal messages, emails, and documents raises serious data protection
+- **Privacy** - processing personal messages, emails, and documents raises serious data protection
   concerns under regulations like GDPR.
-- **Energy cost** — training large language models requires enormous computational resources,
+- **Energy cost** - training large language models requires enormous computational resources,
   raising environmental sustainability questions.
 
 <ThinkAboutIt>
-If an AI writes a news article that contains a factual error and thousands of people read it, who is responsible — the AI company, the publisher, or the reader who did not fact-check?
+If an AI writes a news article that contains a factual error and thousands of people read it, who is responsible - the AI company, the publisher, or the reader who did not fact-check?
 </ThinkAboutIt>
 
 ## Key Takeaways
 
-- Human language is full of ambiguity, context, slang, and nuance — making it one of AI's hardest
+- Human language is full of ambiguity, context, slang, and nuance - making it one of AI's hardest
   challenges.
 - Word embeddings convert language into mathematical vectors that capture genuine semantic
   relationships between words.
@@ -127,4 +127,4 @@ If an AI writes a news article that contains a factual error and thousands of pe
 - Hallucinations, bias, energy costs, and data privacy remain significant open problems that
   researchers and companies are actively working to solve.
 
-<Quiz question="What does the equation king − man + woman ≈ queen demonstrate about word embeddings?" options="Words are stored as images|Embeddings capture semantic relationships between words|All words have the same vector|Translation happens automatically" answer="1" explanation="This famous example shows that word vectors encode meaningful relationships — the direction from 'man' to 'woman' is similar to the direction from 'king' to 'queen', proving the model has learned genuine semantic structure." />
+<Quiz question="What does the equation king − man + woman ≈ queen demonstrate about word embeddings?" options="Words are stored as images|Embeddings capture semantic relationships between words|All words have the same vector|Translation happens automatically" answer="1" explanation="This famous example shows that word vectors encode meaningful relationships - the direction from 'man' to 'woman' is similar to the direction from 'king' to 'queen', proving the model has learned genuine semantic structure." />

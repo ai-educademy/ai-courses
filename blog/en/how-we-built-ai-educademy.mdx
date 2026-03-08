@@ -12,7 +12,7 @@ published: true
 image: "/images/blog/placeholder.png"
 ---
 
-Building AI Educademy presented a unique technical challenge: create a platform that's accessible to learners worldwide, easy to maintain, and scalable enough to serve millions of users—all while keeping the codebase clean and developer-friendly.
+Building AI Educademy presented a unique technical challenge: create a platform that's accessible to learners worldwide, easy to maintain, and scalable enough to serve millions of users - all while keeping the codebase clean and developer-friendly.
 
 In this deep dive, we'll walk through the architectural decisions that shaped our platform, from our choice of Next.js 15 to how we manage multilingual content with git submodules. Whether you're building an educational platform, a documentation site, or any content-heavy application, you'll find practical insights here.
 
@@ -24,7 +24,7 @@ When we started building AI Educademy, Next.js 14 was the standard. By the time 
 
 **Incremental Static Regeneration (ISR)**: Educational content doesn't change constantly, but it does change. ISR allows us to pre-render pages at build time and then revalidate them on a schedule. This means our blog posts, tutorials, and course materials are always fresh without the performance hit of on-demand rendering.
 
-**Built-in Optimization**: Image optimization, font loading, and code splitting are handled automatically. We didn't have to spend cycles building or configuring these features—they just work.
+**Built-in Optimization**: Image optimization, font loading, and code splitting are handled automatically. We didn't have to spend cycles building or configuring these features - they just work.
 
 **File-based Routing**: The App Router's intuitive file structure makes it obvious where pages and API routes live. New contributors can jump into the codebase and understand the structure immediately.
 
@@ -47,7 +47,7 @@ app/
 
 ## Multilingual Support with next-intl 🌍
 
-AI Educademy is built for the global community. Offering content in multiple languages isn't just nice-to-have—it's essential for fulfilling our mission of free AI education for everyone.
+AI Educademy is built for the global community. Offering content in multiple languages isn't just nice-to-have - it's essential for fulfilling our mission of free AI education for everyone.
 
 We chose `next-intl` because it:
 
@@ -88,7 +88,7 @@ messages/
     └── ...
 ```
 
-This approach scales beautifully. Adding a new language means adding a new folder with JSON files—no code changes required.
+This approach scales beautifully. Adding a new language means adding a new folder with JSON files - no code changes required.
 
 ## MDX: Content Meets Components 📝
 
@@ -201,7 +201,7 @@ const withPWA = require('next-pwa')({
 
 Our Service Worker strategy is straightforward:
 
-- **Cache-first for assets**: CSS, JavaScript, fonts—these don't change often
+- **Cache-first for assets**: CSS, JavaScript, fonts - these don't change often
 - **Network-first for content**: Blog posts and course materials should stay fresh
 - **Stale-while-revalidate for API data**: Show cached data while fetching fresh data in background
 
@@ -231,13 +231,13 @@ All of this architecture works together to create a platform that performs at th
 - **Lighthouse Score**: 98/100 (performance)
 - **Time to Interactive**: 2.1 seconds
 
-These aren't vanity metrics—faster sites means more learners can access our content, especially those on mobile networks or in regions with limited infrastructure.
+These aren't vanity metrics - faster sites means more learners can access our content, especially those on mobile networks or in regions with limited infrastructure.
 
 ## Open Source Principles 💚
 
 The entire codebase is open source. If you want to see how all these pieces work together, you can explore the repository, contribute improvements, or fork it for your own educational platform.
 
-The architecture we've described here isn't proprietary—it's built on solid, widely-adopted open source tools. The community benefits from our learnings, and we benefit from community contributions.
+The architecture we've described here isn't proprietary - it's built on solid, widely-adopted open source tools. The community benefits from our learnings, and we benefit from community contributions.
 
 ## Key Takeaways
 

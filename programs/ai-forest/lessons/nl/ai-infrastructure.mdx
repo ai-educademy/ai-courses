@@ -1,5 +1,5 @@
 ---
-title: "AI-infrastructuur — GPUs, TPUs en de Cloud-strijd"
+title: "AI-infrastructuur - GPUs, TPUs en de Cloud-strijd"
 description: "Begrijp de hardware en cloud-infrastructuur achter moderne AI: GPU-architecturen, vergelijking van cloudplatformen, custom silicium en inference-optimalisatie."
 order: 9
 difficulty: "advanced"
@@ -14,17 +14,17 @@ Achter elke AI-doorbraak schuilt een enorm infrastructuurverhaal. Het trainen va
 
 ## Waarom GPUs CPUs verslaan voor AI
 
-CPUs zijn geoptimaliseerd voor sequentiële taken — een paar krachtige cores die complexe logica afhandelen. GPUs zijn geoptimaliseerd voor parallellisme — duizenden eenvoudige cores die dezelfde bewerking tegelijkertijd op verschillende data uitvoeren.
+CPUs zijn geoptimaliseerd voor sequentiële taken - een paar krachtige cores die complexe logica afhandelen. GPUs zijn geoptimaliseerd voor parallellisme - duizenden eenvoudige cores die dezelfde bewerking tegelijkertijd op verschillende data uitvoeren.
 
 Training van neurale netwerken is fundamenteel matrixvermenigvuldiging op grote schaal. Een enkele trainingsstap van een groot model omvat het vermenigvuldigen van matrices met miljarden elementen. Een CPU verwerkt deze sequentieel. Een GPU verwerkt duizenden elementen parallel.
 
 Een NVIDIA H100 GPU levert ongeveer **4.000 TFLOPS** aan FP8-rekenkracht. Een high-end server-CPU haalt misschien 2 TFLOPS. Voor de massaal parallelle workloads van deep learning winnen GPUs met drie ordes van grootte.
 
-<Illustration src="/images/lessons/ai-infrastructure.svg" alt="Comparison diagram showing CPU with few powerful cores versus GPU with thousands of parallel cores for matrix operations" caption="GPUs verwerken duizenden matrixbewerkingen gelijktijdig — het fundamentele voordeel voor AI-workloads." />
+<Illustration src="/images/lessons/ai-infrastructure.svg" alt="Comparison diagram showing CPU with few powerful cores versus GPU with thousands of parallel cores for matrix operations" caption="GPUs verwerken duizenden matrixbewerkingen gelijktijdig - het fundamentele voordeel voor AI-workloads." />
 
 ## NVIDIA's dominantie
 
-NVIDIA controleert ruwweg 80-90% van de AI-acceleratormarkt. Hun verdedigbare voorsprong is niet alleen hardware — het is het **CUDA-ecosysteem**. Vrijwel elk ML-framework (PyTorch, TensorFlow, JAX) is gebouwd op CUDA. Overstappen naar een concurrent betekent low-level kernels herschrijven en mogelijke incompatibiliteiten accepteren.
+NVIDIA controleert ruwweg 80-90% van de AI-acceleratormarkt. Hun verdedigbare voorsprong is niet alleen hardware - het is het **CUDA-ecosysteem**. Vrijwel elk ML-framework (PyTorch, TensorFlow, JAX) is gebouwd op CUDA. Overstappen naar een concurrent betekent low-level kernels herschrijven en mogelijke incompatibiliteiten accepteren.
 
 ### De GPU-lineup
 
@@ -35,18 +35,18 @@ NVIDIA controleert ruwweg 80-90% van de AI-acceleratormarkt. Hun verdedigbare vo
 | **H200** | 141 GB HBM3e | 3.958 TFLOPS | Geheugengebonden LLM-inference |
 | **B200** | 192 GB HBM3e | 9.000 TFLOPS | Volgende generatie training en inference |
 
-De sprong van H100 naar B200 vertegenwoordigt een 2,3× prestatieverbetering — maar de echte bottleneck is vaak **geheugenbandbreedte**, niet ruwe rekenkracht. Het 141 GB HBM3e-geheugen van de H200 richt zich specifiek op LLM-inference waar de KV cache het geheugengebruik domineert.
+De sprong van H100 naar B200 vertegenwoordigt een 2,3× prestatieverbetering - maar de echte bottleneck is vaak **geheugenbandbreedte**, niet ruwe rekenkracht. Het 141 GB HBM3e-geheugen van de H200 richt zich specifiek op LLM-inference waar de KV cache het geheugengebruik domineert.
 
-<FunFact>Eén NVIDIA B200 GPU kost ongeveer $30.000-$40.000. Een DGX B200-server met acht van deze GPUs kost meer dan $300.000. Meta bestelde naar verluidt 350.000 H100 GPUs voor Llama-training — een hardware-investering van meer dan $10 miljard.</FunFact>
+<FunFact>Eén NVIDIA B200 GPU kost ongeveer $30.000-$40.000. Een DGX B200-server met acht van deze GPUs kost meer dan $300.000. Meta bestelde naar verluidt 350.000 H100 GPUs voor Llama-training - een hardware-investering van meer dan $10 miljard.</FunFact>
 
 ## Google TPUs
 
 Google's Tensor Processing Units zijn custom ASICs die specifiek zijn ontworpen voor matrixbewerkingen. In tegenstelling tot GPUs, die zowel graphics als compute aankunnen, zijn TPUs puur gebouwd voor neurale netwerken.
 
-- **TPU v5p** — Google's nieuwste trainingchip, beschikbaar in pods van maximaal 8.960 chips verbonden via snelle interconnect
-- **TPU v5e** — Kostengeoptimaliseerd voor inference-workloads
+- **TPU v5p** - Google's nieuwste trainingchip, beschikbaar in pods van maximaal 8.960 chips verbonden via snelle interconnect
+- **TPU v5e** - Kostengeoptimaliseerd voor inference-workloads
 - Belangrijk voordeel: nauwe integratie met JAX en de XLA-compiler
-- Belangrijke beperking: alleen beschikbaar via Google Cloud — geen on-premise optie
+- Belangrijke beperking: alleen beschikbaar via Google Cloud - geen on-premise optie
 
 Google traint al zijn foundationmodellen (Gemini, PaLM) op TPUs, wat bewijst dat ze op het hoogste niveau concurreren met NVIDIA.
 
@@ -55,14 +55,14 @@ Google traint al zijn foundationmodellen (Gemini, PaLM) op TPUs, wat bewijst dat
 AMD's **MI300X** is het meest geloofwaardige NVIDIA-alternatief:
 - 192 GB HBM3-geheugen (meer dan de H100)
 - Sterke ROCm-softwarestack (verbetert maar loopt nog achter op CUDA)
-- Significant prijsvoordeel — ruwweg 30-40% goedkoper dan vergelijkbare NVIDIA
+- Significant prijsvoordeel - ruwweg 30-40% goedkoper dan vergelijkbare NVIDIA
 - Groeiend ecosysteem van ML-frameworks met native ROCm-ondersteuning (PyTorch, JAX)
 
 Microsoft, Meta en Oracle hebben allemaal MI300X geadopteerd voor inference-workloads. Het geheugenvoordeel is bijzonder aantrekkelijk voor grote taalmodellen waar de KV cache de voornaamste bottleneck is.
 
 Intel's **Gaudi 3**-accelerator betreedt ook de markt, met competitieve trainingsprestaties en een focus op prijs-prestatieverhoudingen voor enterprises. De AI-acceleratormarkt wordt eindelijk een multi-vendor ecosysteem.
 
-<Quiz question="Waarom is NVIDIA's concurrentievoordeel niet alleen gebaseerd op hardwareprestaties?" options="Ze produceren hun eigen chips|Het CUDA-software-ecosysteem creëert enorme overstapkosten|Ze zijn het enige bedrijf dat GPUs maakt|Hun GPUs zijn de goedkoopste optie" answer="1" explanation="NVIDIA's dominantie berust op het CUDA-ecosysteem — vrijwel alle ML-frameworks en bibliotheken zijn gebouwd op CUDA, waardoor de overstapkosten naar concurrenten extreem hoog zijn, zelfs wanneer alternatieve hardware competitief is." />
+<Quiz question="Waarom is NVIDIA's concurrentievoordeel niet alleen gebaseerd op hardwareprestaties?" options="Ze produceren hun eigen chips|Het CUDA-software-ecosysteem creëert enorme overstapkosten|Ze zijn het enige bedrijf dat GPUs maakt|Hun GPUs zijn de goedkoopste optie" answer="1" explanation="NVIDIA's dominantie berust op het CUDA-ecosysteem - vrijwel alle ML-frameworks en bibliotheken zijn gebouwd op CUDA, waardoor de overstapkosten naar concurrenten extreem hoog zijn, zelfs wanneer alternatieve hardware competitief is." />
 
 ## Vergelijking van cloudproviders
 
@@ -82,7 +82,7 @@ Geen enkel bedrijf buiten de hyperscalers kan het zich veroorloven om een eigen 
 
 AI-infrastructuur is nu een geopolitiek vraagstuk:
 
-- **TSMC** (Taiwan) fabriceert vrijwel alle geavanceerde AI-chips — voor NVIDIA, AMD, Apple en Google. Een verstoring bij TSMC zou de AI-vooruitgang wereldwijd stilleggen.
+- **TSMC** (Taiwan) fabriceert vrijwel alle geavanceerde AI-chips - voor NVIDIA, AMD, Apple en Google. Een verstoring bij TSMC zou de AI-vooruitgang wereldwijd stilleggen.
 - **Amerikaans exportbeleid** beperkt China's toegang tot geavanceerde chips (A100, H100 verboden). China investeert zwaar in binnenlandse alternatieven (Huawei Ascend, Biren).
 - **NVIDIA's China-specifieke chips** (H20) bieden verminderde prestaties om aan exportregels te voldoen terwijl markttoegang behouden blijft.
 - De **CHIPS Act** (VS) en soortgelijke programma's in de EU en Japan beogen de halfgeleiderfabricage te diversifiëren.
@@ -93,10 +93,10 @@ AI-infrastructuur is nu een geopolitiek vraagstuk:
 
 Verschillende startups dagen het GPU-paradigma volledig uit:
 
-- **Groq** — LPU-architectuur die deterministische, ultra-lage-latentie inference levert. Geen batching nodig.
-- **Cerebras** — Wafer-scale chip (zo groot als een dinerbord) elimineert geheugenbandbreedte-bottlenecks voor training.
-- **SambaNova** — Herconfigureerbare dataflow-architectuur geoptimaliseerd voor enterprise-AI.
-- **Graphcore** (overgenomen door SoftBank) — IPU-architectuur met massaal on-chip SRAM voor graph-structured workloads.
+- **Groq** - LPU-architectuur die deterministische, ultra-lage-latentie inference levert. Geen batching nodig.
+- **Cerebras** - Wafer-scale chip (zo groot als een dinerbord) elimineert geheugenbandbreedte-bottlenecks voor training.
+- **SambaNova** - Herconfigureerbare dataflow-architectuur geoptimaliseerd voor enterprise-AI.
+- **Graphcore** (overgenomen door SoftBank) - IPU-architectuur met massaal on-chip SRAM voor graph-structured workloads.
 
 Dit zijn vandaag geen NVIDIA-vervangers. Maar ze vertegenwoordigen echte architecturale innovatie die de markt kan hervormen naarmate AI-workloads zich diversifiëren voorbij transformers.
 
@@ -106,11 +106,11 @@ Dit zijn vandaag geen NVIDIA-vervangers. Maar ze vertegenwoordigen echte archite
 
 Training haalt de krantenkoppen, maar inference is waar het geld naartoe gaat. Technieken die inference-kosten verlagen:
 
-- **Dynamic batching** — Binnenkomende verzoeken groeperen om GPU-benutting te maximaliseren
-- **KV cache-beheer** — vLLM's PagedAttention voorkomt geheugenfragmentatie
-- **Speculative decoding** — Een klein model stelt tokens voor, parallel geverifieerd door het grote model (2-3× versnelling)
-- **Continuous batching** — Nieuwe verzoeken verwerken zonder te wachten tot alle huidige verzoeken voltooid zijn
-- **Model parallelism** — Grote modellen verdelen over meerdere GPUs voor latentiegevoelige serving
+- **Dynamic batching** - Binnenkomende verzoeken groeperen om GPU-benutting te maximaliseren
+- **KV cache-beheer** - vLLM's PagedAttention voorkomt geheugenfragmentatie
+- **Speculative decoding** - Een klein model stelt tokens voor, parallel geverifieerd door het grote model (2-3× versnelling)
+- **Continuous batching** - Nieuwe verzoeken verwerken zonder te wachten tot alle huidige verzoeken voltooid zijn
+- **Model parallelism** - Grote modellen verdelen over meerdere GPUs voor latentiegevoelige serving
 
 <Quiz question="Hoe versnelt speculative decoding LLM-inference?" options="Het traint het model sneller|Een klein draft-model stelt tokens voor die het grote model parallel verifieert|Het verkleint het model door kwantisatie|Het vergroot de GPU-geheugencapaciteit" answer="1" explanation="Speculative decoding gebruikt een snel, klein model om kandidaat-tokens te genereren. Het grote model verifieert meerdere kandidaten in één forward pass, wat een 2-3× versnelling oplevert omdat verificatie goedkoper is dan sequentiële generatie." />
 
@@ -118,11 +118,11 @@ Training haalt de krantenkoppen, maar inference is waar het geld naartoe gaat. T
 
 Infrastructuurkosten gaan veel verder dan GPU-huur. Een compleet beeld omvat:
 
-- **Compute** — GPU-uren voor training en inference (doorgaans 60-70% van de totale kosten)
-- **Opslag** — Trainingsdata, checkpoints, modelartefacten en logs
-- **Netwerk** — Datatransfer tussen GPUs, regio's en naar eindgebruikers
-- **Engineering** — ML-engineers, platform-engineers en DevOps-medewerkers
-- **Elektriciteit** — Eén H100-server verbruikt 10+ kW; datacenterstroom is een groeiende beperking
+- **Compute** - GPU-uren voor training en inference (doorgaans 60-70% van de totale kosten)
+- **Opslag** - Trainingsdata, checkpoints, modelartefacten en logs
+- **Netwerk** - Datatransfer tussen GPUs, regio's en naar eindgebruikers
+- **Engineering** - ML-engineers, platform-engineers en DevOps-medewerkers
+- **Elektriciteit** - Eén H100-server verbruikt 10+ kW; datacenterstroom is een groeiende beperking
 
 Op schaal geven bedrijven als Meta jaarlijks meer dan $10 miljard uit aan AI-infrastructuur. Voor startups kunnen de cloudkosten van één frontier-modeltraining meer dan $1 miljoen bedragen.
 
@@ -132,6 +132,6 @@ Op schaal geven bedrijven als Meta jaarlijks meer dan $10 miljard uit aan AI-inf
 
 ## 📚 Verder lezen
 
-- [NVIDIA H100 Tensor Core GPU Architecture](https://resources.nvidia.com/en-us-tensor-core) — Technische deep-dive in de Hopper-architectuur
-- [Google Cloud TPU Documentation](https://cloud.google.com/tpu/docs/intro-to-tpu) — Officiële gids voor TPU-architectuur en programmering
-- [The GPU Shortage Explained (SemiAnalysis)](https://www.semianalysis.com/) — Industrieanalyse van vraag en aanbod van AI-chips
+- [NVIDIA H100 Tensor Core GPU Architecture](https://resources.nvidia.com/en-us-tensor-core) - Technische deep-dive in de Hopper-architectuur
+- [Google Cloud TPU Documentation](https://cloud.google.com/tpu/docs/intro-to-tpu) - Officiële gids voor TPU-architectuur en programmering
+- [The GPU Shortage Explained (SemiAnalysis)](https://www.semianalysis.com/) - Industrieanalyse van vraag en aanbod van AI-chips

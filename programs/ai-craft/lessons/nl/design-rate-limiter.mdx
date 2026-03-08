@@ -1,5 +1,5 @@
 ---
-title: "Ontwerp een Rate Limiter — APIs beschermen op schaal"
+title: "Ontwerp een Rate Limiter - APIs beschermen op schaal"
 description: "Leer hoe je een gedistribueerde rate limiter ontwerpt met token bucket, sliding window en Redis-algoritmen om APIs te beschermen tegen misbruik en eerlijk gebruik te garanderen."
 order: 6
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🛡️"
 published: true
 ---
 
-# Ontwerp een Rate Limiter — APIs beschermen op schaal
+# Ontwerp een Rate Limiter - APIs beschermen op schaal
 
-Rate limiting is een van de meest praktische system design onderwerpen. Elke productie-API — van GitHub tot Stripe — vertrouwt erop om misbruik te voorkomen, eerlijk gebruik te waarborgen en backend services te beschermen tegen overbelasting.
+Rate limiting is een van de meest praktische system design onderwerpen. Elke productie-API - van GitHub tot Stripe - vertrouwt erop om misbruik te voorkomen, eerlijk gebruik te waarborgen en backend services te beschermen tegen overbelasting.
 
-## Stap 1 — Requirements verzamelen
+## Stap 1 - Requirements verzamelen
 
 ### Functionele Requirements
 - Beperk requests op basis van configureerbare regels (per gebruiker, IP of API key)
@@ -20,19 +20,19 @@ Rate limiting is een van de meest praktische system design onderwerpen. Elke pro
 - Ondersteun meerdere rate limiting regels tegelijkertijd
 
 ### Niet-functionele Requirements
-- **Lage latency** — de limiter mag geen significante overhead toevoegen
-- **Gedistribueerd** — werkt over meerdere servers
-- **Fouttolerant** — als de limiter faalt, moet het verkeer doorstromen (fail-open)
+- **Lage latency** - de limiter mag geen significante overhead toevoegen
+- **Gedistribueerd** - werkt over meerdere servers
+- **Fouttolerant** - als de limiter faalt, moet het verkeer doorstromen (fail-open)
 
 <ThinkAboutIt>Moet een rate limiter fail-open (verkeer toestaan) of fail-closed (verkeer blokkeren) wanneer hij crasht? Wat zijn de afwegingen voor een e-commerce site versus een bank-API?</ThinkAboutIt>
 
-## Stap 2 — Rate Limiting Algorithms
+## Stap 2 - Rate Limiting Algorithms
 
 ### Fixed Window Counter
 Verdeel tijd in vaste vensters (bijv. intervallen van 60 seconden). Verhoog een teller per request. Reset bij venstergrenzen. **Probleem:** burstverkeer op de randen van vensters kan 2× de limiet toestaan.
 
 ### Sliding Window Log
-Sla de timestamp van elke request op. Tel de entries binnen het verschuivende venster. Precies maar **geheugenintensief** — het opslaan van elke timestamp is duur op grote schaal.
+Sla de timestamp van elke request op. Tel de entries binnen het verschuivende venster. Precies maar **geheugenintensief** - het opslaan van elke timestamp is duur op grote schaal.
 
 ### Sliding Window Counter
 Een hybride: combineer de teller van het huidige venster met een gewogen deel van het vorige venster. Balanceert nauwkeurigheid en geheugenefficiëntie.
@@ -59,7 +59,7 @@ Time 1s: refill +2 → [🪙🪙🪙🪙] → 4 tokens
 
 <Quiz question="Welk algoritme staat gecontroleerde bursts toe terwijl het een stabiel langetermijntempo behoudt?" options="Fixed Window Counter|Sliding Window Log|Token Bucket|Sliding Window Counter" answer="2" explanation="Token Bucket staat korte bursts toe tot de bucketcapaciteit terwijl het een gemiddeld tempo afdwingt via het refill-mechanisme. Dit maakt het ideaal voor APIs die met pieken in het verkeer moeten omgaan." />
 
-## Stap 3 — Architectuur op hoog niveau
+## Stap 3 - Architectuur op hoog niveau
 
 ```
 Client → API Gateway (Rate Limiter Middleware) → Backend Services
@@ -71,16 +71,16 @@ Client → API Gateway (Rate Limiter Middleware) → Backend Services
 <Illustration src="/images/lessons/design-rate-limiter.svg" alt="Rate limiter architectuur met clients, API gateway met rate limiting middleware, Redis cluster voor gedistribueerde state en backend services" caption="De rate limiter bevindt zich in de API gateway en gebruikt Redis voor gedistribueerde telleropslag" />
 
 ### Waar de Rate Limiter plaatsen
-- **Client-side** — eenvoudig te omzeilen, onbetrouwbaar
-- **Server-side** — alleen per instantie, schaalt niet
-- **API Gateway / Middleware** — de beste aanpak voor gedistribueerde systemen; gecentraliseerde handhaving over alle instanties
+- **Client-side** - eenvoudig te omzeilen, onbetrouwbaar
+- **Server-side** - alleen per instantie, schaalt niet
+- **API Gateway / Middleware** - de beste aanpak voor gedistribueerde systemen; gecentraliseerde handhaving over alle instanties
 
-## Stap 4 — Deep Dive: Gedistribueerde Rate Limiting
+## Stap 4 - Deep Dive: Gedistribueerde Rate Limiting
 
 ### Redis + Lua Scripts
 In een gedistribueerde setup moeten meerdere servers de rate limiting state delen. Redis is de standaardkeuze vanwege zijn atomic operations en sub-milliseconde latency.
 
-Een Lua script garandeert atomiciteit — de controle en decrement gebeuren in één enkele Redis-operatie, waardoor race conditions worden voorkomen:
+Een Lua script garandeert atomiciteit - de controle en decrement gebeuren in één enkele Redis-operatie, waardoor race conditions worden voorkomen:
 
 ```
 -- Token Bucket in Redis (pseudocode)
@@ -93,30 +93,30 @@ local last_refill = redis.call('GET', key..':time')
 
 ### Response Headers
 Goed ontworpen rate limiters communiceren hun status terug naar clients:
-- `X-RateLimit-Limit: 100` — maximaal aantal requests per venster
-- `X-RateLimit-Remaining: 42` — resterende requests
-- `X-RateLimit-Reset: 1672531200` — UTC epoch wanneer het venster reset
+- `X-RateLimit-Limit: 100` - maximaal aantal requests per venster
+- `X-RateLimit-Remaining: 42` - resterende requests
+- `X-RateLimit-Reset: 1672531200` - UTC epoch wanneer het venster reset
 - HTTP `429 Too Many Requests` met een `Retry-After` header
 
-<Quiz question="Waarom worden Lua scripts gebruikt met Redis voor rate limiting in plaats van afzonderlijke GET- en SET-commando's?" options="Lua is sneller dan Redis-commando's|Lua scripts worden atomisch uitgevoerd op Redis, waardoor race conditions worden voorkomen|Redis ondersteunt GET/SET niet standaard|Lua vermindert netwerkbandbreedte" answer="1" explanation="Lua scripts draaien atomisch op de Redis-server. Zonder atomiciteit zouden twee gelijktijdige requests hetzelfde aantal tokens kunnen lezen, beide zien dat er tokens beschikbaar zijn, en beide decrementeren — waardoor meer requests dan de limiet worden toegestaan." />
+<Quiz question="Waarom worden Lua scripts gebruikt met Redis voor rate limiting in plaats van afzonderlijke GET- en SET-commando's?" options="Lua is sneller dan Redis-commando's|Lua scripts worden atomisch uitgevoerd op Redis, waardoor race conditions worden voorkomen|Redis ondersteunt GET/SET niet standaard|Lua vermindert netwerkbandbreedte" answer="1" explanation="Lua scripts draaien atomisch op de Redis-server. Zonder atomiciteit zouden twee gelijktijdige requests hetzelfde aantal tokens kunnen lezen, beide zien dat er tokens beschikbaar zijn, en beide decrementeren - waardoor meer requests dan de limiet worden toegestaan." />
 
-## Stap 5 — Omgaan met randgevallen
+## Stap 5 - Omgaan met randgevallen
 
 ### Race Conditions
 Zonder atomic operations kunnen gelijktijdige requests limieten omzeilen. Oplossingen: Redis Lua scripts of Redis `MULTI/EXEC` transactions.
 
 ### Rate Limiting Dimensies
 Pas limieten op meerdere niveaus tegelijkertijd toe:
-- **Per gebruiker** — 100 requests/minuut voor geauthenticeerde gebruikers
-- **Per IP** — 50 requests/minuut voor anoniem verkeer
-- **Per API key** — gelaagde plannen (free: 10/min, pro: 1000/min)
+- **Per gebruiker** - 100 requests/minuut voor geauthenticeerde gebruikers
+- **Per IP** - 50 requests/minuut voor anoniem verkeer
+- **Per API key** - gelaagde plannen (free: 10/min, pro: 1000/min)
 
 ### Distributed Clock Skew
 Servers kunnen licht verschillende klokken hebben. Gebruik de Redis-servertijd als enige bron van waarheid in plaats van te vertrouwen op timestamps van applicatieservers.
 
 <FunFact>GitHub's REST API staat 5.000 requests per uur toe voor geauthenticeerde gebruikers, maar slechts 60 per uur voor niet-geauthenticeerde requests. Stripe gebruikt een sliding window aanpak met aparte limieten voor live en test mode API keys.</FunFact>
 
-## Stap 6 — Knelpunten en optimalisaties
+## Stap 6 - Knelpunten en optimalisaties
 
 | Knelpunt | Oplossing |
 |----------|-----------|
@@ -127,11 +127,11 @@ Servers kunnen licht verschillende klokken hebben. Gebruik de Redis-servertijd a
 
 <Quiz question="Een rate limiter gebruikt een fixed window van 60 seconden met een limiet van 100 requests. Een gebruiker stuurt 100 requests op seconde 59 en nog 100 op seconde 61. Hoeveel requests komen door?" options="100|150|200|Het hangt af van het algoritme" answer="2" explanation="Met fixed window counters komen alle 200 requests door, omdat er 100 in venster 1 (seconden 0-59) en 100 in venster 2 (seconden 60-119) vallen. Dit edge-burst probleem is de reden waarom sliding window of token bucket algoritmen de voorkeur krijgen." />
 
-<ThinkAboutIt>Als je rate limiting ontwerpt voor een wereldwijde API met datacenters in Londen, New York en Tokio — zou je dan één gecentraliseerde Redis gebruiken of regionale Redis clusters? Welke consistentie-afwegingen zou je accepteren?</ThinkAboutIt>
+<ThinkAboutIt>Als je rate limiting ontwerpt voor een wereldwijde API met datacenters in Londen, New York en Tokio - zou je dan één gecentraliseerde Redis gebruiken of regionale Redis clusters? Welke consistentie-afwegingen zou je accepteren?</ThinkAboutIt>
 
 ---
 
 ## 📚 Verder lezen
-- [Rate Limiting — System Design Interview, Ch. 4](https://bytebytego.com/) — Alex Xu's stapsgewijze rate limiter ontwerp
-- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) — hoe Stripe rate limiting in productie afhandelt
-- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) — echte API gateway implementatie
+- [Rate Limiting - System Design Interview, Ch. 4](https://bytebytego.com/) - Alex Xu's stapsgewijze rate limiter ontwerp
+- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) - hoe Stripe rate limiting in productie afhandelt
+- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) - echte API gateway implementatie

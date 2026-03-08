@@ -1,5 +1,5 @@
 ---
-title: "Chaînes de caractères et traitement de texte — Comment l'IA lit et comprend le texte"
+title: "Chaînes de caractères et traitement de texte - Comment l'IA lit et comprend le texte"
 description: "Explorez comment les systèmes d'IA décomposent, recherchent et manipulent le texte grâce aux opérations sur les chaînes et au pattern matching."
 order: 2
 difficulty: "intermediate"
@@ -10,13 +10,13 @@ published: true
 
 ## Le texte est omniprésent en IA
 
-Avant qu'une IA puisse comprendre votre question, rédiger un essai ou traduire une phrase, elle doit traiter du texte brut. Chaque chatbot, moteur de recherche et modèle de langage commence par des **chaînes de caractères** (strings) — des séquences de caractères représentant le langage humain.
+Avant qu'une IA puisse comprendre votre question, rédiger un essai ou traduire une phrase, elle doit traiter du texte brut. Chaque chatbot, moteur de recherche et modèle de langage commence par des **chaînes de caractères** (strings) - des séquences de caractères représentant le langage humain.
 
 Comprendre le fonctionnement des chaînes ouvre la porte au traitement du langage naturel (NLP), l'un des domaines les plus passionnants de l'intelligence artificielle.
 
 ## Les bases des chaînes
 
-Une chaîne est simplement une séquence de caractères — lettres, chiffres, espaces et symboles — stockés dans l'ordre.
+Une chaîne est simplement une séquence de caractères - lettres, chiffres, espaces et symboles - stockés dans l'ordre.
 
 ```
 message = "Hello, World!"
@@ -29,23 +29,23 @@ index:  0  1  2  3  4  5  6  7  8  9  10  11  12
 char:   H  e  l  l  o  ,     W  o  r   l   d   !
 ```
 
-<Illustration src="/images/lessons/strings-and-text.svg" alt="Une chaîne décomposée en caractères individuels avec les positions d'index sous chacun" caption="En coulisses, une chaîne est un tableau de caractères — chacun avec son propre index." />
+<Illustration src="/images/lessons/strings-and-text.svg" alt="Une chaîne décomposée en caractères individuels avec les positions d'index sous chacun" caption="En coulisses, une chaîne est un tableau de caractères - chacun avec son propre index." />
 
 ### Sous-chaînes
 
-Une **sous-chaîne** (substring) est un extrait d'une chaîne. De « Hello, World! » on peut extraire « World » (indices 7 à 11). Les systèmes d'IA extraient constamment des sous-chaînes — noms dans des phrases, hashtags dans des tweets, URLs dans des pages web.
+Une **sous-chaîne** (substring) est un extrait d'une chaîne. De « Hello, World! » on peut extraire « World » (indices 7 à 11). Les systèmes d'IA extraient constamment des sous-chaînes - noms dans des phrases, hashtags dans des tweets, URLs dans des pages web.
 
 ### Immutabilité
 
-Dans la plupart des langages, les chaînes sont **immuables** — on ne peut pas modifier un caractère en place. On crée une nouvelle chaîne. Cela compte pour la performance : si votre pipeline IA modifie du texte des millions de fois, créer une nouvelle chaîne à chaque fois peut ralentir les choses.
+Dans la plupart des langages, les chaînes sont **immuables** - on ne peut pas modifier un caractère en place. On crée une nouvelle chaîne. Cela compte pour la performance : si votre pipeline IA modifie du texte des millions de fois, créer une nouvelle chaîne à chaque fois peut ralentir les choses.
 
 <FunFact>
-L'œuvre complète de Shakespeare contient environ 900 000 mots. GPT-4 a été entraîné sur des jeux de données des milliers de fois plus grands — des centaines de milliards de mots, tous traités comme des chaînes avant d'être convertis en nombres.
+L'œuvre complète de Shakespeare contient environ 900 000 mots. GPT-4 a été entraîné sur des jeux de données des milliers de fois plus grands - des centaines de milliards de mots, tous traités comme des chaînes avant d'être convertis en nombres.
 </FunFact>
 
 ## Comment ChatGPT lit le texte : la tokenisation
 
-Les modèles d'IA ne lisent pas les mots comme les humains. Ils utilisent la **tokenisation** — découper le texte en morceaux plus petits appelés tokens.
+Les modèles d'IA ne lisent pas les mots comme les humains. Ils utilisent la **tokenisation** - découper le texte en morceaux plus petits appelés tokens.
 
 ```
 Input:  "unhappiness"
@@ -65,9 +65,9 @@ Quand vous tapez un mot long et inhabituel comme « antidisestablishmentarianism
 
 - Un modèle de langage typique a un vocabulaire de 50 000 à 100 000 tokens.
 - Chaque token correspond à un nombre (son ID) que le modèle traite réellement.
-- La manière dont le texte est tokenisé affecte le coût — plus de tokens signifie plus de calcul et des frais d'API plus élevés.
+- La manière dont le texte est tokenisé affecte le coût - plus de tokens signifie plus de calcul et des frais d'API plus élevés.
 
-## Pattern matching — Trouver l'aiguille dans la botte de foin
+## Pattern matching - Trouver l'aiguille dans la botte de foin
 
 Une opération fondamentale sur les chaînes : chercher un motif dans un texte plus grand. Cet email contient-il le mot « urgent » ? Ce code contient-il une faille de sécurité ?
 
@@ -86,7 +86,7 @@ Position 4: "cat" → match found at index 4!
 
 C'est du **O(n × m)** dans le pire cas, avec n la longueur du texte et m celle du motif. Pour de courts motifs, ça va. Pour scanner des millions de documents, il faut des approches plus malignes.
 
-<Quiz question="Pourquoi le pattern matching naïf est-il lent pour de très grands textes ?" options="Il utilise trop de mémoire|Il vérifie chaque position de départ possible et compare caractère par caractère|Il ne fonctionne qu'avec les caractères alphabétiques|Il nécessite que le texte soit trié d'abord" answer="1" explanation="L'approche naïve fait glisser le motif sur chaque position du texte, comparant jusqu'à m caractères à chaque position — donnant une complexité O(n × m)." />
+<Quiz question="Pourquoi le pattern matching naïf est-il lent pour de très grands textes ?" options="Il utilise trop de mémoire|Il vérifie chaque position de départ possible et compare caractère par caractère|Il ne fonctionne qu'avec les caractères alphabétiques|Il nécessite que le texte soit trié d'abord" answer="1" explanation="L'approche naïve fait glisser le motif sur chaque position du texte, comparant jusqu'à m caractères à chaque position - donnant une complexité O(n × m)." />
 
 ## Défis classiques sur les chaînes
 
@@ -96,7 +96,7 @@ C'est du **O(n × m)** dans le pire cas, avec n la longueur du texte et m celle 
 reverse("hello") → "olleh"
 ```
 
-L'IA utilise l'inversion dans les modèles séquence-à-séquence — certains modèles de traduction inversaient la phrase d'entrée pour améliorer la précision.
+L'IA utilise l'inversion dans les modèles séquence-à-séquence - certains modèles de traduction inversaient la phrase d'entrée pour améliorer la précision.
 
 ### Détection de palindromes
 
@@ -118,11 +118,11 @@ are_anagrams(word1, word2):
     return character_counts(word1) == character_counts(word2)
 ```
 
-C'est directement lié au patron de comptage de fréquences de la leçon précédente — les hash maps rendent cela O(n).
+C'est directement lié au patron de comptage de fréquences de la leçon précédente - les hash maps rendent cela O(n).
 
-<Quiz question="Quelle approche vérifie le plus efficacement si deux mots sont des anagrammes ?" options="Trier les deux mots et les comparer|Comparer chaque caractère du mot1 avec chaque caractère du mot2|Compter les fréquences de caractères avec une hash map et comparer|Inverser un mot et vérifier s'il est égal à l'autre" answer="2" explanation="Compter les fréquences avec une hash map est en O(n) — un seul passage dans chaque mot. Le tri marche aussi en O(n log n), mais la hash map est plus rapide pour les grandes chaînes." />
+<Quiz question="Quelle approche vérifie le plus efficacement si deux mots sont des anagrammes ?" options="Trier les deux mots et les comparer|Comparer chaque caractère du mot1 avec chaque caractère du mot2|Compter les fréquences de caractères avec une hash map et comparer|Inverser un mot et vérifier s'il est égal à l'autre" answer="2" explanation="Compter les fréquences avec une hash map est en O(n) - un seul passage dans chaque mot. Le tri marche aussi en O(n log n), mais la hash map est plus rapide pour les grandes chaînes." />
 
-## Expressions régulières — Le pattern matching surpuissant
+## Expressions régulières - Le pattern matching surpuissant
 
 Les expressions régulières (regex) permettent de décrire des motifs plutôt que du texte exact :
 
@@ -133,10 +133,10 @@ Les expressions régulières (regex) permettent de décrire des motifs plutôt q
 | `\b\w+@\w+\.\w+\b` | Adresses email | Extraction de données |
 | `(cat\|dog\|bird)` | L'un des trois mots | Mots-clés de classification |
 
-Les pipelines IA utilisent les regex massivement pour le **nettoyage de données** — supprimer les balises HTML, extraire des dates, standardiser des numéros de téléphone.
+Les pipelines IA utilisent les regex massivement pour le **nettoyage de données** - supprimer les balises HTML, extraire des dates, standardiser des numéros de téléphone.
 
 <Callout>
-Les expressions régulières sont puissantes mais piégeuses. Un regex mal écrit peut prendre un temps exponentiel sur certaines entrées — le fameux « catastrophic backtracking ». Testez toujours vos motifs sur des cas limites.
+Les expressions régulières sont puissantes mais piégeuses. Un regex mal écrit peut prendre un temps exponentiel sur certaines entrées - le fameux « catastrophic backtracking ». Testez toujours vos motifs sur des cas limites.
 </Callout>
 
 ## Pipeline réel de traitement de texte en IA
@@ -148,21 +148,21 @@ Les expressions régulières sont puissantes mais piégeuses. Un regex mal écri
 5. **IDs de tokens** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
 6. **Vers le modèle** → Des nombres que l'IA peut réellement traiter
 
-Chaque étape implique des opérations sur les chaînes — découpe, recherche, remplacement et division.
+Chaque étape implique des opérations sur les chaînes - découpe, recherche, remplacement et division.
 
 <ThinkAboutIt>
 Quand vous envoyez un message à un chatbot dans une langue qui n'utilise pas d'espaces entre les mots (comme le chinois ou le japonais), comment la tokenisation pourrait-elle fonctionner différemment ?
 </ThinkAboutIt>
 
 <FunFact>
-Le tokeniseur d'OpenAI découpe « tokenisation » en ["token", "isation"] — deux tokens. Mais l'orthographe américaine « tokenization » donne ["token", "ization"]. Le même concept coûte différemment selon l'orthographe !
+Le tokeniseur d'OpenAI découpe « tokenisation » en ["token", "isation"] - deux tokens. Mais l'orthographe américaine « tokenization » donne ["token", "ization"]. Le même concept coûte différemment selon l'orthographe !
 </FunFact>
 
-<Quiz question="Dans un pipeline de traitement de texte, pourquoi effectue-t-on la tokenisation avant d'alimenter un modèle d'IA ?" options="Pour rendre le texte plus joli|Pour convertir le texte en IDs de tokens numériques que le modèle peut traiter mathématiquement|Pour vérifier l'orthographe|Pour compresser le texte et économiser de l'espace" answer="1" explanation="Les modèles d'IA travaillent avec des nombres, pas des lettres. La tokenisation convertit le texte en IDs de tokens — des représentations numériques utilisables dans les opérations mathématiques du modèle." />
+<Quiz question="Dans un pipeline de traitement de texte, pourquoi effectue-t-on la tokenisation avant d'alimenter un modèle d'IA ?" options="Pour rendre le texte plus joli|Pour convertir le texte en IDs de tokens numériques que le modèle peut traiter mathématiquement|Pour vérifier l'orthographe|Pour compresser le texte et économiser de l'espace" answer="1" explanation="Les modèles d'IA travaillent avec des nombres, pas des lettres. La tokenisation convertit le texte en IDs de tokens - des représentations numériques utilisables dans les opérations mathématiques du modèle." />
 
 ## Points clés à retenir
 
-- Les chaînes sont des séquences de caractères — la matière première de toute IA textuelle.
+- Les chaînes sont des séquences de caractères - la matière première de toute IA textuelle.
 - La **tokenisation** fait le pont entre le langage humain et l'apprentissage automatique.
 - Le pattern matching et les regex sont essentiels pour nettoyer et extraire les données.
 - Les problèmes classiques (inversion, palindromes, anagrammes) construisent les compétences nécessaires au traitement IA.

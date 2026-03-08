@@ -1,5 +1,5 @@
 ---
-title: "Dynamic Programming — Comment l'IA résout des problèmes complexes en les décomposant"
+title: "Dynamic Programming - Comment l'IA résout des problèmes complexes en les décomposant"
 description: "Comprendre la memoisation, la tabulation et les patterns DP classiques utilisés en IA et en informatique."
 order: 4
 difficulty: "intermediate"
@@ -10,18 +10,18 @@ published: true
 
 ## L'idée fondamentale
 
-Certains problèmes semblent d'une complexité insurmontable jusqu'à ce qu'on remarque qu'ils sont composés de **sous-problèmes plus petits et répétitifs**. Le dynamic programming (DP) résout chaque sous-problème **une seule fois**, stocke le résultat et le réutilise — échangeant un peu de mémoire contre une accélération spectaculaire.
+Certains problèmes semblent d'une complexité insurmontable jusqu'à ce qu'on remarque qu'ils sont composés de **sous-problèmes plus petits et répétitifs**. Le dynamic programming (DP) résout chaque sous-problème **une seule fois**, stocke le résultat et le réutilise - échangeant un peu de mémoire contre une accélération spectaculaire.
 
 Deux conditions signalent une opportunité DP :
 
-1. **Sous-problèmes chevauchants** — les mêmes calculs reviennent de nombreuses fois.
-2. **Sous-structure optimale** — la meilleure solution du problème global peut être construite à partir des meilleures solutions de ses parties.
+1. **Sous-problèmes chevauchants** - les mêmes calculs reviennent de nombreuses fois.
+2. **Sous-structure optimale** - la meilleure solution du problème global peut être construite à partir des meilleures solutions de ses parties.
 
 <Illustration src="/images/lessons/dynamic-programming.svg" alt="Un arbre de récursion pour Fibonacci montrant les sous-problèmes répétés en surbrillance, à côté d'une table DP remplie" caption="Sans DP, Fibonacci recalcule les mêmes valeurs de manière exponentielle. Avec DP, chaque valeur n'est calculée qu'une seule fois." />
 
 ## Fibonacci : l'exemple classique
 
-### Récursion naïve — O(2ⁿ)
+### Récursion naïve - O(2ⁿ)
 
 ```
 function fib(n):
@@ -31,7 +31,7 @@ function fib(n):
 
 Appeler `fib(5)` déclenche **15** appels de fonction, dont beaucoup sont redondants. À `fib(40)`, cela prend des secondes ; à `fib(100)`, cela durerait plus longtemps que l'univers.
 
-### Memoisation (Top-Down) — O(n)
+### Memoisation (Top-Down) - O(n)
 
 Stockez les résultats dans un cache. Si un sous-problème a déjà été résolu, renvoyez la réponse en cache.
 
@@ -44,7 +44,7 @@ function fib(n):
     return memo[n]
 ```
 
-### Tabulation (Bottom-Up) — O(n)
+### Tabulation (Bottom-Up) - O(n)
 
 Construisez la réponse itérativement à partir des cas de base.
 
@@ -73,7 +73,7 @@ function climbStairs(n):
     return b
 ```
 
-C'est Fibonacci déguisé — la réponse pour la marche _n_ est la somme des façons d'atteindre les marches _n−1_ et _n−2_.
+C'est Fibonacci déguisé - la réponse pour la marche _n_ est la somme des façons d'atteindre les marches _n−1_ et _n−2_.
 
 ### Coin Change
 
@@ -121,7 +121,7 @@ function lcs(s1, s2):
 | **Décodage CTC** | Écriture manuscrite / speech-to-text | Fusion optimale de caractères répétés |
 | **Élagage beam search** | Traduction automatique | Conservation des top-k traductions partielles |
 
-<Quiz question="Quel algorithme basé sur le DP un correcteur orthographique utilise-t-il le plus probablement pour suggérer des corrections ?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Monter des escaliers" answer="1" explanation="L'edit distance compte le nombre minimum d'insertions, suppressions et substitutions pour transformer un mot en un autre — mesurant directement la « proximité » d'une faute d'orthographe avec un mot du dictionnaire." />
+<Quiz question="Quel algorithme basé sur le DP un correcteur orthographique utilise-t-il le plus probablement pour suggérer des corrections ?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Monter des escaliers" answer="1" explanation="L'edit distance compte le nombre minimum d'insertions, suppressions et substitutions pour transformer un mot en un autre - mesurant directement la « proximité » d'une faute d'orthographe avec un mot du dictionnaire." />
 
 ## Top-Down vs Bottom-Up
 
@@ -140,7 +140,7 @@ function lcs(s1, s2):
 
 1. Le DP transforme la force brute exponentielle en temps polynomial en **mettant en cache le travail répété**.
 2. Identifiez les sous-problèmes chevauchants et la sous-structure optimale avant d'opter pour le DP.
-3. La memoisation est intuitive ; la tabulation est efficace — apprenez les deux.
+3. La memoisation est intuitive ; la tabulation est efficace - apprenez les deux.
 4. L'edit distance, Viterbi et l'alignement de séquences montrent le DP au cœur de l'IA moderne.
 
-<Quiz question="Un problème présente des sous-problèmes chevauchants mais N'A PAS de sous-structure optimale. Peut-on appliquer le DP pour trouver la solution optimale ?" options="Oui — le DP fonctionne toujours si les sous-problèmes se chevauchent|Non — les deux conditions sont requises pour que le DP garantisse l'optimalité|Uniquement avec la tabulation|Uniquement pour les problèmes de graphes" answer="1" explanation="Le DP nécessite à la fois des sous-problèmes chevauchants (pour l'efficacité) et une sous-structure optimale (pour la correction). Sans sous-structure optimale, le cache seul ne garantit pas l'optimum global." />
+<Quiz question="Un problème présente des sous-problèmes chevauchants mais N'A PAS de sous-structure optimale. Peut-on appliquer le DP pour trouver la solution optimale ?" options="Oui - le DP fonctionne toujours si les sous-problèmes se chevauchent|Non - les deux conditions sont requises pour que le DP garantisse l'optimalité|Uniquement avec la tabulation|Uniquement pour les problèmes de graphes" answer="1" explanation="Le DP nécessite à la fois des sous-problèmes chevauchants (pour l'efficacité) et une sous-structure optimale (pour la correction). Sans sous-structure optimale, le cache seul ne garantit pas l'optimum global." />

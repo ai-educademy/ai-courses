@@ -1,5 +1,5 @@
 ---
-title: "Arrays and Hash Maps — How AI Stores and Retrieves Data"
+title: "Arrays and Hash Maps - How AI Stores and Retrieves Data"
 description: "Learn how arrays and hash maps power everything from feature vectors to embedding lookups in AI systems."
 order: 1
 difficulty: "intermediate"
@@ -10,20 +10,20 @@ published: true
 
 ## Why Data Storage Matters in AI
 
-Every AI system needs to store and retrieve data — quickly. Whether it's a list of pixel values in an image, a vocabulary of 50,000 words, or millions of user preferences, the choice of data structure determines how fast your AI can think.
+Every AI system needs to store and retrieve data - quickly. Whether it's a list of pixel values in an image, a vocabulary of 50,000 words, or millions of user preferences, the choice of data structure determines how fast your AI can think.
 
 Two structures dominate: **arrays** and **hash maps**. Master these, and you've got the foundation for nearly every AI pipeline.
 
-## Arrays — Ordered Lists with Instant Access
+## Arrays - Ordered Lists with Instant Access
 
-An array is simply a numbered list of items stored side by side in memory. Each item has an **index** — its position in the list, starting from zero.
+An array is simply a numbered list of items stored side by side in memory. Each item has an **index** - its position in the list, starting from zero.
 
 ```
 index:   0       1       2       3       4
 value: ["cat", "dog", "bird", "fish", "frog"]
 ```
 
-Because items sit next to each other, you can jump straight to any position. Want item 3? Done — no searching required. That's **O(1)** access, meaning it takes the same time whether the array holds 10 items or 10 million.
+Because items sit next to each other, you can jump straight to any position. Want item 3? Done - no searching required. That's **O(1)** access, meaning it takes the same time whether the array holds 10 items or 10 million.
 
 <Illustration src="/images/lessons/arrays-and-hashmaps.svg" alt="An array of five elements with indices 0 through 4, showing direct access to index 3" caption="Arrays let you jump directly to any position using its index." />
 
@@ -35,13 +35,13 @@ Because items sit next to each other, you can jump straight to any position. Wan
 
 ### The Catch
 
-Inserting or removing items in the middle is expensive. Every item after the change must shuffle along. That's **O(n)** — the more items, the longer it takes.
+Inserting or removing items in the middle is expensive. Every item after the change must shuffle along. That's **O(n)** - the more items, the longer it takes.
 
 <ThinkAboutIt>
 If you had a playlist of 10,000 songs and wanted to insert a new track at position 5, every song from position 5 onwards would need to shift. How might a streaming service handle this without slowing down?
 </ThinkAboutIt>
 
-## Hash Maps — Instant Lookups by Name
+## Hash Maps - Instant Lookups by Name
 
 A hash map (also called a dictionary or hash table) stores data as **key-value pairs**. Instead of accessing items by index number, you access them by a meaningful key.
 
@@ -53,7 +53,7 @@ word_counts = {
 }
 ```
 
-Need the count for "AI"? The hash map uses a **hash function** to convert the key into an index behind the scenes. The result? **O(1)** average lookup time — just like arrays, but using names instead of numbers.
+Need the count for "AI"? The hash map uses a **hash function** to convert the key into an index behind the scenes. The result? **O(1)** average lookup time - just like arrays, but using names instead of numbers.
 
 <FunFact>
 Python's dictionaries are hash maps. When ChatGPT counts word frequencies during training, it uses hash-map-like structures to track billions of word occurrences across the entire internet's text.
@@ -77,7 +77,7 @@ Python's dictionaries are hash maps. When ChatGPT counts word frequencies during
 
 Think of **O(1)** as "instant, no matter the size" and **O(n)** as "slower the bigger the data."
 
-<Quiz question="You have 100,000 user profiles and need to find a user by their username. Which structure is fastest?" options="An array sorted alphabetically|A hash map with usernames as keys|A plain unsorted array|It doesn't matter — they're all the same" answer="1" explanation="A hash map gives O(1) average lookup by key, making it ideal for finding items by a unique identifier like a username." />
+<Quiz question="You have 100,000 user profiles and need to find a user by their username. Which structure is fastest?" options="An array sorted alphabetically|A hash map with usernames as keys|A plain unsorted array|It doesn't matter - they're all the same" answer="1" explanation="A hash map gives O(1) average lookup by key, making it ideal for finding items by a unique identifier like a username." />
 
 ## Common Pattern: Frequency Counting
 
@@ -96,7 +96,7 @@ This single pass through the text gives you every word's frequency. Language mod
 
 ## Common Pattern: The Two-Sum Problem
 
-Given an array of numbers and a target, find two numbers that add up to the target. The naive approach checks every pair — O(n²). The clever approach uses a hash map:
+Given an array of numbers and a target, find two numbers that add up to the target. The naive approach checks every pair - O(n²). The clever approach uses a hash map:
 
 ```
 seen = {}
@@ -109,7 +109,7 @@ for each number in array:
 
 One pass, O(n) time. The hash map remembers what you've already seen.
 
-<Quiz question="Why is the hash map approach to two-sum faster than checking every pair?" options="Hash maps use less memory|Hash maps let you check 'have I seen this number?' in O(1) instead of scanning the whole array|Hash maps sort the data automatically|Hash maps work only with small arrays" answer="1" explanation="Each lookup in a hash map is O(1) on average, so instead of comparing every pair (O(n²)), you make a single pass with O(1) lookups — giving O(n) total." />
+<Quiz question="Why is the hash map approach to two-sum faster than checking every pair?" options="Hash maps use less memory|Hash maps let you check 'have I seen this number?' in O(1) instead of scanning the whole array|Hash maps sort the data automatically|Hash maps work only with small arrays" answer="1" explanation="Each lookup in a hash map is O(1) on average, so instead of comparing every pair (O(n²)), you make a single pass with O(1) lookups - giving O(n) total." />
 
 ## When to Choose Which
 
@@ -120,11 +120,11 @@ One pass, O(n) time. The hash map remembers what you've already seen.
 A recommendation engine needs to check whether a user has already watched a film before suggesting it. Would you store the user's watch history in an array or a hash map? What trade-offs come to mind?
 </ThinkAboutIt>
 
-<Quiz question="An AI model stores word embeddings as arrays of 300 numbers each. Why are arrays a good choice here?" options="Arrays allow random key-based access|Arrays store ordered, fixed-size numerical data efficiently and GPUs process them in parallel|Arrays automatically sort the numbers|Arrays use less memory than any other structure" answer="1" explanation="Embeddings are fixed-length sequences of numbers where order matters — position 0 might represent 'gender' and position 1 'royalty'. Arrays store these compactly and GPUs are optimised for array operations." />
+<Quiz question="An AI model stores word embeddings as arrays of 300 numbers each. Why are arrays a good choice here?" options="Arrays allow random key-based access|Arrays store ordered, fixed-size numerical data efficiently and GPUs process them in parallel|Arrays automatically sort the numbers|Arrays use less memory than any other structure" answer="1" explanation="Embeddings are fixed-length sequences of numbers where order matters - position 0 might represent 'gender' and position 1 'royalty'. Arrays store these compactly and GPUs are optimised for array operations." />
 
 ## Key Takeaways
 
 - **Arrays** give O(1) access by index and are the backbone of numerical AI (images, embeddings, tensors).
 - **Hash maps** give O(1) access by key and are essential for lookups, counting, and caching.
-- Choosing the right structure can turn an O(n²) algorithm into an O(n) one — a difference that matters when processing millions of data points.
+- Choosing the right structure can turn an O(n²) algorithm into an O(n) one - a difference that matters when processing millions of data points.
 - In practice, most AI pipelines use both: arrays for numerical computation and hash maps for metadata lookups.

@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Neural Networks — How AI Thinks in Layers"
+title: "Introduction to Neural Networks - How AI Thinks in Layers"
 description: "Explore how neural networks mimic the brain, process information through layers, and learn from their mistakes."
 order: 3
 difficulty: "beginner"
@@ -10,7 +10,7 @@ published: true
 
 # Introduction to Neural Networks
 
-Decision trees and KNN are powerful, but the technology behind today's most impressive AI — from ChatGPT to self-driving cars — is the **neural network**. Inspired by the human brain, neural networks can learn incredibly complex patterns that simpler algorithms cannot.
+Decision trees and KNN are powerful, but the technology behind today's most impressive AI - from ChatGPT to self-driving cars - is the **neural network**. Inspired by the human brain, neural networks can learn incredibly complex patterns that simpler algorithms cannot.
 
 Let us peel back the layers and see how they work.
 
@@ -21,7 +21,7 @@ Your brain contains roughly 86 billion **neurons** connected by trillions of **s
 Artificial neural networks borrow this idea. They use **artificial neurons** (small mathematical functions) connected in a network. When the network practises on data, the connections that lead to correct answers get strengthened, and the ones that lead to wrong answers get weakened.
 
 <FunFact>
-The first artificial neuron — the Perceptron — was invented in 1958 by Frank Rosenblatt. It could only learn simple patterns, but it laid the groundwork for everything we have today.
+The first artificial neuron - the Perceptron - was invented in 1958 by Frank Rosenblatt. It could only learn simple patterns, but it laid the groundwork for everything we have today.
 </FunFact>
 
 ## The Three Types of Layers
@@ -29,28 +29,28 @@ The first artificial neuron — the Perceptron — was invented in 1958 by Frank
 Every neural network has three types of layers:
 
 ### 1. Input Layer
-This is where data enters the network. Each neuron in this layer receives one feature from the dataset. For a 28×28 pixel image, the input layer would have 784 neurons — one for each pixel.
+This is where data enters the network. Each neuron in this layer receives one feature from the dataset. For a 28×28 pixel image, the input layer would have 784 neurons - one for each pixel.
 
 ### 2. Hidden Layers
-These are the layers between input and output where the real learning happens. Each neuron takes inputs, processes them, and passes the result forward. A network can have one hidden layer or hundreds — the more layers, the "deeper" the network.
+These are the layers between input and output where the real learning happens. Each neuron takes inputs, processes them, and passes the result forward. A network can have one hidden layer or hundreds - the more layers, the "deeper" the network.
 
 ### 3. Output Layer
 This layer produces the final answer. For a digit classifier (0–9), the output layer has 10 neurons, each representing the probability of a different digit.
 
-<Illustration src="/images/lessons/neural-networks-intro.svg" alt="A diagram showing three layers of a neural network: input layer on the left, two hidden layers in the middle, and output layer on the right, with arrows connecting neurons between layers" caption="A neural network processes data through layers — input, hidden, and output — to arrive at a prediction." />
+<Illustration src="/images/lessons/neural-networks-intro.svg" alt="A diagram showing three layers of a neural network: input layer on the left, two hidden layers in the middle, and output layer on the right, with arrows connecting neurons between layers" caption="A neural network processes data through layers - input, hidden, and output - to arrive at a prediction." />
 
 <Quiz question="What is the role of hidden layers in a neural network?" options="They store the original training data|They display the final prediction to the user|They process inputs and learn complex patterns|They clean and format the raw data" answer="2" explanation="Hidden layers are where the actual learning takes place. Each layer extracts increasingly complex patterns from the data as it flows through the network." />
 
 ## Weights and Biases: The Volume Knobs
 
-Every connection between two neurons has a **weight** — a number that controls how much influence one neuron has on the next. Think of weights as **volume knobs**: turning one up makes that connection louder; turning it down makes it quieter.
+Every connection between two neurons has a **weight** - a number that controls how much influence one neuron has on the next. Think of weights as **volume knobs**: turning one up makes that connection louder; turning it down makes it quieter.
 
-Each neuron also has a **bias** — a number that shifts the output up or down, like adjusting the baseline volume before any signal arrives.
+Each neuron also has a **bias** - a number that shifts the output up or down, like adjusting the baseline volume before any signal arrives.
 
 When a neural network learns, it is really just **adjusting thousands or millions of these weights and biases** until it finds the combination that gives the best predictions.
 
 <ThinkAboutIt>
-Imagine you are mixing music and you have hundreds of volume knobs — one for each instrument and microphone. Getting the perfect mix means carefully adjusting every knob. That is what training a neural network is like, except with millions of knobs adjusted automatically.
+Imagine you are mixing music and you have hundreds of volume knobs - one for each instrument and microphone. Getting the perfect mix means carefully adjusting every knob. That is what training a neural network is like, except with millions of knobs adjusted automatically.
 </ThinkAboutIt>
 
 ## How a Neural Network Learns
@@ -64,13 +64,13 @@ Data flows through the network from input to output. Each neuron multiplies its 
 The prediction is compared to the correct answer. The difference is the **error** (also called **loss**). A prediction of "7" when the answer is "3" produces a large error; a prediction of "3" produces a small one.
 
 ### Step 3: Backpropagation
-The error is sent **backwards** through the network. Each weight learns how much it contributed to the mistake. This is the mathematical magic of **backpropagation** — it figures out which knobs to turn and by how much.
+The error is sent **backwards** through the network. Each weight learns how much it contributed to the mistake. This is the mathematical magic of **backpropagation** - it figures out which knobs to turn and by how much.
 
 ### Step 4: Update Weights
 The weights and biases are adjusted slightly to reduce the error. Then the cycle repeats with the next piece of data.
 
 <Callout>
-A neural network does not learn in one go. It repeats this cycle thousands or millions of times, gradually getting better with each pass — much like how you improve at a skill through practice.
+A neural network does not learn in one go. It repeats this cycle thousands or millions of times, gradually getting better with each pass - much like how you improve at a skill through practice.
 </Callout>
 
 <Quiz question="What does backpropagation do in a neural network?" options="It sends data forward through the network|It deletes neurons that are not useful|It sends the error backwards to update weights|It adds new layers to the network" answer="2" explanation="Backpropagation calculates how much each weight contributed to the error and sends that information backwards through the network so weights can be adjusted." />
@@ -89,16 +89,16 @@ Let us trace how a neural network classifies a handwritten "5" from the MNIST da
    - Digit 8: 4% confident
    - All others: less than 1%
 
-4. **Decision:** The network picks the digit with the highest probability — **5**. Correct!
+4. **Decision:** The network picks the digit with the highest probability - **5**. Correct!
 
 5. **If wrong:** Backpropagation adjusts the weights so next time, the correct digit gets a higher score.
 
 <FunFact>
-Modern neural networks can classify handwritten digits with over 99.7% accuracy — better than most humans. The MNIST dataset has become so "easy" for AI that researchers now use harder benchmarks to test new models.
+Modern neural networks can classify handwritten digits with over 99.7% accuracy - better than most humans. The MNIST dataset has become so "easy" for AI that researchers now use harder benchmarks to test new models.
 </FunFact>
 
 <ThinkAboutIt>
-When you look at a handwritten "5", your brain does not analyse individual pixels. You recognise the overall shape instantly. Neural networks learn to do something similar — but they build that understanding one layer at a time, starting from pixels and working up to shapes.
+When you look at a handwritten "5", your brain does not analyse individual pixels. You recognise the overall shape instantly. Neural networks learn to do something similar - but they build that understanding one layer at a time, starting from pixels and working up to shapes.
 </ThinkAboutIt>
 
 ## Activation Functions: The Gatekeepers
@@ -107,7 +107,7 @@ Not every signal should pass through a neuron at full strength. **Activation fun
 
 The most common activation function today is **ReLU** (Rectified Linear Unit). It has a simple rule: if the input is positive, let it through unchanged; if negative, output zero. This simplicity makes it fast to compute while still allowing the network to learn complex patterns.
 
-Without activation functions, no matter how many layers you stack, the network could only learn simple linear relationships — like drawing straight lines through data. Activation functions give neural networks the ability to learn curves, boundaries, and intricate patterns.
+Without activation functions, no matter how many layers you stack, the network could only learn simple linear relationships - like drawing straight lines through data. Activation functions give neural networks the ability to learn curves, boundaries, and intricate patterns.
 
 ## Why "Deep" Learning?
 
@@ -130,4 +130,4 @@ This layered approach is why deep learning excels at complex tasks like image re
 - Learning follows a cycle: **forward pass → error → backpropagation → update**.
 - **Deep learning** uses many hidden layers to learn complex patterns.
 
-In the next lesson, we will zoom in on the **training process** — how you actually teach a neural network to get smarter over time.
+In the next lesson, we will zoom in on the **training process** - how you actually teach a neural network to get smarter over time.

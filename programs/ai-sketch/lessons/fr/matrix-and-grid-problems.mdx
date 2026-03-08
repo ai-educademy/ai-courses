@@ -1,5 +1,5 @@
 ---
-title: "Matrices et grilles — BFS sur grilles et comptage d'îles"
+title: "Matrices et grilles - BFS sur grilles et comptage d'îles"
 description: "Maîtrisez le parcours de grilles 2D avec BFS, DFS, flood fill, BFS multi-source, parcours en spirale et programmation dynamique sur grilles."
 order: 10
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Tableaux 2D comme grilles
 
-Une matrice est simplement un tableau 2D, mais en entretien elle représente souvent une **grille** — une carte, un plateau ou un labyrinthe. Chaque cellule `grid[r][c]` est un nœud, et ses voisins sont les cellules adjacentes.
+Une matrice est simplement un tableau 2D, mais en entretien elle représente souvent une **grille** - une carte, un plateau ou un labyrinthe. Chaque cellule `grid[r][c]` est un nœud, et ses voisins sont les cellules adjacentes.
 
 ```
 grid = [
@@ -20,7 +20,7 @@ grid = [
 ]
 ```
 
-Ligne `r`, colonne `c`, dimensions `m × n`. Simple — mais les patrons construits dessus sont puissants.
+Ligne `r`, colonne `c`, dimensions `m × n`. Simple - mais les patrons construits dessus sont puissants.
 
 ## Tableaux de directions
 
@@ -42,9 +42,9 @@ for dr, dc in dirs:
 
 C'est l'extrait de code le plus réutilisable dans les problèmes de grilles.
 
-<FunFact>L'astuce du tableau de directions est parfois appelée « delta encoding ». On la retrouve en développement de jeux, traitement d'images et programmation compétitive — partout où il y a des grilles.</FunFact>
+<FunFact>L'astuce du tableau de directions est parfois appelée « delta encoding ». On la retrouve en développement de jeux, traitement d'images et programmation compétitive - partout où il y a des grilles.</FunFact>
 
-## BFS sur une grille — Plus court chemin dans un labyrinthe
+## BFS sur une grille - Plus court chemin dans un labyrinthe
 
 Le BFS trouve le **plus court chemin** dans une grille non pondérée. On part de la source, on explore tous les voisins à distance 1, puis à distance 2, et ainsi de suite.
 
@@ -70,7 +70,7 @@ def shortest_path(grid, start, end):
 
 <Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS s'étendant niveau par niveau à travers un labyrinthe en grille" caption="Le BFS explore les cellules niveau par niveau, garantissant le plus court chemin." />
 
-## DFS sur une grille — Flood Fill et Nombre d'îles
+## DFS sur une grille - Flood Fill et Nombre d'îles
 
 **Flood fill** (comme l'outil pot de peinture) : depuis une cellule de départ, changer toutes les cellules connectées de même couleur. DFS ou BFS fonctionnent.
 
@@ -89,7 +89,7 @@ def num_islands(grid):
 
 <Quiz question="Dans « Nombre d'îles », pourquoi marque-t-on les cellules comme visitées pendant le DFS ?" options="Pour les compter deux fois par précision|Pour éviter de compter la même île plusieurs fois|Pour trier les îles|Pour trouver la plus grande île" answer="1" explanation="Marquer les cellules visitées empêche la boucle externe de relancer un DFS sur la même île, ce qui fausserait le décompte." />
 
-## Oranges pourries — BFS multi-source
+## Oranges pourries - BFS multi-source
 
 Toutes les oranges initialement pourries sont des sources. On les insère toutes dans la file au temps 0, puis BFS. Chaque niveau = une minute. L'idée clé : le **BFS multi-source** démarre depuis plusieurs nœuds simultanément.
 
@@ -143,8 +143,8 @@ Original → Transpose → Reverse rows
 
 ## Recherche dans une matrice triée 2D
 
-- **Lignes et colonnes triées indépendamment** — partir du coin supérieur droit. Cible plus petite → gauche ; plus grande → bas. O(m + n).
-- **Entièrement triée** — traiter comme un tableau trié à plat et binary search. O(log(m × n)).
+- **Lignes et colonnes triées indépendamment** - partir du coin supérieur droit. Cible plus petite → gauche ; plus grande → bas. O(m + n).
+- **Entièrement triée** - traiter comme un tableau trié à plat et binary search. O(log(m × n)).
 
 ## Programmation dynamique sur grilles
 
@@ -172,6 +172,6 @@ Original → Transpose → Reverse rows
 
 ## 📚 Pour aller plus loin
 
-- [NeetCode — 2D Dynamic Programming](https://neetcode.io/roadmap) — problèmes de DP sur grilles avec explications visuelles
-- [Tech Interview Handbook — Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) — patrons et techniques courants
-- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) — des centaines de problèmes d'entraînement
+- [NeetCode - 2D Dynamic Programming](https://neetcode.io/roadmap) - problèmes de DP sur grilles avec explications visuelles
+- [Tech Interview Handbook - Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) - patrons et techniques courants
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) - des centaines de problèmes d'entraînement

@@ -1,5 +1,5 @@
 ---
-title: "Fine-Tuning en RAG — Hoe Bedrijven AI Aanpassen aan Hun Data"
+title: "Fine-Tuning en RAG - Hoe Bedrijven AI Aanpassen aan Hun Data"
 description: "Leer wanneer en hoe je modellen fine-tunet of retrieval-augmented generation inzet om domeinspecifieke AI-toepassingen te bouwen."
 order: 4
 difficulty: "advanced"
@@ -8,18 +8,18 @@ icon: "🔧"
 published: true
 ---
 
-# Fine-Tuning en RAG — Hoe Bedrijven AI Aanpassen aan Hun Data
+# Fine-Tuning en RAG - Hoe Bedrijven AI Aanpassen aan Hun Data
 
 Een generiek LLM weet veel over de wereld, maar niets over de interne documenten, bedrijfseigen data of domeinspecifieke terminologie van jouw organisatie. In deze les behandelen we de twee belangrijkste benaderingen om die kloof te overbruggen: **fine-tuning** en **retrieval-augmented generation (RAG)**.
 
 ## Waarom Generieke Modellen Niet Genoeg Zijn
 
-Stel je voor dat je GPT-4 vraagt om klantvragen te beantwoorden over het specifieke retourbeleid van je bedrijf, interne productcodes of medische behandelprotocollen. Dat kan het niet — die informatie zit niet in zijn trainingsdata.
+Stel je voor dat je GPT-4 vraagt om klantvragen te beantwoorden over het specifieke retourbeleid van je bedrijf, interne productcodes of medische behandelprotocollen. Dat kan het niet - die informatie zit niet in zijn trainingsdata.
 
 Bedrijven hebben AI nodig die de **algemene intelligentie** van een groot model combineert met **specifieke kennis** van hun domein. Er zijn twee paden om dat te bereiken, en de juiste keuze maakt een enorm verschil.
 
 <Callout>
-Een veelvoorkomend misverstand is dat je simpelweg "je data kunt uploaden" naar een LLM. In werkelijkheid vereist het aanpassen van een model ofwel het hertrainen van de gewichten (fine-tuning) ofwel het bouwen van een retrieval-pipeline (RAG) — beide zijn technische inspanningen die zorgvuldige planning vereisen.
+Een veelvoorkomend misverstand is dat je simpelweg "je data kunt uploaden" naar een LLM. In werkelijkheid vereist het aanpassen van een model ofwel het hertrainen van de gewichten (fine-tuning) ofwel het bouwen van een retrieval-pipeline (RAG) - beide zijn technische inspanningen die zorgvuldige planning vereisen.
 </Callout>
 
 <Illustration src="/images/lessons/fine-tuning-and-rag.svg" alt="Diagram dat fine-tuning en RAG-benaderingen voor het aanpassen van LLM's vergelijkt" caption="Fine-tuning wijzigt de gewichten van het model; RAG levert externe kennis aan op het moment van de query." />
@@ -61,10 +61,10 @@ Traditioneel fine-tunen werkt **alle** modelparameters bij, wat enorm veel GPU-g
 RAG volgt een totaal andere aanpak. In plaats van het model te wijzigen, **geef je het toegang tot externe documenten op het moment van de query**.
 
 **Hoe RAG werkt:**
-1. **Indexeren** — Je documenten worden opgesplitst in chunks en omgezet in numerieke vectoren (embeddings) met behulp van een embedding-model.
-2. **Opslaan** — Deze vectoren worden opgeslagen in een vectordatabase voor snelle similarity search.
-3. **Ophalen** — Wanneer een gebruiker een vraag stelt, wordt de query ook geëmbed, en worden de meest relevante documentchunks opgehaald.
-4. **Genereren** — De opgehaalde chunks worden als context in de prompt ingevoegd, en het LLM genereert een antwoord dat verankerd is in je daadwerkelijke documenten.
+1. **Indexeren** - Je documenten worden opgesplitst in chunks en omgezet in numerieke vectoren (embeddings) met behulp van een embedding-model.
+2. **Opslaan** - Deze vectoren worden opgeslagen in een vectordatabase voor snelle similarity search.
+3. **Ophalen** - Wanneer een gebruiker een vraag stelt, wordt de query ook geëmbed, en worden de meest relevante documentchunks opgehaald.
+4. **Genereren** - De opgehaalde chunks worden als context in de prompt ingevoegd, en het LLM genereert een antwoord dat verankerd is in je daadwerkelijke documenten.
 
 **Wanneer RAG gebruiken:**
 - Je kennisbasis verandert frequent (nieuwe documenten, bijgewerkt beleid).
@@ -110,20 +110,20 @@ De Britse National Health Service heeft RAG-systemen getest die LLM's verbinden 
 
 ## Voorbeelden uit de Praktijk
 
-- **Klantenservice** — Een retailer fine-tunet een model op eerdere supporttickets voor de juiste toon, en gebruikt RAG tegen de productcatalogus en het retourbeleid voor feitelijke antwoorden.
-- **Juridische documentanalyse** — Advocatenkantoren gebruiken RAG om miljoenen zaakdocumenten te doorzoeken, waarbij het LLM relevante precedenten samenvat voor elke nieuwe zaak.
-- **Medische Q&A** — Zorgverleners gebruiken RAG tegen peer-reviewed literatuur zodat clinici vragen kunnen stellen in natuurlijke taal en evidence-based antwoorden met bronvermeldingen ontvangen.
+- **Klantenservice** - Een retailer fine-tunet een model op eerdere supporttickets voor de juiste toon, en gebruikt RAG tegen de productcatalogus en het retourbeleid voor feitelijke antwoorden.
+- **Juridische documentanalyse** - Advocatenkantoren gebruiken RAG om miljoenen zaakdocumenten te doorzoeken, waarbij het LLM relevante precedenten samenvat voor elke nieuwe zaak.
+- **Medische Q&A** - Zorgverleners gebruiken RAG tegen peer-reviewed literatuur zodat clinici vragen kunnen stellen in natuurlijke taal en evidence-based antwoorden met bronvermeldingen ontvangen.
 
 ## Een Productie-RAG-pipeline Bouwen
 
 Een robuust RAG-systeem vereist meer dan alleen een vectordatabase en een LLM. Belangrijke overwegingen zijn:
 
-- **Chunkingstrategie** — Hoe je documenten opsplitst maakt enorm veel uit. Te groot en irrelevante content verzwakt het signaal; te klein en je verliest context. Overlappende chunks met 10–20% overlap werken vaak goed.
-- **Re-ranking** — Na de initiële vectorretrieval kan een cross-encoder re-ranker resultaten herordenen op relevantie, wat de antwoordkwaliteit significant verbetert.
-- **Evaluatie** — Meet retrieval precision (heb je de juiste chunks gevonden?) en generation faithfulness (weerspiegelt het antwoord de chunks?) apart.
-- **Hybride zoeken** — Het combineren van vectorsimilariteit met traditioneel keyword search (BM25) vangt gevallen op waar semantisch zoeken alleen exacte termen of acroniemen mist.
+- **Chunkingstrategie** - Hoe je documenten opsplitst maakt enorm veel uit. Te groot en irrelevante content verzwakt het signaal; te klein en je verliest context. Overlappende chunks met 10–20% overlap werken vaak goed.
+- **Re-ranking** - Na de initiële vectorretrieval kan een cross-encoder re-ranker resultaten herordenen op relevantie, wat de antwoordkwaliteit significant verbetert.
+- **Evaluatie** - Meet retrieval precision (heb je de juiste chunks gevonden?) en generation faithfulness (weerspiegelt het antwoord de chunks?) apart.
+- **Hybride zoeken** - Het combineren van vectorsimilariteit met traditioneel keyword search (BM25) vangt gevallen op waar semantisch zoeken alleen exacte termen of acroniemen mist.
 
-<Quiz question="De kennisbasis van een bedrijf wordt dagelijks bijgewerkt met nieuwe productinformatie. Welke aanpak is het meest geschikt?" options="Het model dagelijks fine-tunen op de nieuwe data|RAG gebruiken zodat het model altijd de nieuwste documenten ophaalt|Het model elke week opnieuw trainen vanaf nul|Een kleiner model gebruiken dat geen externe data nodig heeft" answer="1" explanation="RAG is ideaal voor frequent veranderende data omdat je alleen de documentindex hoeft bij te werken — geen hertraining van het model nodig. Fine-tuning zou onpraktisch zijn voor dagelijkse updates vanwege de kosten en tijd." />
+<Quiz question="De kennisbasis van een bedrijf wordt dagelijks bijgewerkt met nieuwe productinformatie. Welke aanpak is het meest geschikt?" options="Het model dagelijks fine-tunen op de nieuwe data|RAG gebruiken zodat het model altijd de nieuwste documenten ophaalt|Het model elke week opnieuw trainen vanaf nul|Een kleiner model gebruiken dat geen externe data nodig heeft" answer="1" explanation="RAG is ideaal voor frequent veranderende data omdat je alleen de documentindex hoeft bij te werken - geen hertraining van het model nodig. Fine-tuning zou onpraktisch zijn voor dagelijkse updates vanwege de kosten en tijd." />
 
 <ThinkAboutIt>
 Als een RAG-systeem de verkeerde documenten ophaalt door een slecht embedding-model, zal het LLM met vertrouwen een antwoord genereren op basis van irrelevante context. Hoe zou je waarborgen kunnen ontwerpen om deze faalwijze te detecteren en te voorkomen?

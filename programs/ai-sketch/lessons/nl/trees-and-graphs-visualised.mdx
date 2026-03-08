@@ -1,5 +1,5 @@
 ---
-title: "Bomen en Grafen Gevisualiseerd — Hoe AI Relaties in Kaart Brengt"
+title: "Bomen en Grafen Gevisualiseerd - Hoe AI Relaties in Kaart Brengt"
 description: "Ontdek hoe bomen en grafen hiërarchische en onderling verbonden data vertegenwoordigen die AI-besluitvorming en aanbevelingen aandrijven."
 order: 5
 difficulty: "intermediate"
@@ -10,11 +10,11 @@ published: true
 
 ## Data met Relaties
 
-Tot nu toe hebben we data in lijnen bekeken — arrays, linked lists, stacks en queues rangschikken items in een reeks. Maar de echte wereld is niet lineair. Stambomen vertakken. Sociale netwerken vormen webben. Wegenkaarten creëren onderling verbonden routes.
+Tot nu toe hebben we data in lijnen bekeken - arrays, linked lists, stacks en queues rangschikken items in een reeks. Maar de echte wereld is niet lineair. Stambomen vertakken. Sociale netwerken vormen webben. Wegenkaarten creëren onderling verbonden routes.
 
 **Bomen** en **grafen** vangen deze relaties, en ze vormen de kern van enkele van AI's krachtigste technieken.
 
-## Bomen — Hiërarchische Data
+## Bomen - Hiërarchische Data
 
 Een **boom** is een structuur waarin elk item (een **node** of knooppunt) kind-nodes kan hebben, waardoor een hiërarchie ontstaat. Er is één speciaal knooppunt bovenaan genaamd de **root** (wortel), en knooppunten zonder kinderen heten **leaves** (bladeren).
 
@@ -30,14 +30,14 @@ Een **boom** is een structuur waarin elk item (een **node** of knooppunt) kind-n
 
 ### Bomen Zijn Overal
 
-- **Bestandssystemen**: Mappen bevatten submappen met bestanden — een boom.
+- **Bestandssystemen**: Mappen bevatten submappen met bestanden - een boom.
 - **HTML/DOM**: Elke webpagina is een boom van geneste elementen.
 - **Organisatieschema's**: Managers hebben medewerkers die weer eigen medewerkers kunnen hebben.
 - **JSON-data**: De geneste structuur van JSON is fundamenteel een boom.
 
 ### Binaire Bomen
 
-Een **binaire boom** beperkt elk knooppunt tot maximaal twee kinderen — een linkerkind en een rechterkind. Deze eenvoudige beperking maakt krachtige algoritmen mogelijk.
+Een **binaire boom** beperkt elk knooppunt tot maximaal twee kinderen - een linkerkind en een rechterkind. Deze eenvoudige beperking maakt krachtige algoritmen mogelijk.
 
 ```
         8
@@ -51,7 +51,7 @@ Een **binaire boom** beperkt elk knooppunt tot maximaal twee kinderen — een li
 
 Een **binary search tree** voegt één regel toe: voor elk knooppunt zijn alle waarden in de linker deelboom kleiner en alle waarden in de rechter deelboom groter.
 
-Dit maakt zoeken snel — bij elk knooppunt weet je of je links of rechts moet:
+Dit maakt zoeken snel - bij elk knooppunt weet je of je links of rechts moet:
 
 ```
 Vind 6 in de BST hierboven:
@@ -60,11 +60,11 @@ Vind 6 in de BST hierboven:
   Bij 6 → Gevonden!
 ```
 
-**Tijdcomplexiteit**: O(log n) voor een gebalanceerde boom — dezelfde logaritmische magie als binary search op een gesorteerde array.
+**Tijdcomplexiteit**: O(log n) voor een gebalanceerde boom - dezelfde logaritmische magie als binary search op een gesorteerde array.
 
 <Quiz question="In een gebalanceerde binary search tree met 1.000.000 knooppunten, hoeveel vergelijkingen zijn er ruwweg nodig om een waarde te vinden?" options="1.000.000|500.000|Ongeveer 20|Ongeveer 100" answer="2" explanation="Een gebalanceerde BST heeft diepte log₂(1.000.000) ≈ 20. Je maakt één vergelijking per niveau, dus elke waarde vinden kost circa 20 stappen." />
 
-## Grafen — Alles Verbonden
+## Grafen - Alles Verbonden
 
 Een **graaf** generaliseert bomen door de hiërarchiebeperking weg te nemen. Het bestaat uit **knooppunten** (nodes/vertices) en **kanten** (edges/verbindingen). Kanten kunnen zijn:
 
@@ -73,9 +73,9 @@ Een **graaf** generaliseert bomen door de hiërarchiebeperking weg te nemen. Het
 
 ```
 Sociaal netwerk (ongericht):
-  Alice — Bob — Charlie
+  Alice - Bob - Charlie
     \       |
-     Diana — Eve
+     Diana - Eve
 
 Wegenkaart (gewogen, gericht):
   Londen →(2u)→ Birmingham →(1,5u)→ Manchester
@@ -89,7 +89,7 @@ Wegenkaart (gewogen, gericht):
 - **Aanbevelingssystemen**: Gebruikers en producten zijn knooppunten; interacties zijn kanten.
 
 <FunFact>
-Facebooks sociale graaf bevat meer dan 3 miljard knooppunten (gebruikers) en honderden miljarden kanten (vriendschappen). Graafalgoritmen bepalen je Nieuwsfeed, vriendsuggesties en advertentietargeting — allemaal draaiend op een van de grootste grafen ooit gebouwd.
+Facebooks sociale graaf bevat meer dan 3 miljard knooppunten (gebruikers) en honderden miljarden kanten (vriendschappen). Graafalgoritmen bepalen je Nieuwsfeed, vriendsuggesties en advertentietargeting - allemaal draaiend op een van de grootste grafen ooit gebouwd.
 </FunFact>
 
 ## Hoe AI Bomen Gebruikt
@@ -108,7 +108,7 @@ Is temperatuur > 30°C?
     └── Nee: "Wel tennissen"
 ```
 
-Decision trees zijn populair omdat mensen ze kunnen lezen en begrijpen — cruciaal in gezondheidszorg, financiën en juridische AI waar verklaarbaarheid ertoe doet.
+Decision trees zijn populair omdat mensen ze kunnen lezen en begrijpen - cruciaal in gezondheidszorg, financiën en juridische AI waar verklaarbaarheid ertoe doet.
 
 <ThinkAboutIt>
 Een ziekenhuis gebruikt AI om patiëntrisico te voorspellen. Toezichthouders eisen dat de AI zijn beslissingen kan uitleggen. Waarom zou een decision tree de voorkeur hebben boven een diep neuraal netwerk, zelfs als het netwerk iets nauwkeuriger is?
@@ -136,9 +136,9 @@ Google's Knowledge Graph drijft de informatiepanelen aan die je ziet in zoekresu
 
 Netflix, Spotify en Amazon modelleren gebruikers en items als een graaf. Als gebruikers A en B beide items X en Y leuk vonden, en A ook item Z leuk vond, suggereert de graaf Z aan B. Dit is **collaborative filtering** aangedreven door graafstructuur.
 
-<Quiz question="Waarom zijn grafen beter dan simpele lijsten voor het modelleren van sociale netwerken?" options="Grafen gebruiken minder geheugen|Grafen kunnen complexe veel-op-veel relaties tussen mensen vertegenwoordigen, niet slechts lineaire reeksen|Grafen zijn altijd sneller te doorzoeken|Grafen sorteren data automatisch" answer="1" explanation="Sociale netwerken hebben complexe veel-op-veel relaties — een persoon kan honderden vrienden hebben, elk met eigen verbindingen. Grafen modelleren deze onderling verbonden relaties op natuurlijke wijze." />
+<Quiz question="Waarom zijn grafen beter dan simpele lijsten voor het modelleren van sociale netwerken?" options="Grafen gebruiken minder geheugen|Grafen kunnen complexe veel-op-veel relaties tussen mensen vertegenwoordigen, niet slechts lineaire reeksen|Grafen zijn altijd sneller te doorzoeken|Grafen sorteren data automatisch" answer="1" explanation="Sociale netwerken hebben complexe veel-op-veel relaties - een persoon kan honderden vrienden hebben, elk met eigen verbindingen. Grafen modelleren deze onderling verbonden relaties op natuurlijke wijze." />
 
-## Traversal — Door Bomen en Grafen Wandelen
+## Traversal - Door Bomen en Grafen Wandelen
 
 ### Depth-First Search (DFS)
 
@@ -173,22 +173,22 @@ BFS-volgorde: A → B → C → D → E → F
 BFS gebruikt een **queue**. Geschikt voor: kortste pad, sociale-netwerkanalyse, webcrawling.
 
 <Callout>
-Merk op hoe stacks en queues uit de vorige les verbonden zijn met boom- en graaftraversal? DFS gebruikt een stack; BFS gebruikt een queue. Datastructuren bouwen op elkaar voort — daarom is de volgorde van leren belangrijk.
+Merk op hoe stacks en queues uit de vorige les verbonden zijn met boom- en graaftraversal? DFS gebruikt een stack; BFS gebruikt een queue. Datastructuren bouwen op elkaar voort - daarom is de volgorde van leren belangrijk.
 </Callout>
 
-<Quiz question="Je wilt de kortste route vinden tussen twee steden op een kaart waar alle wegen even lang zijn. Welke traversal gebruik je?" options="Depth-first search — het verkent diepere paden eerst|Breadth-first search — het vindt het kortste pad in ongewogen grafen|Binary search — het werkt op gesorteerde data|Willekeurig zoeken" answer="1" explanation="BFS verkent knooppunten laag voor laag en garandeert dat de eerste keer dat het een bestemming bereikt, het kortste pad is gevonden (in aantal kanten)." />
+<Quiz question="Je wilt de kortste route vinden tussen twee steden op een kaart waar alle wegen even lang zijn. Welke traversal gebruik je?" options="Depth-first search - het verkent diepere paden eerst|Breadth-first search - het vindt het kortste pad in ongewogen grafen|Binary search - het werkt op gesorteerde data|Willekeurig zoeken" answer="1" explanation="BFS verkent knooppunten laag voor laag en garandeert dat de eerste keer dat het een bestemming bereikt, het kortste pad is gevonden (in aantal kanten)." />
 
 <ThinkAboutIt>
-Sociale media meten "graden van scheiding" — hoeveel vriend-van-vriend-stappen twee mensen verbinden. Welk traversal-algoritme vindt efficiënt het minste aantal stappen?
+Sociale media meten "graden van scheiding" - hoeveel vriend-van-vriend-stappen twee mensen verbinden. Welk traversal-algoritme vindt efficiënt het minste aantal stappen?
 </ThinkAboutIt>
 
 <FunFact>
-Google's PageRank-algoritme — de oorspronkelijke doorbraak die Google dominant maakte — modelleert het web als een graaf. Elke webpagina is een knooppunt, elke hyperlink een gerichte kant, en het belang van een pagina wordt bepaald door hoeveel belangrijke pagina's ernaar linken.
+Google's PageRank-algoritme - de oorspronkelijke doorbraak die Google dominant maakte - modelleert het web als een graaf. Elke webpagina is een knooppunt, elke hyperlink een gerichte kant, en het belang van een pagina wordt bepaald door hoeveel belangrijke pagina's ernaar linken.
 </FunFact>
 
 ## Belangrijkste Punten
 
-- **Bomen** modelleren hiërarchische data — bestandssystemen, HTML en AI-beslisbomen gebruiken allemaal boomstructuren.
+- **Bomen** modelleren hiërarchische data - bestandssystemen, HTML en AI-beslisbomen gebruiken allemaal boomstructuren.
 - **Binary search trees** maken O(log n) opzoekingen mogelijk door een gesorteerde hiërarchie te handhaven.
-- **Grafen** modelleren onderling verbonden data — sociale netwerken, knowledge bases en aanbevelingssystemen.
-- **DFS** (stack-gebaseerd) gaat diep; **BFS** (queue-gebaseerd) gaat breed — beide drijven kern-AI-algoritmen aan zoals PageRank en aanbevelingsmotoren.
+- **Grafen** modelleren onderling verbonden data - sociale netwerken, knowledge bases en aanbevelingssystemen.
+- **DFS** (stack-gebaseerd) gaat diep; **BFS** (queue-gebaseerd) gaat breed - beide drijven kern-AI-algoritmen aan zoals PageRank en aanbevelingsmotoren.

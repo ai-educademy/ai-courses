@@ -1,5 +1,5 @@
 ---
-title: "Design Twitter's AI Feed — An End-to-End Case Study"
+title: "Design Twitter's AI Feed - An End-to-End Case Study"
 description: "Dissect the architecture behind a personalised timeline serving billions of tweets to hundreds of millions of users."
 order: 3
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 # Design Twitter's AI Feed
 
-Imagine you are given one task: every time a user opens the app, show them the tweets they will find most valuable — out of billions of possibilities — in under 200 milliseconds.
+Imagine you are given one task: every time a user opens the app, show them the tweets they will find most valuable - out of billions of possibilities - in under 200 milliseconds.
 
 This is one of the hardest recommendation problems in industry. Let us design it from scratch.
 
@@ -18,12 +18,12 @@ This is one of the hardest recommendation problems in industry. Let us design it
 
 ## The Problem at Scale
 
-Twitter (now X) handles roughly 500 million tweets per day. Each of its 350+ million monthly active users expects a feed that feels **personally curated** — relevant, timely, and engaging.
+Twitter (now X) handles roughly 500 million tweets per day. Each of its 350+ million monthly active users expects a feed that feels **personally curated** - relevant, timely, and engaging.
 
 A chronological feed does not work at this scale. If you follow 500 accounts, you might have 10,000 unread tweets. Most of them are irrelevant. The AI feed's job is to surface the 50 that matter most to **you**.
 
 <Callout>
-This is not just a ranking problem — it is a multi-stage system involving candidate generation, feature engineering, real-time scoring, content safety, and massive-scale serving.
+This is not just a ranking problem - it is a multi-stage system involving candidate generation, feature engineering, real-time scoring, content safety, and massive-scale serving.
 </Callout>
 
 ## Stage 1: Candidate Generation
@@ -84,10 +84,10 @@ Static features are not enough. The feed must respond to what is happening **rig
 - **Session context**: If a user has been scrolling for ten minutes, diversify the content to reduce fatigue.
 - **Real-time engagement signals**: A tweet going viral in the last five minutes gets a temporary boost.
 
-These features require a **streaming infrastructure** — often Apache Kafka feeding into a feature store like Redis or Feast — that updates in near real-time.
+These features require a **streaming infrastructure** - often Apache Kafka feeding into a feature store like Redis or Feast - that updates in near real-time.
 
 <FunFact>
-Twitter's engineering team reported that adding real-time features to their ranking model increased user engagement by 8 per cent — a massive improvement at their scale, translating to millions of additional daily interactions.
+Twitter's engineering team reported that adding real-time features to their ranking model increased user engagement by 8 per cent - a massive improvement at their scale, translating to millions of additional daily interactions.
 </FunFact>
 
 ## The "For You" Algorithm: Explore vs Exploit
@@ -99,19 +99,19 @@ The feed faces a classic **exploration-exploitation dilemma**:
 
 Twitter's approach blends both:
 
-- Roughly 80 per cent of the feed is exploitation — content the model is confident the user will enjoy.
-- Roughly 20 per cent is exploration — new content injected to test the user's evolving interests.
+- Roughly 80 per cent of the feed is exploitation - content the model is confident the user will enjoy.
+- Roughly 20 per cent is exploration - new content injected to test the user's evolving interests.
 
 The exploration ratio is itself a parameter tuned by A/B testing across millions of users.
 
-<Quiz question="What is the main risk of a feed that only 'exploits' and never 'explores'?" options="The feed becomes too diverse and confusing|The user gets trapped in a filter bubble and the platform cannot discover their evolving interests|The system uses too much compute|The feed loads too slowly" answer="1" explanation="Pure exploitation creates filter bubbles — the user only sees what they already like, the platform cannot adapt to changing tastes, and content diversity collapses. Exploration is essential for long-term health." />
+<Quiz question="What is the main risk of a feed that only 'exploits' and never 'explores'?" options="The feed becomes too diverse and confusing|The user gets trapped in a filter bubble and the platform cannot discover their evolving interests|The system uses too much compute|The feed loads too slowly" answer="1" explanation="Pure exploitation creates filter bubbles - the user only sees what they already like, the platform cannot adapt to changing tastes, and content diversity collapses. Exploration is essential for long-term health." />
 
 ## Content Moderation and Safety
 
 Before any tweet reaches the feed, it passes through a **safety layer**:
 
 1. **Pre-ranking filter**: Known spam, harassment, and policy-violating content is removed before ranking.
-2. **Post-ranking filter**: After ranking, a secondary check catches edge cases — for example, a tweet that is individually acceptable but harmful when clustered with similar content.
+2. **Post-ranking filter**: After ranking, a secondary check catches edge cases - for example, a tweet that is individually acceptable but harmful when clustered with similar content.
 3. **User-level controls**: Users can mute topics, block accounts, and mark content as "not interested", all of which feed back into their personalisation model.
 
 The safety layer must be **fast** (adding no more than 10–20ms of latency) and **conservative** (when in doubt, filter it out and route to human review).
@@ -125,7 +125,7 @@ Content moderation is not a separate system bolted on afterwards. It is deeply i
 This is the architectural decision that defines Twitter's infrastructure.
 
 ### Fan-out on write:
-When a user tweets, **push** that tweet into the feed cache of every follower. Fast reads, but expensive writes — especially for accounts with millions of followers.
+When a user tweets, **push** that tweet into the feed cache of every follower. Fast reads, but expensive writes - especially for accounts with millions of followers.
 
 ### Fan-out on read:
 When a user opens the app, **pull** the latest tweets from all accounts they follow and rank them on the fly. Cheap writes, but expensive reads.
@@ -137,7 +137,7 @@ When a user opens the app, **pull** the latest tweets from all accounts they fol
 This hybrid strategy balances write amplification against read latency, handling both a normal user's tweet and a pop star's viral post efficiently.
 
 <FunFact>
-When a celebrity with 50 million followers tweets, fan-out on write would require 50 million cache insertions — taking minutes and consuming enormous bandwidth. The hybrid approach handles this in milliseconds by deferring the work to read time.
+When a celebrity with 50 million followers tweets, fan-out on write would require 50 million cache insertions - taking minutes and consuming enormous bandwidth. The hybrid approach handles this in milliseconds by deferring the work to read time.
 </FunFact>
 
 ## Putting It All Together
@@ -153,7 +153,7 @@ The full pipeline for a single feed request:
 7. Final ranked list is returned to the client in under 200ms.
 
 <ThinkAboutIt>
-You are asked in an interview: "If you could add one new signal to improve the feed, what would it be and why?" Consider signals that are not commonly discussed — perhaps something related to user wellbeing or content credibility.
+You are asked in an interview: "If you could add one new signal to improve the feed, what would it be and why?" Consider signals that are not commonly discussed - perhaps something related to user wellbeing or content credibility.
 </ThinkAboutIt>
 
-<Quiz question="In Twitter's hybrid fan-out strategy, how are tweets from celebrity accounts handled?" options="They are pushed to every follower's cache immediately|They are computed at read time when a follower opens their feed|They are excluded from the AI feed entirely|They are only shown to verified users" answer="1" explanation="Celebrity tweets use fan-out on read — the feed is computed when a follower requests it, avoiding the enormous cost of pushing a single tweet to millions of caches." />
+<Quiz question="In Twitter's hybrid fan-out strategy, how are tweets from celebrity accounts handled?" options="They are pushed to every follower's cache immediately|They are computed at read time when a follower opens their feed|They are excluded from the AI feed entirely|They are only shown to verified users" answer="1" explanation="Celebrity tweets use fan-out on read - the feed is computed when a follower requests it, avoiding the enormous cost of pushing a single tweet to millions of caches." />

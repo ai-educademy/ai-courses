@@ -1,5 +1,5 @@
 ---
-title: "System Design Fundamentals — The Building Blocks of Scalable Systems"
+title: "System Design Fundamentals - The Building Blocks of Scalable Systems"
 description: "Master the core components every system design interview expects you to know."
 order: 1
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 ## Why System Design Matters
 
-Every large-scale application is assembled from the same fundamental building blocks. Interviewers don't expect you to invent new technology — they want to see you **select and combine** the right components for a given problem. This lesson covers the toolkit you'll reach for in every design interview.
+Every large-scale application is assembled from the same fundamental building blocks. Interviewers don't expect you to invent new technology - they want to see you **select and combine** the right components for a given problem. This lesson covers the toolkit you'll reach for in every design interview.
 
 ## Client-Server Architecture
 
@@ -26,9 +26,9 @@ In interviews, always start by sketching the high-level client-server flow befor
 
 A single server has finite capacity. Load balancers distribute incoming requests across multiple servers using strategies like:
 
-- **Round-robin** — requests cycle through servers sequentially
-- **Least connections** — routes to the server handling the fewest active requests
-- **Consistent hashing** — maps requests to specific servers based on a key (useful for caching)
+- **Round-robin** - requests cycle through servers sequentially
+- **Least connections** - routes to the server handling the fewest active requests
+- **Consistent hashing** - maps requests to specific servers based on a key (useful for caching)
 
 Load balancers also perform **health checks**, automatically removing unhealthy servers from the pool. In cloud environments, services like AWS ALB or Azure Front Door handle this transparently.
 
@@ -48,7 +48,7 @@ Caching stores frequently accessed data closer to the consumer. It exists at mul
 **Cache invalidation** is famously one of the hardest problems in computing. Common strategies include **TTL (time-to-live)**, **write-through** (update cache on every write), and **cache-aside** (application manages cache explicitly).
 
 <FunFact>
-Phil Karlton's famous quote — "There are only two hard things in Computer Science: cache invalidation and naming things" — is so widely cited that it's practically a rite of passage in system design interviews.
+Phil Karlton's famous quote - "There are only two hard things in Computer Science: cache invalidation and naming things" - is so widely cited that it's practically a rite of passage in system design interviews.
 </FunFact>
 
 ## Databases: SQL vs NoSQL
@@ -58,10 +58,10 @@ Choosing the right database is one of the most impactful design decisions:
 **SQL databases** (PostgreSQL, MySQL) offer ACID transactions, strong consistency, and structured schemas. They excel when data has clear relationships and you need complex queries with joins.
 
 **NoSQL databases** come in several flavours:
-- **Document stores** (MongoDB) — flexible schemas, great for varied data structures
-- **Key-value stores** (DynamoDB, Redis) — blazing fast lookups by key
-- **Wide-column stores** (Cassandra) — massive write throughput, distributed by design
-- **Graph databases** (Neo4j) — relationship-heavy data like social networks
+- **Document stores** (MongoDB) - flexible schemas, great for varied data structures
+- **Key-value stores** (DynamoDB, Redis) - blazing fast lookups by key
+- **Wide-column stores** (Cassandra) - massive write throughput, distributed by design
+- **Graph databases** (Neo4j) - relationship-heavy data like social networks
 
 <Quiz question="You're designing a system that stores user profiles with frequently changing, semi-structured data (different fields per user type). Which database type is the strongest fit?" options="Relational (PostgreSQL)|Document store (MongoDB)|Wide-column (Cassandra)|Graph (Neo4j)" answer="1" explanation="Document stores like MongoDB handle semi-structured, schema-flexible data naturally. Each document can have different fields without costly schema migrations." />
 
@@ -69,13 +69,13 @@ Choosing the right database is one of the most impactful design decisions:
 
 Not every operation needs an immediate response. Message queues (RabbitMQ, Apache Kafka, AWS SQS) decouple producers from consumers, enabling:
 
-- **Asynchronous processing** — send an email after signup without blocking the response
-- **Load levelling** — absorb traffic spikes by buffering requests
-- **Fault tolerance** — if a consumer crashes, messages wait in the queue
+- **Asynchronous processing** - send an email after signup without blocking the response
+- **Load levelling** - absorb traffic spikes by buffering requests
+- **Fault tolerance** - if a consumer crashes, messages wait in the queue
 
 Kafka deserves special mention: it's not just a queue but a **distributed event log**, enabling event-driven architectures where multiple consumers can independently process the same stream of events.
 
-<Illustration src="/images/lessons/system-design-fundamentals.svg" alt="Architecture diagram showing client, load balancer, application servers, cache layer, database, and message queue" caption="The fundamental building blocks of a scalable system — each layer addresses a specific concern." />
+<Illustration src="/images/lessons/system-design-fundamentals.svg" alt="Architecture diagram showing client, load balancer, application servers, cache layer, database, and message queue" caption="The fundamental building blocks of a scalable system - each layer addresses a specific concern." />
 
 ## Microservices vs Monolith
 
@@ -89,44 +89,44 @@ Kafka deserves special mention: it's not just a queue but a **distributed event 
 **Start monolith, extract microservices when needed.** Most interviewers appreciate candidates who acknowledge that microservices introduce distributed system complexity (network failures, data consistency, deployment orchestration) and aren't always the right choice.
 
 <ThinkAboutIt>
-Netflix famously migrated from a monolith to microservices over several years. But Shopify — handling billions in transactions — still runs a modular monolith. What factors might make one approach better than the other for a given company?
+Netflix famously migrated from a monolith to microservices over several years. But Shopify - handling billions in transactions - still runs a modular monolith. What factors might make one approach better than the other for a given company?
 </ThinkAboutIt>
 
 ## CAP Theorem Simplified
 
 The CAP theorem states that a distributed system can guarantee only **two of three** properties simultaneously:
 
-- **Consistency** — every read returns the most recent write
-- **Availability** — every request receives a response
-- **Partition tolerance** — the system continues operating despite network failures
+- **Consistency** - every read returns the most recent write
+- **Availability** - every request receives a response
+- **Partition tolerance** - the system continues operating despite network failures
 
 Since network partitions are inevitable in distributed systems, the real choice is between **CP** (consistency over availability) and **AP** (availability over consistency).
 
-- **CP systems** (e.g., HBase, MongoDB with majority reads) — return errors rather than stale data
-- **AP systems** (e.g., Cassandra, DynamoDB) — always respond, but data might be slightly stale
+- **CP systems** (e.g., HBase, MongoDB with majority reads) - return errors rather than stale data
+- **AP systems** (e.g., Cassandra, DynamoDB) - always respond, but data might be slightly stale
 
-<Quiz question="You're designing a banking transaction system where incorrect balances could cause financial loss. Which CAP trade-off should you prioritise?" options="AP — always available, eventually consistent|CP — consistent, may reject requests during partitions|CA — consistent and available, ignore partitions|None — modern systems avoid CAP entirely" answer="1" explanation="Financial systems must prioritise consistency (CP). It's better to temporarily reject a request than to show an incorrect balance or process a duplicate transaction." />
+<Quiz question="You're designing a banking transaction system where incorrect balances could cause financial loss. Which CAP trade-off should you prioritise?" options="AP - always available, eventually consistent|CP - consistent, may reject requests during partitions|CA - consistent and available, ignore partitions|None - modern systems avoid CAP entirely" answer="1" explanation="Financial systems must prioritise consistency (CP). It's better to temporarily reject a request than to show an incorrect balance or process a duplicate transaction." />
 
 ## The Interview Framework
 
 When you walk into a system design interview, follow this structure:
 
-1. **Requirements** — clarify functional and non-functional requirements (5 min)
-2. **API design** — define the key endpoints or interfaces (5 min)
-3. **Data model** — choose databases and define schemas (5 min)
-4. **High-level architecture** — sketch the system using today's building blocks (10 min)
-5. **Deep dives** — scale bottlenecks, handle failures, optimise (15 min)
+1. **Requirements** - clarify functional and non-functional requirements (5 min)
+2. **API design** - define the key endpoints or interfaces (5 min)
+3. **Data model** - choose databases and define schemas (5 min)
+4. **High-level architecture** - sketch the system using today's building blocks (10 min)
+5. **Deep dives** - scale bottlenecks, handle failures, optimise (15 min)
 
 <ThinkAboutIt>
-Think about a system you use daily — Instagram, Uber, or Spotify. Can you identify which building blocks from this lesson it likely uses? Where would the load balancer sit? What would be cached? Which database type fits its data model?
+Think about a system you use daily - Instagram, Uber, or Spotify. Can you identify which building blocks from this lesson it likely uses? Where would the load balancer sit? What would be cached? Which database type fits its data model?
 </ThinkAboutIt>
 
 ## Key Takeaways
 
-- Every scalable system uses the same core building blocks — learn them once, apply them everywhere
+- Every scalable system uses the same core building blocks - learn them once, apply them everywhere
 - Load balancers, caches, and message queues each solve distinct scaling challenges
 - Database choice (SQL vs NoSQL) depends on data shape, consistency needs, and access patterns
-- The CAP theorem forces trade-offs — know which side your system should favour
+- The CAP theorem forces trade-offs - know which side your system should favour
 - Follow the structured interview framework: requirements → API → data → architecture → deep dives
 
 Next up: we'll apply these fundamentals to design a URL shortener from scratch.

@@ -1,5 +1,5 @@
 ---
-title: "Twitter का AI Feed Design करें — एक End-to-End Case Study"
+title: "Twitter का AI Feed Design करें - एक End-to-End Case Study"
 description: "अरबों tweets में से करोड़ों users को personalised timeline serve करने वाले architecture को समझें।"
 order: 3
 difficulty: "advanced"
@@ -10,20 +10,20 @@ published: true
 
 # Twitter का AI Feed Design करें
 
-सोचिए आपको एक task दिया गया है: हर बार जब user app खोले, उसे अरबों possibilities में से सबसे valuable tweets दिखाएँ — वो भी 200 milliseconds से कम में।
+सोचिए आपको एक task दिया गया है: हर बार जब user app खोले, उसे अरबों possibilities में से सबसे valuable tweets दिखाएँ - वो भी 200 milliseconds से कम में।
 
 ये industry की सबसे कठिन recommendation problems में से एक है। चलिए इसे scratch से design करते हैं।
 
-<Illustration src="/images/lessons/design-twitter-ai-feed.svg" alt="Tweet candidates को ranking और filtering stages से गुज़रकर personalised feed बनते दिखाने वाला pipeline diagram" caption="एक tweet की यात्रा — creation से लेकर आपकी timeline तक" />
+<Illustration src="/images/lessons/design-twitter-ai-feed.svg" alt="Tweet candidates को ranking और filtering stages से गुज़रकर personalised feed बनते दिखाने वाला pipeline diagram" caption="एक tweet की यात्रा - creation से लेकर आपकी timeline तक" />
 
 ## Scale पर Problem
 
-Twitter (अब X) रोज़ाना लगभग 500 million tweets handle करता है। इसके 350+ million monthly active users में से हर कोई एक ऐसी feed चाहता है जो **personally curated** लगे — relevant, timely, और engaging।
+Twitter (अब X) रोज़ाना लगभग 500 million tweets handle करता है। इसके 350+ million monthly active users में से हर कोई एक ऐसी feed चाहता है जो **personally curated** लगे - relevant, timely, और engaging।
 
 इस scale पर chronological feed काम नहीं करता। अगर आप 500 accounts follow करते हैं, तो शायद 10,000 unread tweets हों। ज़्यादातर irrelevant होंगे। AI feed का काम है उन 50 को surface करना जो **आपके लिए** सबसे ज़्यादा matter करती हैं।
 
 <Callout>
-ये सिर्फ़ ranking problem नहीं है — ये एक multi-stage system है जिसमें candidate generation, feature engineering, real-time scoring, content safety, और massive-scale serving शामिल है।
+ये सिर्फ़ ranking problem नहीं है - ये एक multi-stage system है जिसमें candidate generation, feature engineering, real-time scoring, content safety, और massive-scale serving शामिल है।
 </Callout>
 
 ## Stage 1: Candidate Generation
@@ -80,14 +80,14 @@ Final score इन predictions का **weighted combination** होता ह�
 Static features काफ़ी नहीं हैं। Feed को **अभी** जो हो रहा है उस पर respond करना होता है।
 
 - **Recency decay**: 30 seconds पहले के tweet को तीन घंटे पुराने tweet पर boost मिलता है।
-- **Trending topics**: अगर कोई बड़ी event हो रही है, तो related tweets surface करें — भले ही user की usual interests से बाहर हों।
+- **Trending topics**: अगर कोई बड़ी event हो रही है, तो related tweets surface करें - भले ही user की usual interests से बाहर हों।
 - **Session context**: अगर user दस minute से scroll कर रहा है, तो fatigue कम करने के लिए content diversify करें।
 - **Real-time engagement signals**: पिछले पाँच minutes में viral हो रहे tweet को temporary boost मिलता है।
 
-इन features के लिए **streaming infrastructure** चाहिए — अक्सर Apache Kafka जो Redis या Feast जैसे feature store में feed करता है — जो near real-time में update होता है।
+इन features के लिए **streaming infrastructure** चाहिए - अक्सर Apache Kafka जो Redis या Feast जैसे feature store में feed करता है - जो near real-time में update होता है।
 
 <FunFact>
-Twitter की engineering team ने report किया कि ranking model में real-time features जोड़ने से user engagement में 8% increase हुआ — उनके scale पर एक massive improvement, जो रोज़ाना millions additional interactions में translate होता है।
+Twitter की engineering team ने report किया कि ranking model में real-time features जोड़ने से user engagement में 8% increase हुआ - उनके scale पर एक massive improvement, जो रोज़ाना millions additional interactions में translate होता है।
 </FunFact>
 
 ## "For You" Algorithm: Explore vs Exploit
@@ -99,19 +99,19 @@ Feed एक classic **exploration-exploitation dilemma** face करता ह�
 
 Twitter का approach दोनों को blend करता है:
 
-- Feed का ~80% exploitation है — ऐसा content जिसे model को confidence है कि user enjoy करेगा।
-- ~20% exploration है — user के evolving interests test करने के लिए inject किया गया नया content।
+- Feed का ~80% exploitation है - ऐसा content जिसे model को confidence है कि user enjoy करेगा।
+- ~20% exploration है - user के evolving interests test करने के लिए inject किया गया नया content।
 
 Exploration ratio ख़ुद एक parameter है जिसे millions of users पर A/B testing से tune किया जाता है।
 
-<Quiz question="जो feed सिर्फ़ 'exploit' करे और कभी 'explore' न करे, उसका मुख्य ख़तरा क्या है?" options="Feed बहुत diverse और confusing हो जाता है|User filter bubble में फँस जाता है और platform उसके बदलते interests discover नहीं कर पाता|System बहुत ज़्यादा compute इस्तेमाल करता है|Feed बहुत धीरे load होता है" answer="1" explanation="Pure exploitation filter bubbles बनाता है — user सिर्फ़ वही देखता है जो पहले से पसंद है, platform बदलती preferences adapt नहीं कर पाता, और content diversity ख़त्म हो जाती है। Long-term health के लिए exploration ज़रूरी है।" />
+<Quiz question="जो feed सिर्फ़ 'exploit' करे और कभी 'explore' न करे, उसका मुख्य ख़तरा क्या है?" options="Feed बहुत diverse और confusing हो जाता है|User filter bubble में फँस जाता है और platform उसके बदलते interests discover नहीं कर पाता|System बहुत ज़्यादा compute इस्तेमाल करता है|Feed बहुत धीरे load होता है" answer="1" explanation="Pure exploitation filter bubbles बनाता है - user सिर्फ़ वही देखता है जो पहले से पसंद है, platform बदलती preferences adapt नहीं कर पाता, और content diversity ख़त्म हो जाती है। Long-term health के लिए exploration ज़रूरी है।" />
 
 ## Content Moderation और Safety
 
 किसी भी tweet के feed में पहुँचने से पहले, वो एक **safety layer** से गुज़रता है:
 
 1. **Pre-ranking filter**: Known spam, harassment, और policy-violating content को ranking से पहले हटा दिया जाता है।
-2. **Post-ranking filter**: Ranking के बाद, एक secondary check edge cases पकड़ता है — जैसे कोई tweet individually acceptable हो लेकिन similar content के साथ cluster होने पर harmful हो।
+2. **Post-ranking filter**: Ranking के बाद, एक secondary check edge cases पकड़ता है - जैसे कोई tweet individually acceptable हो लेकिन similar content के साथ cluster होने पर harmful हो।
 3. **User-level controls**: Users topics mute, accounts block, और content को "not interested" mark कर सकते हैं, जो सब personalisation model में feedback होता है।
 
 Safety layer **fast** होनी चाहिए (10–20ms से ज़्यादा latency नहीं) और **conservative** (doubt हो तो filter करो और human review को भेजो)।
@@ -125,7 +125,7 @@ Content moderation कोई अलग system नहीं है जो बा�
 ये वो architectural decision है जो Twitter के infrastructure को define करता है।
 
 ### Fan-out on write:
-जब कोई user tweet करता है, तो उस tweet को हर follower के feed cache में **push** करो। Fast reads, लेकिन expensive writes — ख़ासकर millions of followers वाले accounts के लिए।
+जब कोई user tweet करता है, तो उस tweet को हर follower के feed cache में **push** करो। Fast reads, लेकिन expensive writes - ख़ासकर millions of followers वाले accounts के लिए।
 
 ### Fan-out on read:
 जब user app खोलता है, तो सभी followed accounts से latest tweets **pull** करो और on the fly rank करो। Cheap writes, लेकिन expensive reads।
@@ -137,7 +137,7 @@ Content moderation कोई अलग system नहीं है जो बा�
 ये hybrid strategy write amplification और read latency को balance करती है, एक normal user के tweet और एक pop star की viral post दोनों efficiently handle करती है।
 
 <FunFact>
-जब 50 million followers वाली कोई celebrity tweet करती है, तो fan-out on write में 50 million cache insertions चाहिए — जिसमें minutes लगते और भारी bandwidth खपत होती। Hybrid approach इसे milliseconds में handle करता है — काम read time पर defer करके।
+जब 50 million followers वाली कोई celebrity tweet करती है, तो fan-out on write में 50 million cache insertions चाहिए - जिसमें minutes लगते और भारी bandwidth खपत होती। Hybrid approach इसे milliseconds में handle करता है - काम read time पर defer करके।
 </FunFact>
 
 ## सब कुछ एक साथ
@@ -153,7 +153,7 @@ Content moderation कोई अलग system नहीं है जो बा�
 7. Final ranked list 200ms से कम में client को return होती है।
 
 <ThinkAboutIt>
-Interview में आपसे पूछा जाए: "अगर आप feed improve करने के लिए एक नया signal add कर सकते, तो वो क्या होगा और क्यों?" ऐसे signals सोचिए जो commonly discuss नहीं होते — शायद user wellbeing या content credibility से related कोई चीज़।
+Interview में आपसे पूछा जाए: "अगर आप feed improve करने के लिए एक नया signal add कर सकते, तो वो क्या होगा और क्यों?" ऐसे signals सोचिए जो commonly discuss नहीं होते - शायद user wellbeing या content credibility से related कोई चीज़।
 </ThinkAboutIt>
 
-<Quiz question="Twitter की hybrid fan-out strategy में celebrity accounts के tweets कैसे handle होते हैं?" options="उन्हें तुरंत हर follower के cache में push किया जाता है|जब follower अपनी feed खोलता है तब read time पर compute होते हैं|उन्हें AI feed से पूरी तरह exclude कर दिया जाता है|सिर्फ़ verified users को दिखाए जाते हैं" answer="1" explanation="Celebrity tweets fan-out on read इस्तेमाल करते हैं — feed तब compute होती है जब follower request करता है, जिससे एक single tweet को millions of caches में push करने की भारी cost से बचा जाता है।" />
+<Quiz question="Twitter की hybrid fan-out strategy में celebrity accounts के tweets कैसे handle होते हैं?" options="उन्हें तुरंत हर follower के cache में push किया जाता है|जब follower अपनी feed खोलता है तब read time पर compute होते हैं|उन्हें AI feed से पूरी तरह exclude कर दिया जाता है|सिर्फ़ verified users को दिखाए जाते हैं" answer="1" explanation="Celebrity tweets fan-out on read इस्तेमाल करते हैं - feed तब compute होती है जब follower request करता है, जिससे एक single tweet को millions of caches में push करने की भारी cost से बचा जाता है।" />

@@ -1,5 +1,5 @@
 ---
-title: "Web Crawler डिज़ाइन करें — Google इंटरनेट को कैसे Index करता है"
+title: "Web Crawler डिज़ाइन करें - Google इंटरनेट को कैसे Index करता है"
 description: "एक distributed web crawler डिज़ाइन करें जिसमें URL frontier management, politeness policies, SimHash से content deduplication, और consistent hashing से distributed crawling शामिल है।"
 order: 9
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🕷️"
 published: true
 ---
 
-# Web Crawler डिज़ाइन करें — Google इंटरनेट को कैसे Index करता है
+# Web Crawler डिज़ाइन करें - Google इंटरनेट को कैसे Index करता है
 
 एक web crawler व्यवस्थित तरीके से इंटरनेट ब्राउज़ करता है ताकि web pages को download और index किया जा सके। यह हर search engine की नींव है, और इसे डिज़ाइन करने से आप distributed systems, graph traversal, और real web की complexities को handle करना सीखते हैं।
 
-## Step 1 — Requirements इकट्ठा करना
+## Step 1 - Requirements इकट्ठा करना
 
 ### Functional Requirements
 - Seed URLs के एक set से शुरू करके web pages crawl करना
@@ -21,12 +21,12 @@ published: true
 - robots.txt और crawl politeness rules का पालन करना
 
 ### Non-Functional Requirements
-- **Scale** — हर महीने 1 billion pages crawl करना
-- **Politeness** — किसी भी single web server पर overload नहीं डालना
-- **Freshness** — important pages को नियमित रूप से re-crawl करना
-- **Robustness** — malformed HTML, infinite loops, और spider traps को handle करना
+- **Scale** - हर महीने 1 billion pages crawl करना
+- **Politeness** - किसी भी single web server पर overload नहीं डालना
+- **Freshness** - important pages को नियमित रूप से re-crawl करना
+- **Robustness** - malformed HTML, infinite loops, और spider traps को handle करना
 
-## Step 2 — High-Level Architecture
+## Step 2 - High-Level Architecture
 
 ```
 Seed URLs → URL Frontier (priority queue)
@@ -44,17 +44,17 @@ Seed URLs → URL Frontier (priority queue)
 
 <Illustration src="/images/lessons/design-web-crawler.svg" alt="Web crawler architecture जो URL frontier से fetcher, parser, URL extraction, deduplication और वापस frontier तक के crawl loop को दर्शाती है" caption="Crawler एक continuous loop में काम करता है: page fetch करो, नए URLs extract करो, deduplicate करो, और future crawling के लिए enqueue करो" />
 
-## Step 3 — Crawl Loop
+## Step 3 - Crawl Loop
 
 ### BFS vs DFS Crawling
-- **BFS (Breadth-First)** — web crawling के लिए preferred। जल्दी से कई domains discover करता है और किसी single site में deep फँसने से बचाता है
-- **DFS (Depth-First)** — dynamically generated pages में infinitely deep जाने का risk है, बिना दूसरे domains discover किए
+- **BFS (Breadth-First)** - web crawling के लिए preferred। जल्दी से कई domains discover करता है और किसी single site में deep फँसने से बचाता है
+- **DFS (Depth-First)** - dynamically generated pages में infinitely deep जाने का risk है, बिना दूसरे domains discover किए
 
 ### URL Frontier Design
-Frontier एक simple queue नहीं है — यह दो sub-components वाला एक sophisticated priority system है:
+Frontier एक simple queue नहीं है - यह दो sub-components वाला एक sophisticated priority system है:
 
-1. **Priority Queue (Front)** — URLs को importance के आधार पर rank करता है। इसमें PageRank, update frequency, और domain authority जैसे factors शामिल हैं
-2. **Politeness Queue (Back)** — हर domain की अपनी FIFO queue होती है। एक scheduler अलग-अलग domain queues से pick करता है ताकि किसी single server पर ज़्यादा load न पड़े
+1. **Priority Queue (Front)** - URLs को importance के आधार पर rank करता है। इसमें PageRank, update frequency, और domain authority जैसे factors शामिल हैं
+2. **Politeness Queue (Back)** - हर domain की अपनी FIFO queue होती है। एक scheduler अलग-अलग domain queues से pick करता है ताकि किसी single server पर ज़्यादा load न पड़े
 
 ```
 Front (Priority):       Back (Politeness):
@@ -67,9 +67,9 @@ Front (Priority):       Back (Politeness):
                         └───────────────────────┘
 ```
 
-<Quiz question="Web crawler general-purpose crawling के लिए DFS की बजाय BFS क्यों use करता है?" options="BFS कम memory use करता है|BFS तेज़ी से ज़्यादा unique domains discover करता है और किसी single website में deep फँसने से बचाता है|BFS, DFS से faster है|DFS URLs के साथ काम नहीं करता" answer="1" explanation="BFS level by level explore करता है, जिसका मतलब है कि यह कई अलग-अलग domains के pages जल्दी discover करता है। DFS किसी single site में deep links follow कर सकता है — potentially millions dynamically generated pages hit करते हुए — बिना किसी दूसरे domain पर जाए।" />
+<Quiz question="Web crawler general-purpose crawling के लिए DFS की बजाय BFS क्यों use करता है?" options="BFS कम memory use करता है|BFS तेज़ी से ज़्यादा unique domains discover करता है और किसी single website में deep फँसने से बचाता है|BFS, DFS से faster है|DFS URLs के साथ काम नहीं करता" answer="1" explanation="BFS level by level explore करता है, जिसका मतलब है कि यह कई अलग-अलग domains के pages जल्दी discover करता है। DFS किसी single site में deep links follow कर सकता है - potentially millions dynamically generated pages hit करते हुए - बिना किसी दूसरे domain पर जाए।" />
 
-## Step 4 — Politeness और Robots.txt
+## Step 4 - Politeness और Robots.txt
 
 ### Robots.txt का पालन करना
 किसी भी domain को crawl करने से पहले, उसकी `robots.txt` file fetch और cache करें:
@@ -88,14 +88,14 @@ Crawl-delay: 2
 Explicit `Crawl-delay` न होने पर भी politeness बनाए रखें:
 - हर domain पर maximum 1 request per second (configurable)
 - हर domain के लिए separate download queues use करें
-- Response times track करें — अगर server slow हो जाए तो automatically back off करें
+- Response times track करें - अगर server slow हो जाए तो automatically back off करें
 
-<FunFact>Google का web crawler (Googlebot) सैकड़ों billions pages crawl करता है। Polite रहने के लिए, यह server response times monitor करता है और अगर कोई site slow respond करने लगे तो crawl rate कम कर देता है — effectively website को crawler के खिलाफ "push back" करने देता है।</FunFact>
+<FunFact>Google का web crawler (Googlebot) सैकड़ों billions pages crawl करता है। Polite रहने के लिए, यह server response times monitor करता है और अगर कोई site slow respond करने लगे तो crawl rate कम कर देता है - effectively website को crawler के खिलाफ "push back" करने देता है।</FunFact>
 
-## Step 5 — Deduplication
+## Step 5 - Deduplication
 
 ### URL Deduplication (Bloom Filter)
-Billions URLs के साथ, किसी URL को पहले देखा गया है या नहीं — यह check करने के लिए एक efficient data structure चाहिए। Bloom filter O(1) lookups देता है कम memory footprint के साथ:
+Billions URLs के साथ, किसी URL को पहले देखा गया है या नहीं - यह check करने के लिए एक efficient data structure चाहिए। Bloom filter O(1) lookups देता है कम memory footprint के साथ:
 
 - **Space:** 1 billion URLs के लिए ~1 GB, 1% false positive rate पर
 - **Trade-off:** कभी-कभी page re-crawl हो सकता है (false positive) लेकिन कोई नया URL कभी miss नहीं होगा (no false negatives)
@@ -103,7 +103,7 @@ Billions URLs के साथ, किसी URL को पहले देख�
 Check करने से पहले URLs normalise करें: fragments (#) हटाएँ, query parameters sort करें, hostname lowercase करें, और relative paths resolve करें।
 
 ### Content Deduplication (SimHash)
-अलग-अलग URLs identical content serve कर सकते हैं (mirrors, copied articles)। SimHash page content का fingerprint generate करता है — similar fingerprints (छोटी Hamming distance) वाले pages likely duplicates हैं:
+अलग-अलग URLs identical content serve कर सकते हैं (mirrors, copied articles)। SimHash page content का fingerprint generate करता है - similar fingerprints (छोटी Hamming distance) वाले pages likely duplicates हैं:
 
 ```
 Page A content → SimHash → 10110010...
@@ -111,14 +111,14 @@ Page B content → SimHash → 10110011...
 Hamming distance = 1 → likely duplicate, skip storing
 ```
 
-<Quiz question="Bloom filter बताता है कि एक URL पहले देखा जा चुका है। आप क्या निष्कर्ष निकाल सकते हैं?" options="URL definitely crawl हो चुका है|URL probably crawl हो चुका है, लेकिन false positive की थोड़ी संभावना है|URL crawl नहीं हुआ है|Bloom filter को rebuild करना होगा" answer="1" explanation="Bloom filters में थोड़ी false positive rate होती है — वे किसी unseen URL के लिए 'हाँ, देखा है' बोल सकते हैं, लेकिन जो URL actually add किया गया है उसके लिए कभी 'नहीं' नहीं बोलते। इसका मतलब है कभी-कभी page re-crawl होगा, जो ज़्यादातर crawlers के लिए acceptable है।" />
+<Quiz question="Bloom filter बताता है कि एक URL पहले देखा जा चुका है। आप क्या निष्कर्ष निकाल सकते हैं?" options="URL definitely crawl हो चुका है|URL probably crawl हो चुका है, लेकिन false positive की थोड़ी संभावना है|URL crawl नहीं हुआ है|Bloom filter को rebuild करना होगा" answer="1" explanation="Bloom filters में थोड़ी false positive rate होती है - वे किसी unseen URL के लिए 'हाँ, देखा है' बोल सकते हैं, लेकिन जो URL actually add किया गया है उसके लिए कभी 'नहीं' नहीं बोलते। इसका मतलब है कभी-कभी page re-crawl होगा, जो ज़्यादातर crawlers के लिए acceptable है।" />
 
-## Step 6 — Distributed Crawling
+## Step 6 - Distributed Crawling
 
 ### Horizontally Scale करना
 एक single machine monthly billion pages crawl नहीं कर सकती। काम distribute करें:
 
-- **Consistent hashing** domain names पर — हर domain को एक specific crawler node assign करता है। इससे politeness ensure होती है — एक given domain को सिर्फ़ एक node crawl करता है
+- **Consistent hashing** domain names पर - हर domain को एक specific crawler node assign करता है। इससे politeness ensure होती है - एक given domain को सिर्फ़ एक node crawl करता है
 - **URL frontier** hash ring के basis पर nodes में partition होता है
 - **Coordination** एक lightweight service से जो node assignments manage करती है और nodes join/leave होने पर rebalance करती है
 
@@ -130,15 +130,15 @@ DNS lookups हर request में 10-100ms add करते हैं। Scal
 
 ### Spider Trap Detection
 Malicious या poorly built sites infinite URL spaces create कर सकती हैं:
-- `/page/1/page/1/page/1/...` — repeating path patterns
+- `/page/1/page/1/page/1/...` - repeating path patterns
 - Calendar pages जो हर future date के लिए URLs generate करते हैं
 - URLs में Session IDs जो identical content के लिए unique URLs create करते हैं
 
 **बचाव:** maximum URL length, हर domain के लिए maximum crawl depth, repetitive URL structures के लिए pattern detection, और domain-level page count limits।
 
-<ThinkAboutIt>अगर आपको search index fresh रखना है, तो कौन से pages पहले re-crawl करेंगे? एक news site जो hourly update होती है vs एक Wikipedia article जो monthly बदलता है — इसके बारे में सोचें। Re-crawl scheduling prioritise करने के लिए आप कौन से signals use करेंगे?</ThinkAboutIt>
+<ThinkAboutIt>अगर आपको search index fresh रखना है, तो कौन से pages पहले re-crawl करेंगे? एक news site जो hourly update होती है vs एक Wikipedia article जो monthly बदलता है - इसके बारे में सोचें। Re-crawl scheduling prioritise करने के लिए आप कौन से signals use करेंगे?</ThinkAboutIt>
 
-## Step 7 — Bottlenecks और Optimisations
+## Step 7 - Bottlenecks और Optimisations
 
 | Bottleneck | Solution |
 |-----------|----------|
@@ -153,6 +153,6 @@ Malicious या poorly built sites infinite URL spaces create कर सकत�
 ---
 
 ## 📚 आगे पढ़ें
-- [Web Crawler — System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) — Alex Xu का detailed web crawler design walkthrough
-- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) — scalable crawler architecture पर foundational paper
-- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) — Bloom filters कैसे काम करते हैं, इस पर interactive tutorial
+- [Web Crawler - System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) - Alex Xu का detailed web crawler design walkthrough
+- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) - scalable crawler architecture पर foundational paper
+- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) - Bloom filters कैसे काम करते हैं, इस पर interactive tutorial

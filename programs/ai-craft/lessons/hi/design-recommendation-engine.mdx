@@ -1,5 +1,5 @@
 ---
-title: "Recommendation Engine डिज़ाइन करें — AI-Powered Personalisation at Scale"
+title: "Recommendation Engine डिज़ाइन करें - AI-Powered Personalisation at Scale"
 description: "Collaborative filtering, embeddings, और real-time serving को मिलाकर एक production recommendation system architect करें।"
 order: 4
 difficulty: "advanced"
@@ -12,7 +12,7 @@ published: true
 
 *"एक e-commerce platform के लिए recommendation engine डिज़ाइन करें जो 100 million users को personalised product suggestions serve करे।"*
 
-यह question आपकी **machine learning pipelines** और **scalable system design** को combine करने की ability test करता है — senior-level interviews में यह combination काफ़ी common हो गया है।
+यह question आपकी **machine learning pipelines** और **scalable system design** को combine करने की ability test करता है - senior-level interviews में यह combination काफ़ी common हो गया है।
 
 ## Step 1: Requirements Gathering
 
@@ -29,44 +29,44 @@ published: true
 - Graceful degradation: अगर personalisation fail हो तो popular items दिखाएँ
 
 <Callout>
-हमेशा एक fallback strategy define करें। Interviewers को यह सुनना अच्छा लगता है — "अगर ML model fail हो जाए, तो हम gracefully popularity-based recommendations पर degrade करेंगे" — इससे production thinking दिखती है।
+हमेशा एक fallback strategy define करें। Interviewers को यह सुनना अच्छा लगता है - "अगर ML model fail हो जाए, तो हम gracefully popularity-based recommendations पर degrade करेंगे" - इससे production thinking दिखती है।
 </Callout>
 
 ## Step 2: Recommendation Approaches
 
 तीन core techniques ज़्यादातर recommendation systems को power करती हैं:
 
-**Collaborative filtering** — "आपसे मिलते-जुलते users को ये items पसंद आए"
+**Collaborative filtering** - "आपसे मिलते-जुलते users को ये items पसंद आए"
 - User-item interaction matrices (views, purchases, ratings) analyse करें
 - Matrix factorisation से similar users या similar items खोजें
 - Sufficient interaction data होने पर अच्छे से काम करता है
 
-**Content-based filtering** — "क्योंकि आपको इन features वाले items पसंद आए"
+**Content-based filtering** - "क्योंकि आपको इन features वाले items पसंद आए"
 - Product attributes (category, brand, price range, description) use करें
 - Transformer models से product descriptions के embeddings generate करें
 - Embedding space में items के बीच similarity compute करें
 
-**Hybrid approach** — stronger recommendations के लिए दोनों signals combine करें
+**Hybrid approach** - stronger recommendations के लिए दोनों signals combine करें
 - ज़्यादातर production systems hybrid use करते हैं: personalisation के लिए collaborative signals, diversity और cold-start coverage के लिए content signals
 
-<Quiz question="एक नया user sign up करता है जिसका कोई purchase या browsing history नहीं है। कौन सा recommendation approach इस 'cold-start' scenario को सबसे अच्छे से handle करता है?" options="Similar users पर based collaborative filtering|User की stated preferences use करके content-based filtering|Interaction matrix की matrix factorisation|सिर्फ़ popularity-based recommendations" answer="1" explanation="Content-based filtering initial signals जैसे stated preferences, selected categories, या demographic data leverage कर सकता है — बिना interaction history के भी matching attributes वाले items recommend करने के लिए।" />
+<Quiz question="एक नया user sign up करता है जिसका कोई purchase या browsing history नहीं है। कौन सा recommendation approach इस 'cold-start' scenario को सबसे अच्छे से handle करता है?" options="Similar users पर based collaborative filtering|User की stated preferences use करके content-based filtering|Interaction matrix की matrix factorisation|सिर्फ़ popularity-based recommendations" answer="1" explanation="Content-based filtering initial signals जैसे stated preferences, selected categories, या demographic data leverage कर सकता है - बिना interaction history के भी matching attributes वाले items recommend करने के लिए।" />
 
 ## Step 3: Recommendation Pipeline
 
 Production recommendation systems आमतौर पर **two-stage architecture** use करते हैं:
 
-**Stage 1 — Candidate Generation (offline/near-real-time)**
+**Stage 1 - Candidate Generation (offline/near-real-time)**
 - 10 million products को ~1,000 candidates per user तक narrow करें
 - Lightweight models use करें: collaborative filtering, embedding similarity
 - Batch jobs (hourly/daily) या streaming से near-real-time चलता है
 
-**Stage 2 — Ranking (real-time)**
+**Stage 2 - Ranking (real-time)**
 - ~1,000 candidates को एक richer model से score करें
 - Context consider करें: time of day, device, recent activity, cart contents
 - Top-20 ranked items return करें
 - 100ms latency budget में execute होना चाहिए
 
-<Illustration src="/images/lessons/design-recommendation-engine.svg" alt="Two-stage recommendation pipeline — candidate generation, ranking, और serving layers" caption="Candidate generation catalogue को narrow करता है; ranking model final selection को personalise करता है।" />
+<Illustration src="/images/lessons/design-recommendation-engine.svg" alt="Two-stage recommendation pipeline - candidate generation, ranking, और serving layers" caption="Candidate generation catalogue को narrow करता है; ranking model final selection को personalise करता है।" />
 
 ## Step 4: Data Model और Feature Store
 
@@ -77,9 +77,9 @@ Recommendations multiple data sources से compute किए गए rich featu
 **Interaction features:** click-through rates, time spent viewing, add-to-cart rates
 
 एक **feature store** (जैसे Feast, Tecton) provide करता है:
-- **Offline features** — model training के लिए precomputed batch features
-- **Online features** — real-time ranking के लिए low-latency feature retrieval
-- **Consistency** — training और serving में same feature definitions
+- **Offline features** - model training के लिए precomputed batch features
+- **Online features** - real-time ranking के लिए low-latency feature retrieval
+- **Consistency** - training और serving में same feature definitions
 
 ```
 Feature Store Schema:
@@ -114,14 +114,14 @@ Netflix का अनुमान है कि उसका recommendation syst
 
 Recommendation systems को rigorous experimentation चाहिए:
 
-- **Traffic splitting** — users का एक percentage नए model पर route करें
-- **Metrics** — click-through rate (CTR), conversion rate, revenue per session, diversity
-- **Statistical significance** — reliable conclusions तक पहुँचने के लिए tests काफ़ी समय तक चलाएँ
-- **Guardrail metrics** — ensure करें कि नए models overall revenue या engagement degrade न करें
+- **Traffic splitting** - users का एक percentage नए model पर route करें
+- **Metrics** - click-through rate (CTR), conversion rate, revenue per session, diversity
+- **Statistical significance** - reliable conclusions तक पहुँचने के लिए tests काफ़ी समय तक चलाएँ
+- **Guardrail metrics** - ensure करें कि नए models overall revenue या engagement degrade न करें
 
 एक typical setup **feature flag service** use करता है जो users को experiment buckets में consistently assign करे (same user हमेशा test के दौरान same variant देखे)।
 
-<Quiz question="आप एक नया recommendation model deploy करते हैं जो CTR 15% बढ़ाता है लेकिन purchase conversion 5% कम करता है। आप क्या करेंगे?" options="Ship करो — ज़्यादा CTR मतलब better engagement|Roll back करो — conversion clicks से ज़्यादा important है|Investigate करो — model शायद genuinely relevant products की जगह clickbait recommend कर रहा है|Test और लंबा चलाओ — results अभी significant नहीं हैं" answer="2" explanation="ज़्यादा CTR लेकिन कम conversion suggest करता है कि model ऐसे attention-grabbing items recommend कर रहा है जिन पर users click तो करते हैं लेकिन खरीदते नहीं। इस disconnect को investigate करने से पता चलता है कि model गलत metric के लिए optimise कर रहा है।" />
+<Quiz question="आप एक नया recommendation model deploy करते हैं जो CTR 15% बढ़ाता है लेकिन purchase conversion 5% कम करता है। आप क्या करेंगे?" options="Ship करो - ज़्यादा CTR मतलब better engagement|Roll back करो - conversion clicks से ज़्यादा important है|Investigate करो - model शायद genuinely relevant products की जगह clickbait recommend कर रहा है|Test और लंबा चलाओ - results अभी significant नहीं हैं" answer="2" explanation="ज़्यादा CTR लेकिन कम conversion suggest करता है कि model ऐसे attention-grabbing items recommend कर रहा है जिन पर users click तो करते हैं लेकिन खरीदते नहीं। इस disconnect को investigate करने से पता चलता है कि model गलत metric के लिए optimise कर रहा है।" />
 
 ## Step 7: Cold-Start Solutions
 
@@ -141,12 +141,12 @@ Cold-start problem नए users और नए items दोनों के ल�
 ## Step 8: System को Scale करना
 
 **50K requests per second के लिए architecture:**
-- **API gateway** — rate limiting, authentication, request routing
-- **Recommendation service** — stateless, load balancer के पीछे horizontally scaled
-- **Feature store** — low-latency feature retrieval के लिए Redis cluster
-- **Model serving** — memory में pre-loaded models (TensorFlow Serving, Triton)
-- **Pre-computed cache** — हर user के top recommendations का Redis cache, batch jobs से refresh
-- **Fallback** — cache miss और model timeout होने पर popularity-based defaults return करें
+- **API gateway** - rate limiting, authentication, request routing
+- **Recommendation service** - stateless, load balancer के पीछे horizontally scaled
+- **Feature store** - low-latency feature retrieval के लिए Redis cluster
+- **Model serving** - memory में pre-loaded models (TensorFlow Serving, Triton)
+- **Pre-computed cache** - हर user के top recommendations का Redis cache, batch jobs से refresh
+- **Fallback** - cache miss और model timeout होने पर popularity-based defaults return करें
 
 <Quiz question="आपकी recommendation service average 40ms latency देती है लेकिन peak load पर 500ms तक spike करती है। सबसे effective पहला optimisation क्या होगा?" options="Model inference के लिए faster GPUs पर upgrade करें|Pre-computed recommendations के लिए Redis cache layer add करें|Ranking model को faster language में rewrite करें|Candidate generation pool size बढ़ाएँ" answer="1" explanation="ज़्यादातर users के लिए pre-computed recommendations cache करने से peak load में real-time inference की ज़रूरत ही खत्म हो जाती है। सिर्फ़ cache misses (नई activity, expired TTL) को live model inference चाहिए।" />
 
@@ -163,6 +163,6 @@ Recommendation engines "filter bubbles" बना सकते हैं जह�
 - Two-stage architecture use करें: candidate generation (broad) → ranking (precise)
 - Hybrid approaches (collaborative + content-based) single-method systems से बेहतर perform करते हैं
 - Feature stores model training और real-time serving के बीच consistency ensure करते हैं
-- A/B testing ज़रूरी है — सिर्फ़ ML metrics नहीं, business metrics के लिए optimise करें
+- A/B testing ज़रूरी है - सिर्फ़ ML metrics नहीं, business metrics के लिए optimise करें
 - Cold-start strategies नए users और items के लिए खराब experience रोकती हैं
 - Peak traffic handle करने के लिए aggressively cache करें और gracefully degrade करें

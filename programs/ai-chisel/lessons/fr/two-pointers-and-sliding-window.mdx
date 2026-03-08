@@ -1,5 +1,5 @@
 ---
-title: "Two Pointers et Sliding Window — Comment l'IA analyse les données efficacement"
+title: "Two Pointers et Sliding Window - Comment l'IA analyse les données efficacement"
 description: "Maîtrisez deux patterns essentiels pour parcourir des séquences sans gaspiller de calcul."
 order: 1
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Pourquoi un parcours intelligent est important
 
-Imaginez une IA surveillant un flux vidéo en direct pour détecter des activités suspectes. Elle ne peut pas revisionner l'intégralité de l'enregistrement chaque seconde — elle doit faire glisser une fenêtre d'attention sur le flux, en conservant juste assez de contexte. C'est exactement ce que font les patterns **two pointers** et **sliding window** pour les données séquentielles.
+Imaginez une IA surveillant un flux vidéo en direct pour détecter des activités suspectes. Elle ne peut pas revisionner l'intégralité de l'enregistrement chaque seconde - elle doit faire glisser une fenêtre d'attention sur le flux, en conservant juste assez de contexte. C'est exactement ce que font les patterns **two pointers** et **sliding window** pour les données séquentielles.
 
 Ces deux techniques transforment des parcours brute-force en O(n²) en élégants parcours en O(n).
 
@@ -24,7 +24,7 @@ Placez deux références dans une séquence et déplacez-les selon une règle. I
 
 Placez un pointeur à chaque extrémité et déplacez-les vers l'intérieur. Idéal pour les données **triées**.
 
-**Problème classique — Pair Sum :** Étant donné un tableau trié, trouvez deux nombres dont la somme correspond à une cible.
+**Problème classique - Pair Sum :** Étant donné un tableau trié, trouvez deux nombres dont la somme correspond à une cible.
 
 ```
 function pairSum(arr, target):
@@ -38,13 +38,13 @@ function pairSum(arr, target):
     return null
 ```
 
-Comme le tableau est trié, déplacer `left` vers la droite augmente la somme, et déplacer `right` vers la gauche la diminue — garantissant qu'aucune paire valide n'est manquée.
+Comme le tableau est trié, déplacer `left` vers la droite augmente la somme, et déplacer `right` vers la gauche la diminue - garantissant qu'aucune paire valide n'est manquée.
 
 ### Pointeurs dans la même direction
 
 Les deux pointeurs avancent, mais à des vitesses différentes. Utile pour le **partitionnement** ou la **détection de cycles**.
 
-**Exemple — Supprimer les doublons en place :** Un pointeur lent marque la position d'écriture ; un pointeur rapide parcourt en avance.
+**Exemple - Supprimer les doublons en place :** Un pointeur lent marque la position d'écriture ; un pointeur rapide parcourt en avance.
 
 ```
 function removeDuplicates(arr):
@@ -66,7 +66,7 @@ Une sliding window maintient une sous-séquence contiguë de taille _k_ (fixe) o
 
 Faites glisser une fenêtre de exactement _k_ éléments sur le tableau.
 
-**Exemple — Somme maximale de k éléments consécutifs :**
+**Exemple - Somme maximale de k éléments consécutifs :**
 
 ```
 function maxSubarraySum(arr, k):
@@ -78,13 +78,13 @@ function maxSubarraySum(arr, k):
     return best
 ```
 
-À chaque étape, on ajoute le nouvel élément entrant dans la fenêtre et on soustrait celui qui en sort — O(1) par déplacement.
+À chaque étape, on ajoute le nouvel élément entrant dans la fenêtre et on soustrait celui qui en sort - O(1) par déplacement.
 
 ### Fenêtre de taille variable
 
 Élargissez la fenêtre pour inclure plus de données, puis réduisez-la lorsqu'une contrainte est violée.
 
-**Exemple — Plus longue sous-chaîne sans caractères répétés :**
+**Exemple - Plus longue sous-chaîne sans caractères répétés :**
 
 ```
 function longestUnique(s):
@@ -99,7 +99,7 @@ function longestUnique(s):
     return best
 ```
 
-<FunFact>Les plateformes de streaming analytics comme Apache Flink utilisent les fenêtres glissantes et les fenêtres à bascule comme primitives de premier ordre — le même concept appliqué à des millions d'événements par seconde.</FunFact>
+<FunFact>Les plateformes de streaming analytics comme Apache Flink utilisent les fenêtres glissantes et les fenêtres à bascule comme primitives de premier ordre - le même concept appliqué à des millions d'événements par seconde.</FunFact>
 
 ## Applications en IA
 
@@ -110,7 +110,7 @@ function longestUnique(s):
 | Pointeurs convergents | Vérifications efficaces du plus proche voisin dans des dimensions d'embeddings triées |
 | Pointeurs même direction | Fusion de listes de résultats triées provenant de multiples modèles de retrieval |
 
-<ThinkAboutIt>Un assistant vocal met en tampon les 3 dernières secondes d'audio pour détecter un mot d'activation. De quel pattern s'agit-il — fenêtre fixe ou fenêtre variable ? Que se passe-t-il si le mot d'activation est plus long que le tampon ?</ThinkAboutIt>
+<ThinkAboutIt>Un assistant vocal met en tampon les 3 dernières secondes d'audio pour détecter un mot d'activation. De quel pattern s'agit-il - fenêtre fixe ou fenêtre variable ? Que se passe-t-il si le mot d'activation est plus long que le tampon ?</ThinkAboutIt>
 
 ## Quand utiliser quel pattern
 
@@ -119,14 +119,14 @@ function longestUnique(s):
 - **Fixed sliding window :** agrégat sur une taille de fenêtre connue.
 - **Variable sliding window :** trouver la plus petite ou la plus grande fenêtre satisfaisant une condition.
 
-<Quiz question="Quel pattern choisiriez-vous pour trouver le plus petit sous-tableau dont la somme dépasse une valeur donnée ?" options="Two pointers convergents|Fixed sliding window|Variable sliding window|Recherche binaire" answer="2" explanation="Une fenêtre de taille variable s'élargit jusqu'à ce que la somme dépasse la valeur, puis se contracte par la gauche pour trouver la longueur minimale — le tout en O(n)." />
+<Quiz question="Quel pattern choisiriez-vous pour trouver le plus petit sous-tableau dont la somme dépasse une valeur donnée ?" options="Two pointers convergents|Fixed sliding window|Variable sliding window|Recherche binaire" answer="2" explanation="Une fenêtre de taille variable s'élargit jusqu'à ce que la somme dépasse la valeur, puis se contracte par la gauche pour trouver la longueur minimale - le tout en O(n)." />
 
-<ThinkAboutIt>Pourriez-vous combiner two pointers avec une sliding window ? Pensez à des problèmes où il faut trouver une paire dans une fenêtre glissante de données — par exemple, détecter des transactions en double dans une fenêtre de cinq minutes.</ThinkAboutIt>
+<ThinkAboutIt>Pourriez-vous combiner two pointers avec une sliding window ? Pensez à des problèmes où il faut trouver une paire dans une fenêtre glissante de données - par exemple, détecter des transactions en double dans une fenêtre de cinq minutes.</ThinkAboutIt>
 
 ## Points clés à retenir
 
 1. Les two pointers éliminent les boucles imbriquées en exploitant l'ordre ou le partitionnement.
 2. Les sliding windows maintiennent un état courant pour que chaque élément soit traité au plus deux fois.
-3. Les deux patterns sont fondamentaux dans les pipelines IA en temps réel — de la détection d'anomalies au classement des résultats de recherche.
+3. Les deux patterns sont fondamentaux dans les pipelines IA en temps réel - de la détection d'anomalies au classement des résultats de recherche.
 
-<Quiz question="Quelle est la complexité temporelle typique obtenue en convertissant une boucle imbriquée brute-force en solution two pointers ou sliding window ?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="Les deux patterns traitent chaque élément un nombre constant de fois, produisant un O(n) global — une amélioration significative par rapport à l'approche brute-force en O(n²)." />
+<Quiz question="Quelle est la complexité temporelle typique obtenue en convertissant une boucle imbriquée brute-force en solution two pointers ou sliding window ?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="Les deux patterns traitent chaque élément un nombre constant de fois, produisant un O(n) global - une amélioration significative par rapport à l'approche brute-force en O(n²)." />

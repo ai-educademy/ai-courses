@@ -1,6 +1,6 @@
 ---
-title: "Simulation d'entretien de conception système — 45 minutes en conditions réelles (niveau senior)"
-description: "Un exercice complet de conception système pour une plateforme de livraison de repas — exigences, conception d'API, architecture, approfondissements et mise à l'échelle — structuré exactement comme un vrai entretien senior."
+title: "Simulation d'entretien de conception système - 45 minutes en conditions réelles (niveau senior)"
+description: "Un exercice complet de conception système pour une plateforme de livraison de repas - exigences, conception d'API, architecture, approfondissements et mise à l'échelle - structuré exactement comme un vrai entretien senior."
 order: 9
 difficulty: "advanced"
 duration: 25
@@ -8,15 +8,15 @@ icon: "🏗️"
 published: true
 ---
 
-# Simulation d'entretien de conception système — 45 minutes en conditions réelles
+# Simulation d'entretien de conception système - 45 minutes en conditions réelles
 
-Les entretiens de conception système distinguent les ingénieurs seniors des autres. Il n'y a pas de réponse unique — les recruteurs évaluent votre **raisonnement structuré**, votre analyse de compromis et votre capacité à naviguer dans l'ambiguïté. Cette leçon est une simulation complète de 45 minutes.
+Les entretiens de conception système distinguent les ingénieurs seniors des autres. Il n'y a pas de réponse unique - les recruteurs évaluent votre **raisonnement structuré**, votre analyse de compromis et votre capacité à naviguer dans l'ambiguïté. Cette leçon est une simulation complète de 45 minutes.
 
 ## 🎯 Le problème : Concevoir un système de livraison de repas
 
 *« Concevez une plateforme de livraison de repas comme Uber Eats ou Deliveroo qui connecte clients, restaurants et livreurs. »*
 
-<Illustration src="/images/lessons/system-design-mock-interview.svg" alt="Architecture de haut niveau d'un système de livraison de repas avec les services utilisateur, restaurant, commande et livreur" caption="Les quatre domaines clés d'une plateforme de livraison de repas — chacun est un contexte borné avec son propre service." />
+<Illustration src="/images/lessons/system-design-mock-interview.svg" alt="Architecture de haut niveau d'un système de livraison de repas avec les services utilisateur, restaurant, commande et livreur" caption="Les quatre domaines clés d'une plateforme de livraison de repas - chacun est un contexte borné avec son propre service." />
 
 ## Phase 1 : Recueil des exigences (5 minutes)
 
@@ -34,7 +34,7 @@ Les entretiens de conception système distinguent les ingénieurs seniors des au
 - **Échelle** : 50 M d'utilisateurs actifs mensuels, 5 M de commandes par jour, 500 K d'utilisateurs simultanés en pic
 - **Cohérence** : cohérence à terme acceptable pour la recherche ; cohérence forte pour les paiements
 
-<Quiz question="Pourquoi la cohérence à terme est-elle acceptable pour la recherche de restaurants mais PAS pour le traitement des paiements ?" options="La recherche est moins importante que les paiements|Afficher un menu légèrement obsolète est tolérable ; facturer un utilisateur deux fois ne l'est pas|La cohérence à terme est toujours plus rapide|Les API de paiement ne supportent pas la cohérence à terme" answer="1" explanation="Un utilisateur qui voit un restaurant venant de fermer est un inconvénient mineur — un nouvel essai suffit. Mais traiter un paiement deux fois cause un préjudice financier réel. Le coût de l'incohérence détermine le modèle de cohérence." />
+<Quiz question="Pourquoi la cohérence à terme est-elle acceptable pour la recherche de restaurants mais PAS pour le traitement des paiements ?" options="La recherche est moins importante que les paiements|Afficher un menu légèrement obsolète est tolérable ; facturer un utilisateur deux fois ne l'est pas|La cohérence à terme est toujours plus rapide|Les API de paiement ne supportent pas la cohérence à terme" answer="1" explanation="Un utilisateur qui voit un restaurant venant de fermer est un inconvénient mineur - un nouvel essai suffit. Mais traiter un paiement deux fois cause un préjudice financier réel. Le coût de l'incohérence détermine le modèle de cohérence." />
 
 ## Phase 2 : Conception de l'API (5 minutes)
 
@@ -76,12 +76,12 @@ POST   /api/v1/deliveries/{id}/complete               → Delivery
 ### Patterns de communication
 
 - **Synchrone** : API Gateway → services individuels (REST/gRPC)
-- **Asynchrone** : Événements de commande publiés sur **Kafka** — consommés par les services Payment, Notification et Analytics
+- **Asynchrone** : Événements de commande publiés sur **Kafka** - consommés par les services Payment, Notification et Analytics
 - **Temps réel** : Mises à jour de position du livreur via WebSocket → stockées dans **Redis** avec indexation géospatiale
 
 <FunFact>Uber traite plus d'un million de mises à jour de position par seconde à l'échelle mondiale. Ils ont construit leur propre système d'indexation géospatiale (H3) utilisant des grilles hexagonales hiérarchiques car les requêtes latitude/longitude traditionnelles ne suivaient pas à cette échelle.</FunFact>
 
-## Phase 4 : Approfondissement — Composants critiques (15 minutes)
+## Phase 4 : Approfondissement - Composants critiques (15 minutes)
 
 ### Algorithme d'appariement des livreurs
 
@@ -127,29 +127,29 @@ Où :
 
 Les paiements suivent un **pattern en deux phases** :
 
-1. **Autorisation** — réserver les fonds au moment de la commande (bloquer, pas débiter)
-2. **Capture** — débiter le montant réel après confirmation de la livraison
+1. **Autorisation** - réserver les fonds au moment de la commande (bloquer, pas débiter)
+2. **Capture** - débiter le montant réel après confirmation de la livraison
 
 Cela gère gracieusement les modifications de commande, les annulations et les remboursements partiels. Utilisez une **clé d'idempotence** sur chaque requête de paiement pour éviter les doubles débits lors des retries.
 
-<Quiz question="Pourquoi utiliser un pattern de paiement en deux phases (autorisation puis capture) plutôt que de débiter immédiatement ?" options="C'est plus rapide qu'un débit unique|Cela gère les annulations, modifications et remboursements sans logique de reversal complexe|Les prestataires de paiement l'exigent|Cela réduit les frais de transaction" answer="1" explanation="L'autorisation puis capture permet de réserver les fonds sans s'engager. Si le restaurant annule ou la commande change, vous libérez simplement l'autorisation — pas besoin de traitement de remboursement. Cela simplifie considérablement les cas limites." />
+<Quiz question="Pourquoi utiliser un pattern de paiement en deux phases (autorisation puis capture) plutôt que de débiter immédiatement ?" options="C'est plus rapide qu'un débit unique|Cela gère les annulations, modifications et remboursements sans logique de reversal complexe|Les prestataires de paiement l'exigent|Cela réduit les frais de transaction" answer="1" explanation="L'autorisation puis capture permet de réserver les fonds sans s'engager. Si le restaurant annule ou la commande change, vous libérez simplement l'autorisation - pas besoin de traitement de remboursement. Cela simplifie considérablement les cas limites." />
 
 ## Phase 5 : Mise à l'échelle et goulots d'étranglement (10 minutes)
 
 ### Scaling des bases de données
 
-- **Order Service** : sharding par `order_id` — les commandes sont indépendantes, le scaling horizontal est direct
+- **Order Service** : sharding par `order_id` - les commandes sont indépendantes, le scaling horizontal est direct
 - **Restaurant Service** : réplicas en lecture pour les requêtes de recherche, Elasticsearch pour la recherche full-text et géospatiale
-- **Position des livreurs** : Redis Cluster avec indexation géospatiale — purement en mémoire, lectures en sous-milliseconde
+- **Position des livreurs** : Redis Cluster avec indexation géospatiale - purement en mémoire, lectures en sous-milliseconde
 
 ### Gérer les pics de charge (surge)
 
 Aux heures de pointe (vendredi 19h, grands événements sportifs), le volume de commandes peut être multiplié par 10 :
 
 - **Auto-scaling** des pods applicatifs basé sur la profondeur de la file, pas le CPU
-- **Tarification dynamique** pour équilibrer l'offre et la demande — augmenter les frais de livraison quand l'offre de livreurs est faible
+- **Tarification dynamique** pour équilibrer l'offre et la demande - augmenter les frais de livraison quand l'offre de livreurs est faible
 - **Rate limiting** par utilisateur pour prévenir les abus en période de pic
-- **Circuit breakers** sur les services aval — dégradation gracieuse plutôt que défaillance en cascade
+- **Circuit breakers** sur les services aval - dégradation gracieuse plutôt que défaillance en cascade
 
 ### Points de défaillance uniques
 
@@ -160,30 +160,30 @@ Aux heures de pointe (vendredi 19h, grands événements sportifs), le volume de 
 | Redis | Redis Sentinel pour le failover automatique |
 | Prestataire de paiement | Prestataire secondaire avec bascule automatique |
 
-<Quiz question="Vous mettez à l'échelle le Order Service. Quelle clé de sharding offre la MEILLEURE distribution des écritures ?" options="restaurant_id — toutes les commandes d'un restaurant sur un shard|user_id — toutes les commandes d'un utilisateur sur un shard|order_id — commandes distribuées aléatoirement sur les shards|city_id — toutes les commandes d'une ville sur un shard" answer="2" explanation="Le sharding par order_id distribue les écritures uniformément car les identifiants de commande sont générés aléatoirement (UUID ou snowflake ID). Le sharding par restaurant_id ou city_id crée des points chauds — les restaurants populaires et les grandes villes reçoivent un trafic disproportionné." />
+<Quiz question="Vous mettez à l'échelle le Order Service. Quelle clé de sharding offre la MEILLEURE distribution des écritures ?" options="restaurant_id - toutes les commandes d'un restaurant sur un shard|user_id - toutes les commandes d'un utilisateur sur un shard|order_id - commandes distribuées aléatoirement sur les shards|city_id - toutes les commandes d'une ville sur un shard" answer="2" explanation="Le sharding par order_id distribue les écritures uniformément car les identifiants de commande sont générés aléatoirement (UUID ou snowflake ID). Le sharding par restaurant_id ou city_id crée des points chauds - les restaurants populaires et les grandes villes reçoivent un trafic disproportionné." />
 
 <ThinkAboutIt>Votre recruteur demande : « Que se passe-t-il quand le service de paiement est en panne pendant 30 secondes en période de pic ? » Déroulez le mode de défaillance exact, l'impact sur les commandes et la procédure de reprise.</ThinkAboutIt>
 
 ## 💡 Conseils pour l'entretien
 
-1. **Structurez votre temps** — ne passez pas 30 minutes sur les exigences
-2. **Formulez les compromis explicitement** — « J'ai choisi X plutôt que Y parce que... »
-3. **Commencez simple, puis montez en charge** — concevez pour 1× d'abord, puis gérez 100×
-4. **Dessinez en parlant** — la communication visuelle représente la moitié de l'évaluation
-5. **Reconnaissez les inconnues** — « Il faudrait benchmarker, mais mon hypothèse est... »
+1. **Structurez votre temps** - ne passez pas 30 minutes sur les exigences
+2. **Formulez les compromis explicitement** - « J'ai choisi X plutôt que Y parce que... »
+3. **Commencez simple, puis montez en charge** - concevez pour 1× d'abord, puis gérez 100×
+4. **Dessinez en parlant** - la communication visuelle représente la moitié de l'évaluation
+5. **Reconnaissez les inconnues** - « Il faudrait benchmarker, mais mon hypothèse est... »
 
 ## 🎯 Points clés à retenir
 
-- Commencez toujours par les exigences — fonctionnelles et non fonctionnelles
+- Commencez toujours par les exigences - fonctionnelles et non fonctionnelles
 - Concevez les contrats d'API avant les diagrammes d'architecture
 - Approfondissez 2 à 3 composants, pas tous superficiellement
-- Chaque choix architectural implique des compromis — nommez-les
+- Chaque choix architectural implique des compromis - nommez-les
 - Entraînez-vous avec un chronomètre : 45 minutes, sans prolongation
 
 ---
 
 ## 📚 Lectures complémentaires
 
-- [System Design Interview par Alex Xu](https://www.amazon.co.uk/System-Design-Interview-insiders-guide/dp/B08CMF2CQF) — Le livre de préparation le plus pratique pour les entretiens de conception système
-- [Blog Uber Engineering](https://www.uber.com/en-GB/blog/engineering/) — Plongées techniques dans des systèmes réels à très grande échelle
-- [Designing Data-Intensive Applications par Martin Kleppmann](https://dataintensive.net/) — La référence incontournable sur les fondamentaux des systèmes distribués
+- [System Design Interview par Alex Xu](https://www.amazon.co.uk/System-Design-Interview-insiders-guide/dp/B08CMF2CQF) - Le livre de préparation le plus pratique pour les entretiens de conception système
+- [Blog Uber Engineering](https://www.uber.com/en-GB/blog/engineering/) - Plongées techniques dans des systèmes réels à très grande échelle
+- [Designing Data-Intensive Applications par Martin Kleppmann](https://dataintensive.net/) - La référence incontournable sur les fondamentaux des systèmes distribués

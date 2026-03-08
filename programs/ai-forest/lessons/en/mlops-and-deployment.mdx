@@ -1,5 +1,5 @@
 ---
-title: "MLOps and Deployment — Taking Models from Notebook to Production"
+title: "MLOps and Deployment - Taking Models from Notebook to Production"
 description: "Learn the full MLOps lifecycle: model registries, CI/CD for ML, containerisation, serving infrastructure, drift monitoring, and cost optimisation at scale."
 order: 6
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 # MLOps and Deployment
 
-A Jupyter notebook with 94% accuracy is not a product. The moment you close the laptop, that model serves nobody. MLOps is the discipline that bridges the gap between experimentation and production — and it is where most AI teams struggle the hardest.
+A Jupyter notebook with 94% accuracy is not a product. The moment you close the laptop, that model serves nobody. MLOps is the discipline that bridges the gap between experimentation and production - and it is where most AI teams struggle the hardest.
 
 ## Why Notebooks Are Not Production
 
@@ -23,22 +23,22 @@ Production ML requires **versioned code, versioned data, versioned models, and a
 The MLOps lifecycle is a continuous loop, not a linear pipeline. Each stage feeds back into the others, and the maturity of your organisation determines how automated these transitions are.
 
 Google defines three MLOps maturity levels:
-- **Level 0** — Manual, script-driven process. Data scientists hand off models to engineers.
-- **Level 1** — Automated training pipelines. Retraining triggers automatically on new data.
-- **Level 2** — Full CI/CD for ML. Code, data, and model changes all flow through automated pipelines.
+- **Level 0** - Manual, script-driven process. Data scientists hand off models to engineers.
+- **Level 1** - Automated training pipelines. Retraining triggers automatically on new data.
+- **Level 2** - Full CI/CD for ML. Code, data, and model changes all flow through automated pipelines.
 
 The stages of the loop:
 
-1. **Data ingestion and validation** — Collect, clean, and validate incoming data against schemas
-2. **Feature engineering** — Transform raw data into model-ready features via a feature store
-3. **Training** — Run reproducible training jobs with tracked hyperparameters
-4. **Evaluation** — Compare candidate models against baselines using held-out test sets
-5. **Registry** — Store approved models with metadata, lineage, and approval status
-6. **Deployment** — Serve the model behind an API with canary or blue-green rollout
-7. **Monitoring** — Track prediction quality, latency, throughput, and data drift
-8. **Retraining** — Trigger new training runs when performance degrades
+1. **Data ingestion and validation** - Collect, clean, and validate incoming data against schemas
+2. **Feature engineering** - Transform raw data into model-ready features via a feature store
+3. **Training** - Run reproducible training jobs with tracked hyperparameters
+4. **Evaluation** - Compare candidate models against baselines using held-out test sets
+5. **Registry** - Store approved models with metadata, lineage, and approval status
+6. **Deployment** - Serve the model behind an API with canary or blue-green rollout
+7. **Monitoring** - Track prediction quality, latency, throughput, and data drift
+8. **Retraining** - Trigger new training runs when performance degrades
 
-<Illustration src="/images/lessons/mlops-and-deployment.svg" alt="MLOps lifecycle diagram showing the continuous loop from data to deployment to monitoring" caption="The MLOps lifecycle is a loop — monitoring feeds back into retraining." />
+<Illustration src="/images/lessons/mlops-and-deployment.svg" alt="MLOps lifecycle diagram showing the continuous loop from data to deployment to monitoring" caption="The MLOps lifecycle is a loop - monitoring feeds back into retraining." />
 
 ## Model Registries
 
@@ -46,29 +46,29 @@ A model registry is the version control system for your trained models. Tools li
 
 The registry answers critical questions: *Which model is currently in production? What data was it trained on? Who approved it? What were its evaluation metrics?*
 
-<Quiz question="What is the primary purpose of a model registry?" options="Storing training data|Versioning and tracking trained models with metadata|Running hyperparameter tuning|Serving models to end users" answer="1" explanation="A model registry versions trained models alongside their metadata — metrics, parameters, lineage, and promotion status — enabling reproducibility and governance." />
+<Quiz question="What is the primary purpose of a model registry?" options="Storing training data|Versioning and tracking trained models with metadata|Running hyperparameter tuning|Serving models to end users" answer="1" explanation="A model registry versions trained models alongside their metadata - metrics, parameters, lineage, and promotion status - enabling reproducibility and governance." />
 
 ## CI/CD for Machine Learning
 
 Traditional CI/CD tests code. ML CI/CD must test three things: **code, data, and models**.
 
-- **Code tests** — Unit tests for feature engineering logic, data transformations, and API contracts
-- **Data tests** — Schema validation, distribution checks (is the new data within expected ranges?), and completeness checks (no missing columns)
-- **Model tests** — Performance thresholds on validation sets, latency benchmarks, bias metrics, and comparison against the current production model
+- **Code tests** - Unit tests for feature engineering logic, data transformations, and API contracts
+- **Data tests** - Schema validation, distribution checks (is the new data within expected ranges?), and completeness checks (no missing columns)
+- **Model tests** - Performance thresholds on validation sets, latency benchmarks, bias metrics, and comparison against the current production model
 
 A pull request that changes a feature pipeline should trigger retraining and evaluation automatically. If the new model underperforms the baseline, the PR is blocked.
 
 ## Containerisation for ML
 
-Docker is non-negotiable for production ML. Your training environment and serving environment must be identical — the "it works on my machine" problem is amplified when GPU drivers, CUDA versions, and Python dependencies all need to match.
+Docker is non-negotiable for production ML. Your training environment and serving environment must be identical - the "it works on my machine" problem is amplified when GPU drivers, CUDA versions, and Python dependencies all need to match.
 
 A typical ML Dockerfile layers: base CUDA image → Python dependencies → model artefacts → serving framework. Multi-stage builds keep the final image lean by separating the build environment from the runtime.
 
 Key practices for ML containerisation:
-- **Pin every dependency** — Use exact versions in `requirements.txt`, not ranges
-- **Use digest-based base images** — `nvidia/cuda@sha256:...` instead of `:latest`
-- **Separate training and serving images** — Training images need compilers and dev tools; serving images need only the runtime
-- **Scan for vulnerabilities** — ML images inherit CVEs from deep dependency trees
+- **Pin every dependency** - Use exact versions in `requirements.txt`, not ranges
+- **Use digest-based base images** - `nvidia/cuda@sha256:...` instead of `:latest`
+- **Separate training and serving images** - Training images need compilers and dev tools; serving images need only the runtime
+- **Scan for vulnerabilities** - ML images inherit CVEs from deep dependency trees
 
 <FunFact>The NVIDIA CUDA base image alone is over 3 GB. Production teams routinely spend days optimising Docker images to reduce cold-start times and container registry costs.</FunFact>
 
@@ -93,16 +93,16 @@ For LLM serving specifically, **vLLM** has become the industry standard because 
 A model that was accurate at deployment will degrade over time. **Data drift** occurs when the input distribution changes (e.g., customer behaviour shifts post-pandemic). **Concept drift** occurs when the relationship between inputs and outputs changes (e.g., fraud patterns evolve).
 
 Monitor these signals:
-- **Prediction distribution** — Are outputs shifting? More high-confidence predictions than usual?
-- **Feature distributions** — Statistical tests (KS test, PSI) comparing current data to training data
-- **Ground truth feedback** — When labels arrive, compute live accuracy/F1 and compare to baseline
-- **Latency and error rates** — Infrastructure health affects model quality indirectly
+- **Prediction distribution** - Are outputs shifting? More high-confidence predictions than usual?
+- **Feature distributions** - Statistical tests (KS test, PSI) comparing current data to training data
+- **Ground truth feedback** - When labels arrive, compute live accuracy/F1 and compare to baseline
+- **Latency and error rates** - Infrastructure health affects model quality indirectly
 
 <ThinkAboutIt>Your e-commerce recommendation model was trained pre-pandemic. Post-pandemic shopping patterns are completely different. How would you detect this drift automatically, and what would your retraining strategy look like?</ThinkAboutIt>
 
 ## Feature Stores
 
-A feature store is a centralised repository for feature definitions and values, shared across training and serving. Tools like **Feast**, **Tecton**, and **Hopsworks** solve the critical problem of **training-serving skew** — when features are computed differently during training versus inference.
+A feature store is a centralised repository for feature definitions and values, shared across training and serving. Tools like **Feast**, **Tecton**, and **Hopsworks** solve the critical problem of **training-serving skew** - when features are computed differently during training versus inference.
 
 Feature stores provide: an offline store (batch features for training), an online store (low-latency features for serving), and a registry (feature definitions, ownership, lineage).
 
@@ -110,15 +110,15 @@ Feature stores provide: an offline store (batch features for training), an onlin
 
 Not every prediction needs to happen in real time. The cost difference is enormous:
 
-- **Batch inference** — Run predictions on a schedule (hourly, daily). Cheap, uses spot instances. Ideal for recommendations, risk scoring, report generation.
-- **Real-time inference** — Sub-second predictions via API. Expensive, requires always-on GPU instances. Required for chatbots, fraud detection, autonomous systems.
-- **Near-real-time (streaming)** — Process events as they arrive via Kafka or Pub/Sub. Balances latency and cost for use cases like personalisation and anomaly detection.
+- **Batch inference** - Run predictions on a schedule (hourly, daily). Cheap, uses spot instances. Ideal for recommendations, risk scoring, report generation.
+- **Real-time inference** - Sub-second predictions via API. Expensive, requires always-on GPU instances. Required for chatbots, fraud detection, autonomous systems.
+- **Near-real-time (streaming)** - Process events as they arrive via Kafka or Pub/Sub. Balances latency and cost for use cases like personalisation and anomaly detection.
 
 A common pattern is to pre-compute batch predictions for the 95% of cases that are predictable, and route only the remaining 5% to a real-time endpoint.
 
-Cost optimisation tip: **autoscale inference endpoints** based on request queue depth, not CPU utilisation. ML workloads are bursty — scaling on queue depth prevents both over-provisioning and request timeouts during traffic spikes.
+Cost optimisation tip: **autoscale inference endpoints** based on request queue depth, not CPU utilisation. ML workloads are bursty - scaling on queue depth prevents both over-provisioning and request timeouts during traffic spikes.
 
-<Quiz question="When is batch inference preferable to real-time inference?" options="When predictions are needed in under 100ms|When predictions can be pre-computed on a schedule and latency is not critical|When the model is too small for GPU serving|When you need to handle concurrent users" answer="1" explanation="Batch inference is ideal when predictions can be scheduled ahead of time — it is significantly cheaper because you can use spot instances and do not need always-on GPU infrastructure." />
+<Quiz question="When is batch inference preferable to real-time inference?" options="When predictions are needed in under 100ms|When predictions can be pre-computed on a schedule and latency is not critical|When the model is too small for GPU serving|When you need to handle concurrent users" answer="1" explanation="Batch inference is ideal when predictions can be scheduled ahead of time - it is significantly cheaper because you can use spot instances and do not need always-on GPU infrastructure." />
 
 <ThinkAboutIt>You are designing an ML platform for a large retailer. Which components (feature store, model registry, serving layer, monitoring) would you build first, and which would you adopt as managed services? What factors drive that decision?</ThinkAboutIt>
 
@@ -126,6 +126,6 @@ Cost optimisation tip: **autoscale inference endpoints** based on request queue 
 
 ## 📚 Further Reading
 
-- [Designing Machine Learning Systems by Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) — The definitive book on production ML systems design
-- [MLOps Maturity Model by Google](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) — Google's framework for assessing MLOps maturity from level 0 to level 2
-- [vLLM: Easy, Fast, and Cheap LLM Serving](https://docs.vllm.ai/) — Official documentation for the leading open-source LLM serving engine
+- [Designing Machine Learning Systems by Chip Huyen](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) - The definitive book on production ML systems design
+- [MLOps Maturity Model by Google](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) - Google's framework for assessing MLOps maturity from level 0 to level 2
+- [vLLM: Easy, Fast, and Cheap LLM Serving](https://docs.vllm.ai/) - Official documentation for the leading open-source LLM serving engine

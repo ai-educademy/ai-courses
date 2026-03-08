@@ -1,6 +1,6 @@
 ---
-title: "Generative AI — How Machines Create Art, Music, and Code"
-description: "Explore how AI generates images, music, and code from scratch — from GANs to diffusion models and beyond."
+title: "Generative AI - How Machines Create Art, Music, and Code"
+description: "Explore how AI generates images, music, and code from scratch - from GANs to diffusion models and beyond."
 order: 6
 difficulty: "intermediate"
 duration: 16
@@ -8,57 +8,57 @@ icon: "🎨"
 published: true
 ---
 
-# Generative AI — How Machines Create Art, Music, and Code
+# Generative AI - How Machines Create Art, Music, and Code
 
-Most AI you have encountered so far is **discriminative** — it classifies, predicts, or labels existing data. Generative AI flips the script: instead of analysing the world, it **creates** new content that never existed before. From photorealistic images to functional code, generative models are rewriting what machines can do.
+Most AI you have encountered so far is **discriminative** - it classifies, predicts, or labels existing data. Generative AI flips the script: instead of analysing the world, it **creates** new content that never existed before. From photorealistic images to functional code, generative models are rewriting what machines can do.
 
-## The Counterfeiter and the Detective — GANs
+## The Counterfeiter and the Detective - GANs
 
 A **Generative Adversarial Network (GAN)** is built from two neural networks locked in a contest:
 
-- **Generator** — the counterfeiter. It takes random noise and tries to produce data (e.g., an
+- **Generator** - the counterfeiter. It takes random noise and tries to produce data (e.g., an
   image) that looks real.
-- **Discriminator** — the detective. It examines data and tries to tell real samples from fakes.
+- **Discriminator** - the detective. It examines data and tries to tell real samples from fakes.
 
 The generator improves by fooling the discriminator; the discriminator improves by catching fakes.
-Over thousands of rounds, the generator becomes remarkably good at producing realistic outputs —
+Over thousands of rounds, the generator becomes remarkably good at producing realistic outputs  - 
 and the discriminator becomes an expert at spotting flaws.
 
 <Illustration src="/images/lessons/generative-ai.svg" alt="Diagram showing the GAN training loop: generator creates images, discriminator judges real vs fake" caption="GANs pit a generator against a discriminator in an adversarial training loop." />
 
 This adversarial dance, introduced by Ian Goodfellow in 2014, launched an entire field. StyleGAN by
 NVIDIA, for instance, can generate human faces so realistic that most people cannot distinguish them
-from photographs. Each training iteration sharpens both networks — the generator learns finer
+from photographs. Each training iteration sharpens both networks - the generator learns finer
 details while the discriminator develops a keener eye for artefacts.
 
-<FunFact>The website thispersondoesnotexist.com served millions of GAN-generated human faces — every single one entirely fictional.</FunFact>
+<FunFact>The website thispersondoesnotexist.com served millions of GAN-generated human faces - every single one entirely fictional.</FunFact>
 
-## Variational Autoencoders — Learning a Compressed World
+## Variational Autoencoders - Learning a Compressed World
 
 A **Variational Autoencoder (VAE)** takes a different approach. It learns to compress data into a compact **latent space** and then reconstruct it. Unlike a standard autoencoder, a VAE adds randomness during compression, which means you can sample new points from the latent space and decode them into entirely new outputs.
 
-Think of it like learning the "essence" of a cat: the latent space captures abstract features — fur
-length, ear shape, colour — and you can mix and match those features to generate cats that never
+Think of it like learning the "essence" of a cat: the latent space captures abstract features - fur
+length, ear shape, colour - and you can mix and match those features to generate cats that never
 existed.
 
 VAEs tend to produce slightly blurrier results than GANs, but they are more stable to train and
 give you smooth, controllable generation. Because the latent space is continuous and well-organised,
-you can interpolate between two points — say, a tabby cat and a Persian — and get plausible
+you can interpolate between two points - say, a tabby cat and a Persian - and get plausible
 intermediate outputs at every step.
 
-## Diffusion Models — From Noise to Masterpiece
+## Diffusion Models - From Noise to Masterpiece
 
 The models behind **Stable Diffusion**, **DALL·E 3**, and **Midjourney** work on a beautifully simple idea: start with pure noise and gradually remove it until an image appears.
 
 ### How it works
 
-1. **Forward process** — Take a real image and progressively add Gaussian noise until it becomes
+1. **Forward process** - Take a real image and progressively add Gaussian noise until it becomes
    indistinguishable from static.
-2. **Reverse process** — Train a neural network to predict and remove the noise at each step,
+2. **Reverse process** - Train a neural network to predict and remove the noise at each step,
    effectively learning to reverse the corruption.
 
 At generation time, you start from pure random noise and run the reverse process. Step by step,
-coherent structure emerges — first rough shapes, then fine details. The number of steps is
+coherent structure emerges - first rough shapes, then fine details. The number of steps is
 configurable: more steps yield higher quality but take longer. Modern schedulers optimise this
 trade-off, often producing excellent results in as few as 20–50 steps.
 
@@ -72,14 +72,14 @@ output without retraining the model.
 
 <Quiz question="In a diffusion model, what does the reverse process do?" options="Adds noise to an image|Removes noise step by step to generate an image|Compresses an image into a latent space|Classifies images into categories" answer="1" explanation="The reverse process is trained to remove noise incrementally, transforming random static into a coherent image." />
 
-## Code Generation — Your AI Pair Programmer
+## Code Generation - Your AI Pair Programmer
 
 Generative AI is not limited to images. Large language models trained on vast code repositories can write, complete, and even debug code.
 
 - **GitHub Copilot** (powered by OpenAI Codex and later models) suggests entire functions as you type.
 - **Amazon CodeWhisperer** and **Google Gemini Code Assist** offer similar capabilities across multiple languages.
 
-These tools do not merely copy-paste from training data — they generalise patterns to produce novel
+These tools do not merely copy-paste from training data - they generalise patterns to produce novel
 code that fits your specific context. They handle boilerplate, suggest algorithms, and catch common
 mistakes. Studies show that developers using AI code assistants complete tasks up to 55% faster,
 though careful review remains essential to catch subtle errors.
@@ -90,7 +90,7 @@ though careful review remains essential to catch subtle errors.
 
 Models like **Google MusicLM**, **Meta's MusicGen**, and **Suno AI** generate music from text
 prompts. Describe a genre, mood, and instruments, and the model composes an original track. The
-underlying approach often combines audio tokenisation with transformer architectures — similar in
+underlying approach often combines audio tokenisation with transformer architectures - similar in
 spirit to how language models generate text, but operating over audio tokens instead. Some models
 can even extend or remix existing tracks, opening new creative workflows for producers and
 composers.
@@ -99,16 +99,16 @@ composers.
 
 Generative AI's power comes with serious risks:
 
-- **Deepfakes** — GANs and diffusion models can generate convincing fake videos of real people,
+- **Deepfakes** - GANs and diffusion models can generate convincing fake videos of real people,
   enabling misinformation and fraud.
-- **Intellectual property** — Models trained on artists' work can produce outputs in their style
+- **Intellectual property** - Models trained on artists' work can produce outputs in their style
   without consent or compensation.
-- **Bias amplification** — If training data contains biases, generated content will reflect and
+- **Bias amplification** - If training data contains biases, generated content will reflect and
   potentially amplify them.
-- **Environmental cost** — Training large generative models requires enormous compute, contributing
+- **Environmental cost** - Training large generative models requires enormous compute, contributing
   to significant energy consumption and carbon emissions.
 
-The industry is responding with watermarking (like Google SynthID), content provenance standards (C2PA), and legislation — but the technology consistently outpaces regulation.
+The industry is responding with watermarking (like Google SynthID), content provenance standards (C2PA), and legislation - but the technology consistently outpaces regulation.
 
 <Quiz question="What is a deepfake?" options="A type of GAN architecture|AI-generated media that convincingly depicts real people doing or saying things they never did|A compression algorithm for video|A technique for improving image resolution" answer="1" explanation="Deepfakes use generative AI to create convincing but fabricated media of real people, raising serious ethical and misinformation concerns." />
 
@@ -116,7 +116,7 @@ The industry is responding with watermarking (like Google SynthID), content prov
 
 The trajectory is clear: models are getting faster, cheaper, and more controllable. Video generation
 (OpenAI Sora, Runway Gen-3), 3D asset creation, and drug molecule design are all active frontiers.
-The creative industries — design, advertising, entertainment — are already being transformed.
+The creative industries - design, advertising, entertainment - are already being transformed.
 Personalised content generation at scale is becoming routine, and the line between human-created and
 AI-created work grows blurrier every month.
 
@@ -128,6 +128,6 @@ AI-created work grows blurrier every month.
 
 ## 📚 Further Reading
 
-- [How Diffusion Models Work — Lilian Weng](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) — In-depth technical walkthrough of diffusion model maths and intuition
-- [Generative Adversarial Networks — Ian Goodfellow's original paper](https://arxiv.org/abs/1406.2661) — The 2014 paper that started the GAN revolution
-- [C2PA Content Provenance Standard](https://c2pa.org/) — Industry-led effort to verify the origin and authenticity of digital content
+- [How Diffusion Models Work - Lilian Weng](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) - In-depth technical walkthrough of diffusion model maths and intuition
+- [Generative Adversarial Networks - Ian Goodfellow's original paper](https://arxiv.org/abs/1406.2661) - The 2014 paper that started the GAN revolution
+- [C2PA Content Provenance Standard](https://c2pa.org/) - Industry-led effort to verify the origin and authenticity of digital content

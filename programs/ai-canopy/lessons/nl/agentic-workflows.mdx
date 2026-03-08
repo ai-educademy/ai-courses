@@ -1,5 +1,5 @@
 ---
-title: "Agentic Workflows — Multi-Agent AI-systemen Bouwen"
+title: "Agentic Workflows - Multi-Agent AI-systemen Bouwen"
 description: "Leer hoe AI-agents autonoom waarnemen, redeneren en handelen met behulp van tool use, geheugen, planningsstrategieën en multi-agent-architecturen voor complexe taken in de echte wereld."
 order: 9
 difficulty: "advanced"
@@ -8,7 +8,7 @@ icon: "🤖"
 published: true
 ---
 
-# Agentic Workflows — Multi-Agent AI-systemen Bouwen
+# Agentic Workflows - Multi-Agent AI-systemen Bouwen
 
 Een taalmodel beantwoordt vragen. Een **agent** bereikt doelen. Het verschil zit in de lus: agents observeren hun omgeving, redeneren over wat ze moeten doen, ondernemen acties met tools, en herhalen dit tot de taak voltooid is. In deze les behandelen we de architectuur, patronen en faalwijzen van moderne agentische AI-systemen.
 
@@ -16,11 +16,11 @@ Een taalmodel beantwoordt vragen. Een **agent** bereikt doelen. Het verschil zit
 
 Een AI-agent wordt gedefinieerd door drie capaciteiten die in een continue lus opereren:
 
-1. **Waarnemen** — De huidige toestand observeren: gebruikersinstructies, tool-output, omgevingsdata, eerdere acties
-2. **Redeneren** — Beslissen wat de volgende stap is: het doel ontleden, stappen plannen, opties evalueren
-3. **Handelen** — Een actie uitvoeren: een tool aanroepen, code schrijven, een API-verzoek versturen, een resultaat retourneren
+1. **Waarnemen** - De huidige toestand observeren: gebruikersinstructies, tool-output, omgevingsdata, eerdere acties
+2. **Redeneren** - Beslissen wat de volgende stap is: het doel ontleden, stappen plannen, opties evalueren
+3. **Handelen** - Een actie uitvoeren: een tool aanroepen, code schrijven, een API-verzoek versturen, een resultaat retourneren
 
-Het cruciale onderscheid met eenvoudig prompten is **autonomie over meerdere stappen**. Een agent reageert niet alleen — hij itereert. Hij zoekt bijvoorbeeld op het web, leest de resultaten, besluit dat hij meer informatie nodig heeft, zoekt opnieuw met een verfijnde query, synthetiseert bevindingen, en presenteert dan een antwoord.
+Het cruciale onderscheid met eenvoudig prompten is **autonomie over meerdere stappen**. Een agent reageert niet alleen - hij itereert. Hij zoekt bijvoorbeeld op het web, leest de resultaten, besluit dat hij meer informatie nodig heeft, zoekt opnieuw met een verfijnde query, synthetiseert bevindingen, en presenteert dan een antwoord.
 
 <Illustration src="/images/lessons/agentic-workflows.svg" alt="Circulair diagram met de waarnemen-redeneren-handelen-lus en verbindingen naar tools, geheugen en omgeving" caption="De agentische lus: observeer de omgeving, redeneer over de volgende stap, handel met tools, en herhaal tot het doel bereikt is." />
 
@@ -28,11 +28,11 @@ Het cruciale onderscheid met eenvoudig prompten is **autonomie over meerdere sta
 
 Zonder tools is een agent beperkt tot tekstgeneratie. **Tool use** geeft agents het vermogen om met de wereld te interacteren:
 
-- **Function calling** — Het LLM genereert gestructureerde JSON die specificeert welke functie aangeroepen moet worden en met welke argumenten. De runtime voert de functie uit en stuurt de resultaten terug als context.
-- **API-integratie** — Agents kunnen databases bevragen, REST-endpoints aanroepen, e-mails versturen of bestanden bewerken.
-- **Code-uitvoering** — Sommige agents schrijven en draaien code in een sandboxed omgeving, en gebruiken de output om volgende stappen te bepalen.
+- **Function calling** - Het LLM genereert gestructureerde JSON die specificeert welke functie aangeroepen moet worden en met welke argumenten. De runtime voert de functie uit en stuurt de resultaten terug als context.
+- **API-integratie** - Agents kunnen databases bevragen, REST-endpoints aanroepen, e-mails versturen of bestanden bewerken.
+- **Code-uitvoering** - Sommige agents schrijven en draaien code in een sandboxed omgeving, en gebruiken de output om volgende stappen te bepalen.
 
-Moderne frameworks bieden tools aan als getypeerde functiesignaturen met beschrijvingen. Het model leert welke tool het moet inzetten op basis van de taak — een rekenmachine voor wiskunde, een zoekmachine voor actualiteiten, of een code-interpreter voor data-analyse.
+Moderne frameworks bieden tools aan als getypeerde functiesignaturen met beschrijvingen. Het model leert welke tool het moet inzetten op basis van de taak - een rekenmachine voor wiskunde, een zoekmachine voor actualiteiten, of een code-interpreter voor data-analyse.
 
 <Quiz question="Wat is het voornaamste voordeel van function calling ten opzichte van het LLM vragen om een tool te 'verbeelden'?" options="Function calling gebruikt minder rekenkracht|Function calling levert daadwerkelijke resultaten op door code of API-aanroepen uit te voeren, in plaats van plausibele maar mogelijk verzonnen antwoorden te genereren|Function calling vereist geen taalmodel|Function calling levert altijd correcte resultaten" answer="1" explanation="Wanneer een LLM een zoekresultaat 'verbeeldt', kan het plausibele maar onjuiste informatie hallucineren. Function calling voert de zoekopdracht daadwerkelijk uit en retourneert echte data, waardoor de redenering van de agent verankerd is in feitelijke resultaten uit externe systemen." />
 
@@ -40,40 +40,40 @@ Moderne frameworks bieden tools aan als getypeerde functiesignaturen met beschri
 
 Agents hebben geheugen nodig voor complexe taken die één context window overstijgen:
 
-**Kortetermijngeheugen** is de gesprekscontext — het schuivende venster van recente observaties, acties en resultaten. Dit is beperkt door de contextlengte van het model en degradeert voor informatie ver terug in het venster.
+**Kortetermijngeheugen** is de gesprekscontext - het schuivende venster van recente observaties, acties en resultaten. Dit is beperkt door de contextlengte van het model en degradeert voor informatie ver terug in het venster.
 
 **Langetermijngeheugen** maakt gebruik van externe opslag, doorgaans **vectordatabases**, om informatie over sessies heen op te slaan en op te halen:
 - Sla belangrijke observaties op als embeddings in een vectorstore
 - Bevraag bij elke stap de store voor relevante eerdere ervaringen
 - Dit geeft agents toegang tot kennis opgebouwd over vele interacties
 
-De combinatie van kortetermijncontext en langetermijnopvraging weerspiegelt menselijk werkgeheugen en episodisch geheugen — directe context blijft beschikbaar terwijl een grotere kennisbasis geraadpleegd wordt wanneer nodig.
+De combinatie van kortetermijncontext en langetermijnopvraging weerspiegelt menselijk werkgeheugen en episodisch geheugen - directe context blijft beschikbaar terwijl een grotere kennisbasis geraadpleegd wordt wanneer nodig.
 
 ## Planningsstrategieën
 
 Hoe een agent beslist **wat de volgende stap is** bepaalt zijn effectiviteit:
 
-**Chain-of-Thought (CoT)** — Het model redeneert stap voor stap voordat het handelt. Eenvoudig maar effectief voor rechttoe-rechtaan problemen.
+**Chain-of-Thought (CoT)** - Het model redeneert stap voor stap voordat het handelt. Eenvoudig maar effectief voor rechttoe-rechtaan problemen.
 
-**ReAct (Reason + Act)** — Verweft expliciete redeneringstappen met tool-acties in een gestructureerd format: `Thought → Action → Observation → Thought → ...` Dit maakt het beslissingsproces van de agent transparant en debugbaar.
+**ReAct (Reason + Act)** - Verweft expliciete redeneringstappen met tool-acties in een gestructureerd format: `Thought → Action → Observation → Thought → ...` Dit maakt het beslissingsproces van de agent transparant en debugbaar.
 
-**Tree-of-Thought (ToT)** — De agent verkent meerdere redeneerpaden tegelijkertijd, evalueert elke tak, en selecteert de meest veelbelovende. Nuttig voor problemen waarbij de eerste aanpak fout kan zijn (bijv. puzzels, complexe debugging).
+**Tree-of-Thought (ToT)** - De agent verkent meerdere redeneerpaden tegelijkertijd, evalueert elke tak, en selecteert de meest veelbelovende. Nuttig voor problemen waarbij de eerste aanpak fout kan zijn (bijv. puzzels, complexe debugging).
 
-**Plan-then-Execute** — De agent genereert eerst een volledig plan en voert vervolgens elke stap uit. Dit scheidt de strategie op hoog niveau van de uitvoering op laag niveau, waardoor het risico kleiner is dat het overkoepelende doel halverwege uit het oog wordt verloren.
+**Plan-then-Execute** - De agent genereert eerst een volledig plan en voert vervolgens elke stap uit. Dit scheidt de strategie op hoog niveau van de uitvoering op laag niveau, waardoor het risico kleiner is dat het overkoepelende doel halverwege uit het oog wordt verloren.
 
 <FunFact>
-AutoGPT, een van de eerste autonome agent-experimenten, ging viraal in april 2023 en was kortstondig de snelst groeiende GitHub-repository ooit. Ondanks zijn populariteit bleef het frequent hangen in oneindige lussen — een probleem dat de enorme kloof tussen indrukwekkende demo's en betrouwbare productie-agents benadrukte.
+AutoGPT, een van de eerste autonome agent-experimenten, ging viraal in april 2023 en was kortstondig de snelst groeiende GitHub-repository ooit. Ondanks zijn populariteit bleef het frequent hangen in oneindige lussen - een probleem dat de enorme kloof tussen indrukwekkende demo's en betrouwbare productie-agents benadrukte.
 </FunFact>
 
 ## Multi-Agent-architecturen
 
 Complexe taken profiteren vaak van meerdere gespecialiseerde agents die samenwerken:
 
-**Supervisor-patroon** — Een centrale "manager"-agent ontleedt de taak en delegeert deeltaken aan gespecialiseerde worker-agents (een onderzoeker, een programmeur, een reviewer). De supervisor synthetiseert hun output en coördineert het geheel.
+**Supervisor-patroon** - Een centrale "manager"-agent ontleedt de taak en delegeert deeltaken aan gespecialiseerde worker-agents (een onderzoeker, een programmeur, een reviewer). De supervisor synthetiseert hun output en coördineert het geheel.
 
-**Peer-to-peer** — Agents communiceren rechtstreeks met elkaar zonder centrale coördinator. Elke agent heeft een gedefinieerde rol en geeft resultaten door aan de volgende agent in een keten of netwerk.
+**Peer-to-peer** - Agents communiceren rechtstreeks met elkaar zonder centrale coördinator. Elke agent heeft een gedefinieerde rol en geeft resultaten door aan de volgende agent in een keten of netwerk.
 
-**Hiërarchisch** — Meerdere lagen van supervisie: een planner op topniveau delegeert aan coördinatoren op middenniveau, die specialistische workers aansturen. Dit weerspiegelt organisatiestructuren en schaalt naar zeer complexe taken.
+**Hiërarchisch** - Meerdere lagen van supervisie: een planner op topniveau delegeert aan coördinatoren op middenniveau, die specialistische workers aansturen. Dit weerspiegelt organisatiestructuren en schaalt naar zeer complexe taken.
 
 <ThinkAboutIt>
 Multi-agent-systemen introduceren coördinatie-overhead, communicatiekosten en de mogelijkheid dat agents tegen elkaar inwerken. Onder welke omstandigheden wegen de voordelen van specialisatie op tegen de complexiteit van orkestratie? Wanneer is één enkele, capabelere agent de betere keuze?
@@ -83,56 +83,56 @@ Multi-agent-systemen introduceren coördinatie-overhead, communicatiekosten en d
 
 Het ecosysteem is snel gerijpt sinds de vroege experimenten:
 
-- **LangGraph** — Bouwt agents als stateful graphs met expliciete control flow, cycli en persistentie. Geeft voorrang aan voorspelbaarheid en debugbaarheid boven autonomie.
-- **CrewAI** — Focust op rolgebaseerde multi-agent-samenwerking met gedefinieerde taken, tools en delegatiepatronen.
-- **AutoGen (Microsoft)** — Maakt conversationele multi-agent-workflows mogelijk waarbij agents met elkaar chatten om problemen op te lossen.
-- **OpenAI Agents SDK** — First-party framework met ingebouwde function calling, handoffs tussen agents en guardrails.
+- **LangGraph** - Bouwt agents als stateful graphs met expliciete control flow, cycli en persistentie. Geeft voorrang aan voorspelbaarheid en debugbaarheid boven autonomie.
+- **CrewAI** - Focust op rolgebaseerde multi-agent-samenwerking met gedefinieerde taken, tools en delegatiepatronen.
+- **AutoGen (Microsoft)** - Maakt conversationele multi-agent-workflows mogelijk waarbij agents met elkaar chatten om problemen op te lossen.
+- **OpenAI Agents SDK** - First-party framework met ingebouwde function calling, handoffs tussen agents en guardrails.
 
 ## Agentic Coding
 
 Misschien wel de meest transformatieve toepassing: AI-agents die autonoom code schrijven, testen en debuggen:
 
-- **GitHub Copilot** — In-editor agent-modus die wijzigingen plant, meerdere bestanden bewerkt en terminalcommando's uitvoert.
-- **Cursor** — IDE gebouwd rond een agent die volledige codebases begrijpt en multi-file bewerkingen uitvoert.
-- **Devin (Cognition)** — Autonome software engineering-agent die volledige ontwikkeltaken afhandelt, van issue tot pull request.
+- **GitHub Copilot** - In-editor agent-modus die wijzigingen plant, meerdere bestanden bewerkt en terminalcommando's uitvoert.
+- **Cursor** - IDE gebouwd rond een agent die volledige codebases begrijpt en multi-file bewerkingen uitvoert.
+- **Devin (Cognition)** - Autonome software engineering-agent die volledige ontwikkeltaken afhandelt, van issue tot pull request.
 
-Deze tools vertegenwoordigen een verschuiving van **autocomplete naar autonomie** — de agent suggereert niet alleen de volgende regel, maar begrijpt het doel en werkt ernaartoe over bestanden, terminals en browsers heen.
+Deze tools vertegenwoordigen een verschuiving van **autocomplete naar autonomie** - de agent suggereert niet alleen de volgende regel, maar begrijpt het doel en werkt ernaartoe over bestanden, terminals en browsers heen.
 
 ## Wanneer Agents Falen
 
 Inzicht in faalwijzen is essentieel voor het bouwen van betrouwbare agents:
 
-- **Hallucinatielussen** — De agent verzint een tool-resultaat, redeneert op basis daarvan, en graaft zich bij elke iteratie dieper in fictie.
-- **Oneindige recursie** — De agent probeert herhaaldelijk een falende actie opnieuw zonder zijn aanpak te wijzigen, terwijl tokens en rekenkracht verspild worden.
-- **Doeldrift** — Over vele stappen verliest de agent geleidelijk het oorspronkelijke doel uit het oog en jaagt tangentiële deeltaken na.
-- **Reward hacking** — De agent vindt sluiproutes die aan zijn succescriteria voldoen zonder het probleem daadwerkelijk op te lossen.
+- **Hallucinatielussen** - De agent verzint een tool-resultaat, redeneert op basis daarvan, en graaft zich bij elke iteratie dieper in fictie.
+- **Oneindige recursie** - De agent probeert herhaaldelijk een falende actie opnieuw zonder zijn aanpak te wijzigen, terwijl tokens en rekenkracht verspild worden.
+- **Doeldrift** - Over vele stappen verliest de agent geleidelijk het oorspronkelijke doel uit het oog en jaagt tangentiële deeltaken na.
+- **Reward hacking** - De agent vindt sluiproutes die aan zijn succescriteria voldoen zonder het probleem daadwerkelijk op te lossen.
 
-<Quiz question="Een agent krijgt de taak om een bug in een codebase te vinden. Hij zoekt naar het bestand, vindt het niet, en zoekt vervolgens opnieuw met dezelfde query, herhaaldelijk. Welke faalwijze is dit?" options="Hallucinatielus|Doeldrift|Oneindige recursie — een falende actie opnieuw proberen zonder de aanpak aan te passen|Reward hacking" answer="2" explanation="Dit is oneindige recursie: de agent zit vast in een lus en probeert steeds dezelfde falende actie opnieuw zonder zijn aanpak te wijzigen. Een goed ontworpen agent zou herhaalde mislukkingen moeten detecteren en een alternatieve strategie proberen — andere zoektermen, om verduidelijking vragen, of een ander pad verkennen." />
+<Quiz question="Een agent krijgt de taak om een bug in een codebase te vinden. Hij zoekt naar het bestand, vindt het niet, en zoekt vervolgens opnieuw met dezelfde query, herhaaldelijk. Welke faalwijze is dit?" options="Hallucinatielus|Doeldrift|Oneindige recursie - een falende actie opnieuw proberen zonder de aanpak aan te passen|Reward hacking" answer="2" explanation="Dit is oneindige recursie: de agent zit vast in een lus en probeert steeds dezelfde falende actie opnieuw zonder zijn aanpak te wijzigen. Een goed ontworpen agent zou herhaalde mislukkingen moeten detecteren en een alternatieve strategie proberen - andere zoektermen, om verduidelijking vragen, of een ander pad verkennen." />
 
 ## Productie-agent-patronen
 
 Het bouwen van agents die betrouwbaar werken in productie vereist defensieve engineering:
 
-- **Guardrails** — Input/output-validatie, contentfiltering en grenscontroles die voorkomen dat agents gevaarlijke acties ondernemen.
-- **Human-in-the-loop** — Voor acties met hoge impact (e-mails versturen, databases wijzigen, code deployen) is menselijke goedkeuring vereist vóór uitvoering.
-- **Gestructureerde outputs** — Dwing agents om machine-parseerbare antwoorden te produceren (JSON-schema's) in plaats van vrije tekst, waardoor parseerfouten verminderen.
-- **Observability** — Log elke gedachte, actie en tool-aanroep. Zonder uitgebreide traces is het debuggen van een mislukte 20-staps agent-run vrijwel onmogelijk.
-- **Circuit breakers** — Stel maximale staptellers, tokenbudgetten en tijdslimieten in. Als een agent deze grenzen overschrijdt, stop dan en escaleer naar een mens.
+- **Guardrails** - Input/output-validatie, contentfiltering en grenscontroles die voorkomen dat agents gevaarlijke acties ondernemen.
+- **Human-in-the-loop** - Voor acties met hoge impact (e-mails versturen, databases wijzigen, code deployen) is menselijke goedkeuring vereist vóór uitvoering.
+- **Gestructureerde outputs** - Dwing agents om machine-parseerbare antwoorden te produceren (JSON-schema's) in plaats van vrije tekst, waardoor parseerfouten verminderen.
+- **Observability** - Log elke gedachte, actie en tool-aanroep. Zonder uitgebreide traces is het debuggen van een mislukte 20-staps agent-run vrijwel onmogelijk.
+- **Circuit breakers** - Stel maximale staptellers, tokenbudgetten en tijdslimieten in. Als een agent deze grenzen overschrijdt, stop dan en escaleer naar een mens.
 
-<Quiz question="Waarom is human-in-the-loop-goedkeuring cruciaal voor productie-agents die acties met hoge impact uitvoeren?" options="Omdat AI-agents altijd fouten maken|Omdat het rekenkosten vermindert|Omdat agents kunnen hallucineren, intenties verkeerd interpreteren of onomkeerbare acties uitvoeren — menselijk toezicht biedt een vangnet voor beslissingen met gevolgen in de echte wereld|Omdat regelgeving dit in alle gevallen vereist" answer="2" explanation="Agents kunnen doelen verkeerd interpreteren, informatie hallucineren of acties uitvoeren die moeilijk terug te draaien zijn (data verwijderen, berichten versturen, code deployen). Voor operaties met hoge impact fungeert menselijke goedkeuring als een cruciaal vangnet dat fouten opvangt voordat ze gevolgen hebben in de echte wereld." />
+<Quiz question="Waarom is human-in-the-loop-goedkeuring cruciaal voor productie-agents die acties met hoge impact uitvoeren?" options="Omdat AI-agents altijd fouten maken|Omdat het rekenkosten vermindert|Omdat agents kunnen hallucineren, intenties verkeerd interpreteren of onomkeerbare acties uitvoeren - menselijk toezicht biedt een vangnet voor beslissingen met gevolgen in de echte wereld|Omdat regelgeving dit in alle gevallen vereist" answer="2" explanation="Agents kunnen doelen verkeerd interpreteren, informatie hallucineren of acties uitvoeren die moeilijk terug te draaien zijn (data verwijderen, berichten versturen, code deployen). Voor operaties met hoge impact fungeert menselijke goedkeuring als een cruciaal vangnet dat fouten opvangt voordat ze gevolgen hebben in de echte wereld." />
 
 <FunFact>
-Browser-agents — AI-systemen die websites navigeren door te klikken, typen en schermen te lezen — behoren tot de moeilijkst betrouwbaar te bouwen agentische toepassingen. Benchmarks zoals WebArena tonen aan dat zelfs de beste agents slechts 15-30% van realistische webtaken succesvol afronden, vergeleken met vrijwel perfecte menselijke prestaties.
+Browser-agents - AI-systemen die websites navigeren door te klikken, typen en schermen te lezen - behoren tot de moeilijkst betrouwbaar te bouwen agentische toepassingen. Benchmarks zoals WebArena tonen aan dat zelfs de beste agents slechts 15-30% van realistische webtaken succesvol afronden, vergeleken met vrijwel perfecte menselijke prestaties.
 </FunFact>
 
 <ThinkAboutIt>
-Naarmate agentic coding-tools capabeler worden, verschuift de rol van de software engineer van code schrijven naar het reviewen, aansturen en verifiëren van AI-gegenereerde code. Welke nieuwe vaardigheden worden essentieel in deze wereld — en welke traditionele vaardigheden worden minder belangrijk?
+Naarmate agentic coding-tools capabeler worden, verschuift de rol van de software engineer van code schrijven naar het reviewen, aansturen en verifiëren van AI-gegenereerde code. Welke nieuwe vaardigheden worden essentieel in deze wereld - en welke traditionele vaardigheden worden minder belangrijk?
 </ThinkAboutIt>
 
 ---
 
 ## 📚 Verder Lezen
 
-- [ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2023)](https://arxiv.org/abs/2210.03629) — Het fundamentele paper over het ReAct-agentpatroon
-- [The Landscape of Emerging AI Agent Architectures (LangChain)](https://blog.langchain.dev/what-is-an-agent/) — Uitgebreid overzicht van moderne agent-ontwerppatronen
-- [Andrew Ng — Agentic Design Patterns](https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/) — Vier belangrijke agentische patronen: reflectie, tool use, planning en multi-agent-samenwerking
+- [ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2023)](https://arxiv.org/abs/2210.03629) - Het fundamentele paper over het ReAct-agentpatroon
+- [The Landscape of Emerging AI Agent Architectures (LangChain)](https://blog.langchain.dev/what-is-an-agent/) - Uitgebreid overzicht van moderne agent-ontwerppatronen
+- [Andrew Ng - Agentic Design Patterns](https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/) - Vier belangrijke agentische patronen: reflectie, tool use, planning en multi-agent-samenwerking

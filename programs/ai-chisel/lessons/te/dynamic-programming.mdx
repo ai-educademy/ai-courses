@@ -1,5 +1,5 @@
 ---
-title: "Dynamic Programming — AI సంక్లిష్ట సమస్యలను విడగొట్టి ఎలా పరిష్కరిస్తుంది"
+title: "Dynamic Programming - AI సంక్లిష్ట సమస్యలను విడగొట్టి ఎలా పరిష్కరిస్తుంది"
 description: "AI మరియు computer science లో వాడే memoisation, tabulation మరియు classic DP patterns ను అర్థం చేసుకోండి."
 order: 4
 difficulty: "intermediate"
@@ -10,18 +10,18 @@ published: true
 
 ## పెద్ద ఆలోచన
 
-కొన్ని problems చూడటానికి చాలా complex గా కనిపిస్తాయి, కానీ జాగ్రత్తగా చూస్తే అవి **చిన్న, పునరావృతమయ్యే sub-problems** తో తయారయ్యాయని తెలుస్తుంది. Dynamic programming (DP) ప్రతి sub-problem ను **ఒక్కసారి** మాత్రమే solve చేసి, result ను store చేసి, దాన్ని reuse చేస్తుంది — కొంచెం memory ఖర్చు చేసి గొప్ప speed-up సాధిస్తుంది.
+కొన్ని problems చూడటానికి చాలా complex గా కనిపిస్తాయి, కానీ జాగ్రత్తగా చూస్తే అవి **చిన్న, పునరావృతమయ్యే sub-problems** తో తయారయ్యాయని తెలుస్తుంది. Dynamic programming (DP) ప్రతి sub-problem ను **ఒక్కసారి** మాత్రమే solve చేసి, result ను store చేసి, దాన్ని reuse చేస్తుంది - కొంచెం memory ఖర్చు చేసి గొప్ప speed-up సాధిస్తుంది.
 
 రెండు conditions DP అవకాశాన్ని సూచిస్తాయి:
 
-1. **Overlapping sub-problems** — అదే calculations చాలాసార్లు పునరావృతమవుతాయి.
-2. **Optimal substructure** — మొత్తం problem యొక్క best solution దాని భాగాల best solutions నుండి నిర్మించవచ్చు.
+1. **Overlapping sub-problems** - అదే calculations చాలాసార్లు పునరావృతమవుతాయి.
+2. **Optimal substructure** - మొత్తం problem యొక్క best solution దాని భాగాల best solutions నుండి నిర్మించవచ్చు.
 
 <Illustration src="/images/lessons/dynamic-programming.svg" alt="Fibonacci కోసం recursion tree లో repeated sub-problems highlight చేయబడ్డాయి, పక్కన నింపబడిన DP table" caption="DP లేకుండా, Fibonacci అదే values ను exponentially recalculate చేస్తుంది. DP తో, ప్రతి value ఒక్కసారి మాత్రమే compute అవుతుంది." />
 
 ## Fibonacci: అత్యంత Classic ఉదాహరణ
 
-### Naïve Recursion — O(2ⁿ)
+### Naïve Recursion - O(2ⁿ)
 
 ```
 function fib(n):
@@ -31,7 +31,7 @@ function fib(n):
 
 `fib(5)` call చేస్తే **15** function calls జరుగుతాయి, వాటిలో చాలా redundant. `fib(40)` కి seconds పడుతుంది; `fib(100)` కి అయితే universe కంటే ఎక్కువ time పడుతుంది.
 
-### Memoisation (Top-Down) — O(n)
+### Memoisation (Top-Down) - O(n)
 
 Results ను ఒక cache లో store చేయండి. ఒక sub-problem ఇప్పటికే solve అయి ఉంటే, cached answer return చేయండి.
 
@@ -44,7 +44,7 @@ function fib(n):
     return memo[n]
 ```
 
-### Tabulation (Bottom-Up) — O(n)
+### Tabulation (Bottom-Up) - O(n)
 
 Base cases నుండి iteratively answer నిర్మించండి.
 
@@ -73,7 +73,7 @@ function climbStairs(n):
     return b
 ```
 
-ఇది మారువేషంలో Fibonacci — step _n_ కి answer, step _n−1_ మరియు _n−2_ కి చేరుకునే మార్గాల sum.
+ఇది మారువేషంలో Fibonacci - step _n_ కి answer, step _n−1_ మరియు _n−2_ కి చేరుకునే మార్గాల sum.
 
 ### Coin Change
 
@@ -121,7 +121,7 @@ function lcs(s1, s2):
 | **CTC decoding** | Handwriting / speech-to-text | Repeated characters ను optimally merge చేయడం |
 | **Beam search pruning** | Machine translation | Top-k partial translations ఉంచడం |
 
-<Quiz question="ఒక spell checker corrections suggest చేయడానికి ఏ DP-based algorithm ఎక్కువగా వాడుతుంది?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|మెట్లు ఎక్కడం" answer="1" explanation="Edit distance ఒక word ను మరొక word గా మార్చడానికి minimum insertions, deletions మరియు substitutions లెక్కిస్తుంది — ఒక misspelling dictionary word కి ఎంత 'దగ్గరగా' ఉందో నేరుగా కొలుస్తుంది." />
+<Quiz question="ఒక spell checker corrections suggest చేయడానికి ఏ DP-based algorithm ఎక్కువగా వాడుతుంది?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|మెట్లు ఎక్కడం" answer="1" explanation="Edit distance ఒక word ను మరొక word గా మార్చడానికి minimum insertions, deletions మరియు substitutions లెక్కిస్తుంది - ఒక misspelling dictionary word కి ఎంత 'దగ్గరగా' ఉందో నేరుగా కొలుస్తుంది." />
 
 ## Top-Down vs Bottom-Up
 
@@ -140,7 +140,7 @@ function lcs(s1, s2):
 
 1. DP exponential brute-force ను polynomial time గా మారుస్తుంది **repeated work ను cache చేయడం** ద్వారా.
 2. DP వాడే ముందు overlapping sub-problems మరియు optimal substructure గుర్తించండి.
-3. Memoisation intuitive; tabulation efficient — రెండూ నేర్చుకోండి.
+3. Memoisation intuitive; tabulation efficient - రెండూ నేర్చుకోండి.
 4. Edit distance, Viterbi మరియు sequence alignment modern AI హృదయంలో DP ని చూపిస్తాయి.
 
-<Quiz question="ఒక problem లో overlapping sub-problems ఉన్నాయి కానీ optimal substructure లేదు. Optimal solution కోసం DP వాడగలరా?" options="అవును — sub-problems overlap అయితే DP ఎల్లప్పుడూ పని చేస్తుంది|కాదు — DP optimality guarantee చేయడానికి రెండు conditions అవసరం|Tabulation తో మాత్రమే|Graph problems కోసం మాత్రమే" answer="1" explanation="DP కి overlapping sub-problems (efficiency కోసం) మరియు optimal substructure (correctness కోసం) రెండూ అవసరం. Optimal substructure లేకుండా, caching మాత్రమే global optimum guarantee చేయదు." />
+<Quiz question="ఒక problem లో overlapping sub-problems ఉన్నాయి కానీ optimal substructure లేదు. Optimal solution కోసం DP వాడగలరా?" options="అవును - sub-problems overlap అయితే DP ఎల్లప్పుడూ పని చేస్తుంది|కాదు - DP optimality guarantee చేయడానికి రెండు conditions అవసరం|Tabulation తో మాత్రమే|Graph problems కోసం మాత్రమే" answer="1" explanation="DP కి overlapping sub-problems (efficiency కోసం) మరియు optimal substructure (correctness కోసం) రెండూ అవసరం. Optimal substructure లేకుండా, caching మాత్రమే global optimum guarantee చేయదు." />

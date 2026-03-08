@@ -1,5 +1,5 @@
 ---
-title: "Grote Taalmodellen — De Motoren Achter Moderne AI"
+title: "Grote Taalmodellen - De Motoren Achter Moderne AI"
 description: "Begrijp wat LLM's zijn, hoe de Transformer-architectuur werkt, de trainingspijplijn van voortraining tot RLHF, en vergelijk grote modellen zoals GPT, Claude en Llama."
 order: 2
 difficulty: "intermediate"
@@ -20,14 +20,14 @@ Stel je voor dat je elk boek, artikel en website ooit geschreven hebt gelezen. N
 
 ## De Transformer-Architectuur 🏗️
 
-Elk modern LLM is gebouwd op de **Transformer**-architectuur. De sleutelinnovatie: **zelf-aandacht** — in plaats van tekst woord voor woord te lezen, kijkt het naar alle woorden tegelijk.
+Elk modern LLM is gebouwd op de **Transformer**-architectuur. De sleutelinnovatie: **zelf-aandacht** - in plaats van tekst woord voor woord te lezen, kijkt het naar alle woorden tegelijk.
 
 ```
 "De bank bij de rivier was steil"
 
 Voor het woord "bank":
-  "bank" ←→ "rivier"  = 0.45  (hoog — verduidelijkt betekenis)
-  "bank" ←→ "steil"   = 0.30  (medium — ondersteunt "oever" betekenis)
+  "bank" ←→ "rivier"  = 0.45  (hoog - verduidelijkt betekenis)
+  "bank" ←→ "steil"   = 0.30  (medium - ondersteunt "oever" betekenis)
 ```
 
 Elke Transformer-laag volgt: **Zelf-Aandacht → Optellen + Normaliseren → Feed-Forward → Optellen + Normaliseren**. Stapel 50–100+ blokken en je hebt een modern LLM.
@@ -37,7 +37,7 @@ Elke Transformer-laag volgt: **Zelf-Aandacht → Optellen + Normaliseren → Fee
 ## De Trainingspijplijn 🔄
 
 ### Fase 1: Voortraining (taal leren)
-Het model leest biljoenen tokens uit boeken, websites en code — leert grammatica, feiten en redeneerpatronen.
+Het model leest biljoenen tokens uit boeken, websites en code - leert grammatica, feiten en redeneerpatronen.
 
 ### Fase 2: Fine-tuning (instructies leren volgen)
 Getraind op vraag-antwoord paren om instructies te leren volgen.
@@ -46,7 +46,7 @@ Getraind op vraag-antwoord paren om instructies te leren volgen.
 **Reinforcement Learning from Human Feedback** leert het model wat mensen als behulpzaam en veilig beschouwen.
 
 <Callout>
-RLHF maakt het verschil tussen een model dat tekst aanvult en een behulpzame assistent. Het is niet perfect — daarom blijft AI-veiligheidsonderzoek cruciaal.
+RLHF maakt het verschil tussen een model dat tekst aanvult en een behulpzame assistent. Het is niet perfect - daarom blijft AI-veiligheidsonderzoek cruciaal.
 </Callout>
 
 ---
@@ -113,14 +113,14 @@ print(response.choices[0].message.content)
 ```
 
 <Callout>
-Het `messages`-array is je gespreksgeschiedenis. Het model "onthoudt" niets — je stuurt elke keer de volledige context. Daarom zijn contextvensters belangrijk.
+Het `messages`-array is je gespreksgeschiedenis. Het model "onthoudt" niets - je stuurt elke keer de volledige context. Daarom zijn contextvensters belangrijk.
 </Callout>
 
 ---
 
 ## Samenvatting 🎯
 
-1. **LLM's** voorspellen het volgende token — schaal creëert intelligent gedrag
+1. **LLM's** voorspellen het volgende token - schaal creëert intelligent gedrag
 2. **Transformers** gebruiken zelf-aandacht om context te begrijpen
 3. **Trainingspijplijn**: voortraining → fine-tuning → RLHF
 4. Elk **groot model** heeft verschillende sterktes

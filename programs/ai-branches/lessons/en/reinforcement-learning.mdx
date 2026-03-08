@@ -1,6 +1,6 @@
 ---
-title: "Reinforcement Learning — How AI Learns by Doing"
-description: "Understand how AI agents learn through trial, error, and reward — from game-playing champions to real-world robots."
+title: "Reinforcement Learning - How AI Learns by Doing"
+description: "Understand how AI agents learn through trial, error, and reward - from game-playing champions to real-world robots."
 order: 7
 difficulty: "intermediate"
 duration: 15
@@ -8,9 +8,9 @@ icon: "🎮"
 published: true
 ---
 
-# Reinforcement Learning — How AI Learns by Doing
+# Reinforcement Learning - How AI Learns by Doing
 
-Imagine teaching a puppy to sit. You do not hand it a textbook — you let it try things, and when it sits, you give it a treat. Over time, it learns which actions earn rewards. **Reinforcement Learning (RL)** works the same way: an AI agent learns by interacting with an environment, receiving feedback, and adjusting its behaviour to maximise long-term reward.
+Imagine teaching a puppy to sit. You do not hand it a textbook - you let it try things, and when it sits, you give it a treat. Over time, it learns which actions earn rewards. **Reinforcement Learning (RL)** works the same way: an AI agent learns by interacting with an environment, receiving feedback, and adjusting its behaviour to maximise long-term reward.
 
 ## The Agent-Environment Loop
 
@@ -21,7 +21,7 @@ Every RL system has the same core structure:
 3. The environment transitions to a new state and returns a **reward** signal.
 4. The agent uses that reward to update its strategy (called a **policy**).
 
-This loop repeats — potentially millions of times — until the agent discovers a policy that
+This loop repeats - potentially millions of times - until the agent discovers a policy that
 consistently earns high rewards. Unlike supervised learning, there is no labelled dataset telling
 the agent what to do. It must discover effective behaviour purely through interaction.
 
@@ -36,12 +36,12 @@ One of RL's central dilemmas: should the agent **exploit** what it already knows
 
 Most algorithms use an **epsilon-greedy** strategy: with probability ε the agent explores randomly,
 and the rest of the time it exploits its best-known action. Over training, ε gradually decreases as
-the agent becomes more confident. More sophisticated methods — like Upper Confidence Bound (UCB)
-and Thompson Sampling — explore more intelligently by targeting uncertain actions.
+the agent becomes more confident. More sophisticated methods - like Upper Confidence Bound (UCB)
+and Thompson Sampling - explore more intelligently by targeting uncertain actions.
 
-<FunFact>DeepMind's AlphaGo explored approximately 30 million self-play games during training — far more games than any human could play in a lifetime.</FunFact>
+<FunFact>DeepMind's AlphaGo explored approximately 30 million self-play games during training - far more games than any human could play in a lifetime.</FunFact>
 
-## Q-Learning — A Simple but Powerful Idea
+## Q-Learning - A Simple but Powerful Idea
 
 **Q-learning** assigns a value (called a Q-value) to every state-action pair. The Q-value represents the expected total future reward if the agent takes that action in that state and then follows the best policy afterwards.
 
@@ -57,38 +57,38 @@ Q(state, action) ← Q(state, action) + α × [reward + γ × max Q(next_state, 
 Over many episodes, Q-values converge, and the agent can simply pick the action with the highest
 Q-value in any state. For simple environments this table-based approach works well. When the state
 space is too large for a table (say, raw pixel inputs from a video game), a neural network
-approximates the Q-values — this is **Deep Q-Learning (DQN)**, the approach DeepMind used to master
+approximates the Q-values - this is **Deep Q-Learning (DQN)**, the approach DeepMind used to master
 Atari games in 2015.
 
 <Quiz question="What does the Q-value in Q-learning represent?" options="The probability of winning a game|The expected total future reward for a state-action pair|The speed at which the agent learns|The number of times an action has been tried" answer="1" explanation="A Q-value estimates the total cumulative reward an agent can expect by taking a specific action in a given state and following the optimal policy thereafter." />
 
 ## Policy Gradient Methods
 
-Q-learning works by learning the value of actions. **Policy gradient** methods take a different path: they directly optimise the policy itself — the mapping from states to actions.
+Q-learning works by learning the value of actions. **Policy gradient** methods take a different path: they directly optimise the policy itself - the mapping from states to actions.
 
 Instead of asking "how good is this action?", they ask "how should I adjust my action probabilities to get more reward?" The agent nudges its policy in the direction that increases expected reward, using gradient ascent.
 
-**Proximal Policy Optimisation (PPO)**, developed by OpenAI, is one of the most popular policy gradient algorithms. It is stable, efficient, and was used to train the RL component of ChatGPT (via RLHF — Reinforcement Learning from Human Feedback).
+**Proximal Policy Optimisation (PPO)**, developed by OpenAI, is one of the most popular policy gradient algorithms. It is stable, efficient, and was used to train the RL component of ChatGPT (via RLHF - Reinforcement Learning from Human Feedback).
 
-## AlphaGo — The Game That Changed Everything
+## AlphaGo - The Game That Changed Everything
 
-In March 2016, DeepMind's **AlphaGo** defeated Lee Sedol, one of the greatest Go players in history, 4 games to 1. Go has more possible board positions than atoms in the universe — brute-force search was impossible.
+In March 2016, DeepMind's **AlphaGo** defeated Lee Sedol, one of the greatest Go players in history, 4 games to 1. Go has more possible board positions than atoms in the universe - brute-force search was impossible.
 
 AlphaGo combined:
 - **Supervised learning** from human expert games to bootstrap its policy.
 - **Self-play RL** to improve far beyond human-level play.
 - **Monte Carlo Tree Search** to plan moves efficiently.
 
-Its successor, **AlphaGo Zero**, skipped human data entirely — learning solely from self-play — and surpassed the original AlphaGo within 40 days.
+Its successor, **AlphaGo Zero**, skipped human data entirely - learning solely from self-play - and surpassed the original AlphaGo within 40 days.
 
 <ThinkAboutIt>AlphaGo Zero learned without any human knowledge. Does this suggest that human expertise can sometimes be a limitation rather than an advantage for AI?</ThinkAboutIt>
 
 ## OpenAI Five and Game AI
 
-In 2019, **OpenAI Five** defeated the world champion team in Dota 2 — a game with incomplete information, long time horizons, and complex team coordination. Each of the five agents used PPO trained across thousands of GPUs over months, accumulating the equivalent of 45,000 years of gameplay experience.
+In 2019, **OpenAI Five** defeated the world champion team in Dota 2 - a game with incomplete information, long time horizons, and complex team coordination. Each of the five agents used PPO trained across thousands of GPUs over months, accumulating the equivalent of 45,000 years of gameplay experience.
 
 Game AI has always been a proving ground for RL, but the techniques developed here transfer to far
-more consequential domains. The scale of training — distributing RL across thousands of GPUs —
+more consequential domains. The scale of training - distributing RL across thousands of GPUs  - 
 pushed the boundaries of what was computationally feasible and inspired new infrastructure for
 large-scale AI training.
 
@@ -96,14 +96,14 @@ large-scale AI training.
 
 RL is increasingly applied beyond games:
 
-- **Robotics** — Teaching robot arms to grasp objects, navigate terrain, and perform assembly tasks.
-- **Self-driving vehicles** — Making lane-change and intersection decisions in complex traffic.
-- **Data centre cooling** — DeepMind used RL to reduce Google's data centre energy consumption by 40%.
-- **Drug discovery** — Optimising molecular structures for desired properties.
+- **Robotics** - Teaching robot arms to grasp objects, navigate terrain, and perform assembly tasks.
+- **Self-driving vehicles** - Making lane-change and intersection decisions in complex traffic.
+- **Data centre cooling** - DeepMind used RL to reduce Google's data centre energy consumption by 40%.
+- **Drug discovery** - Optimising molecular structures for desired properties.
 
 <Quiz question="What is the exploration vs exploitation trade-off?" options="Choosing between fast and slow learning rates|Balancing trying new actions versus sticking with known good actions|Deciding between supervised and unsupervised learning|Selecting between online and offline training" answer="1" explanation="Exploration means trying unfamiliar actions to discover potentially better strategies, while exploitation means using the best currently known action. Balancing both is essential for effective RL." />
 
-## Reward Hacking — When AI Games the System
+## Reward Hacking - When AI Games the System
 
 A critical challenge in RL is **reward hacking**: the agent finds unexpected shortcuts to maximise its reward signal without actually solving the intended task.
 
@@ -111,14 +111,14 @@ Famous examples include a boat-racing agent that discovered it could score more 
 
 This highlights a fundamental truth: the agent optimises *exactly* what you measure, which may not
 be what you actually want. Designing reward functions that truly capture intended behaviour is one
-of the most important — and most difficult — aspects of applied RL. Researchers are exploring
+of the most important - and most difficult - aspects of applied RL. Researchers are exploring
 techniques like reward modelling and inverse reinforcement learning to address this challenge.
 
 ## Sim-to-Real Transfer
 
 Training RL agents in the real world is expensive, slow, and potentially dangerous. **Sim-to-real transfer** trains agents in simulated environments and then deploys them in reality.
 
-The challenge: simulations are never perfectly accurate. Techniques like **domain randomisation** — randomly varying simulation parameters (friction, lighting, object shapes) — force agents to learn robust policies that generalise across conditions.
+The challenge: simulations are never perfectly accurate. Techniques like **domain randomisation** - randomly varying simulation parameters (friction, lighting, object shapes) - force agents to learn robust policies that generalise across conditions.
 
 <Quiz question="What is sim-to-real transfer?" options="Transferring data from one simulation to another|Training an agent in simulation and deploying it in the physical world|Converting real-world data into a simulated format|A technique for speeding up simulation rendering" answer="1" explanation="Sim-to-real transfer trains RL agents in cheap, fast simulated environments and then deploys them in the real world, bridging the gap with techniques like domain randomisation." />
 
@@ -128,5 +128,5 @@ The challenge: simulations are never perfectly accurate. Techniques like **domai
 
 ## 📚 Further Reading
 
-- [Spinning Up in Deep RL — OpenAI](https://spinningup.openai.com/) — Practical introduction to deep reinforcement learning with code examples
-- [Mastering the Game of Go without Human Knowledge — Silver et al.](https://www.nature.com/articles/nature24270) — The AlphaGo Zero paper demonstrating superhuman play from pure self-play
+- [Spinning Up in Deep RL - OpenAI](https://spinningup.openai.com/) - Practical introduction to deep reinforcement learning with code examples
+- [Mastering the Game of Go without Human Knowledge - Silver et al.](https://www.nature.com/articles/nature24270) - The AlphaGo Zero paper demonstrating superhuman play from pure self-play

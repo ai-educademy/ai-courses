@@ -1,5 +1,5 @@
 ---
-title: "Dynamic Programming — How AI Solves Complex Problems by Breaking Them Down"
+title: "Dynamic Programming - How AI Solves Complex Problems by Breaking Them Down"
 description: "Understand memoisation, tabulation, and classic DP patterns used across AI and computer science."
 order: 4
 difficulty: "intermediate"
@@ -10,18 +10,18 @@ published: true
 
 ## The Big Idea
 
-Some problems look impossibly complex until you notice they are made of **smaller, repeating sub-problems**. Dynamic programming (DP) solves each sub-problem **once**, stores the result, and reuses it — trading a little memory for a dramatic speed-up.
+Some problems look impossibly complex until you notice they are made of **smaller, repeating sub-problems**. Dynamic programming (DP) solves each sub-problem **once**, stores the result, and reuses it - trading a little memory for a dramatic speed-up.
 
 Two conditions signal a DP opportunity:
 
-1. **Overlapping sub-problems** — the same calculations recur many times.
-2. **Optimal substructure** — the best solution to the whole problem can be built from best solutions to its parts.
+1. **Overlapping sub-problems** - the same calculations recur many times.
+2. **Optimal substructure** - the best solution to the whole problem can be built from best solutions to its parts.
 
 <Illustration src="/images/lessons/dynamic-programming.svg" alt="A recursion tree for Fibonacci showing repeated sub-problems highlighted, alongside a filled DP table" caption="Without DP, Fibonacci recalculates the same values exponentially. With DP, each value is computed once." />
 
 ## Fibonacci: The Classic Example
 
-### Naïve Recursion — O(2ⁿ)
+### Naïve Recursion - O(2ⁿ)
 
 ```
 function fib(n):
@@ -31,7 +31,7 @@ function fib(n):
 
 Calling `fib(5)` triggers **15** function calls, many redundant. At `fib(40)` it takes seconds; at `fib(100)` it would outlast the universe.
 
-### Memoisation (Top-Down) — O(n)
+### Memoisation (Top-Down) - O(n)
 
 Store results in a cache. If you have already solved a sub-problem, return the cached answer.
 
@@ -44,7 +44,7 @@ function fib(n):
     return memo[n]
 ```
 
-### Tabulation (Bottom-Up) — O(n)
+### Tabulation (Bottom-Up) - O(n)
 
 Build the answer iteratively from the base cases upward.
 
@@ -73,7 +73,7 @@ function climbStairs(n):
     return b
 ```
 
-This is Fibonacci in disguise — the answer for step _n_ is the sum of ways to reach steps _n−1_ and _n−2_.
+This is Fibonacci in disguise - the answer for step _n_ is the sum of ways to reach steps _n−1_ and _n−2_.
 
 ### Coin Change
 
@@ -121,7 +121,7 @@ function lcs(s1, s2):
 | **CTC decoding** | Handwriting / speech-to-text | Merging repeated characters optimally |
 | **Beam search pruning** | Machine translation | Keeping top-k partial translations |
 
-<Quiz question="Which DP-based algorithm does a spell checker most likely use to suggest corrections?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Climbing stairs" answer="1" explanation="Edit distance counts the minimum insertions, deletions, and substitutions to transform one word into another — directly measuring how 'close' a misspelling is to a dictionary word." />
+<Quiz question="Which DP-based algorithm does a spell checker most likely use to suggest corrections?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Climbing stairs" answer="1" explanation="Edit distance counts the minimum insertions, deletions, and substitutions to transform one word into another - directly measuring how 'close' a misspelling is to a dictionary word." />
 
 ## Top-Down vs Bottom-Up
 
@@ -140,7 +140,7 @@ function lcs(s1, s2):
 
 1. DP transforms exponential brute-force into polynomial time by **caching repeated work**.
 2. Identify overlapping sub-problems and optimal substructure before reaching for DP.
-3. Memoisation is intuitive; tabulation is efficient — learn both.
+3. Memoisation is intuitive; tabulation is efficient - learn both.
 4. Edit distance, Viterbi, and sequence alignment show DP at the heart of modern AI.
 
-<Quiz question="A problem has overlapping sub-problems but does NOT have optimal substructure. Can you apply DP to find the optimal solution?" options="Yes — DP always works if sub-problems overlap|No — both conditions are required for DP to guarantee optimality|Only if you use tabulation|Only for graph problems" answer="1" explanation="DP requires both overlapping sub-problems (for efficiency) and optimal substructure (for correctness). Without optimal substructure, caching alone does not guarantee the global optimum." />
+<Quiz question="A problem has overlapping sub-problems but does NOT have optimal substructure. Can you apply DP to find the optimal solution?" options="Yes - DP always works if sub-problems overlap|No - both conditions are required for DP to guarantee optimality|Only if you use tabulation|Only for graph problems" answer="1" explanation="DP requires both overlapping sub-problems (for efficiency) and optimal substructure (for correctness). Without optimal substructure, caching alone does not guarantee the global optimum." />

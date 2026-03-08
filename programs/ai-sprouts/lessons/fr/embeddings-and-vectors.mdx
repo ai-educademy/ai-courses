@@ -1,5 +1,5 @@
 ---
-title: "Embeddings et bases de données vectorielles — Comment l'IA comprend le sens"
+title: "Embeddings et bases de données vectorielles - Comment l'IA comprend le sens"
 description: "Explorez comment l'IA représente les mots et les phrases sous forme de vecteurs dans un espace de haute dimension, permettant la recherche sémantique, les recommandations et le RAG."
 order: 9
 difficulty: "intermediate"
@@ -8,9 +8,9 @@ icon: "🧭"
 published: true
 ---
 
-# Embeddings — Comment l'IA comprend le sens
+# Embeddings - Comment l'IA comprend le sens
 
-Après la tokenisation, chaque token n'est qu'un nombre — un indice dans un vocabulaire. Mais l'indice 4 821 ne dit rien au modèle sur le *sens*. Comment l'IA sait-elle que « roi » et « reine » sont liés, ou que « banque » peut désigner une rive ou un établissement financier ? La réponse réside dans les **embeddings**.
+Après la tokenisation, chaque token n'est qu'un nombre - un indice dans un vocabulaire. Mais l'indice 4 821 ne dit rien au modèle sur le *sens*. Comment l'IA sait-elle que « roi » et « reine » sont liés, ou que « banque » peut désigner une rive ou un établissement financier ? La réponse réside dans les **embeddings**.
 
 ## Le problème de l'encodage one-hot
 
@@ -21,7 +21,7 @@ Cela présente deux défauts majeurs :
 - **Aucune similarité :** « Chat » et « chien » sont aussi éloignés l'un de l'autre que « chat » et « démocratie ». L'encodage ne capture aucune information sémantique.
 - **Taille massive :** Avec un vocabulaire de 50 000 mots, chaque mot nécessite un vecteur de 50 000 dimensions. Terriblement inefficace.
 
-## Embeddings de mots — Le sens comme géométrie
+## Embeddings de mots - Le sens comme géométrie
 
 Un **embedding** associe chaque token à un vecteur dense de, disons, 256 ou 768 dimensions. Contrairement aux vecteurs one-hot, ces dimensions sont apprises pendant l'entraînement et encodent le sens.
 
@@ -29,13 +29,13 @@ Les mots utilisés dans des contextes similaires se retrouvent proches dans cet 
 
 <Illustration src="/images/lessons/embeddings-and-vectors.svg" alt="Une projection 2D d'embeddings de mots montrant des groupes : animaux (chat, chien, poisson) regroupés ensemble, villes (Londres, Paris, Tokyo) regroupées ensemble, et la célèbre analogie roi-reine sous forme d'arithmétique vectorielle" caption="Dans l'espace des embeddings, le sens devient géométrie. Les concepts similaires se regroupent." />
 
-## Word2Vec — Roi − Homme + Femme = Reine
+## Word2Vec - Roi − Homme + Femme = Reine
 
 L'article **Word2Vec** de 2013 a montré quelque chose de remarquable. Entraînés sur de grands corpus de texte, les vecteurs appris présentent des relations arithmétiques :
 
 > `vecteur("roi") − vecteur("homme") + vecteur("femme") ≈ vecteur("reine")`
 
-La direction allant de « homme » à « femme » capture le concept de genre. En l'ajoutant à « roi », on arrive à « reine ». Ce n'est pas programmé — cela émerge des motifs du langage.
+La direction allant de « homme » à « femme » capture le concept de genre. En l'ajoutant à « roi », on arrive à « reine ». Ce n'est pas programmé - cela émerge des motifs du langage.
 
 Autres exemples : `Paris − France + Italie ≈ Rome`, `plus grand − grand + petit ≈ plus petit`.
 
@@ -64,36 +64,36 @@ Les embeddings de mots représentent des mots individuels, mais nous avons souve
 
 « Comment réinitialiser mon mot de passe ? » et « J'ai oublié mes identifiants de connexion » auraient des embeddings de phrases très similaires, même s'ils ne partagent presque aucun mot. L'embedding capture l'*intention*, pas seulement le vocabulaire.
 
-## Mesurer la similarité — Similarité cosinus
+## Mesurer la similarité - Similarité cosinus
 
-Pour comparer deux embeddings, on utilise la **similarité cosinus** — le cosinus de l'angle entre deux vecteurs. Elle varie de −1 (opposés) à +1 (même direction).
+Pour comparer deux embeddings, on utilise la **similarité cosinus** - le cosinus de l'angle entre deux vecteurs. Elle varie de −1 (opposés) à +1 (même direction).
 
 - « Heureux » et « joyeux » : cosinus ≈ 0,85 (très similaires).
 - « Heureux » et « table » : cosinus ≈ 0,10 (sans rapport).
 - « Amour » et « haine » : cosinus peut être ≈ 0,40 (liés mais opposés).
 
-La similarité cosinus ignore la magnitude des vecteurs, se concentrant uniquement sur la direction — là où réside le sens.
+La similarité cosinus ignore la magnitude des vecteurs, se concentrant uniquement sur la direction - là où réside le sens.
 
 <ThinkAboutIt>
 « Amour » et « haine » sont des antonymes mais pourraient avoir une similarité cosinus modérée parce qu'ils apparaissent dans des contextes similaires (émotions, relations). Qu'est-ce que cela nous dit sur les limites des embeddings entraînés uniquement sur la cooccurrence des mots ?
 </ThinkAboutIt>
 
-## Bases de données vectorielles — La recherche par le sens
+## Bases de données vectorielles - La recherche par le sens
 
 Une **base de données vectorielle** stocke des millions d'embeddings et récupère les plus similaires à une vitesse fulgurante. Au lieu de la correspondance par mots-clés (« trouver les documents contenant 'apprentissage automatique' »), on effectue une recherche par *sens* (« trouver les documents sur l'éducation en IA »).
 
 Les bases de données vectorielles populaires incluent :
 
-- **Pinecone** — entièrement gérée, s'adapte sans effort.
-- **Weaviate** — open source avec recherche hybride (vecteurs + mots-clés).
-- **ChromaDB** — légère, idéale pour le prototypage.
-- **pgvector** — ajoute la recherche vectorielle à PostgreSQL.
+- **Pinecone** - entièrement gérée, s'adapte sans effort.
+- **Weaviate** - open source avec recherche hybride (vecteurs + mots-clés).
+- **ChromaDB** - légère, idéale pour le prototypage.
+- **pgvector** - ajoute la recherche vectorielle à PostgreSQL.
 
 Ces bases de données utilisent des algorithmes comme **HNSW** (Hierarchical Navigable Small World) pour rechercher parmi des milliards de vecteurs en quelques millisecondes.
 
 <Quiz question="Quel avantage la recherche vectorielle a-t-elle par rapport à la recherche traditionnelle par mots-clés ?" options="Elle est toujours plus rapide|Elle trouve du contenu sémantiquement similaire même lorsque les mots-clés exacts diffèrent|Elle nécessite moins de stockage|Elle fonctionne sans base de données" answer="1" explanation="La recherche vectorielle compare le sens (via les embeddings) plutôt que les mots exacts. Une requête sur la 'maintenance automobile' peut correspondre à des documents sur l'entretien de véhicules' parce que leurs embeddings sont similaires, même sans mots-clés communs." />
 
-## RAG — Génération augmentée par récupération
+## RAG - Génération augmentée par récupération
 
 **RAG** est l'un des patterns les plus importants de l'IA moderne. Il combine la recherche vectorielle avec les modèles de langage :
 
@@ -103,7 +103,7 @@ Ces bases de données utilisent des algorithmes comme **HNSW** (Hierarchical Nav
 4. **Fournir** ces fragments au modèle de langage comme contexte.
 5. Le modèle **génère** une réponse ancrée dans vos données.
 
-RAG permet aux modèles de langage de répondre à des questions sur *vos* données spécifiques — documents d'entreprise, catalogues de produits, articles de recherche — sans avoir à les réentraîner. Il réduit considérablement les hallucinations car le modèle dispose de vraies sources à référencer.
+RAG permet aux modèles de langage de répondre à des questions sur *vos* données spécifiques - documents d'entreprise, catalogues de produits, articles de recherche - sans avoir à les réentraîner. Il réduit considérablement les hallucinations car le modèle dispose de vraies sources à référencer.
 
 <Quiz question="Dans un système RAG, quel rôle joue la base de données vectorielle ?" options="Elle génère la réponse finale|Elle entraîne le modèle de langage|Elle récupère le contexte pertinent en trouvant les fragments de documents les plus similaires à la requête de l'utilisateur|Elle stocke les poids du modèle" answer="2" explanation="La base de données vectorielle est le moteur de récupération dans RAG. Elle trouve les fragments de documents dont les embeddings sont les plus proches de l'embedding de la requête, fournissant au modèle de langage un contexte pertinent pour générer une réponse précise et fondée." />
 
@@ -111,14 +111,14 @@ RAG permet aux modèles de langage de répondre à des questions sur *vos* donn�
 
 Les embeddings alimentent d'innombrables systèmes du monde réel :
 
-- **Recherche sémantique** — trouver des résultats pertinents indépendamment de la formulation exacte.
-- **Recommandations** — « les utilisateurs qui ont aimé ceci ont aussi aimé… » via la similarité des embeddings.
-- **Regroupement (clustering)** — grouper automatiquement des tickets de support, des avis ou des documents similaires.
-- **Détection d'anomalies** — repérer les valeurs aberrantes éloignées de tout groupe.
-- **Détection de doublons** — trouver du contenu quasi identique dans de grands corpus.
+- **Recherche sémantique** - trouver des résultats pertinents indépendamment de la formulation exacte.
+- **Recommandations** - « les utilisateurs qui ont aimé ceci ont aussi aimé… » via la similarité des embeddings.
+- **Regroupement (clustering)** - grouper automatiquement des tickets de support, des avis ou des documents similaires.
+- **Détection d'anomalies** - repérer les valeurs aberrantes éloignées de tout groupe.
+- **Détection de doublons** - trouver du contenu quasi identique dans de grands corpus.
 
 <FunFact>
-Spotify utilise des embeddings audio pour recommander des chansons. Chaque morceau est encodé en embedding en fonction de ses caractéristiques acoustiques, et les recommandations proviennent de la recherche de vecteurs proches — des chansons qui « sonnent de manière similaire » dans l'espace des embeddings.
+Spotify utilise des embeddings audio pour recommander des chansons. Chaque morceau est encodé en embedding en fonction de ses caractéristiques acoustiques, et les recommandations proviennent de la recherche de vecteurs proches - des chansons qui « sonnent de manière similaire » dans l'espace des embeddings.
 </FunFact>
 
 <ThinkAboutIt>
@@ -137,6 +137,6 @@ Si vous convertissiez chaque produit d'une boutique en ligne en embedding, comme
 
 ## 📚 Pour aller plus loin
 
-- [Jay Alammar — The Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/) — Présentation visuelle et intuitive du fonctionnement des embeddings de mots
-- [Pinecone Learning Centre — What Are Embeddings?](https://www.pinecone.io/learn/vector-embeddings/) — Guide pratique sur les embeddings et la recherche vectorielle
-- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings) — Comment générer et utiliser des embeddings avec l'API OpenAI
+- [Jay Alammar - The Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/) - Présentation visuelle et intuitive du fonctionnement des embeddings de mots
+- [Pinecone Learning Centre - What Are Embeddings?](https://www.pinecone.io/learn/vector-embeddings/) - Guide pratique sur les embeddings et la recherche vectorielle
+- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings) - Comment générer et utiliser des embeddings avec l'API OpenAI

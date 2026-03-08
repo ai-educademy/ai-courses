@@ -1,6 +1,6 @@
 ---
-title: "Union-Find — Connected Components మరియు Network Detection"
-description: "Union-Find (disjoint set) data structure నేర్చుకోండి — path compression మరియు union by rank తో. Connectivity, MST, మరియు graph component సమస్యలను సమర్థవంతంగా పరిష్కరించండి."
+title: "Union-Find - Connected Components మరియు Network Detection"
+description: "Union-Find (disjoint set) data structure నేర్చుకోండి - path compression మరియు union by rank తో. Connectivity, MST, మరియు graph component సమస్యలను సమర్థవంతంగా పరిష్కరించండి."
 order: 7
 difficulty: "advanced"
 duration: 17
@@ -10,13 +10,13 @@ published: true
 
 ## Connectivity సమస్య
 
-మీ దగ్గర nodes తో ఒక network ఉందని అనుకోండి, మీకు రెండు రకాల queries వస్తూ ఉంటాయి: *node A ని node B కి connect చేయండి* మరియు *A మరియు B connected గా ఉన్నాయా?* ప్రతి query కి BFS/DFS చేస్తే మొత్తం graph traverse చేయాల్సి వస్తుంది — లక్షల operations కి ఇది చాలా slow.
+మీ దగ్గర nodes తో ఒక network ఉందని అనుకోండి, మీకు రెండు రకాల queries వస్తూ ఉంటాయి: *node A ని node B కి connect చేయండి* మరియు *A మరియు B connected గా ఉన్నాయా?* ప్రతి query కి BFS/DFS చేస్తే మొత్తం graph traverse చేయాల్సి వస్తుంది - లక్షల operations కి ఇది చాలా slow.
 
 **Union-Find** రెండు queries ని దాదాపు constant time లో answer చేస్తుంది.
 
-## Naive Approach — Quick Find
+## Naive Approach - Quick Find
 
-ప్రతి node కి ఒక component ID store చేయండి. Connectivity check చేయడానికి IDs ని O(1) లో compare చేయండి. కానీ రెండు components merge చేయడానికి ఒక group లోని ప్రతి member ని update చేయాలి — ప్రతి union కి O(n).
+ప్రతి node కి ఒక component ID store చేయండి. Connectivity check చేయడానికి IDs ని O(1) లో compare చేయండి. కానీ రెండు components merge చేయడానికి ఒక group లోని ప్రతి member ని update చేయాలి - ప్రతి union కి O(n).
 
 ```
 IDs:  [0, 0, 0, 3, 3]
@@ -39,7 +39,7 @@ class UnionFind:
 
 ## Find with Path Compression
 
-Deep tree లో parent pointers follow చేయడం slow గా ఉంటుంది. **Path compression** tree ని flat చేస్తుంది — ప్రతి visited node ని directly root కి point చేయిస్తుంది.
+Deep tree లో parent pointers follow చేయడం slow గా ఉంటుంది. **Path compression** tree ని flat చేస్తుంది - ప్రతి visited node ని directly root కి point చేయిస్తుంది.
 
 ```python
 def find(self, x):
@@ -76,22 +76,22 @@ def union(self, x, y):
 
 <Quiz
   question="Path compression మరియు union by rank రెండూ ఉంటే, ప్రతి operation యొక్క amortised time ఎంత?"
-  options="O(log n)|O(n)|O(α(n)) — దాదాపు O(1)|O(√n)"
+  options="O(log n)|O(n)|O(α(n)) - దాదాపు O(1)|O(√n)"
   answer="2"
-  explanation="Inverse Ackermann function α(n) చాలా నెమ్మదిగా పెరుగుతుంది — ఏ practical input కి అయినా ఇది 4 దాటదు, దీనివల్ల operations effectively O(1) అవుతాయి."
+  explanation="Inverse Ackermann function α(n) చాలా నెమ్మదిగా పెరుగుతుంది - ఏ practical input కి అయినా ఇది 4 దాటదు, దీనివల్ల operations effectively O(1) అవుతాయి."
 />
 
 <Illustration src="/images/lessons/union-find-and-disjoint-sets.svg" alt="Path compression ముందు మరియు తర్వాత Union-Find trees" caption="Path compression deep chains ని flat చేస్తుంది, తద్వారా future lookups fast గా ఉంటాయి." />
 
 ## Kruskal's MST Algorithm
 
-Union-Find **Kruskal's algorithm** ని power చేస్తుంది — Minimum Spanning Trees కోసం:
+Union-Find **Kruskal's algorithm** ని power చేస్తుంది - Minimum Spanning Trees కోసం:
 
 1. అన్ని edges ని weight ప్రకారం sort చేయండి
 2. ప్రతి edge (u, v) కి, `find(u) ≠ find(v)` అయితే, దాన్ని add చేసి `union(u, v)` చేయండి
 3. n − 1 edges వచ్చినప్పుడు ఆపండి
 
-Union-Find cycles ని prevent చేస్తుంది — endpoints ఇప్పటికే ఒకే root share చేస్తుంటే edge reject అవుతుంది. Total time: **O(E log E)** — sorting dominate చేస్తుంది.
+Union-Find cycles ని prevent చేస్తుంది - endpoints ఇప్పటికే ఒకే root share చేస్తుంటే edge reject అవుతుంది. Total time: **O(E log E)** - sorting dominate చేస్తుంది.
 
 <ThinkAboutIt>Kruskal's algorithm cycles detect చేయడానికి Union-Find use చేస్తుంది. DFS తో cycle ఎలా detect చేస్తారు, మరియు ఇక్కడ Union-Find ఎందుకు మరింత natural?</ThinkAboutIt>
 
@@ -107,11 +107,11 @@ Union-Find ని n nodes తో initialise చేయండి. ప్రతి 
 
 ### Redundant Connection (LeetCode 684)
 
-ఒక tree ఇవ్వబడింది దానిలో ఒక extra edge ఉంది — redundant edge కనుగొనండి. Edges ని order లో process చేయండి — `union` మొదటిసారి `False` return చేసే edge (already connected) అదే answer.
+ఒక tree ఇవ్వబడింది దానిలో ఒక extra edge ఉంది - redundant edge కనుగొనండి. Edges ని order లో process చేయండి - `union` మొదటిసారి `False` return చేసే edge (already connected) అదే answer.
 
-<FunFact>Union-Find రెండు optimisations తో O(α(n)) లో run అవుతుందని proof ని Tarjan 1975 లో publish చేశారు — ఇది computer science లో అత్యంత elegant amortised analyses లో ఒకటిగా పరిగణించబడుతుంది.</FunFact>
+<FunFact>Union-Find రెండు optimisations తో O(α(n)) లో run అవుతుందని proof ని Tarjan 1975 లో publish చేశారు - ఇది computer science లో అత్యంత elegant amortised analyses లో ఒకటిగా పరిగణించబడుతుంది.</FunFact>
 
-## Union-Find vs BFS/DFS — ఎప్పుడు ఏది ఎంచుకోవాలి
+## Union-Find vs BFS/DFS - ఎప్పుడు ఏది ఎంచుకోవాలి
 
 | Scenario | ఉత్తమ ఎంపిక |
 |----------|-------------|
@@ -126,7 +126,7 @@ Edges ని *incrementally* process చేస్తూ fast connectivity checks
 
 <Quiz
   question="మీకు edges ఒక్కొక్కటిగా ఇవ్వబడుతున్నాయి మరియు cycle సృష్టించే మొదటి edge ని detect చేయాలి. ఉత్తమ approach ఏది?"
-  options="ప్రతి edge తర్వాత BFS from scratch|ప్రతి edge తర్వాత DFS from scratch|Union-Find — cycle edge పై union False return చేస్తుంది|Topological sort"
+  options="ప్రతి edge తర్వాత BFS from scratch|ప్రతి edge తర్వాత DFS from scratch|Union-Find - cycle edge పై union False return చేస్తుంది|Topological sort"
   answer="2"
   explanation="Union-Find ప్రతి edge కి near O(1) లో incrementally cycles detect చేస్తుంది, అయితే BFS/DFS ప్రతిసారి మొత్తం graph ని re-traverse చేయాల్సి వస్తుంది."
 />
@@ -135,7 +135,7 @@ Edges ని *incrementally* process చేస్తూ fast connectivity checks
   question="Union-Find లో union by rank ఏమి prevent చేస్తుంది?"
   options="Duplicate edges|Disconnected components|Degenerate linear chains (tall trees)|Negative edge weights"
   answer="2"
-  explanation="Union by rank trees ని balanced గా ఉంచుతుంది — ఎల్లప్పుడూ చిన్న tree ని పెద్దది కింద attach చేయడం ద్వారా, O(n) find operations రాకుండా చేస్తుంది."
+  explanation="Union by rank trees ని balanced గా ఉంచుతుంది - ఎల్లప్పుడూ చిన్న tree ని పెద్దది కింద attach చేయడం ద్వారా, O(n) find operations రాకుండా చేస్తుంది."
 />
 
 <ThinkAboutIt>కొన్ని problems లో unions ని *undo* చేయాల్సి వస్తుంది (dynamic connectivity with deletions). Standard Union-Find ఇందుకు ఎందుకు సరిపోదు, మరియు ఏ modifications ఉన్నాయి?</ThinkAboutIt>
@@ -144,6 +144,6 @@ Edges ని *incrementally* process చేస్తూ fast connectivity checks
 
 ## 📚 మరింత చదవండి
 
-- [Disjoint-Set Data Structure — Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) — Union-Find యొక్క theory, proofs, మరియు history
-- [Union-Find — Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) — Sedgewick యొక్క authoritative treatment, Java examples తో
-- [Redundant Connection — LeetCode 684](https://leetcode.com/problems/redundant-connection/) — Union-Find తో cycle detection యొక్క clean application
+- [Disjoint-Set Data Structure - Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) - Union-Find యొక్క theory, proofs, మరియు history
+- [Union-Find - Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) - Sedgewick యొక్క authoritative treatment, Java examples తో
+- [Redundant Connection - LeetCode 684](https://leetcode.com/problems/redundant-connection/) - Union-Find తో cycle detection యొక్క clean application

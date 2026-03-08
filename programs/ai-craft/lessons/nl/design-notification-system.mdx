@@ -1,5 +1,5 @@
 ---
-title: "Ontwerp een notificatiesysteem — Push, Email en SMS op miljardenschaal"
+title: "Ontwerp een notificatiesysteem - Push, Email en SMS op miljardenschaal"
 description: "Ontwerp een schaalbaar multi-channel notificatiesysteem dat push, email, SMS en in-app notificaties afhandelt met message queues, deduplication en beheer van gebruikersvoorkeuren."
 order: 7
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🔔"
 published: true
 ---
 
-# Ontwerp een notificatiesysteem — Push, Email en SMS op miljardenschaal
+# Ontwerp een notificatiesysteem - Push, Email en SMS op miljardenschaal
 
 Moderne applicaties versturen dagelijks miljarden notificaties via meerdere kanalen. Het ontwerpen van dit systeem leert je over message queues, integraties met externe diensten en het elegant afhandelen van fouten op grote schaal.
 
-## Stap 1 — Requirements verzamelen
+## Stap 1 - Requirements verzamelen
 
 ### Functionele requirements
 - Ondersteuning van meerdere kanalen: push notifications, email, SMS en in-app
@@ -21,14 +21,14 @@ Moderne applicaties versturen dagelijks miljarden notificaties via meerdere kana
 - Ondersteuning voor geplande en directe notificaties
 
 ### Niet-functionele requirements
-- **Schaalbaarheid** — meer dan 10 miljoen notificaties per dag verwerken
-- **Betrouwbaarheid** — geen verloren notificaties; at-least-once delivery
-- **Lage latency** — urgente notificaties binnen seconden bezorgd
-- **Uitbreidbaar** — eenvoudig nieuwe kanalen toevoegen (WhatsApp, Slack)
+- **Schaalbaarheid** - meer dan 10 miljoen notificaties per dag verwerken
+- **Betrouwbaarheid** - geen verloren notificaties; at-least-once delivery
+- **Lage latency** - urgente notificaties binnen seconden bezorgd
+- **Uitbreidbaar** - eenvoudig nieuwe kanalen toevoegen (WhatsApp, Slack)
 
 <ThinkAboutIt>Moet de bezorging van notificaties exactly-once of at-least-once zijn? Denk na over de gebruikerservaring: een dubbele SMS ontvangen versus een kritieke beveiligingsmelding missen.</ThinkAboutIt>
 
-## Stap 2 — High-level architectuur
+## Stap 2 - High-level architectuur
 
 ```
 Caller Services → Notification Service → Validation + Preference Check
@@ -44,12 +44,12 @@ Caller Services → Notification Service → Validation + Preference Check
 <Illustration src="/images/lessons/design-notification-system.svg" alt="Architectuur van het notificatiesysteem met caller services, notification service, Kafka message queues, kanaalspecifieke workers en externe providers" caption="Message queues ontkoppelen de notification service van delivery workers, waardoor elk kanaal onafhankelijk kan schalen" />
 
 ### Kerncomponenten
-1. **Notification Service** — valideert verzoeken, controleert gebruikersvoorkeuren, rendert templates en plaatst berichten in de wachtrij
-2. **Message Queues** — aparte wachtrijen per kanaal voor onafhankelijke schaalbaarheid en isolatie
-3. **Delivery Workers** — kanaalspecifieke workers die externe API-aanroepen afhandelen
-4. **Template Service** — slaat notificatietemplates op en rendert ze met variabele substitutie
+1. **Notification Service** - valideert verzoeken, controleert gebruikersvoorkeuren, rendert templates en plaatst berichten in de wachtrij
+2. **Message Queues** - aparte wachtrijen per kanaal voor onafhankelijke schaalbaarheid en isolatie
+3. **Delivery Workers** - kanaalspecifieke workers die externe API-aanroepen afhandelen
+4. **Template Service** - slaat notificatietemplates op en rendert ze met variabele substitutie
 
-## Stap 3 — Deep dive: kerncomponenten
+## Stap 3 - Deep dive: kerncomponenten
 
 ### Gebruikersvoorkeuren en afmelden
 Sla voorkeuren op per gebruiker en per notificatietype:
@@ -66,18 +66,18 @@ user_preferences:
     security: { enabled: true, override_quiet_hours: true }
 ```
 
-De notification service controleert voorkeuren **vóór** het enqueuen — verstuur nooit wat de gebruiker niet wil ontvangen.
+De notification service controleert voorkeuren **vóór** het enqueuen - verstuur nooit wat de gebruiker niet wil ontvangen.
 
 ### Priority Queues
 Niet alle notificaties zijn gelijk. Gebruik prioriteitsniveaus:
-- **Kritiek** — beveiligingsmeldingen, OTP-codes → onmiddellijk verwerkt
-- **Hoog** — orderbevestigingen, betaalbewijzen → seconden
-- **Gemiddeld** — sociale interacties, reacties → minuten acceptabel
-- **Laag** — marketing, aanbevelingen → kan gebundeld worden
+- **Kritiek** - beveiligingsmeldingen, OTP-codes → onmiddellijk verwerkt
+- **Hoog** - orderbevestigingen, betaalbewijzen → seconden
+- **Gemiddeld** - sociale interacties, reacties → minuten acceptabel
+- **Laag** - marketing, aanbevelingen → kan gebundeld worden
 
 <Quiz question="Waarom zou het notificatiesysteem aparte message queues per kanaal moeten gebruiken in plaats van één gedeelde wachtrij?" options="Om opslagkosten te verlagen|Om onafhankelijke schaalbaarheid mogelijk te maken en te voorkomen dat één traag kanaal de andere blokkeert|Omdat Kafka aparte topics per consumer vereist|Om het systeem eenvoudiger te maken" answer="1" explanation="Als SMS-bezorging vertraagt door een Twilio-storing, zou een gedeelde wachtrij een achterstand creëren die ook push- en emailbezorging vertraagt. Aparte wachtrijen per kanaal bieden foutisolatie en laten elk kanaal onafhankelijk schalen." />
 
-## Stap 4 — Betrouwbaarheid en foutafhandeling
+## Stap 4 - Betrouwbaarheid en foutafhandeling
 
 ### Deduplication
 Voorkom dubbele notificaties met een idempotency key. Controleer vóór verwerking of het notification-ID bestaat in een deduplication store (Redis met TTL):
@@ -107,7 +107,7 @@ Bescherm gebruikers tegen notificatiemoeheid:
 
 <FunFact>Facebook verstuurt dagelijks meer dan 10 miljard push notifications. Om dit te verwerken bouwden ze een eigen notificatiepipeline die miljoenen berichten per seconde kan verwerken, met aparte bezorgpaden voor iOS (APNs) en Android (FCM).</FunFact>
 
-## Stap 5 — Integratie met externe diensten
+## Stap 5 - Integratie met externe diensten
 
 | Kanaal | Provider | Protocol | Uitdagingen |
 |--------|----------|----------|-------------|
@@ -125,7 +125,7 @@ Sla gebeurtenissen op in een time-series database of event stream voor dashboard
 
 <Quiz question="Een notificatiesysteem probeert een mislukte SMS-bezorging 3 keer opnieuw. Zonder deduplication, wat kan er gebeuren als de eerste poging wél is geslaagd maar de acknowledgement verloren is gegaan?" options="Het bericht gaat permanent verloren|De gebruiker ontvangt tot 4 kopieën van dezelfde SMS|Het systeem detecteert automatisch het duplicaat|Het retry-mechanisme voorkomt dit scenario" answer="1" explanation="Als de provider het verzoek heeft verwerkt maar de acknowledgement verloren is gegaan, denkt het systeem dat het is mislukt en probeert het opnieuw. Zonder deduplication aan de providerzijde of idempotency keys kan de gebruiker dezelfde SMS meerdere keren ontvangen." />
 
-## Stap 6 — Knelpunten en optimalisaties
+## Stap 6 - Knelpunten en optimalisaties
 
 | Knelpunt | Oplossing |
 |----------|-----------|
@@ -142,6 +142,6 @@ Sla gebeurtenissen op in een time-series database of event stream voor dashboard
 ---
 
 ## 📚 Verder lezen
-- [Notification System — System Design Interview Vol. 1, Ch. 10](https://bytebytego.com/) — Alex Xu's uitgebreide notificatiesysteemontwerp
-- [How Airbnb Built a Notification Platform](https://medium.com/airbnb-engineering) — een real-world multi-channel notificatiearchitectuur
-- [Firebase Cloud Messaging Docs](https://firebase.google.com/docs/cloud-messaging) — inzicht in de bezorgmechanismen van push notifications
+- [Notification System - System Design Interview Vol. 1, Ch. 10](https://bytebytego.com/) - Alex Xu's uitgebreide notificatiesysteemontwerp
+- [How Airbnb Built a Notification Platform](https://medium.com/airbnb-engineering) - een real-world multi-channel notificatiearchitectuur
+- [Firebase Cloud Messaging Docs](https://firebase.google.com/docs/cloud-messaging) - inzicht in de bezorgmechanismen van push notifications

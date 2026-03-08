@@ -1,8 +1,8 @@
 <div align="center">
 
-# ✏️ AI Sketch — DSA Fundamentals
+# ✏️ AI Sketch - DSA Fundamentals
 
-**Rough Outlines — Master the building blocks of Data Structures & Algorithms**
+**Rough Outlines - Master the building blocks of Data Structures & Algorithms**
 
 Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
@@ -20,7 +20,7 @@ Part of the **Craft Engineering** track at [AI Educademy](https://aieducademy.or
 
 ## 📚 What You'll Learn
 
-This is **Level 1** of the Craft Engineering track — three visual, beginner-friendly lessons covering the DSA fundamentals that power AI systems.
+This is **Level 1** of the Craft Engineering track - three visual, beginner-friendly lessons covering the DSA fundamentals that power AI systems.
 
 | # | Lesson | Topics |
 |---|--------|--------|
@@ -35,7 +35,7 @@ This is **Level 1** of the Craft Engineering track — three visual, beginner-fr
 ## 🔍 Lesson Topics
 
 <details>
-<summary><strong>1 · Arrays & Hashing — The Building Blocks of AI</strong></summary>
+<summary><strong>1 · Arrays & Hashing - The Building Blocks of AI</strong></summary>
 
 Master arrays and hash maps through visual patterns. See how recommendation engines and search indexes use these fundamental structures.
 
@@ -50,7 +50,7 @@ Master arrays and hash maps through visual patterns. See how recommendation engi
 </details>
 
 <details>
-<summary><strong>2 · Strings & Pattern Matching — How AI Reads Text</strong></summary>
+<summary><strong>2 · Strings & Pattern Matching - How AI Reads Text</strong></summary>
 
 Understand string manipulation and pattern matching. Discover how NLP tokenizers and search engines process text.
 
@@ -65,7 +65,7 @@ Understand string manipulation and pattern matching. Discover how NLP tokenizers
 </details>
 
 <details>
-<summary><strong>3 · Sorting & Searching — How AI Ranks Results</strong></summary>
+<summary><strong>3 · Sorting & Searching - How AI Ranks Results</strong></summary>
 
 Visualise sorting algorithms and binary search. See how search engines rank results and how ML models use sorted data.
 
@@ -119,7 +119,7 @@ graph LR
 
 - **Basic programming** in any language (Python, JavaScript, Java, etc.)
 - Familiarity with variables, loops, and functions
-- No prior DSA knowledge required — we start from scratch!
+- No prior DSA knowledge required - we start from scratch!
 
 ---
 
@@ -131,7 +131,7 @@ Visit **[aieducademy.org](https://aieducademy.org)** for the full interactive ex
 
 ### Option 2: Browse Locally
 
-The lessons are standard MDX files — read them directly on GitHub or clone this repo:
+The lessons are standard MDX files - read them directly on GitHub or clone this repo:
 
 ```bash
 git clone https://github.com/ai-educademy/ai-sketch.git
@@ -145,10 +145,10 @@ cd ai-sketch/lessons/en
 
 Contributions are welcome! Here's how you can help:
 
-1. **Fix typos or improve explanations** — open a PR
-2. **Add diagrams or examples** — visual learning is our strength
-3. **Translate lessons** — help make DSA education accessible worldwide
-4. **Report issues** — found something confusing? Let us know
+1. **Fix typos or improve explanations** - open a PR
+2. **Add diagrams or examples** - visual learning is our strength
+3. **Translate lessons** - help make DSA education accessible worldwide
+4. **Report issues** - found something confusing? Let us know
 
 Please see the [AI Educademy contribution guidelines](https://github.com/ai-educademy/.github) for details.
 

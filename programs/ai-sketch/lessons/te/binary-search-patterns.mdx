@@ -1,5 +1,5 @@
 ---
-title: "Binary Search పాటర్న్‌లు — Sorted Arrays కు మించి"
+title: "Binary Search పాటర్న్‌లు - Sorted Arrays కు మించి"
 description: "Binary search ఆలోచనా విధానాన్ని నేర్చుకోండి: search spaces, answer పై binary search, మరియు డజన్ల ఇంటర్వ్యూ సమస్యలలో కనిపించే పాటర్న్‌లు."
 order: 7
 difficulty: "intermediate"
@@ -8,7 +8,7 @@ icon: "🔍"
 published: true
 ---
 
-## క్లాసిక్ Binary Search — త్వరిత సమీక్ష
+## క్లాసిక్ Binary Search - త్వరిత సమీక్ష
 
 Binary search ప్రతి అడుగులో search space ను సగానికి తగ్గిస్తుంది. n ఎలిమెంట్ల sorted array లో **O(log n)** సమయంలో లక్ష్యాన్ని కనుగొంటుంది.
 
@@ -26,11 +26,11 @@ def binary_search(nums, target):
     return -1
 ```
 
-సరళంగా ఉంది — కానీ binary search యొక్క నిజమైన శక్తి sorted arrays కంటే చాలా దూరం వెళ్తుంది.
+సరళంగా ఉంది - కానీ binary search యొక్క నిజమైన శక్తి sorted arrays కంటే చాలా దూరం వెళ్తుంది.
 
 ## Search Space భావన
 
-మీ దగ్గర ఒక పరిధిలో **monotonic condition** ఉన్నప్పుడు binary search పనిచేస్తుంది. "Array" ఉండాల్సిన అవసరం కూడా లేదు — మీకు `[lo, hi]` పరిధి మరియు ఏదో సరిహద్దు వద్ద `False` నుండి `True` కు మారే function మాత్రమే కావాలి.
+మీ దగ్గర ఒక పరిధిలో **monotonic condition** ఉన్నప్పుడు binary search పనిచేస్తుంది. "Array" ఉండాల్సిన అవసరం కూడా లేదు - మీకు `[lo, hi]` పరిధి మరియు ఏదో సరిహద్దు వద్ద `False` నుండి `True` కు మారే function మాత్రమే కావాలి.
 
 ```
 Search space:  [lo .................. hi]
@@ -38,7 +38,7 @@ Condition:      F  F  F  F  T  T  T  T
                           ^-- సమాధానం
 ```
 
-<FunFact>Binary search మొదటిసారి 1946 లో ప్రచురించబడింది, కానీ మొదటి bug-free వెర్షన్ 1962 వరకు రాయబడలేదు — 16 సంవత్సరాల off-by-one errors!</FunFact>
+<FunFact>Binary search మొదటిసారి 1946 లో ప్రచురించబడింది, కానీ మొదటి bug-free వెర్షన్ 1962 వరకు రాయబడలేదు - 16 సంవత్సరాల off-by-one errors!</FunFact>
 
 ## Answer పై Binary Search
 
@@ -61,7 +61,7 @@ def min_speed(piles, h):
     return lo
 ```
 
-Answer space `[1, max(piles)]` మరియు condition monotonic — ఎక్కువ వేగం అంటే ఎల్లప్పుడూ తక్కువ గంటలు.
+Answer space `[1, max(piles)]` మరియు condition monotonic - ఎక్కువ వేగం అంటే ఎల్లప్పుడూ తక్కువ గంటలు.
 
 <Illustration src="/images/lessons/binary-search-patterns.svg" alt="కనీస తినే వేగం కోసం binary search answer space ను తగ్గిస్తూ" caption="Answer పై binary search: ప్రతి iteration లో సాధ్యమైన వేగం పరిధిని తగ్గించండి." />
 
@@ -80,7 +80,7 @@ Answer space `[1, max(piles)]` మరియు condition monotonic — ఎక్
 
 ## మొదటి మరియు చివరి సంఘటన
 
-**మొదటి** సంఘటన కనుగొనడానికి: లక్ష్యం దొరికినప్పుడు, ఆగకండి — `hi = mid` సెట్ చేసి ఎడమ వైపు వెతకడం కొనసాగించండి. **చివరి** కోసం, `lo = mid + 1` సెట్ చేసి కుడి వైపు వెతకండి.
+**మొదటి** సంఘటన కనుగొనడానికి: లక్ష్యం దొరికినప్పుడు, ఆగకండి - `hi = mid` సెట్ చేసి ఎడమ వైపు వెతకడం కొనసాగించండి. **చివరి** కోసం, `lo = mid + 1` సెట్ చేసి కుడి వైపు వెతకండి.
 
 ఈ జత searches లక్ష్యం యొక్క **సంఖ్యను** కూడా ఇస్తుంది: `last - first + 1`.
 
@@ -139,6 +139,6 @@ return lo
 
 ## 📚 మరింత చదవండి
 
-- [NeetCode — Binary Search playlist](https://neetcode.io/roadmap) — సులభం నుండి కఠినం వరకు సమస్యలు
-- [Tech Interview Handbook — Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) — పాటర్న్‌లు, చిట్కాలు మరియు ఆటంకాలు
-- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) — క్రమానుగత సమస్యల సెట్
+- [NeetCode - Binary Search playlist](https://neetcode.io/roadmap) - సులభం నుండి కఠినం వరకు సమస్యలు
+- [Tech Interview Handbook - Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) - పాటర్న్‌లు, చిట్కాలు మరియు ఆటంకాలు
+- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) - క్రమానుగత సమస్యల సెట్

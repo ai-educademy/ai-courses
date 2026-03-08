@@ -1,5 +1,5 @@
 ---
-title: "Concevoir un URL Shortener — Votre premier entretien de System Design"
+title: "Concevoir un URL Shortener - Votre premier entretien de System Design"
 description: "Parcourez pas à pas la conception complète d'un URL shortener en utilisant le framework structuré d'entretien."
 order: 2
 difficulty: "advanced"
@@ -28,7 +28,7 @@ C'est la question de system design la plus fréquente en premier entretien, car 
 - Lecture intensive : ratio lecture/écriture de 100:1 → 4 000 redirections par seconde
 - Latence de redirection inférieure à 50 ms
 - Les URLs courtes doivent être aussi courtes que possible
-- Haute disponibilité — un lien cassé est une expérience utilisateur désastreuse
+- Haute disponibilité - un lien cassé est une expérience utilisateur désastreuse
 
 <Callout>
 Commencez chaque entretien de system design en posant des questions de clarification. Écrire des chiffres explicites (40 writes/sec, 4 000 reads/sec) montre que vous savez raisonner quantitativement sur le scale.
@@ -49,31 +49,31 @@ Response: { "clicks": 14523, "created_at": "...", "top_referrers": [...] }
 ```
 
 **Pourquoi HTTP 301 vs 302 ?**
-- **301 (Permanent Redirect)** — les navigateurs le mettent en cache, réduisant la charge sur nos servers
-- **302 (Temporary Redirect)** — les navigateurs contactent toujours nos servers, permettant des analytics précises
+- **301 (Permanent Redirect)** - les navigateurs le mettent en cache, réduisant la charge sur nos servers
+- **302 (Temporary Redirect)** - les navigateurs contactent toujours nos servers, permettant des analytics précises
 
 Pour un service qui suit les clics, **le 302 est généralement le meilleur choix** car chaque redirection passe par nos servers.
 
-<Quiz question="Votre URL shortener a besoin d'analytics de clics précises. Quel code de statut HTTP de redirection utiliser et pourquoi ?" options="200 OK — renvoyer directement le contenu de la page|301 Permanent Redirect — les navigateurs le mettent en cache pour la vitesse|302 Temporary Redirect — chaque clic passe par notre server pour le comptage|404 Not Found — puis rediriger côté client via JavaScript" answer="2" explanation="Le 302 Temporary Redirect garantit que le navigateur contacte notre server à chaque clic, nous permettant d'enregistrer la visite pour les analytics. Un 301 serait mis en cache par le navigateur, et les visites répétées ne seraient pas comptées." />
+<Quiz question="Votre URL shortener a besoin d'analytics de clics précises. Quel code de statut HTTP de redirection utiliser et pourquoi ?" options="200 OK - renvoyer directement le contenu de la page|301 Permanent Redirect - les navigateurs le mettent en cache pour la vitesse|302 Temporary Redirect - chaque clic passe par notre server pour le comptage|404 Not Found - puis rediriger côté client via JavaScript" answer="2" explanation="Le 302 Temporary Redirect garantit que le navigateur contacte notre server à chaque clic, nous permettant d'enregistrer la visite pour les analytics. Un 301 serait mis en cache par le navigateur, et les visites répétées ne seraient pas comptées." />
 
 ## Étape 3 : Stratégie d'encoding
 
 Le défi central : comment générer des codes courts et uniques ?
 
-**L'encoding base62** utilise `[a-zA-Z0-9]` — 62 caractères. Un code de 7 caractères donne 62⁷ = **3,5 trillions** de combinaisons uniques, largement suffisant pour notre scale.
+**L'encoding base62** utilise `[a-zA-Z0-9]` - 62 caractères. Un code de 7 caractères donne 62⁷ = **3,5 trillions** de combinaisons uniques, largement suffisant pour notre scale.
 
-**Option A — Basée sur un compteur :**
+**Option A - Basée sur un compteur :**
 - Utiliser un compteur auto-incrémenté (1, 2, 3, ...) et le convertir en base62
 - Compteur 1000 → `g8` | Compteur 1000000 → `4c92`
 - **Avantages :** unicité garantie, simple, aucune collision
 - **Inconvénients :** prévisible (les utilisateurs peuvent deviner la prochaine URL), nécessite un compteur centralisé
 
-**Option B — Basée sur le hash :**
+**Option B - Basée sur le hash :**
 - Hasher l'URL longue avec MD5/SHA-256, prendre les 7 premiers caractères en base62
 - **Avantages :** stateless, aucune coordination centrale nécessaire
-- **Inconvénients :** collisions possibles — vérifier en database et réessayer
+- **Inconvénients :** collisions possibles - vérifier en database et réessayer
 
-**Option C — Clés pré-générées (recommandé) :**
+**Option C - Clés pré-générées (recommandé) :**
 - Un service en arrière-plan pré-génère des millions de codes base62 uniques dans un key pool
 - Quand une nouvelle URL arrive, on prend le prochain code disponible du pool
 - **Avantages :** rapide, aucun risque de collision, non prévisible
@@ -88,7 +88,7 @@ Le service TinyURL original a été lancé en 2002 et fonctionne encore aujourd'
 Avec 100 millions de nouvelles URLs par mois et une rétention de 5 ans, nous stockerons environ **6 milliards d'enregistrements**. C'est une charge en lecture intensive avec des lookups clé-valeur simples.
 
 **Choix de database : DynamoDB ou Cassandra**
-- Les lookups se font toujours par short code (partition key) — pas de jointures complexes
+- Les lookups se font toujours par short code (partition key) - pas de jointures complexes
 - Les deux gèrent un throughput en lecture massif avec du horizontal scaling
 - Les deux offrent des lookups en moins de 10 ms par partition key
 
@@ -113,7 +113,7 @@ Table: clicks
   device: "mobile"
 ```
 
-<Illustration src="/images/lessons/design-url-shortener.svg" alt="Architecture du URL shortener avec API servers, service de génération de clés, cache et database" caption="L'architecture du URL shortener — les requêtes en lecture passent d'abord par le cache, avec un fallback sur la database en cas de miss." />
+<Illustration src="/images/lessons/design-url-shortener.svg" alt="Architecture du URL shortener avec API servers, service de génération de clés, cache et database" caption="L'architecture du URL shortener - les requêtes en lecture passent d'abord par le cache, avec un fallback sur la database en cas de miss." />
 
 ## Étape 5 : Stratégie de caching
 
@@ -139,7 +139,7 @@ TTL:   24 hours
 
 Avec un taux de cache hit de 80 %, seules 800 des 4 000 requêtes par seconde atteignent réellement la database.
 
-<Quiz question="Votre URL shortener sert 4 000 redirections par seconde. Le taux de cache hit est de 80 %. Combien de lectures par seconde la database doit-elle gérer ?" options="4 000|3 200|800|0 — le cache gère tout" answer="2" explanation="Avec un taux de cache hit de 80 %, 20 % des requêtes manquent le cache : 4 000 × 0,20 = 800 lectures database par seconde." />
+<Quiz question="Votre URL shortener sert 4 000 redirections par seconde. Le taux de cache hit est de 80 %. Combien de lectures par seconde la database doit-elle gérer ?" options="4 000|3 200|800|0 - le cache gère tout" answer="2" explanation="Avec un taux de cache hit de 80 %, 20 % des requêtes manquent le cache : 4 000 × 0,20 = 800 lectures database par seconde." />
 
 ## Étape 6 : Analytics et suivi des clics
 
@@ -161,30 +161,30 @@ Les URL shorteners sont parfois utilisés pour dissimuler des liens malveillants
 ## Étape 7 : Mise à l'échelle du système
 
 **Approche de horizontal scaling :**
-- Les **API servers** sont stateless — on scale en ajoutant des instances derrière un load balancer
+- Les **API servers** sont stateless - on scale en ajoutant des instances derrière un load balancer
 - Le **service de génération de clés** tourne comme un microservice séparé avec sa propre database de codes pré-générés
 - Le **cluster Redis** gère la distribution du cache entre les nœuds via consistent hashing
 - Le **database sharding** par le premier caractère du short code distribue les données uniformément
 
 **Gestion des pics de charge :**
 - Lors d'événements viraux, une seule URL peut recevoir des millions de hits par minute
-- Le cache Redis absorbe cela naturellement — une seule entrée de cache sert un nombre illimité de lectures
+- Le cache Redis absorbe cela naturellement - une seule entrée de cache sert un nombre illimité de lectures
 - Kafka tamponne les événements de clic, lissant la charge d'écriture sur la database analytics
 
-<Quiz question="Une URL devient virale et reçoit 500 000 clics par minute. Quel composant a le plus de chances de ne pas être affecté ?" options="Le cache Redis (une seule clé sert toutes les requêtes)|Les consumers Kafka d'événements de clic|Le chemin d'écriture de la database analytics|Le CPU des API servers" answer="0" explanation="Redis gère des millions de lectures par seconde pour une seule clé en cache sans effort. Les consumers Kafka et la database analytics font face à 500K écritures/minute, et les API servers gèrent 500K requêtes/minute — tous sous charge significative." />
+<Quiz question="Une URL devient virale et reçoit 500 000 clics par minute. Quel composant a le plus de chances de ne pas être affecté ?" options="Le cache Redis (une seule clé sert toutes les requêtes)|Les consumers Kafka d'événements de clic|Le chemin d'écriture de la database analytics|Le CPU des API servers" answer="0" explanation="Redis gère des millions de lectures par seconde pour une seule clé en cache sans effort. Les consumers Kafka et la database analytics font face à 500K écritures/minute, et les API servers gèrent 500K requêtes/minute - tous sous charge significative." />
 
 <ThinkAboutIt>
 Des entreprises comme bit.ly gèrent des milliards de redirections par mois. Si une URL courte est partagée sur un panneau publicitaire ou une publicité TV, le trafic peut passer de zéro à des millions en quelques secondes. Au-delà du caching, quelles autres stratégies utiliseriez-vous pour absorber ces pics de trafic soudains et imprévisibles ?
 </ThinkAboutIt>
 
 <FunFact>
-En 2009, bit.ly traitait plus de 80 millions de clics par jour. Lorsque la Libye — dont le code pays est .ly — a brièvement désactivé les domaines .ly en raison d'instabilité politique, cela a provoqué la panique sur internet, car des millions de liens raccourcis ont temporairement cessé de fonctionner.
+En 2009, bit.ly traitait plus de 80 millions de clics par jour. Lorsque la Libye - dont le code pays est .ly - a brièvement désactivé les domaines .ly en raison d'instabilité politique, cela a provoqué la panique sur internet, car des millions de liens raccourcis ont temporairement cessé de fonctionner.
 </FunFact>
 
 ## Points clés à retenir
 
 - Suivez le framework : requirements → API → encoding → data model → architecture → deep dives
-- Base62 avec 7 caractères donne 3,5 trillions de codes uniques — largement suffisant
+- Base62 avec 7 caractères donne 3,5 trillions de codes uniques - largement suffisant
 - Les key pools pré-générés évitent les problèmes de collision et les bottlenecks de compteur central
 - Utilisez les redirections 302 (pas 301) quand vous avez besoin d'analytics de clics précises
 - Le caching Redis réduit considérablement la charge database pour les workloads en lecture intensive

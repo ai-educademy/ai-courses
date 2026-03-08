@@ -1,5 +1,5 @@
 ---
-title: "Two Pointers en Sliding Window — Hoe AI data efficiënt scant"
+title: "Two Pointers en Sliding Window - Hoe AI data efficiënt scant"
 description: "Beheers twee essentiële patronen om reeksen te scannen zonder onnodige berekeningen."
 order: 1
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Waarom slim scannen belangrijk is
 
-Stel je een AI voor die een live videofeed bewaakt op verdachte activiteit. Het kan niet elke seconde de hele opname opnieuw bekijken — het moet een aandachtsvenster over de stream schuiven, met net genoeg context. Dat is precies wat de **two pointers** en **sliding window** patronen doen voor sequentiële data.
+Stel je een AI voor die een live videofeed bewaakt op verdachte activiteit. Het kan niet elke seconde de hele opname opnieuw bekijken - het moet een aandachtsvenster over de stream schuiven, met net genoeg context. Dat is precies wat de **two pointers** en **sliding window** patronen doen voor sequentiële data.
 
 Beide technieken veranderen brute-force O(n²) scans in elegante O(n) doorlopen.
 
@@ -24,7 +24,7 @@ Plaats twee referenties in een reeks en verplaats ze volgens een regel. Er zijn 
 
 Begin met één pointer aan elk uiteinde en beweeg ze naar binnen. Ideaal voor **gesorteerde** data.
 
-**Klassiek probleem — Pair Sum:** Gegeven een gesorteerde array, vind twee getallen die optellen tot een doel.
+**Klassiek probleem - Pair Sum:** Gegeven een gesorteerde array, vind twee getallen die optellen tot een doel.
 
 ```
 function pairSum(arr, target):
@@ -38,13 +38,13 @@ function pairSum(arr, target):
     return null
 ```
 
-Omdat de array gesorteerd is, verhoogt het verplaatsen van `left` naar rechts de som, en verlaagt het verplaatsen van `right` naar links de som — waardoor geen enkel geldig paar wordt gemist.
+Omdat de array gesorteerd is, verhoogt het verplaatsen van `left` naar rechts de som, en verlaagt het verplaatsen van `right` naar links de som - waardoor geen enkel geldig paar wordt gemist.
 
 ### Pointers in dezelfde richting
 
 Beide pointers bewegen vooruit, maar met verschillende snelheden. Handig voor **partitionering** of **cyclusdetectie**.
 
-**Voorbeeld — Duplicaten in-place verwijderen:** Een langzame pointer markeert de schrijfpositie; een snelle pointer scant vooruit.
+**Voorbeeld - Duplicaten in-place verwijderen:** Een langzame pointer markeert de schrijfpositie; een snelle pointer scant vooruit.
 
 ```
 function removeDuplicates(arr):
@@ -66,7 +66,7 @@ Een sliding window houdt een aaneengesloten deelreeks bij van grootte _k_ (vast)
 
 Schuif een window van precies _k_ elementen over de array.
 
-**Voorbeeld — Maximale som van k opeenvolgende elementen:**
+**Voorbeeld - Maximale som van k opeenvolgende elementen:**
 
 ```
 function maxSubarraySum(arr, k):
@@ -78,13 +78,13 @@ function maxSubarraySum(arr, k):
     return best
 ```
 
-Elke stap voegt het nieuwe element toe dat het window binnenkomt en trekt het element af dat vertrekt — O(1) per verplaatsing.
+Elke stap voegt het nieuwe element toe dat het window binnenkomt en trekt het element af dat vertrekt - O(1) per verplaatsing.
 
 ### Variabel-formaat window
 
 Breid het window uit om meer data op te nemen, en krimp het weer wanneer een beperking wordt geschonden.
 
-**Voorbeeld — Langste substring zonder herhalende karakters:**
+**Voorbeeld - Langste substring zonder herhalende karakters:**
 
 ```
 function longestUnique(s):
@@ -99,7 +99,7 @@ function longestUnique(s):
     return best
 ```
 
-<FunFact>Streaming analytics platformen zoals Apache Flink gebruiken sliding en tumbling windows als eersteklas primitieven — hetzelfde concept opgeschaald naar miljoenen events per seconde.</FunFact>
+<FunFact>Streaming analytics platformen zoals Apache Flink gebruiken sliding en tumbling windows als eersteklas primitieven - hetzelfde concept opgeschaald naar miljoenen events per seconde.</FunFact>
 
 ## Toepassingen in AI
 
@@ -110,7 +110,7 @@ function longestUnique(s):
 | Convergerende pointers | Efficiënte nearest-neighbour controles in gesorteerde embedding-dimensies |
 | Dezelfde-richting pointers | Samenvoegen van gesorteerde resultaatlijsten van meerdere retrieval-modellen |
 
-<ThinkAboutIt>Een spraakassistent buffert de laatste 3 seconden audio om een wake word te detecteren. Welk patroon is dit — vast window of variabel window? Wat gebeurt er als het wake word langer is dan de buffer?</ThinkAboutIt>
+<ThinkAboutIt>Een spraakassistent buffert de laatste 3 seconden audio om een wake word te detecteren. Welk patroon is dit - vast window of variabel window? Wat gebeurt er als het wake word langer is dan de buffer?</ThinkAboutIt>
 
 ## Wanneer welk patroon gebruiken
 
@@ -119,14 +119,14 @@ function longestUnique(s):
 - **Vast sliding window:** aggregaat over een bekende venstergrootte.
 - **Variabel sliding window:** de kleinste of grootste window vinden die aan een voorwaarde voldoet.
 
-<Quiz question="Welk patroon zou je kiezen om de kleinste subarray te vinden waarvan de som een gegeven waarde overschrijdt?" options="Convergerende two pointers|Vast sliding window|Variabel sliding window|Binair zoeken" answer="2" explanation="Een variabel-formaat window breidt uit totdat de som de waarde overschrijdt, en krimpt vervolgens vanaf links om de minimale lengte te vinden — allemaal in O(n)." />
+<Quiz question="Welk patroon zou je kiezen om de kleinste subarray te vinden waarvan de som een gegeven waarde overschrijdt?" options="Convergerende two pointers|Vast sliding window|Variabel sliding window|Binair zoeken" answer="2" explanation="Een variabel-formaat window breidt uit totdat de som de waarde overschrijdt, en krimpt vervolgens vanaf links om de minimale lengte te vinden - allemaal in O(n)." />
 
-<ThinkAboutIt>Zou je two pointers met een sliding window kunnen combineren? Denk aan problemen waarbij je een paar moet vinden binnen een rollend datavenster — bijvoorbeeld het detecteren van dubbele transacties binnen een venster van vijf minuten.</ThinkAboutIt>
+<ThinkAboutIt>Zou je two pointers met een sliding window kunnen combineren? Denk aan problemen waarbij je een paar moet vinden binnen een rollend datavenster - bijvoorbeeld het detecteren van dubbele transacties binnen een venster van vijf minuten.</ThinkAboutIt>
 
 ## Belangrijkste inzichten
 
 1. Two pointers elimineren geneste lussen door gebruik te maken van ordening of partitionering.
 2. Sliding windows behouden een lopende staat zodat elk element maximaal twee keer wordt verwerkt.
-3. Beide patronen zijn fundamenteel in real-time AI-pipelines — van anomaliedetectie tot zoekrangschikking.
+3. Beide patronen zijn fundamenteel in real-time AI-pipelines - van anomaliedetectie tot zoekrangschikking.
 
-<Quiz question="Wat is de typische tijdscomplexiteit die wordt bereikt door een brute-force geneste lus om te zetten naar een two-pointer of sliding-window oplossing?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="Beide patronen verwerken elk element een constant aantal keren, wat resulteert in O(n) totaal — een aanzienlijke verbetering ten opzichte van de brute-force O(n²) aanpak." />
+<Quiz question="Wat is de typische tijdscomplexiteit die wordt bereikt door een brute-force geneste lus om te zetten naar een two-pointer of sliding-window oplossing?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="Beide patronen verwerken elk element een constant aantal keren, wat resulteert in O(n) totaal - een aanzienlijke verbetering ten opzichte van de brute-force O(n²) aanpak." />

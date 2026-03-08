@@ -1,5 +1,5 @@
 ---
-title: "Patrons de Binary Search — Au-delà des tableaux triés"
+title: "Patrons de Binary Search - Au-delà des tableaux triés"
 description: "Maîtrisez l'état d'esprit de la recherche binaire : espaces de recherche, binary search on answer, et les patrons qui apparaissent dans des dizaines de problèmes."
 order: 7
 difficulty: "intermediate"
@@ -8,7 +8,7 @@ icon: "🔍"
 published: true
 ---
 
-## Binary Search classique — Rappel rapide
+## Binary Search classique - Rappel rapide
 
 La recherche binaire divise l'espace de recherche en deux à chaque étape. Sur un tableau trié de n éléments, elle trouve une cible en **O(log n)**.
 
@@ -26,11 +26,11 @@ def binary_search(nums, target):
     return -1
 ```
 
-Simple — mais la vraie puissance de la recherche binaire va bien au-delà des tableaux triés.
+Simple - mais la vraie puissance de la recherche binaire va bien au-delà des tableaux triés.
 
 ## Le concept d'espace de recherche
 
-La recherche binaire fonctionne dès qu'il existe une **condition monotone** sur un intervalle. Le « tableau » n'a même pas besoin d'exister — il suffit d'un intervalle `[lo, hi]` et d'une fonction qui passe de `False` à `True` à une certaine frontière.
+La recherche binaire fonctionne dès qu'il existe une **condition monotone** sur un intervalle. Le « tableau » n'a même pas besoin d'exister - il suffit d'un intervalle `[lo, hi]` et d'une fonction qui passe de `False` à `True` à une certaine frontière.
 
 ```
 Search space:  [lo .................. hi]
@@ -38,7 +38,7 @@ Condition:      F  F  F  F  T  T  T  T
                           ^-- answer
 ```
 
-<FunFact>La recherche binaire a été publiée pour la première fois en 1946, mais la première version sans bug n'a été écrite qu'en 1962 — 16 ans d'erreurs de décalage d'un !</FunFact>
+<FunFact>La recherche binaire a été publiée pour la première fois en 1946, mais la première version sans bug n'a été écrite qu'en 1962 - 16 ans d'erreurs de décalage d'un !</FunFact>
 
 ## Binary Search on Answer
 
@@ -61,7 +61,7 @@ def min_speed(piles, h):
     return lo
 ```
 
-L'espace des réponses est `[1, max(piles)]` et la condition est monotone — une vitesse plus élevée signifie toujours moins d'heures.
+L'espace des réponses est `[1, max(piles)]` et la condition est monotone - une vitesse plus élevée signifie toujours moins d'heures.
 
 <Illustration src="/images/lessons/binary-search-patterns.svg" alt="La recherche binaire réduisant l'espace de réponses pour la vitesse minimale" caption="Binary search on answer : on réduit l'intervalle de vitesses possibles à chaque itération." />
 
@@ -80,7 +80,7 @@ Target 1 not in [4..7] → search right.
 
 ## Première et dernière occurrence
 
-Pour trouver la **première** occurrence, quand on atteint la cible, on ne s'arrête pas — on pose `hi = mid` et on continue à chercher à gauche. Pour la **dernière**, on pose `lo = mid + 1` et on cherche à droite.
+Pour trouver la **première** occurrence, quand on atteint la cible, on ne s'arrête pas - on pose `hi = mid` et on continue à chercher à gauche. Pour la **dernière**, on pose `lo = mid + 1` et on cherche à droite.
 
 Cette paire de recherches donne aussi le **nombre** d'occurrences : `dernière - première + 1`.
 
@@ -139,6 +139,6 @@ Ajustez `hi = mid` vs `lo = mid` selon que vous cherchez le **premier True** ou 
 
 ## 📚 Pour aller plus loin
 
-- [NeetCode — Playlist Binary Search](https://neetcode.io/roadmap) — problèmes sélectionnés du plus simple au plus dur
-- [Tech Interview Handbook — Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) — patrons, astuces et pièges
-- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) — ensemble progressif de problèmes
+- [NeetCode - Playlist Binary Search](https://neetcode.io/roadmap) - problèmes sélectionnés du plus simple au plus dur
+- [Tech Interview Handbook - Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) - patrons, astuces et pièges
+- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) - ensemble progressif de problèmes

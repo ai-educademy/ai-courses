@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌿 AI Sprouts — Level 2: Foundations
+# 🌿 AI Sprouts - Level 2: Foundations
 
 ### Build Your AI Foundations at [AI Educademy](https://aieducademy.org)
 
@@ -34,7 +34,7 @@ lessons/
 
 ## 🚧 Status
 
-**Coming Soon** — Lessons are being written. Want to help? See [Contributing](#-contributing).
+**Coming Soon** - Lessons are being written. Want to help? See [Contributing](#-contributing).
 
 ## 🌱 Learning Path
 

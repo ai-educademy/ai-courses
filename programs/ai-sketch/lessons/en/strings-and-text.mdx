@@ -1,5 +1,5 @@
 ---
-title: "Strings and Text Processing — How AI Reads and Understands Text"
+title: "Strings and Text Processing - How AI Reads and Understands Text"
 description: "Explore how AI systems break down, search, and manipulate text using string operations and pattern matching."
 order: 2
 difficulty: "intermediate"
@@ -10,13 +10,13 @@ published: true
 
 ## Text Is Everywhere in AI
 
-Before an AI can understand your question, write an essay, or translate a sentence, it must process raw text. Every chatbot, search engine, and language model starts with **strings** — sequences of characters that represent human language.
+Before an AI can understand your question, write an essay, or translate a sentence, it must process raw text. Every chatbot, search engine, and language model starts with **strings** - sequences of characters that represent human language.
 
 Understanding how strings work unlocks the door to natural language processing, one of the most exciting areas of artificial intelligence.
 
 ## String Basics
 
-A string is simply a sequence of characters — letters, digits, spaces, and symbols — stored in order.
+A string is simply a sequence of characters - letters, digits, spaces, and symbols - stored in order.
 
 ```
 message = "Hello, World!"
@@ -29,23 +29,23 @@ index:  0  1  2  3  4  5  6  7  8  9  10  11  12
 char:   H  e  l  l  o  ,     W  o  r   l   d   !
 ```
 
-<Illustration src="/images/lessons/strings-and-text.svg" alt="A string broken into individual characters with index positions shown beneath each one" caption="Under the hood, a string is an array of characters — each with its own index." />
+<Illustration src="/images/lessons/strings-and-text.svg" alt="A string broken into individual characters with index positions shown beneath each one" caption="Under the hood, a string is an array of characters - each with its own index." />
 
 ### Substrings
 
-A **substring** is a slice of a string. From "Hello, World!" you could extract "World" (indices 7 to 11). AI systems constantly extract substrings — pulling out names from sentences, isolating hashtags from tweets, or grabbing URLs from web pages.
+A **substring** is a slice of a string. From "Hello, World!" you could extract "World" (indices 7 to 11). AI systems constantly extract substrings - pulling out names from sentences, isolating hashtags from tweets, or grabbing URLs from web pages.
 
 ### Immutability
 
-In most languages, strings are **immutable** — you cannot change a character in place. Instead, you create a new string. This matters for performance: if your AI pipeline modifies text millions of times, creating new strings each time can slow things down.
+In most languages, strings are **immutable** - you cannot change a character in place. Instead, you create a new string. This matters for performance: if your AI pipeline modifies text millions of times, creating new strings each time can slow things down.
 
 <FunFact>
-The entire works of Shakespeare contain roughly 900,000 words. GPT-4 was trained on text datasets thousands of times larger — hundreds of billions of words, all processed as strings before being converted to numbers.
+The entire works of Shakespeare contain roughly 900,000 words. GPT-4 was trained on text datasets thousands of times larger - hundreds of billions of words, all processed as strings before being converted to numbers.
 </FunFact>
 
 ## How ChatGPT Reads Text: Tokenisation
 
-AI models don't read words the way humans do. They use **tokenisation** — splitting text into smaller pieces called tokens.
+AI models don't read words the way humans do. They use **tokenisation** - splitting text into smaller pieces called tokens.
 
 ```
 Input:  "unhappiness"
@@ -65,9 +65,9 @@ When you type a long, unusual word like "antidisestablishmentarianism" into Chat
 
 - A typical language model has a vocabulary of 50,000–100,000 tokens.
 - Each token maps to a number (its ID), which the model actually processes.
-- The way text is tokenised affects cost — more tokens means more computation and higher API fees.
+- The way text is tokenised affects cost - more tokens means more computation and higher API fees.
 
-## Pattern Matching — Finding Needles in Haystacks
+## Pattern Matching - Finding Needles in Haystacks
 
 A core string operation is searching for a pattern within a larger text. Does this email contain the word "urgent"? Does this code contain a security vulnerability?
 
@@ -86,7 +86,7 @@ Position 4: "cat" → match found at index 4!
 
 This is **O(n × m)** in the worst case, where n is the text length and m is the pattern length. For short patterns, it's fine. For scanning millions of documents, we need smarter approaches.
 
-<Quiz question="Why is naive pattern matching slow for very large texts?" options="It uses too much memory|It checks every possible starting position and compares character by character|It only works with alphabetic characters|It requires the text to be sorted first" answer="1" explanation="The naive approach slides the pattern across every position in the text, comparing up to m characters at each position — giving O(n × m) time complexity." />
+<Quiz question="Why is naive pattern matching slow for very large texts?" options="It uses too much memory|It checks every possible starting position and compares character by character|It only works with alphabetic characters|It requires the text to be sorted first" answer="1" explanation="The naive approach slides the pattern across every position in the text, comparing up to m characters at each position - giving O(n × m) time complexity." />
 
 ## Classic String Challenges
 
@@ -98,7 +98,7 @@ Reversing a string is simple but reveals how you think about data:
 reverse("hello") → "olleh"
 ```
 
-AI uses reversal in sequence-to-sequence models — for instance, some early translation models reversed the input sentence to improve accuracy.
+AI uses reversal in sequence-to-sequence models - for instance, some early translation models reversed the input sentence to improve accuracy.
 
 ### Palindrome Detection
 
@@ -120,11 +120,11 @@ are_anagrams(word1, word2):
     return character_counts(word1) == character_counts(word2)
 ```
 
-This connects directly to the frequency counting pattern from the previous lesson — hash maps make it O(n).
+This connects directly to the frequency counting pattern from the previous lesson - hash maps make it O(n).
 
-<Quiz question="Which approach most efficiently checks if two words are anagrams?" options="Sort both words and compare them|Compare every character in word1 with every character in word2|Count character frequencies in each word using a hash map and compare|Reverse one word and check if it equals the other" answer="2" explanation="Counting character frequencies with a hash map is O(n) — one pass through each word. Sorting works too at O(n log n), but the hash map approach is faster for large strings." />
+<Quiz question="Which approach most efficiently checks if two words are anagrams?" options="Sort both words and compare them|Compare every character in word1 with every character in word2|Count character frequencies in each word using a hash map and compare|Reverse one word and check if it equals the other" answer="2" explanation="Counting character frequencies with a hash map is O(n) - one pass through each word. Sorting works too at O(n log n), but the hash map approach is faster for large strings." />
 
-## Regular Expressions — Pattern Matching on Steroids
+## Regular Expressions - Pattern Matching on Steroids
 
 Regular expressions (regex) let you describe patterns rather than exact text:
 
@@ -135,10 +135,10 @@ Regular expressions (regex) let you describe patterns rather than exact text:
 | `\b\w+@\w+\.\w+\b` | Email addresses | Data extraction |
 | `(cat\|dog\|bird)` | Any of three words | Classification keywords |
 
-AI data pipelines use regex extensively for **data cleaning** — removing HTML tags, extracting dates, standardising phone numbers, and filtering out unwanted characters before training.
+AI data pipelines use regex extensively for **data cleaning** - removing HTML tags, extracting dates, standardising phone numbers, and filtering out unwanted characters before training.
 
 <Callout>
-Regular expressions are powerful but can be tricky. A poorly written regex can take exponentially long on certain inputs — a problem known as "catastrophic backtracking." Always test your patterns on edge cases.
+Regular expressions are powerful but can be tricky. A poorly written regex can take exponentially long on certain inputs - a problem known as "catastrophic backtracking." Always test your patterns on edge cases.
 </Callout>
 
 ## Real-World AI Text Processing Pipeline
@@ -152,21 +152,21 @@ Here's a simplified view of how an AI processes text:
 5. **Token IDs** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
 6. **Into the model** → Numbers the AI can actually process
 
-Every step involves string operations — slicing, searching, replacing, and splitting.
+Every step involves string operations - slicing, searching, replacing, and splitting.
 
 <ThinkAboutIt>
 When you send a message to a chatbot in a language that doesn't use spaces between words (like Chinese or Japanese), how might tokenisation work differently? What extra challenges does this create?
 </ThinkAboutIt>
 
 <FunFact>
-OpenAI's tokeniser splits "tokenisation" into ["token", "isation"] — two tokens. But the American spelling "tokenization" becomes ["token", "ization"]. The same concept costs different amounts depending on how you spell it!
+OpenAI's tokeniser splits "tokenisation" into ["token", "isation"] - two tokens. But the American spelling "tokenization" becomes ["token", "ization"]. The same concept costs different amounts depending on how you spell it!
 </FunFact>
 
-<Quiz question="In a text processing pipeline, why is tokenisation performed before feeding text to an AI model?" options="To make the text look prettier|To convert human-readable text into numerical token IDs that the model can process mathematically|To check for spelling mistakes|To compress the text and save storage space" answer="1" explanation="AI models work with numbers, not letters. Tokenisation converts text into token IDs — numerical representations that can be fed into mathematical operations like matrix multiplication inside the model." />
+<Quiz question="In a text processing pipeline, why is tokenisation performed before feeding text to an AI model?" options="To make the text look prettier|To convert human-readable text into numerical token IDs that the model can process mathematically|To check for spelling mistakes|To compress the text and save storage space" answer="1" explanation="AI models work with numbers, not letters. Tokenisation converts text into token IDs - numerical representations that can be fed into mathematical operations like matrix multiplication inside the model." />
 
 ## Key Takeaways
 
-- Strings are sequences of characters — the raw material for all text-based AI.
+- Strings are sequences of characters - the raw material for all text-based AI.
 - **Tokenisation** bridges human language and machine learning by splitting text into processable pieces.
 - Pattern matching and regex are essential tools for cleaning and extracting data.
 - Classic string problems (reversal, palindromes, anagrams) build the thinking skills needed for AI text processing.

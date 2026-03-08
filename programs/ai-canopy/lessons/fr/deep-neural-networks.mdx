@@ -1,5 +1,5 @@
 ---
-title: "Réseaux de Neurones Profonds — Pourquoi la Profondeur Change Tout"
+title: "Réseaux de Neurones Profonds - Pourquoi la Profondeur Change Tout"
 description: "Découvrez comment les réseaux profonds surpassent les réseaux peu profonds, comprenez le problème du gradient qui s'évanouit, explorez des architectures comme ResNet et les Transformers, et apprenez comment le transfert d'apprentissage vous permet de vous appuyer sur les épaules des géants."
 order: 1
 difficulty: "intermediate"
@@ -8,9 +8,9 @@ icon: "🔬"
 published: true
 ---
 
-## Du Peu Profond au Profond — Pourquoi la Profondeur Compte 🏔️
+## Du Peu Profond au Profond - Pourquoi la Profondeur Compte 🏔️
 
-Dans AI Branches, vous avez appris que les réseaux de neurones ont des couches. Un réseau avec une ou deux couches cachées est dit **peu profond**. Ajoutez plus de couches — 10, 50, 100+ — et vous obtenez un réseau de neurones **profond**. Ce simple mot, « profond », est ce qui donne son nom au _deep learning_.
+Dans AI Branches, vous avez appris que les réseaux de neurones ont des couches. Un réseau avec une ou deux couches cachées est dit **peu profond**. Ajoutez plus de couches - 10, 50, 100+ - et vous obtenez un réseau de neurones **profond**. Ce simple mot, « profond », est ce qui donne son nom au _deep learning_.
 
 Mais pourquoi la profondeur est-elle importante ? Parce que chaque couche apprend un **niveau d'abstraction différent** :
 
@@ -23,7 +23,7 @@ Couche 5+ →  Scènes et contexte
 ```
 
 <ThinkAboutIt>
-Imaginez la lecture d'un livre. La couche 1 reconnaît les lettres, la couche 2 reconnaît les mots, la couche 3 comprend les phrases, et la couche 4 saisit le sens complet. Un lecteur peu profond bloqué à la couche 1 ne verrait que des lettres — sans jamais comprendre l'histoire.
+Imaginez la lecture d'un livre. La couche 1 reconnaît les lettres, la couche 2 reconnaît les mots, la couche 3 comprend les phrases, et la couche 4 saisit le sens complet. Un lecteur peu profond bloqué à la couche 1 ne verrait que des lettres - sans jamais comprendre l'histoire.
 </ThinkAboutIt>
 
 Les réseaux peu profonds peuvent approximer beaucoup de fonctions en théorie, mais en pratique ils nécessitent une couche impraticablement large. Les réseaux profonds obtiennent les mêmes résultats (et meilleurs) avec beaucoup moins de paramètres en **composant** des caractéristiques simples en caractéristiques complexes.
@@ -42,9 +42,9 @@ Signal d'erreur :  0.25 × 0.25 × 0.25 × 0.25 = 0.0039
 
 ### Comment Nous L'avons Résolu
 
-**1. Activation ReLU** — Pour les entrées positives, le gradient est exactement 1, donc les signaux passent sans diminuer.
+**1. Activation ReLU** - Pour les entrées positives, le gradient est exactement 1, donc les signaux passent sans diminuer.
 
-**2. Connexions de Saut (Apprentissage Résiduel)** — Le signal peut sauter des couches. Si une couche n'a rien d'utile à ajouter, les données passent simplement.
+**2. Connexions de Saut (Apprentissage Résiduel)** - Le signal peut sauter des couches. Si une couche n'a rien d'utile à ajouter, les données passent simplement.
 
 ```
 x ──→ [Couche] ──→ (+) ──→ sortie
@@ -52,7 +52,7 @@ x ──→ [Couche] ──→ (+) ──→ sortie
  └───────────────────┘   ← connexion de saut
 ```
 
-**3. Normalisation par Lots** — Normalise les entrées de chaque couche pour que les valeurs restent dans une plage saine.
+**3. Normalisation par Lots** - Normalise les entrées de chaque couche pour que les valeurs restent dans une plage saine.
 
 <FunFact>
 Avant ces percées, les réseaux de plus de 10 couches étaient presque impossibles à entraîner. Après, les chercheurs ont entraîné avec succès des réseaux de plus de 1 000 couches !
@@ -62,9 +62,9 @@ Avant ces percées, les réseaux de plus de 10 couches étaient presque impossib
 
 ## Architectures Emblématiques 🏛️
 
-### ResNet — Réseaux Résiduels (2015)
+### ResNet - Réseaux Résiduels (2015)
 
-ResNet a introduit les connexions de saut et a remporté la compétition ImageNet avec un réseau de **152 couches**. Au lieu d'apprendre une sortie directement, chaque bloc apprend le **résiduel** — la différence entre ce que vous avez et ce que vous voulez.
+ResNet a introduit les connexions de saut et a remporté la compétition ImageNet avec un réseau de **152 couches**. Au lieu d'apprendre une sortie directement, chaque bloc apprend le **résiduel** - la différence entre ce que vous avez et ce que vous voulez.
 
 ### Transformers (2017)
 
@@ -84,7 +84,7 @@ Les Transformers sont l'architecture derrière GPT, Claude, Llama et pratiquemen
 
 ---
 
-## Transfert d'Apprentissage — Se Tenir sur les Épaules des Géants 🦕
+## Transfert d'Apprentissage - Se Tenir sur les Épaules des Géants 🦕
 
 Entraîner un réseau profond de zéro nécessite des millions d'exemples. Le **transfert d'apprentissage** vous permet de sauter la majeure partie de ce travail.
 
@@ -97,12 +97,12 @@ Entraîner un réseau profond de zéro nécessite des millions d'exemples. Le **
 ```
 
 <ThinkAboutIt>
-Le transfert d'apprentissage, c'est comme un chef expérimenté qui passe de la cuisine française à la cuisine japonaise. Il n'a pas besoin de réapprendre à tenir un couteau — ces compétences se transfèrent. Il doit seulement apprendre les nouvelles recettes.
+Le transfert d'apprentissage, c'est comme un chef expérimenté qui passe de la cuisine française à la cuisine japonaise. Il n'a pas besoin de réapprendre à tenir un couteau - ces compétences se transfèrent. Il doit seulement apprendre les nouvelles recettes.
 </ThinkAboutIt>
 
 ---
 
-## Entraînement GPU — Pourquoi le Matériel Compte ⚡
+## Entraînement GPU - Pourquoi le Matériel Compte ⚡
 
 L'entraînement des réseaux de neurones est principalement de la **multiplication matricielle**. Les CPU traitent ces opérations une à la fois. Les GPU en traitent des milliers **simultanément**.
 
@@ -153,7 +153,7 @@ Remarquez le peu de données nécessaires ! Sans transfert d'apprentissage, entr
 1. La **profondeur** permet aux réseaux de construire des représentations hiérarchiques
 2. Les **gradients qui s'évanouissent** rendaient l'entraînement profond impossible jusqu'à ReLU et les connexions de saut
 3. **ResNet** a introduit l'apprentissage résiduel, permettant des réseaux de 100+ couches
-4. Les **Transformers** utilisent l'auto-attention — l'architecture derrière les LLM modernes
+4. Les **Transformers** utilisent l'auto-attention - l'architecture derrière les LLM modernes
 5. Le **transfert d'apprentissage** permet d'ajuster des modèles pré-entraînés sur de petits jeux de données
 6. Les **GPU** rendent le deep learning pratique grâce au calcul parallèle
 
@@ -161,4 +161,4 @@ Remarquez le peu de données nécessaires ! Sans transfert d'apprentissage, entr
 
 ## Et Ensuite ? 🚀
 
-Vous comprenez maintenant **comment** fonctionnent les réseaux profonds. Dans la prochaine leçon, nous plongerons dans les **Grands Modèles de Langage** — les moteurs derrière ChatGPT, Claude et la révolution de l'IA. 📝
+Vous comprenez maintenant **comment** fonctionnent les réseaux profonds. Dans la prochaine leçon, nous plongerons dans les **Grands Modèles de Langage** - les moteurs derrière ChatGPT, Claude et la révolution de l'IA. 📝

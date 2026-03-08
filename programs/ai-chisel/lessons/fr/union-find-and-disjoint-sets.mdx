@@ -1,5 +1,5 @@
 ---
-title: "Union-Find — Composantes connexes et détection de réseaux"
+title: "Union-Find - Composantes connexes et détection de réseaux"
 description: "Apprenez la structure de données Union-Find (disjoint set) avec path compression et union by rank. Résolvez efficacement les problèmes de connectivité, MST et composantes de graphe."
 order: 7
 difficulty: "advanced"
@@ -10,13 +10,13 @@ published: true
 
 ## Le problème de connectivité
 
-Étant donné un réseau de nœuds, vous recevez constamment deux types de requêtes : *connecter le nœud A au nœud B* et *A et B sont-ils connectés ?* Utiliser BFS/DFS signifierait parcourir le graphe pour chaque requête — bien trop lent pour des millions d'opérations.
+Étant donné un réseau de nœuds, vous recevez constamment deux types de requêtes : *connecter le nœud A au nœud B* et *A et B sont-ils connectés ?* Utiliser BFS/DFS signifierait parcourir le graphe pour chaque requête - bien trop lent pour des millions d'opérations.
 
 **Union-Find** répond aux deux en temps quasi-constant.
 
-## Approche naïve — Quick Find
+## Approche naïve - Quick Find
 
-On stocke un identifiant de composante pour chaque nœud. Pour vérifier la connectivité, on compare les identifiants en O(1). Mais fusionner deux composantes oblige à mettre à jour chaque membre d'un groupe — O(n) par union.
+On stocke un identifiant de composante pour chaque nœud. Pour vérifier la connectivité, on compare les identifiants en O(1). Mais fusionner deux composantes oblige à mettre à jour chaque membre d'un groupe - O(n) par union.
 
 ```
 IDs:  [0, 0, 0, 3, 3]
@@ -76,7 +76,7 @@ def union(self, x, y):
 
 <Quiz
   question="Avec path compression et union by rank, quel est le temps amorti par opération ?"
-  options="O(log n)|O(n)|O(α(n)) — quasi O(1)|O(√n)"
+  options="O(log n)|O(n)|O(α(n)) - quasi O(1)|O(√n)"
   answer="2"
   explanation="La fonction inverse d'Ackermann α(n) croît si lentement qu'elle ne dépasse jamais 4 pour toute entrée pratique, rendant les opérations effectivement O(1)."
 />
@@ -107,7 +107,7 @@ Chaque compte possède des emails. Si deux comptes partagent un email, ils appar
 
 ### Redundant Connection (LeetCode 684)
 
-Étant donné un arbre plus une arête supplémentaire, trouver l'arête redondante. Traiter les arêtes dans l'ordre — la première arête où `union` retourne `False` (déjà connectés) est la réponse.
+Étant donné un arbre plus une arête supplémentaire, trouver l'arête redondante. Traiter les arêtes dans l'ordre - la première arête où `union` retourne `False` (déjà connectés) est la réponse.
 
 <FunFact>La preuve que Union-Find avec les deux optimisations s'exécute en O(α(n)) a été publiée par Tarjan en 1975 et est considérée comme l'une des analyses amorties les plus élégantes en informatique.</FunFact>
 
@@ -126,7 +126,7 @@ Union-Find excelle lorsque vous traitez les arêtes *de manière incrémentale* 
 
 <Quiz
   question="On vous donne des arêtes une par une et vous devez détecter la première arête qui crée un cycle. Quelle approche est la meilleure ?"
-  options="BFS from scratch après chaque arête|DFS from scratch après chaque arête|Union-Find — union retourne False sur l'arête du cycle|Tri topologique"
+  options="BFS from scratch après chaque arête|DFS from scratch après chaque arête|Union-Find - union retourne False sur l'arête du cycle|Tri topologique"
   answer="2"
   explanation="Union-Find détecte les cycles de manière incrémentale en quasi O(1) par arête, alors que BFS/DFS re-parcourrait l'intégralité du graphe à chaque fois."
 />
@@ -144,6 +144,6 @@ Union-Find excelle lorsque vous traitez les arêtes *de manière incrémentale* 
 
 ## 📚 Pour aller plus loin
 
-- [Disjoint-Set Data Structure — Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) — Théorie, preuves et histoire d'Union-Find
-- [Union-Find — Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) — Le traitement de référence de Sedgewick avec des exemples Java
-- [Redundant Connection — LeetCode 684](https://leetcode.com/problems/redundant-connection/) — Une application propre de la détection de cycles avec Union-Find
+- [Disjoint-Set Data Structure - Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) - Théorie, preuves et histoire d'Union-Find
+- [Union-Find - Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) - Le traitement de référence de Sedgewick avec des exemples Java
+- [Redundant Connection - LeetCode 684](https://leetcode.com/problems/redundant-connection/) - Une application propre de la détection de cycles avec Union-Find

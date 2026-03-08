@@ -1,5 +1,5 @@
 ---
-title: "Bit Manipulation — XOR Tricks, Power of Two, and Counting Bits"
+title: "Bit Manipulation - XOR Tricks, Power of Two, and Counting Bits"
 description: "Unlock bit-level thinking for coding interviews. Master XOR cancellation, Brian Kernighan's trick, bit masking for subsets, and practical applications."
 order: 10
 difficulty: "advanced"
@@ -18,7 +18,7 @@ Bit value:     1  1  0  1
 Decimal:       8+ 4+ 0+ 1 = 13
 ```
 
-Bit manipulation operates directly on these bits using bitwise operators — often replacing loops with single operations.
+Bit manipulation operates directly on these bits using bitwise operators - often replacing loops with single operations.
 
 ## Core Bitwise Operations
 
@@ -56,7 +56,7 @@ def count_bits(n):
     return count
 ```
 
-This runs in O(k) where k is the number of set bits — not O(32).
+This runs in O(k) where k is the number of set bits - not O(32).
 
 ### Swap Without Temp Variable
 
@@ -75,9 +75,9 @@ Works because XOR is its own inverse: `a ^ b ^ b = a`.
   explanation="n - 1 flips all bits from the lowest set bit downward. AND-ing with n zeroes out that lowest set bit."
 />
 
-## Single Number — XOR Cancellation
+## Single Number - XOR Cancellation
 
-Every element appears twice except one. Find it. Since `a ^ a = 0` and `a ^ 0 = a`, XOR all elements — pairs cancel, leaving the unique number.
+Every element appears twice except one. Find it. Since `a ^ a = 0` and `a ^ 0 = a`, XOR all elements - pairs cancel, leaving the unique number.
 
 ```python
 def single_number(nums):
@@ -89,11 +89,11 @@ def single_number(nums):
 
 Time O(n), space O(1). No hash map needed.
 
-<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR pairs cancel to zero — only the unpaired element survives." />
+<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR pairs cancel to zero - only the unpaired element survives." />
 
-## Single Number III — Two Unique Numbers
+## Single Number III - Two Unique Numbers
 
-When *two* numbers are unique, XOR everything to get `x = a ^ b`. Find any set bit in `x` (the numbers differ there). Partition all numbers by that bit and XOR each group — each group contains exactly one unique number.
+When *two* numbers are unique, XOR everything to get `x = a ^ b`. Find any set bit in `x` (the numbers differ there). Partition all numbers by that bit and XOR each group - each group contains exactly one unique number.
 
 ```python
 def single_number_iii(nums):
@@ -114,7 +114,7 @@ def single_number_iii(nums):
 
 ## Number of 1 Bits (LeetCode 191)
 
-This is Brian Kernighan's algorithm from above — a direct interview question. The follow-up asks: what if the input is signed? In Python, integers have arbitrary precision, but in Java/C++ you must handle 32-bit boundaries.
+This is Brian Kernighan's algorithm from above - a direct interview question. The follow-up asks: what if the input is signed? In Python, integers have arbitrary precision, but in Java/C++ you must handle 32-bit boundaries.
 
 ## Bit Masking for Subsets
 
@@ -129,7 +129,7 @@ def all_subsets(items):
         yield subset
 ```
 
-This technique powers solutions for problems with n ≤ 20 — small enough for 2^n enumeration.
+This technique powers solutions for problems with n ≤ 20 - small enough for 2^n enumeration.
 
 <FunFact>Linux file permissions (rwxr-xr-x = 755) are a real-world bitmask. Each digit encodes three permission bits: read (4), write (2), execute (1), combined with OR.</FunFact>
 
@@ -148,11 +148,11 @@ def reverse_bits(n):
 
 ## Missing Number (LeetCode 268)
 
-Array of n numbers from 0 to n with one missing. XOR all array elements with all indices 0 to n — pairs cancel, leaving the missing number. Alternatively, use the sum formula, but XOR avoids potential overflow.
+Array of n numbers from 0 to n with one missing. XOR all array elements with all indices 0 to n - pairs cancel, leaving the missing number. Alternatively, use the sum formula, but XOR avoids potential overflow.
 
 ## Hamming Distance (LeetCode 461)
 
-The number of positions where corresponding bits differ. XOR the two numbers — set bits in the result are the differing positions. Count them with Brian Kernighan's trick.
+The number of positions where corresponding bits differ. XOR the two numbers - set bits in the result are the differing positions. Count them with Brian Kernighan's trick.
 
 ```python
 def hamming_distance(x, y):
@@ -183,6 +183,6 @@ Bit manipulation appears everywhere: Unix file permissions use OR/AND masks, fea
 
 ## 📚 Further Reading
 
-- [Bit Manipulation — LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) — Curated problem collection sorted by difficulty
-- [Brian Kernighan's Algorithm — GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) — Detailed walkthrough with visualisations
-- [Bitmask DP — CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) — Advanced bitmask techniques for competitive programming
+- [Bit Manipulation - LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) - Curated problem collection sorted by difficulty
+- [Brian Kernighan's Algorithm - GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) - Detailed walkthrough with visualisations
+- [Bitmask DP - CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) - Advanced bitmask techniques for competitive programming

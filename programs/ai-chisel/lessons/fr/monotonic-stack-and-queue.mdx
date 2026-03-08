@@ -1,5 +1,5 @@
 ---
-title: "Monotonic Stack et Queue — Next Greater Element et au-delà"
+title: "Monotonic Stack et Queue - Next Greater Element et au-delà"
 description: "Apprenez les patterns de pile et file monotone pour résoudre les problèmes de next greater element, températures quotidiennes, histogramme et fenêtre glissante en O(n)."
 order: 8
 difficulty: "advanced"
@@ -24,7 +24,7 @@ Pop 3, Push 4 → [5, 4]  (4 > 3)
 
 ## Next Greater Element
 
-Pour chaque élément, trouver le premier élément plus grand à sa droite. L'approche brute force parcourt vers la droite pour chaque position — O(n²). Une pile décroissante le fait en un seul passage.
+Pour chaque élément, trouver le premier élément plus grand à sa droite. L'approche brute force parcourt vers la droite pour chaque position - O(n²). Une pile décroissante le fait en un seul passage.
 
 ```python
 def next_greater(nums):
@@ -37,7 +37,7 @@ def next_greater(nums):
     return result
 ```
 
-Quand on pop l'index `j`, l'élément courant est son next greater — c'est garanti car tout ce qui se trouvait entre les deux était plus petit (ils avaient été pop avant ou n'ont jamais bloqué `j`).
+Quand on pop l'index `j`, l'élément courant est son next greater - c'est garanti car tout ce qui se trouvait entre les deux était plus petit (ils avaient été pop avant ou n'ont jamais bloqué `j`).
 
 <Quiz
   question="Pour l'entrée [4, 2, 1, 5], que contient la pile monotone juste AVANT le traitement de 5 ?"
@@ -48,7 +48,7 @@ Quand on pop l'index `j`, l'élément courant est son next greater — c'est gar
 
 ## Daily Temperatures (LeetCode 739)
 
-*Étant donné des températures quotidiennes, trouver combien de jours il faut attendre avant un jour plus chaud.* C'est le next-greater-element avec des indices — la réponse pour l'index `j` est `i − j` quand `j` est pop par l'index `i`.
+*Étant donné des températures quotidiennes, trouver combien de jours il faut attendre avant un jour plus chaud.* C'est le next-greater-element avec des indices - la réponse pour l'index `j` est `i − j` quand `j` est pop par l'index `i`.
 
 ## Stock Span Problem
 
@@ -60,7 +60,7 @@ Quand on pop l'index `j`, l'élément courant est son next greater — c'est gar
 
 Le **Largest Rectangle in Histogram** de LeetCode est le joyau des problèmes de pile monotone.
 
-**Intuition clé :** pour chaque barre, trouver jusqu'où elle peut s'étendre à gauche et à droite en tant que barre la plus courte. Utilisez une pile croissante — quand une barre est pop, la barre qui la pop définit sa frontière droite, et le nouveau sommet de la pile définit sa frontière gauche.
+**Intuition clé :** pour chaque barre, trouver jusqu'où elle peut s'étendre à gauche et à droite en tant que barre la plus courte. Utilisez une pile croissante - quand une barre est pop, la barre qui la pop définit sa frontière droite, et le nouveau sommet de la pile définit sa frontière gauche.
 
 ```python
 def largest_rectangle(heights):
@@ -78,7 +78,7 @@ La sentinelle `[0]` à la fin force le traitement de toutes les barres restantes
 
 <Illustration src="/images/lessons/monotonic-stack-and-queue.svg" alt="Barres d'histogramme avec le plus grand rectangle mis en évidence" caption="La pile monotone trouve le rectangle le plus large que chaque barre peut supporter en tant que barre la plus courte." />
 
-## Trapping Rain Water — Approche par pile
+## Trapping Rain Water - Approche par pile
 
 Au lieu de la méthode classique à deux pointeurs, une pile décroissante calcule l'eau piégée couche par couche. Quand une barre plus haute apparaît, on pop les barres plus courtes et on calcule l'eau piégée entre la barre pop, la barre courante et le nouveau sommet de la pile.
 
@@ -87,9 +87,9 @@ Heights:  [3, 1, 2, 1, 3]
 Water:       [2, 1, 2]  → total = 5
 ```
 
-<FunFact>Trapping Rain Water possède au moins quatre solutions O(n) distinctes — deux pointeurs, pile monotone, tableaux de préfixes max et une approche optimisée en un seul passage. Les intervieweurs adorent voir plusieurs stratégies.</FunFact>
+<FunFact>Trapping Rain Water possède au moins quatre solutions O(n) distinctes - deux pointeurs, pile monotone, tableaux de préfixes max et une approche optimisée en un seul passage. Les intervieweurs adorent voir plusieurs stratégies.</FunFact>
 
-## Monotonic Queue — Sliding Window Maximum
+## Monotonic Queue - Sliding Window Maximum
 
 Un **deque monotone** (file à double extrémité) maintient un ordre décroissant et permet des suppressions efficaces aux deux extrémités. Pour le **Sliding Window Maximum** (LeetCode 239) :
 
@@ -114,7 +114,7 @@ def max_sliding_window(nums, k):
     return result
 ```
 
-Chaque élément entre et sort du deque au plus une fois — **O(n)** au total.
+Chaque élément entre et sort du deque au plus une fois - **O(n)** au total.
 
 <Quiz
   question="Pourquoi le deque monotone pour le sliding window maximum supprime-t-il depuis l'AVANT ?"
@@ -123,12 +123,12 @@ Chaque élément entre et sort du deque au plus une fois — **O(n)** au total.
   explanation="Les éléments à l'avant peuvent avoir des indices en dehors de la fenêtre courante. Les supprimer garantit que seuls les candidats valides restent."
 />
 
-## Le pattern — Maintenir l'invariant pendant le traitement
+## Le pattern - Maintenir l'invariant pendant le traitement
 
 Chaque problème de pile/file monotone suit un même modèle :
 
 1. **Définir l'invariant** (croissant ou décroissant)
-2. **Pop les éléments qui violent l'invariant** — et extraire l'information utile de chaque pop
+2. **Pop les éléments qui violent l'invariant** - et extraire l'information utile de chaque pop
 3. **Push l'élément courant**
 4. L'*événement de pop* est le moment où la réponse est calculée
 
@@ -145,6 +145,6 @@ Chaque problème de pile/file monotone suit un même modèle :
 
 ## 📚 Lectures complémentaires
 
-- [Monotonic Stack — LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) — Ensemble de problèmes sélectionnés pour s'entraîner
-- [Largest Rectangle in Histogram — LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) — Le défi ultime de la pile monotone
-- [Sliding Window Maximum — LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) — Application classique du deque monotone
+- [Monotonic Stack - LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) - Ensemble de problèmes sélectionnés pour s'entraîner
+- [Largest Rectangle in Histogram - LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Le défi ultime de la pile monotone
+- [Sliding Window Maximum - LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) - Application classique du deque monotone

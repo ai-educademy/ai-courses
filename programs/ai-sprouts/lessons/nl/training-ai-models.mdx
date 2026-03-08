@@ -1,5 +1,5 @@
 ---
-title: "AI-Modellen Trainen — Machines Leren Slimmer te Worden"
+title: "AI-Modellen Trainen - Machines Leren Slimmer te Worden"
 description: "Begrijp de trainingslus, verliesfuncties, overfitting en hoe je weet wanneer je AI-model klaar is."
 order: 4
 difficulty: "beginner"
@@ -10,20 +10,20 @@ published: true
 
 # AI-Modellen Trainen
 
-Je weet nu dat neurale netwerken leren door gewichten en biases aan te passen. Maar hoe werkt het volledige trainingsproces eigenlijk? Hoe weet je wanneer een model genoeg heeft geleerd — of juist te veel? In deze les doorlopen we de complete trainingsreis.
+Je weet nu dat neurale netwerken leren door gewichten en biases aan te passen. Maar hoe werkt het volledige trainingsproces eigenlijk? Hoe weet je wanneer een model genoeg heeft geleerd - of juist te veel? In deze les doorlopen we de complete trainingsreis.
 
 ## De Trainingslus
 
 Het trainen van een AI-model volgt een cyclus die zich steeds herhaalt:
 
-1. **Voorspellen** — Voer data door het model en krijg een voorspelling.
-2. **Vergelijken** — Controleer hoe ver de voorspelling afwijkt van het juiste antwoord.
-3. **Aanpassen** — Werk de gewichten bij om de fout te verkleinen.
-4. **Herhalen** — Doe het opnieuw met de volgende batch data.
+1. **Voorspellen** - Voer data door het model en krijg een voorspelling.
+2. **Vergelijken** - Controleer hoe ver de voorspelling afwijkt van het juiste antwoord.
+3. **Aanpassen** - Werk de gewichten bij om de fout te verkleinen.
+4. **Herhalen** - Doe het opnieuw met de volgende batch data.
 
 Deze lus draait duizenden of zelfs miljoenen keren. Elke herhaling duwt het model een stukje dichter naar de juiste antwoorden.
 
-<Illustration src="/images/lessons/training-ai-models.svg" alt="Een circulair diagram dat de trainingslus toont: Voorspellen, Vergelijken, Aanpassen, Herhalen, met pijlen die elke stap in een cyclus verbinden" caption="De trainingslus is de hartslag van AI-leren — voorspellen, vergelijken, aanpassen en herhalen." />
+<Illustration src="/images/lessons/training-ai-models.svg" alt="Een circulair diagram dat de trainingslus toont: Voorspellen, Vergelijken, Aanpassen, Herhalen, met pijlen die elke stap in een cyclus verbinden" caption="De trainingslus is de hartslag van AI-leren - voorspellen, vergelijken, aanpassen en herhalen." />
 
 <FunFact>
 Het trainen van GPT-4 zou naar verluidt meer dan $100 miljoen aan rekenkracht hebben gekost. De trainingslus draaide maandenlang op duizenden gespecialiseerde chips.
@@ -40,19 +40,19 @@ Zie het als een dartbord. De roos is het juiste antwoord. Het verlies is de afst
 
 Veelgebruikte verliesfuncties zijn:
 
-- **Mean Squared Error (MSE)** — meet de gemiddelde kwadratische afstand tussen voorspellingen en werkelijke waarden. Wordt gebruikt voor het voorspellen van getallen.
-- **Cross-Entropy Loss** — meet hoe goed voorspelde kansen overeenkomen met de werkelijke categorieën. Wordt gebruikt voor classificatietaken.
+- **Mean Squared Error (MSE)** - meet de gemiddelde kwadratische afstand tussen voorspellingen en werkelijke waarden. Wordt gebruikt voor het voorspellen van getallen.
+- **Cross-Entropy Loss** - meet hoe goed voorspelde kansen overeenkomen met de werkelijke categorieën. Wordt gebruikt voor classificatietaken.
 
 <Quiz question="Wat meet een verliesfunctie bij het trainen van AI?" options="Hoe snel het model draait|Hoeveel geheugen het model gebruikt|Hoe ver de voorspellingen van het model afwijken van de juiste antwoorden|Hoeveel lagen het model heeft" answer="2" explanation="Een verliesfunctie kwantificeert het verschil tussen wat het model voorspelde en het werkelijke juiste antwoord. Het trainingsproces probeert deze waarde te minimaliseren." />
 
 ## Epochs: Hoe Vaak Door de Data?
 
-Eén volledige doorgang door de gehele trainingsdataset wordt een **epoch** genoemd. Training omvat doorgaans vele epochs — het model ziet dezelfde data meerdere keren en wordt bij elke ronde iets beter.
+Eén volledige doorgang door de gehele trainingsdataset wordt een **epoch** genoemd. Training omvat doorgaans vele epochs - het model ziet dezelfde data meerdere keren en wordt bij elke ronde iets beter.
 
 - **Epoch 1:** Het model maakt veel fouten; het verlies is hoog.
 - **Epoch 10:** Het model is aanzienlijk verbeterd; het verlies daalt.
 - **Epoch 50:** Verbeteringen vertragen; het model nadert zijn beste prestatie.
-- **Epoch 200:** Het model begint mogelijk te onthouden — wat ons brengt bij het volgende onderwerp.
+- **Epoch 200:** Het model begint mogelijk te onthouden - wat ons brengt bij het volgende onderwerp.
 
 <ThinkAboutIt>
 Studeren voor een examen is net als het doorlopen van epochs. De eerste leesbeurt is verwarrend, maar elke herhaling bouwt begrip op. Maar als je dezelfde aantekeningen honderd keer herleest, kun je de exacte bewoordingen onthouden zonder de concepten echt te begrijpen. AI heeft hetzelfde probleem.
@@ -60,9 +60,9 @@ Studeren voor een examen is net als het doorlopen van epochs. De eerste leesbeur
 
 ## Overfitting: De Student Die Stampt
 
-**Overfitting** is een van de meest voorkomende problemen bij AI-training. Het treedt op wanneer het model de trainingsdata *te goed* leert — inclusief de ruis en eigenaardigheden — en faalt op nieuwe, onbekende data.
+**Overfitting** is een van de meest voorkomende problemen bij AI-training. Het treedt op wanneer het model de trainingsdata *te goed* leert - inclusief de ruis en eigenaardigheden - en faalt op nieuwe, onbekende data.
 
-Stel je een student voor die elk oud tentamen woord voor woord uit het hoofd leert. Ze scoren perfect op oude tentamens, maar hebben moeite zodra de vragen ook maar iets veranderen. De student heeft het vak niet geleerd — ze hebben de antwoorden gestampt.
+Stel je een student voor die elk oud tentamen woord voor woord uit het hoofd leert. Ze scoren perfect op oude tentamens, maar hebben moeite zodra de vragen ook maar iets veranderen. De student heeft het vak niet geleerd - ze hebben de antwoorden gestampt.
 
 Tekenen van overfitting:
 
@@ -86,7 +86,7 @@ Oorzaken van underfitting zijn onder andere:
 
 Als overfitting te vergelijken is met het stampen van oude tentamens, dan is underfitting alsof je het examen ingaat terwijl je nauwelijks het leerboek hebt opengeslagen.
 
-<Quiz question="Een model scoort 98% nauwkeurigheid op trainingsdata maar slechts 60% op nieuwe data. Wat is het meest waarschijnlijke probleem?" options="Underfitting|Overfitting|De data is te klein|Het model is te eenvoudig" answer="1" explanation="Een groot verschil tussen trainingsprestatie (98%) en prestatie op nieuwe data (60%) is het klassieke teken van overfitting — het model heeft de trainingsdata onthouden in plaats van generaliseerbare patronen te leren." />
+<Quiz question="Een model scoort 98% nauwkeurigheid op trainingsdata maar slechts 60% op nieuwe data. Wat is het meest waarschijnlijke probleem?" options="Underfitting|Overfitting|De data is te klein|Het model is te eenvoudig" answer="1" explanation="Een groot verschil tussen trainingsprestatie (98%) en prestatie op nieuwe data (60%) is het klassieke teken van overfitting - het model heeft de trainingsdata onthouden in plaats van generaliseerbare patronen te leren." />
 
 ## Validatie- en Testsets
 
@@ -98,7 +98,7 @@ Om overfitting en underfitting te detecteren, splitsen we onze data in drie dele
 | **Validatieset** | Wordt gebruikt om voortgang te controleren en instellingen af te stemmen | Tijdens de training |
 | **Testset** | Eindevaluatie op volledig onbekende data | Na de training |
 
-Een gebruikelijke verdeling is 70% training, 15% validatie en 15% test. Het model *ziet* de testset nooit totdat het allerlaatst — het is het eindexamen.
+Een gebruikelijke verdeling is 70% training, 15% validatie en 15% test. Het model *ziet* de testset nooit totdat het allerlaatst - het is het eindexamen.
 
 <ThinkAboutIt>
 De validatieset is als een oefentoets die je maakt tussen studiesessies door. Het vertelt je hoe goed je leert zonder het echte examen te verpesten. Als je oefentoetsscores beginnen te dalen terwijl je scores op je studieaantekeningen blijven stijgen, weet je dat er iets mis is.
@@ -119,7 +119,7 @@ Dit voorkomt dat het model voorbij het punt van nuttig leren gaat en in memorisa
 <Quiz question="Wat is 'early stopping' bij AI-training?" options="De training stoppen voordat er data is verwerkt|Stoppen wanneer de computer geen geheugen meer heeft|De training stoppen wanneer de validatieprestatie stopt met verbeteren|Neuronen verwijderen die niet bijdragen" answer="2" explanation="Early stopping monitort het validatieverlies en stopt de training wanneer het stopt met verbeteren, waardoor wordt voorkomen dat het model overfit door te lang te trainen." />
 
 <FunFact>
-Sommige moderne trainingsruns gebruiken een techniek genaamd learning rate scheduling, die geleidelijk vermindert hoeveel de gewichten bij elke stap veranderen — zoals het zetten van kleinere en voorzichtigere stappen naarmate je de top van een berg nadert.
+Sommige moderne trainingsruns gebruiken een techniek genaamd learning rate scheduling, die geleidelijk vermindert hoeveel de gewichten bij elke stap veranderen - zoals het zetten van kleinere en voorzichtigere stappen naarmate je de top van een berg nadert.
 </FunFact>
 
 ## Belangrijkste Punten
@@ -131,4 +131,4 @@ Sommige moderne trainingsruns gebruiken een techniek genaamd learning rate sched
 - Data wordt gesplitst in **trainings-**, **validatie-** en **testsets**.
 - **Early stopping** voorkomt dat de training te ver gaat.
 
-In de laatste les verkennen we de **ethische dimensies** van AI — bias, eerlijkheid, privacy en hoe verantwoorde AI eruitziet.
+In de laatste les verkennen we de **ethische dimensies** van AI - bias, eerlijkheid, privacy en hoe verantwoorde AI eruitziet.

@@ -1,5 +1,5 @@
 ---
-title: "Large Language Models — The Engines Behind Modern AI"
+title: "Large Language Models - The Engines Behind Modern AI"
 description: "Explore how LLMs work, from transformer architecture to emergent capabilities and real-world limitations."
 order: 1
 difficulty: "advanced"
@@ -8,13 +8,13 @@ icon: "🤖"
 published: true
 ---
 
-# Large Language Models — The Engines Behind Modern AI
+# Large Language Models - The Engines Behind Modern AI
 
 Large language models have fundamentally changed what machines can do with text, code, and reasoning. In this lesson, we'll pull back the curtain on how they work, why they're so powerful, and where they still fall short.
 
 ## What Exactly Is an LLM?
 
-A **large language model** is a neural network trained on enormous quantities of text to predict the next token in a sequence. "Large" refers to the number of **parameters** — learnable weights that encode patterns from training data.
+A **large language model** is a neural network trained on enormous quantities of text to predict the next token in a sequence. "Large" refers to the number of **parameters** - learnable weights that encode patterns from training data.
 
 - **GPT-4** is estimated to have over 1 trillion parameters.
 - **Llama 3** comes in sizes from 8 billion to 405 billion parameters.
@@ -22,15 +22,15 @@ A **large language model** is a neural network trained on enormous quantities of
 
 These models are trained on hundreds of billions of words drawn from books, websites, code repositories, and academic papers. The sheer scale of data and parameters is what gives LLMs their remarkable versatility.
 
-**Tokens, not words:** LLMs don't process whole words — they work with **tokens**, which are sub-word units. The word "understanding" might be split into "under" + "stand" + "ing". A typical English word averages about 1.3 tokens. This tokenisation scheme allows models to handle rare words, technical jargon, and even multiple languages without an impossibly large vocabulary.
+**Tokens, not words:** LLMs don't process whole words - they work with **tokens**, which are sub-word units. The word "understanding" might be split into "under" + "stand" + "ing". A typical English word averages about 1.3 tokens. This tokenisation scheme allows models to handle rare words, technical jargon, and even multiple languages without an impossibly large vocabulary.
 
 <FunFact>
-Training GPT-4 is estimated to have cost over $100 million in compute alone. That's roughly the budget of a mid-range Hollywood film — except the "actor" can speak every programming language.
+Training GPT-4 is estimated to have cost over $100 million in compute alone. That's roughly the budget of a mid-range Hollywood film - except the "actor" can speak every programming language.
 </FunFact>
 
 ## The Transformer Architecture
 
-Every modern LLM is built on the **transformer**, introduced in the 2017 paper *Attention Is All You Need*. The key innovation is **self-attention** — a mechanism that lets the model weigh how important each word is relative to every other word in the input.
+Every modern LLM is built on the **transformer**, introduced in the 2017 paper *Attention Is All You Need*. The key innovation is **self-attention** - a mechanism that lets the model weigh how important each word is relative to every other word in the input.
 
 **How self-attention works (simplified):**
 1. Each token is converted into three vectors: **Query**, **Key**, and **Value**.
@@ -44,12 +44,12 @@ The mathematical formula at the heart of attention is:
 
 The division by √d (the square root of the key dimension) prevents the dot products from growing too large, which would push the softmax function into regions with extremely small gradients. This simple scaling trick was one of the key insights that made training deep Transformers stable.
 
-This is repeated across multiple **attention heads** in parallel, allowing the model to capture different types of relationships simultaneously — syntax in one head, semantics in another.
+This is repeated across multiple **attention heads** in parallel, allowing the model to capture different types of relationships simultaneously - syntax in one head, semantics in another.
 
 <Illustration src="/images/lessons/large-language-models.svg" alt="Diagram showing the transformer self-attention mechanism with Query, Key, and Value vectors" caption="Self-attention allows every token to attend to every other token, capturing long-range dependencies." />
 
 <ThinkAboutIt>
-If a sentence has 500 tokens, self-attention compares every token with every other — that's 250,000 comparisons per layer. How might this quadratic cost affect what LLMs can process?
+If a sentence has 500 tokens, self-attention compares every token with every other - that's 250,000 comparisons per layer. How might this quadratic cost affect what LLMs can process?
 </ThinkAboutIt>
 
 ## Key Models in the Landscape
@@ -62,9 +62,9 @@ If a sentence has 500 tokens, self-attention compares every token with every oth
 | **Llama 3** | Meta | Open-weight, community-driven |
 | **Mistral Large** | Mistral AI | Efficient European alternative |
 
-The field moves extraordinarily fast — by the time you read this, newer models may already exist.
+The field moves extraordinarily fast - by the time you read this, newer models may already exist.
 
-A crucial distinction in this landscape is between **closed-source** models (GPT-4o, Claude, Gemini) where only the API is available, and **open-weight** models (Llama, Mistral) where the model weights are publicly released. Open-weight models allow organisations to run inference on their own infrastructure, fine-tune for specific domains, and inspect the model's behaviour — advantages that matter greatly for privacy-sensitive industries.
+A crucial distinction in this landscape is between **closed-source** models (GPT-4o, Claude, Gemini) where only the API is available, and **open-weight** models (Llama, Mistral) where the model weights are publicly released. Open-weight models allow organisations to run inference on their own infrastructure, fine-tune for specific domains, and inspect the model's behaviour - advantages that matter greatly for privacy-sensitive industries.
 
 <Callout>
 Not all "open" models are truly open source. Some release weights but restrict commercial use or don't share training data and code. Always check the licence before deploying an open-weight model in production.
@@ -74,11 +74,11 @@ Not all "open" models are truly open source. Some release weights but restrict c
 
 LLMs are built in stages:
 
-1. **Pre-training** — The model reads vast amounts of text and learns to predict the next token. This stage is enormously expensive and produces a base model that can complete text but isn't particularly helpful.
+1. **Pre-training** - The model reads vast amounts of text and learns to predict the next token. This stage is enormously expensive and produces a base model that can complete text but isn't particularly helpful.
 
-2. **Supervised fine-tuning (SFT)** — Human-written examples of ideal responses teach the model to follow instructions and answer questions properly.
+2. **Supervised fine-tuning (SFT)** - Human-written examples of ideal responses teach the model to follow instructions and answer questions properly.
 
-3. **RLHF (Reinforcement Learning from Human Feedback)** — Human raters rank model outputs from best to worst. A reward model learns these preferences, and the LLM is trained to maximise the reward. This is what makes models helpful, harmless, and honest.
+3. **RLHF (Reinforcement Learning from Human Feedback)** - Human raters rank model outputs from best to worst. A reward model learns these preferences, and the LLM is trained to maximise the reward. This is what makes models helpful, harmless, and honest.
 
 <Quiz question="What is the primary purpose of RLHF in LLM training?" options="To increase the model's parameter count|To align the model's outputs with human preferences|To reduce the cost of pre-training|To enable the model to process images" answer="1" explanation="RLHF uses human feedback to train a reward model, which then guides the LLM to produce outputs that humans rate as helpful, safe, and accurate." />
 
@@ -86,45 +86,45 @@ LLMs are built in stages:
 
 As models scale up, they develop abilities that weren't explicitly trained:
 
-- **Complex reasoning** — Multi-step logical deduction and mathematical problem-solving.
-- **Code generation** — Writing, debugging, and explaining code across dozens of languages.
-- **Multilingual fluency** — Translating and generating text in languages with relatively little training data.
-- **In-context learning** — Adapting behaviour based on examples provided in the prompt, without any weight updates.
+- **Complex reasoning** - Multi-step logical deduction and mathematical problem-solving.
+- **Code generation** - Writing, debugging, and explaining code across dozens of languages.
+- **Multilingual fluency** - Translating and generating text in languages with relatively little training data.
+- **In-context learning** - Adapting behaviour based on examples provided in the prompt, without any weight updates.
 
-These emergent properties are one of the most fascinating aspects of scaling — abilities that appear almost "for free" once a model crosses certain size thresholds.
+These emergent properties are one of the most fascinating aspects of scaling - abilities that appear almost "for free" once a model crosses certain size thresholds.
 
 <FunFact>
-GPT-4 passed the Uniform Bar Exam in the 90th percentile — better than most human law graduates. Yet it can still struggle with basic arithmetic if the numbers are unusual enough.
+GPT-4 passed the Uniform Bar Exam in the 90th percentile - better than most human law graduates. Yet it can still struggle with basic arithmetic if the numbers are unusual enough.
 </FunFact>
 
 ## Limitations You Must Understand
 
 LLMs are powerful but far from perfect:
 
-- **Hallucinations** — Models generate confident-sounding text that is factually wrong. They don't "know" facts; they predict likely token sequences.
-- **Context window limits** — Each model has a maximum input size (e.g., 128K tokens for GPT-4o). Information beyond this window is simply invisible.
-- **Cost and latency** — Running inference on large models requires expensive GPU clusters. A single GPT-4 query costs significantly more than a GPT-3.5 query.
-- **Lack of true understanding** — LLMs manipulate statistical patterns in text. Whether this constitutes "understanding" is a deep philosophical debate.
-- **Training data cutoffs** — Models don't know about events after their training data was collected unless augmented with retrieval systems.
+- **Hallucinations** - Models generate confident-sounding text that is factually wrong. They don't "know" facts; they predict likely token sequences.
+- **Context window limits** - Each model has a maximum input size (e.g., 128K tokens for GPT-4o). Information beyond this window is simply invisible.
+- **Cost and latency** - Running inference on large models requires expensive GPU clusters. A single GPT-4 query costs significantly more than a GPT-3.5 query.
+- **Lack of true understanding** - LLMs manipulate statistical patterns in text. Whether this constitutes "understanding" is a deep philosophical debate.
+- **Training data cutoffs** - Models don't know about events after their training data was collected unless augmented with retrieval systems.
 
 <Callout>
-Always verify critical facts from LLM outputs against authoritative sources. Treat LLMs as a brilliant but unreliable research assistant — extraordinarily useful, but never the final word on matters of fact.
+Always verify critical facts from LLM outputs against authoritative sources. Treat LLMs as a brilliant but unreliable research assistant - extraordinarily useful, but never the final word on matters of fact.
 </Callout>
 
-<Quiz question="Why do LLMs sometimes produce hallucinations?" options="Because they access unreliable databases|Because they predict statistically likely token sequences rather than retrieving verified facts|Because their training data is deliberately inaccurate|Because hallucinations are a feature designed for creativity" answer="1" explanation="LLMs generate text by predicting the most probable next tokens. They have no mechanism to verify factual accuracy — they model language patterns, not truth." />
+<Quiz question="Why do LLMs sometimes produce hallucinations?" options="Because they access unreliable databases|Because they predict statistically likely token sequences rather than retrieving verified facts|Because their training data is deliberately inaccurate|Because hallucinations are a feature designed for creativity" answer="1" explanation="LLMs generate text by predicting the most probable next tokens. They have no mechanism to verify factual accuracy - they model language patterns, not truth." />
 
 ## The Scaling Debate
 
-For years, the dominant belief was that **bigger is always better** — more parameters, more data, and more compute would steadily improve performance. This "scaling law" held remarkably well through GPT-2, GPT-3, and GPT-4.
+For years, the dominant belief was that **bigger is always better** - more parameters, more data, and more compute would steadily improve performance. This "scaling law" held remarkably well through GPT-2, GPT-3, and GPT-4.
 
 However, recent research suggests we may be approaching diminishing returns on raw scale alone. The focus is shifting towards:
 - **Better data quality** over quantity (curated, deduplicated datasets).
-- **Inference-time compute** — letting models "think longer" on hard problems rather than making the model itself larger.
-- **Specialised architectures** — mixture-of-experts models that activate only a fraction of parameters per query, improving efficiency without sacrificing capability.
+- **Inference-time compute** - letting models "think longer" on hard problems rather than making the model itself larger.
+- **Specialised architectures** - mixture-of-experts models that activate only a fraction of parameters per query, improving efficiency without sacrificing capability.
 
 ## Wrapping Up
 
-Large language models represent a genuine paradigm shift in computing. Understanding their architecture, training pipeline, and limitations isn't optional for anyone working seriously with AI — it's foundational knowledge that will serve you well as the field continues to evolve.
+Large language models represent a genuine paradigm shift in computing. Understanding their architecture, training pipeline, and limitations isn't optional for anyone working seriously with AI - it's foundational knowledge that will serve you well as the field continues to evolve.
 
 <Quiz question="Which stage of LLM training is the most computationally expensive?" options="Supervised fine-tuning|RLHF|Pre-training on large text corpora|Prompt engineering" answer="2" explanation="Pre-training involves processing hundreds of billions of tokens across thousands of GPUs over weeks or months. Fine-tuning and RLHF are comparatively lightweight stages." />
 

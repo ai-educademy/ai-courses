@@ -1,5 +1,5 @@
 ---
-title: "Problèmes d'intervalles — Merge, Insert et Scheduling"
+title: "Problèmes d'intervalles - Merge, Insert et Scheduling"
 description: "Maîtrisez les problèmes basés sur les intervalles, du merge et insert aux meeting rooms et sweep lines. Apprenez les stratégies de tri et les patterns attendus en entretien."
 order: 9
 difficulty: "advanced"
@@ -57,7 +57,7 @@ Résultat : `[1,6] [8,10]`
 
 <ThinkAboutIt>Insert Interval est souvent présenté sans que l'étape de merge soit évidente. Comment reconnaîtriez-vous qu'il s'agit d'un problème de merge lors d'un entretien ?</ThinkAboutIt>
 
-## Meeting Rooms I — Peut-on tout assister ?
+## Meeting Rooms I - Peut-on tout assister ?
 
 Triez par temps de début. Si le début d'un interval est avant la fin du précédent, il y a un conflit.
 
@@ -70,7 +70,7 @@ def can_attend(intervals):
     return True
 ```
 
-## Meeting Rooms II — Nombre minimum de salles
+## Meeting Rooms II - Nombre minimum de salles
 
 C'est ici que l'**approche par événements** brille. Séparez les débuts et fins en deux listes triées, puis balayez :
 
@@ -89,13 +89,13 @@ def min_rooms(intervals):
 
 Le heap suit la réunion se terminant le plus tôt. Si elle se termine avant le début de la suivante, on réutilise la salle. La taille maximale du heap est la réponse.
 
-<Illustration src="/images/lessons/interval-problems.svg" alt="Chronologie montrant des réunions chevauchantes nécessitant plusieurs salles" caption="Chaque tranche verticale montre les réunions simultanées — le pic correspond au nombre minimum de salles nécessaires." />
+<Illustration src="/images/lessons/interval-problems.svg" alt="Chronologie montrant des réunions chevauchantes nécessitant plusieurs salles" caption="Chaque tranche verticale montre les réunions simultanées - le pic correspond au nombre minimum de salles nécessaires." />
 
-<FunFact>Meeting Rooms II est essentiellement le même problème que trouver le nombre maximum d'intervalles chevauchants à un instant donné — un concept utilisé dans l'ordonnancement des threads CPU, l'allocation de bande passante et la planification des lits d'hôpital.</FunFact>
+<FunFact>Meeting Rooms II est essentiellement le même problème que trouver le nombre maximum d'intervalles chevauchants à un instant donné - un concept utilisé dans l'ordonnancement des threads CPU, l'allocation de bande passante et la planification des lits d'hôpital.</FunFact>
 
-## Non-Overlapping Intervals — Minimum de suppressions
+## Non-Overlapping Intervals - Minimum de suppressions
 
-Étant donné des intervalles, trouvez le nombre minimum à supprimer pour qu'aucun ne se chevauche (LeetCode 435). Greedy : triez par **temps de fin**, gardez toujours l'interval qui se termine le plus tôt — cela laisse le plus de place pour les futurs intervalles.
+Étant donné des intervalles, trouvez le nombre minimum à supprimer pour qu'aucun ne se chevauche (LeetCode 435). Greedy : triez par **temps de fin**, gardez toujours l'interval qui se termine le plus tôt - cela laisse le plus de place pour les futurs intervalles.
 
 ```python
 def erase_overlap(intervals):
@@ -118,7 +118,7 @@ def erase_overlap(intervals):
 
 ## Intersection de listes d'intervalles
 
-Étant donné deux listes d'intervalles triées, trouvez toutes les intersections (LeetCode 986). Utilisez deux pointeurs — un par liste. L'intersection de `[a1, a2]` et `[b1, b2]` est `[max(a1, b1), min(a2, b2)]` si elle est valide (début ≤ fin). Avancez le pointeur dont l'interval se termine en premier.
+Étant donné deux listes d'intervalles triées, trouvez toutes les intersections (LeetCode 986). Utilisez deux pointeurs - un par liste. L'intersection de `[a1, a2]` et `[b1, b2]` est `[max(a1, b1), min(a2, b2)]` si elle est valide (début ≤ fin). Avancez le pointeur dont l'interval se termine en premier.
 
 ## La technique du Sweep Line
 
@@ -135,7 +135,7 @@ Triez les événements par temps. Balayez de gauche à droite en maintenant un c
 
 **My Calendar I** (LeetCode 729) : maintenez les intervalles réservés et rejetez les chevauchements. **My Calendar II** : autorisez les chevauchements simples mais rejetez les triple-bookings. Le sweep line rend la détection de chevauchements multi-couches simple et directe.
 
-## Reconnaissance de patterns — Quand suspecter des intervalles
+## Reconnaissance de patterns - Quand suspecter des intervalles
 
 Cherchez ces indices dans les énoncés de problèmes :
 
@@ -157,6 +157,6 @@ Cherchez ces indices dans les énoncés de problèmes :
 
 ## 📚 Pour aller plus loin
 
-- [Merge Intervals — LeetCode 56](https://leetcode.com/problems/merge-intervals/) — Le problème essentiel pour maîtriser les intervalles
-- [Sweep Line Algorithm — CP-Algorithms](https://cp-algorithms.com/geometry/intersecting_segments.html) — Exploration approfondie du paradigme sweep line
-- [Meeting Rooms II — LeetCode 253](https://leetcode.com/problems/meeting-rooms-ii/) — Le problème classique de scheduling avec min-heap
+- [Merge Intervals - LeetCode 56](https://leetcode.com/problems/merge-intervals/) - Le problème essentiel pour maîtriser les intervalles
+- [Sweep Line Algorithm - CP-Algorithms](https://cp-algorithms.com/geometry/intersecting_segments.html) - Exploration approfondie du paradigme sweep line
+- [Meeting Rooms II - LeetCode 253](https://leetcode.com/problems/meeting-rooms-ii/) - Le problème classique de scheduling avec min-heap

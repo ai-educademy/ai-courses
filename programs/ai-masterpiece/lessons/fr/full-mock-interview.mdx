@@ -1,5 +1,5 @@
 ---
-title: "Simulation d'entretien complet — 60 minutes en conditions réelles (niveau senior)"
+title: "Simulation d'entretien complet - 60 minutes en conditions réelles (niveau senior)"
 description: "Parcourez un entretien complet d'ingénieur IA senior du début à la fin."
 order: 2
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 # Simulation d'entretien complet
 
-Cette leçon simule un entretien complet de 60 minutes pour un poste d'ingénieur IA senior. Lisez-la activement — faites une pause à chaque section, formulez votre propre réponse avant de lire la réponse modèle, et évaluez-vous honnêtement.
+Cette leçon simule un entretien complet de 60 minutes pour un poste d'ingénieur IA senior. Lisez-la activement - faites une pause à chaque section, formulez votre propre réponse avant de lire la réponse modèle, et évaluez-vous honnêtement.
 
 Considérez ceci comme une répétition générale, pas comme un spectacle.
 
@@ -37,7 +37,7 @@ Le recruteur dit : *« Parlez-moi de vous et de ce qui vous amène ici. »*
 Votre réponse doit être un **pitch de deux minutes** couvrant :
 
 1. Votre poste actuel et une réalisation marquante.
-2. Un bref résumé de votre parcours — comment vous en êtes arrivé là.
+2. Un bref résumé de votre parcours - comment vous en êtes arrivé là.
 3. Pourquoi ce poste et cette entreprise vous enthousiasment.
 
 Évitez de réciter votre CV. Racontez une histoire avec un fil conducteur reliant passé, présent et futur.
@@ -71,10 +71,10 @@ Restez simple. Un seul endpoint, un contrat clair, extensible pour de nouveaux t
 
 Le système comporte quatre couches :
 
-1. **Ingestion** — Un topic Kafka reçoit chaque nouvelle publication. Découple les producteurs de la modération.
-2. **Pipeline de classification** — Un classifieur de texte (transformer fine-tuné) et un classifieur d'images (modèle de vision) s'exécutent en parallèle.
-3. **Moteur de décision** — Combine les résultats des classifieurs avec le score de réputation de l'utilisateur et les règles de la plateforme.
-4. **Couche d'action** — Exécute la décision : autoriser, signaler pour révision humaine ou bloquer immédiatement.
+1. **Ingestion** - Un topic Kafka reçoit chaque nouvelle publication. Découple les producteurs de la modération.
+2. **Pipeline de classification** - Un classifieur de texte (transformer fine-tuné) et un classifieur d'images (modèle de vision) s'exécutent en parallèle.
+3. **Moteur de décision** - Combine les résultats des classifieurs avec le score de réputation de l'utilisateur et les règles de la plateforme.
+4. **Couche d'action** - Exécute la décision : autoriser, signaler pour révision humaine ou bloquer immédiatement.
 
 <Quiz question="Pourquoi est-il important de découpler l'ingestion de la classification à l'aide d'une file de messages ?" options="Cela rend le système plus impressionnant sur les diagrammes|Cela permet au pipeline de classification de se dimensionner indépendamment et d'absorber les pics de trafic|Cela élimine le besoin d'une base de données|Cela garantit zéro faux positif" answer="1" explanation="Une file de messages comme Kafka permet à la couche d'ingestion d'accepter les publications à n'importe quel débit tandis que le pipeline de classification les traite à son propre rythme, absorbant les pics sans perdre de requêtes." />
 
@@ -92,7 +92,7 @@ Le système comporte quatre couches :
 
 **Considérations de mise à l'échelle :**
 - Scaling horizontal des pods de classification derrière un load balancer.
-- Versionnement des modèles avec des déploiements canary — déployez les nouveaux modèles sur 5 % du trafic d'abord.
+- Versionnement des modèles avec des déploiements canary - déployez les nouveaux modèles sur 5 % du trafic d'abord.
 - Circuit breakers : si le classifieur est en panne, autoriser par défaut et mettre en file d'attente pour révision asynchrone plutôt que de bloquer tout le contenu.
 
 <ThinkAboutIt>
@@ -119,15 +119,15 @@ Utilisez la méthode **STAR** :
 - **Action** : J'ai proposé que nous implémentions chacun notre approche dans une expérience limitée dans le temps et que les métriques tranchent.
 - **Résultat** : Le modèle plus simple atteignait des performances à 2 % du modèle d'ensemble pour un dixième du coût d'inférence. Nous avons mis en production le modèle simple et convenu d'y revenir si la précision devenait un goulot d'étranglement.
 
-<Quiz question="Quel est l'élément le plus important d'une bonne réponse STAR ?" options="Se présenter comme le héros de chaque histoire|Fournir un résultat spécifique et mesurable qui démontre l'impact|Utiliser autant de termes techniques à la mode que possible|Garder la réponse en moins de 30 secondes" answer="1" explanation="Des résultats concrets avec des chiffres — temps économisé, coûts réduits, précision améliorée — rendent vos récits crédibles et mémorables. Des conclusions vagues comme « ça s'est bien passé » tombent à plat." />
+<Quiz question="Quel est l'élément le plus important d'une bonne réponse STAR ?" options="Se présenter comme le héros de chaque histoire|Fournir un résultat spécifique et mesurable qui démontre l'impact|Utiliser autant de termes techniques à la mode que possible|Garder la réponse en moins de 30 secondes" answer="1" explanation="Des résultats concrets avec des chiffres - temps économisé, coûts réduits, précision améliorée - rendent vos récits crédibles et mémorables. Des conclusions vagues comme « ça s'est bien passé » tombent à plat." />
 
 ## Phase 4 : Vos questions (10 minutes)
 
 Poser de bonnes questions démontre votre jugement et votre intérêt sincère. Voici trois exemples solides :
 
-1. *« À quoi ressemble la rotation d'astreinte pour l'équipe ML platform, et comment gérez-vous les incidents de modèles ? »* — Montre que vous pensez aux réalités de la production.
-2. *« Quel est le plus grand défi technique que l'équipe prévoit d'aborder dans les six prochains mois ? »* — Montre une vision prospective.
-3. *« Comment l'équipe décide-t-elle de construire en interne plutôt que d'acheter une solution managée ? »* — Montre du pragmatisme et un sens de l'architecture.
+1. *« À quoi ressemble la rotation d'astreinte pour l'équipe ML platform, et comment gérez-vous les incidents de modèles ? »* - Montre que vous pensez aux réalités de la production.
+2. *« Quel est le plus grand défi technique que l'équipe prévoit d'aborder dans les six prochains mois ? »* - Montre une vision prospective.
+3. *« Comment l'équipe décide-t-elle de construire en interne plutôt que d'acheter une solution managée ? »* - Montre du pragmatisme et un sens de l'architecture.
 
 **À éviter :** Les questions sur les avantages sociaux, les congés, ou tout ce qui se trouve facilement sur le site de l'entreprise.
 
@@ -137,7 +137,7 @@ Une étude de la Harvard Business Review a révélé que les candidats posant de
 
 ## Phase 5 : Conclusion (5 minutes)
 
-Remerciez le recruteur par son nom. Résumez votre enthousiasme en une phrase : *« Les défis de modération de contenu ici m'enthousiasment vraiment — c'est exactement le type de travail sur des systèmes ML à grande échelle que je souhaite faire. »*
+Remerciez le recruteur par son nom. Résumez votre enthousiasme en une phrase : *« Les défis de modération de contenu ici m'enthousiasment vraiment - c'est exactement le type de travail sur des systèmes ML à grande échelle que je souhaite faire. »*
 
 Envoyez un bref e-mail de remerciement dans les 24 heures en faisant référence à un point spécifique de votre échange.
 
@@ -155,7 +155,7 @@ Notez-vous de 1 à 5 sur chaque dimension :
 | **Questions posées** | A montré une curiosité sincère et un bon jugement |
 
 <FunFact>
-Les données internes de Google sur les entretiens ont révélé que le meilleur prédicteur de la réussite d'un candidat n'était pas son score en algorithmique, mais sa capacité à structurer des problèmes ambigus — exactement ce que testent les questions de conception système.
+Les données internes de Google sur les entretiens ont révélé que le meilleur prédicteur de la réussite d'un candidat n'était pas son score en algorithmique, mais sa capacité à structurer des problèmes ambigus - exactement ce que testent les questions de conception système.
 </FunFact>
 
 <Quiz question="Lors d'un entretien de conception système, que devez-vous faire EN PREMIER ?" options="Commencer immédiatement à dessiner le diagramme d'architecture|Poser des questions de clarification sur les exigences et les contraintes|Écrire les endpoints de l'API|Choisir la technologie de base de données" answer="1" explanation="Clarifier les exigences en premier garantit que vous résolvez le bon problème. Se lancer dans les solutions sans comprendre les contraintes est l'erreur la plus courante en entretien de conception système." />

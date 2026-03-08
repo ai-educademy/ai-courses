@@ -1,5 +1,5 @@
 ---
-title: "Design a Distributed Cache — Redis Architecture from Scratch"
+title: "Design a Distributed Cache - Redis Architecture from Scratch"
 description: "Design a distributed caching system covering cache strategies, consistent hashing, eviction policies, cache stampede prevention, and Redis Cluster architecture."
 order: 10
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "⚡"
 published: true
 ---
 
-# Design a Distributed Cache — Redis Architecture from Scratch
+# Design a Distributed Cache - Redis Architecture from Scratch
 
 Caching is the single most effective technique for improving system performance. A well-designed distributed cache can reduce database load by 90%+ and cut response times from hundreds of milliseconds to sub-millisecond.
 
-## Step 1 — Requirements Gathering
+## Step 1 - Requirements Gathering
 
 ### Functional Requirements
 - Store key-value pairs with optional TTL (time-to-live)
@@ -20,17 +20,17 @@ Caching is the single most effective technique for improving system performance.
 - Distribute data across multiple nodes for horizontal scaling
 
 ### Non-Functional Requirements
-- **Low latency** — sub-millisecond reads for cache hits
-- **High throughput** — 100K+ operations per second per node
-- **High availability** — cache failures shouldn't bring down the system
-- **Scalability** — add nodes without downtime
+- **Low latency** - sub-millisecond reads for cache hits
+- **High throughput** - 100K+ operations per second per node
+- **High availability** - cache failures shouldn't bring down the system
+- **Scalability** - add nodes without downtime
 
 ### When to Cache
-- **Read-heavy workloads** — when reads vastly outnumber writes
-- **Expensive computations** — ML model inference results, complex aggregations
-- **Frequently accessed data** — user sessions, product catalogues, configuration
+- **Read-heavy workloads** - when reads vastly outnumber writes
+- **Expensive computations** - ML model inference results, complex aggregations
+- **Frequently accessed data** - user sessions, product catalogues, configuration
 
-## Step 2 — Caching Strategies
+## Step 2 - Caching Strategies
 
 ### Cache-Aside (Lazy Loading)
 The most common pattern. Application checks the cache first; on a miss, it reads from the database, then populates the cache:
@@ -58,20 +58,20 @@ Writes go to the cache immediately; the cache asynchronously flushes to the data
 | Write-Through | Strong | Fast | Slower | Consistency-critical |
 | Write-Behind | Eventual | Fast | Fast | Write-heavy workloads |
 
-<Quiz question="An e-commerce site needs to cache product prices that change infrequently but must be accurate within 5 minutes. Which strategy is most appropriate?" options="Write-Behind with 1-hour flush interval|Cache-Aside with a 5-minute TTL|Write-Through for every price update|No caching — always read from database" answer="1" explanation="Cache-Aside with a 5-minute TTL ensures stale data never persists beyond the acceptable window. Write-Through would work but adds unnecessary write latency for infrequent updates. Cache-Aside is simpler and perfectly fits the 'read-heavy, occasionally updated' pattern." />
+<Quiz question="An e-commerce site needs to cache product prices that change infrequently but must be accurate within 5 minutes. Which strategy is most appropriate?" options="Write-Behind with 1-hour flush interval|Cache-Aside with a 5-minute TTL|Write-Through for every price update|No caching - always read from database" answer="1" explanation="Cache-Aside with a 5-minute TTL ensures stale data never persists beyond the acceptable window. Write-Through would work but adds unnecessary write latency for infrequent updates. Cache-Aside is simpler and perfectly fits the 'read-heavy, occasionally updated' pattern." />
 
-## Step 3 — Eviction Policies
+## Step 3 - Eviction Policies
 
 When the cache is full, which entries do we remove?
 
-- **LRU (Least Recently Used)** — evicts the entry that hasn't been accessed for the longest time. Best general-purpose policy
-- **LFU (Least Frequently Used)** — evicts the entry accessed least often. Better for skewed access patterns
-- **TTL-based** — entries expire after a set time regardless of access. Essential for data freshness
-- **Random** — surprisingly effective and very simple to implement
+- **LRU (Least Recently Used)** - evicts the entry that hasn't been accessed for the longest time. Best general-purpose policy
+- **LFU (Least Frequently Used)** - evicts the entry accessed least often. Better for skewed access patterns
+- **TTL-based** - entries expire after a set time regardless of access. Essential for data freshness
+- **Random** - surprisingly effective and very simple to implement
 
 <FunFact>Redis uses an approximated LRU algorithm that samples a small number of keys (default: 5) and evicts the least recently used among them. This is nearly as accurate as true LRU but requires zero additional memory overhead for tracking access order.</FunFact>
 
-## Step 4 — Consistent Hashing for Distribution
+## Step 4 - Consistent Hashing for Distribution
 
 ### The Problem with Simple Hashing
 With `hash(key) % N` nodes, adding or removing a node remaps nearly all keys, causing a massive cache miss storm.
@@ -90,13 +90,13 @@ Key "user:123" → hash → lands between B2 and A1 → assigned to Node A
 
 **Virtual nodes** solve the uneven distribution problem. Each physical node gets multiple positions on the ring, ensuring balanced load even with few physical nodes.
 
-When a node is added or removed, only keys adjacent to it on the ring are remapped — approximately `K/N` keys (where K is total keys and N is node count), not all of them.
+When a node is added or removed, only keys adjacent to it on the ring are remapped - approximately `K/N` keys (where K is total keys and N is node count), not all of them.
 
 <Illustration src="/images/lessons/design-distributed-cache.svg" alt="Consistent hashing ring showing physical nodes mapped to virtual nodes, with keys assigned to the nearest clockwise node" caption="Consistent hashing ensures that adding or removing a node only remaps a small fraction of keys, preventing cache stampedes" />
 
-<Quiz question="A cache cluster has 4 nodes. Node 3 fails. With simple modulo hashing (key % 4 → key % 3), what percentage of keys get remapped?" options="25% (only Node 3's keys)|50%|75% — nearly all keys are remapped|100%" answer="2" explanation="Changing from mod 4 to mod 3 remaps approximately 75% of all keys to different nodes. For example, a key that hashed to 7 was on node 3 (7%4=3) but now goes to node 1 (7%3=1). This causes a massive spike in cache misses. Consistent hashing solves this by only remapping ~K/N keys." />
+<Quiz question="A cache cluster has 4 nodes. Node 3 fails. With simple modulo hashing (key % 4 → key % 3), what percentage of keys get remapped?" options="25% (only Node 3's keys)|50%|75% - nearly all keys are remapped|100%" answer="2" explanation="Changing from mod 4 to mod 3 remaps approximately 75% of all keys to different nodes. For example, a key that hashed to 7 was on node 3 (7%4=3) but now goes to node 1 (7%3=1). This causes a massive spike in cache misses. Consistent hashing solves this by only remapping ~K/N keys." />
 
-## Step 5 — Cache Stampede Prevention
+## Step 5 - Cache Stampede Prevention
 
 A **cache stampede** occurs when a popular cached entry expires and hundreds of concurrent requests simultaneously miss the cache and hit the database.
 
@@ -110,7 +110,7 @@ A **cache stampede** occurs when a popular cached entry expires and hundreds of 
 
 <ThinkAboutIt>Consider a flash sale where a product page receives 100,000 requests per second. The product details cache entry expires. Without stampede prevention, all 100K requests hit the database simultaneously. Which prevention strategy would you choose, and why?</ThinkAboutIt>
 
-## Step 6 — Redis Cluster Architecture
+## Step 6 - Redis Cluster Architecture
 
 Redis Cluster is the most widely deployed distributed cache:
 
@@ -126,12 +126,12 @@ Slots 10923-16383: Master C ←→ Replica C'
 ```
 
 ### Monitoring Key Metrics
-- **Hit ratio** — target 95%+; below 80% indicates a caching problem
-- **Memory usage** — stay below 80% to avoid evictions
-- **Eviction rate** — high evictions mean the cache is undersized
-- **Latency percentiles** — p99 should be under 1ms for cache hits
+- **Hit ratio** - target 95%+; below 80% indicates a caching problem
+- **Memory usage** - stay below 80% to avoid evictions
+- **Eviction rate** - high evictions mean the cache is undersized
+- **Latency percentiles** - p99 should be under 1ms for cache hits
 
-## Step 7 — Real-World Caching Patterns
+## Step 7 - Real-World Caching Patterns
 
 | Pattern | Implementation | TTL |
 |---------|---------------|-----|
@@ -143,17 +143,17 @@ Slots 10923-16383: Master C ←→ Replica C'
 
 ### Cache Invalidation
 The hardest problem in computer science (alongside naming things):
-- **TTL-based** — simple, tolerates staleness for the TTL duration
-- **Event-driven** — publish invalidation events when data changes (via Kafka or Redis Pub/Sub)
-- **Version-based** — include a version in the cache key; increment version on writes to effectively invalidate old entries
+- **TTL-based** - simple, tolerates staleness for the TTL duration
+- **Event-driven** - publish invalidation events when data changes (via Kafka or Redis Pub/Sub)
+- **Version-based** - include a version in the cache key; increment version on writes to effectively invalidate old entries
 
 <Quiz question="Which cache invalidation approach provides the strongest consistency guarantee?" options="TTL-based expiry with a 5-minute window|Event-driven invalidation triggered by database writes|Random eviction|Background refresh every 10 seconds" answer="1" explanation="Event-driven invalidation reacts to actual data changes, invalidating the cache immediately when the source data is updated. TTL-based approaches always have a staleness window, while background refresh has gaps between refresh cycles." />
 
-<ThinkAboutIt>Phil Karlton famously said: 'There are only two hard things in Computer Science — cache invalidation and naming things.' Why is cache invalidation so difficult in distributed systems? Think about what happens when a write to the database succeeds but the cache invalidation message is lost.</ThinkAboutIt>
+<ThinkAboutIt>Phil Karlton famously said: 'There are only two hard things in Computer Science - cache invalidation and naming things.' Why is cache invalidation so difficult in distributed systems? Think about what happens when a write to the database succeeds but the cache invalidation message is lost.</ThinkAboutIt>
 
 ---
 
 ## 📚 Further Reading
-- [Consistent Hashing — ByteByteGo](https://bytebytego.com/courses/system-design-interview/design-consistent-hashing) — visual explanation of consistent hashing and virtual nodes
-- [Redis Cluster Specification](https://redis.io/docs/reference/cluster-spec/) — official Redis Cluster architecture documentation
-- [Caching Strategies — AWS](https://aws.amazon.com/caching/best-practices/) — practical caching patterns for cloud applications
+- [Consistent Hashing - ByteByteGo](https://bytebytego.com/courses/system-design-interview/design-consistent-hashing) - visual explanation of consistent hashing and virtual nodes
+- [Redis Cluster Specification](https://redis.io/docs/reference/cluster-spec/) - official Redis Cluster architecture documentation
+- [Caching Strategies - AWS](https://aws.amazon.com/caching/best-practices/) - practical caching patterns for cloud applications

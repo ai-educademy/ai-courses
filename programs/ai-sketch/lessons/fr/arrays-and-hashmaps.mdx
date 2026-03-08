@@ -1,5 +1,5 @@
 ---
-title: "Tableaux et Hash Maps — Comment l'IA stocke et retrouve les données"
+title: "Tableaux et Hash Maps - Comment l'IA stocke et retrouve les données"
 description: "Découvrez comment les tableaux et les hash maps alimentent tout, des vecteurs de caractéristiques aux recherches d'embeddings dans les systèmes d'IA."
 order: 1
 difficulty: "intermediate"
@@ -10,13 +10,13 @@ published: true
 
 ## Pourquoi le stockage des données compte en IA
 
-Tout système d'IA doit stocker et retrouver des données — rapidement. Qu'il s'agisse d'une liste de pixels, d'un vocabulaire de 50 000 mots ou de millions de préférences utilisateur, le choix de la structure de données détermine la vitesse de réflexion de votre IA.
+Tout système d'IA doit stocker et retrouver des données - rapidement. Qu'il s'agisse d'une liste de pixels, d'un vocabulaire de 50 000 mots ou de millions de préférences utilisateur, le choix de la structure de données détermine la vitesse de réflexion de votre IA.
 
 Deux structures dominent : les **tableaux** (arrays) et les **hash maps**. Maîtrisez-les, et vous avez la base de presque tout pipeline d'IA.
 
-## Tableaux — Listes ordonnées à accès instantané
+## Tableaux - Listes ordonnées à accès instantané
 
-Un tableau est simplement une liste numérotée d'éléments stockés côte à côte en mémoire. Chaque élément possède un **index** — sa position, en commençant à zéro.
+Un tableau est simplement une liste numérotée d'éléments stockés côte à côte en mémoire. Chaque élément possède un **index** - sa position, en commençant à zéro.
 
 ```
 index:   0       1       2       3       4
@@ -35,13 +35,13 @@ Les éléments étant contigus, on accède directement à n'importe quelle posit
 
 ### Le revers de la médaille
 
-Insérer ou supprimer un élément au milieu coûte cher. Tous les éléments suivants doivent se décaler. C'est du **O(n)** — plus il y a d'éléments, plus c'est long.
+Insérer ou supprimer un élément au milieu coûte cher. Tous les éléments suivants doivent se décaler. C'est du **O(n)** - plus il y a d'éléments, plus c'est long.
 
 <ThinkAboutIt>
 Si vous aviez une playlist de 10 000 titres et vouliez insérer un morceau en position 5, chaque titre à partir de la position 5 devrait se décaler. Comment un service de streaming pourrait-il gérer cela sans ralentir ?
 </ThinkAboutIt>
 
-## Hash Maps — Recherches instantanées par clé
+## Hash Maps - Recherches instantanées par clé
 
 Une hash map (aussi appelée dictionnaire ou table de hachage) stocke les données sous forme de **paires clé-valeur**. Au lieu d'accéder par index, on accède par une clé significative.
 
@@ -53,7 +53,7 @@ word_counts = {
 }
 ```
 
-Besoin du compteur pour "AI" ? La hash map utilise une **hash function** pour convertir la clé en index en coulisses. Résultat : un temps de recherche moyen en **O(1)** — comme les tableaux, mais avec des noms au lieu de numéros.
+Besoin du compteur pour "AI" ? La hash map utilise une **hash function** pour convertir la clé en index en coulisses. Résultat : un temps de recherche moyen en **O(1)** - comme les tableaux, mais avec des noms au lieu de numéros.
 
 <FunFact>
 Les dictionnaires Python sont des hash maps. Quand ChatGPT comptabilise les fréquences de mots pendant l'entraînement, il utilise des structures similaires pour suivre des milliards d'occurrences à travers tout le texte d'Internet.
@@ -77,7 +77,7 @@ Les dictionnaires Python sont des hash maps. Quand ChatGPT comptabilise les fré
 
 Retenez : **O(1)** signifie « instantané, quelle que soit la taille » et **O(n)** signifie « plus les données sont volumineuses, plus c'est lent ».
 
-<Quiz question="Vous avez 100 000 profils utilisateur et devez trouver un utilisateur par son nom d'utilisateur. Quelle structure est la plus rapide ?" options="Un tableau trié alphabétiquement|Une hash map avec les noms d'utilisateur comme clés|Un tableau non trié|Peu importe — elles sont toutes équivalentes" answer="1" explanation="Une hash map offre une recherche moyenne en O(1) par clé, ce qui est idéal pour trouver des éléments par un identifiant unique comme un nom d'utilisateur." />
+<Quiz question="Vous avez 100 000 profils utilisateur et devez trouver un utilisateur par son nom d'utilisateur. Quelle structure est la plus rapide ?" options="Un tableau trié alphabétiquement|Une hash map avec les noms d'utilisateur comme clés|Un tableau non trié|Peu importe - elles sont toutes équivalentes" answer="1" explanation="Une hash map offre une recherche moyenne en O(1) par clé, ce qui est idéal pour trouver des éléments par un identifiant unique comme un nom d'utilisateur." />
 
 ## Patron classique : comptage de fréquences
 
@@ -96,7 +96,7 @@ Un seul passage dans le texte donne la fréquence de chaque mot. Les modèles de
 
 ## Patron classique : le problème Two-Sum
 
-Étant donné un tableau de nombres et une cible, trouvez deux nombres dont la somme égale la cible. L'approche naïve vérifie toutes les paires — O(n²). L'approche astucieuse utilise une hash map :
+Étant donné un tableau de nombres et une cible, trouvez deux nombres dont la somme égale la cible. L'approche naïve vérifie toutes les paires - O(n²). L'approche astucieuse utilise une hash map :
 
 ```
 seen = {}
@@ -109,7 +109,7 @@ for each number in array:
 
 Un seul passage, en O(n). La hash map mémorise ce qu'on a déjà vu.
 
-<Quiz question="Pourquoi l'approche par hash map du two-sum est-elle plus rapide que la vérification de toutes les paires ?" options="Les hash maps utilisent moins de mémoire|Les hash maps permettent de vérifier « ai-je déjà vu ce nombre ? » en O(1) au lieu de parcourir tout le tableau|Les hash maps trient automatiquement les données|Les hash maps ne fonctionnent qu'avec de petits tableaux" answer="1" explanation="Chaque recherche dans une hash map est en O(1) en moyenne, donc au lieu de comparer chaque paire (O(n²)), on fait un seul passage avec des recherches O(1) — pour un total de O(n)." />
+<Quiz question="Pourquoi l'approche par hash map du two-sum est-elle plus rapide que la vérification de toutes les paires ?" options="Les hash maps utilisent moins de mémoire|Les hash maps permettent de vérifier « ai-je déjà vu ce nombre ? » en O(1) au lieu de parcourir tout le tableau|Les hash maps trient automatiquement les données|Les hash maps ne fonctionnent qu'avec de petits tableaux" answer="1" explanation="Chaque recherche dans une hash map est en O(1) en moyenne, donc au lieu de comparer chaque paire (O(n²)), on fait un seul passage avec des recherches O(1) - pour un total de O(n)." />
 
 ## Quand choisir quoi
 
@@ -120,11 +120,11 @@ Un seul passage, en O(n). La hash map mémorise ce qu'on a déjà vu.
 Un moteur de recommandation doit vérifier si un utilisateur a déjà vu un film avant de le suggérer. Stockeriez-vous l'historique dans un tableau ou une hash map ? Quels compromis vous viennent à l'esprit ?
 </ThinkAboutIt>
 
-<Quiz question="Un modèle d'IA stocke des word embeddings sous forme de tableaux de 300 nombres chacun. Pourquoi les tableaux sont-ils un bon choix ici ?" options="Les tableaux permettent un accès aléatoire par clé|Les tableaux stockent efficacement des données numériques ordonnées de taille fixe et les GPU les traitent en parallèle|Les tableaux trient automatiquement les nombres|Les tableaux utilisent moins de mémoire que toute autre structure" answer="1" explanation="Les embeddings sont des séquences de nombres à longueur fixe où l'ordre compte — la position 0 peut représenter le « genre » et la position 1 la « royauté ». Les tableaux les stockent de façon compacte et les GPU sont optimisés pour les opérations sur tableaux." />
+<Quiz question="Un modèle d'IA stocke des word embeddings sous forme de tableaux de 300 nombres chacun. Pourquoi les tableaux sont-ils un bon choix ici ?" options="Les tableaux permettent un accès aléatoire par clé|Les tableaux stockent efficacement des données numériques ordonnées de taille fixe et les GPU les traitent en parallèle|Les tableaux trient automatiquement les nombres|Les tableaux utilisent moins de mémoire que toute autre structure" answer="1" explanation="Les embeddings sont des séquences de nombres à longueur fixe où l'ordre compte - la position 0 peut représenter le « genre » et la position 1 la « royauté ». Les tableaux les stockent de façon compacte et les GPU sont optimisés pour les opérations sur tableaux." />
 
 ## Points clés à retenir
 
 - Les **tableaux** offrent un accès en O(1) par index et sont la colonne vertébrale de l'IA numérique (images, embeddings, tenseurs).
 - Les **hash maps** offrent un accès en O(1) par clé et sont indispensables pour les recherches, le comptage et la mise en cache.
-- Choisir la bonne structure peut transformer un algorithme O(n²) en O(n) — une différence capitale quand on traite des millions de données.
+- Choisir la bonne structure peut transformer un algorithme O(n²) en O(n) - une différence capitale quand on traite des millions de données.
 - En pratique, la plupart des pipelines d'IA utilisent les deux : tableaux pour le calcul numérique, hash maps pour les métadonnées.

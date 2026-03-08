@@ -1,5 +1,5 @@
 ---
-title: "Tries and Prefix Trees — Autocomplete, Spell Check, and IP Routing"
+title: "Tries and Prefix Trees - Autocomplete, Spell Check, and IP Routing"
 description: "Master the trie data structure for lightning-fast prefix lookups. Build autocomplete, wildcard search, and explore compressed tries and IP routing."
 order: 6
 difficulty: "advanced"
@@ -42,7 +42,7 @@ A full Trie wraps this with insert, search, and prefix operations.
 
 ## Core Operations
 
-### Insert — O(m) where m = word length
+### Insert - O(m) where m = word length
 
 Walk character by character, creating nodes as needed, then mark the last node.
 
@@ -58,7 +58,7 @@ def insert(self, word):
 
 ### Search and startsWith
 
-**Search** follows the path and checks `is_end`. **startsWith** only checks whether the path exists — it does not require `is_end = True`.
+**Search** follows the path and checks `is_end`. **startsWith** only checks whether the path exists - it does not require `is_end = True`.
 
 <Quiz
   question="What distinguishes search('app') from startsWith('app') when 'apple' is stored but 'app' is not?"
@@ -85,7 +85,7 @@ The `_dfs` helper recurses through children, appending to results whenever `is_e
 
 <ThinkAboutIt>How would you limit autocomplete to the top-k most frequent suggestions? What extra data would each node need?</ThinkAboutIt>
 
-## Wildcard Search — Word Dictionary
+## Wildcard Search - Word Dictionary
 
 LeetCode's **Design Add and Search Words Data Structure** asks you to handle `.` as a wildcard matching any single character.
 
@@ -115,7 +115,7 @@ Walk the trie from the root. The longest common prefix ends at the first node wi
 
 ## IP Routing with Tries
 
-Routers store IP prefixes in a **binary trie** — each bit (0 or 1) forms a branch. Longest prefix match finds the most specific route. This is how your packets find their way across the internet.
+Routers store IP prefixes in a **binary trie** - each bit (0 or 1) forms a branch. Longest prefix match finds the most specific route. This is how your packets find their way across the internet.
 
 <FunFact>Internet backbone routers perform billions of longest-prefix-match lookups per second using hardware-optimised tries built into specialised chips called TCAMs.</FunFact>
 
@@ -168,6 +168,6 @@ Here *m* is word length, *k* is results count, and *n* is total keys. Tries domi
 
 ## 📚 Further Reading
 
-- [Trie Data Structure — Wikipedia](https://en.wikipedia.org/wiki/Trie) — Comprehensive overview of trie variants and history
-- [Implement Trie — LeetCode 208](https://leetcode.com/problems/implement-trie-prefix-tree/) — The classic trie implementation problem
-- [Radix Trees in the Linux Kernel](https://lwn.net/Articles/175432/) — How compressed tries power kernel internals
+- [Trie Data Structure - Wikipedia](https://en.wikipedia.org/wiki/Trie) - Comprehensive overview of trie variants and history
+- [Implement Trie - LeetCode 208](https://leetcode.com/problems/implement-trie-prefix-tree/) - The classic trie implementation problem
+- [Radix Trees in the Linux Kernel](https://lwn.net/Articles/175432/) - How compressed tries power kernel internals

@@ -1,5 +1,5 @@
 ---
-title: "Dynamic Programming — AI जटिल समस्याओं को तोड़कर कैसे हल करता है"
+title: "Dynamic Programming - AI जटिल समस्याओं को तोड़कर कैसे हल करता है"
 description: "Memoisation, tabulation, और classic DP patterns को समझें जो AI और computer science में हर जगह इस्तेमाल होते हैं।"
 order: 4
 difficulty: "intermediate"
@@ -10,18 +10,18 @@ published: true
 
 ## बड़ा आइडिया
 
-कुछ problems देखने में बहुत complex लगते हैं, लेकिन जब ध्यान से देखो तो पता चलता है कि वो **छोटी-छोटी repeating sub-problems** से बने हैं। Dynamic programming (DP) हर sub-problem को **एक बार** solve करता है, result store करता है, और उसे दोबारा use करता है — थोड़ी memory खर्च करके बहुत बड़ी speed-up हासिल करता है।
+कुछ problems देखने में बहुत complex लगते हैं, लेकिन जब ध्यान से देखो तो पता चलता है कि वो **छोटी-छोटी repeating sub-problems** से बने हैं। Dynamic programming (DP) हर sub-problem को **एक बार** solve करता है, result store करता है, और उसे दोबारा use करता है - थोड़ी memory खर्च करके बहुत बड़ी speed-up हासिल करता है।
 
 दो conditions बताती हैं कि DP लगा सकते हैं:
 
-1. **Overlapping sub-problems** — एक ही calculations बार-बार repeat होती हैं।
-2. **Optimal substructure** — पूरी problem का best solution उसके parts के best solutions से बनाया जा सकता है।
+1. **Overlapping sub-problems** - एक ही calculations बार-बार repeat होती हैं।
+2. **Optimal substructure** - पूरी problem का best solution उसके parts के best solutions से बनाया जा सकता है।
 
 <Illustration src="/images/lessons/dynamic-programming.svg" alt="Fibonacci के लिए एक recursion tree जिसमें repeated sub-problems highlight हैं, साथ में एक भरी हुई DP table" caption="बिना DP के, Fibonacci एक ही values को exponentially recalculate करता है। DP के साथ, हर value सिर्फ एक बार compute होती है।" />
 
 ## Fibonacci: सबसे Classic Example
 
-### Naïve Recursion — O(2ⁿ)
+### Naïve Recursion - O(2ⁿ)
 
 ```
 function fib(n):
@@ -31,7 +31,7 @@ function fib(n):
 
 `fib(5)` call करने पर **15** function calls होती हैं, जिनमें काफी redundant हैं। `fib(40)` पर seconds लगते हैं; `fib(100)` पर तो universe से भी ज़्यादा time लगेगा।
 
-### Memoisation (Top-Down) — O(n)
+### Memoisation (Top-Down) - O(n)
 
 Results को एक cache में store करो। अगर कोई sub-problem पहले solve हो चुकी है, तो cached answer return करो।
 
@@ -44,7 +44,7 @@ function fib(n):
     return memo[n]
 ```
 
-### Tabulation (Bottom-Up) — O(n)
+### Tabulation (Bottom-Up) - O(n)
 
 Base cases से शुरू करके iteratively answer बनाओ।
 
@@ -73,7 +73,7 @@ function climbStairs(n):
     return b
 ```
 
-यह असल में Fibonacci ही है — step _n_ का answer, step _n−1_ और _n−2_ तक पहुँचने के तरीकों का sum है।
+यह असल में Fibonacci ही है - step _n_ का answer, step _n−1_ और _n−2_ तक पहुँचने के तरीकों का sum है।
 
 ### Coin Change
 
@@ -121,7 +121,7 @@ function lcs(s1, s2):
 | **CTC decoding** | Handwriting / speech-to-text | Repeated characters को optimally merge करना |
 | **Beam search pruning** | Machine translation | Top-k partial translations रखना |
 
-<Quiz question="एक spell checker corrections suggest करने के लिए सबसे likely कौन सा DP-based algorithm use करता है?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Climbing stairs" answer="1" explanation="Edit distance एक word को दूसरे में बदलने के लिए minimum insertions, deletions, और substitutions count करता है — सीधे measure करता है कि एक misspelling dictionary word से कितनी 'करीब' है।" />
+<Quiz question="एक spell checker corrections suggest करने के लिए सबसे likely कौन सा DP-based algorithm use करता है?" options="Longest common subsequence|Edit distance (Levenshtein)|Coin change|Climbing stairs" answer="1" explanation="Edit distance एक word को दूसरे में बदलने के लिए minimum insertions, deletions, और substitutions count करता है - सीधे measure करता है कि एक misspelling dictionary word से कितनी 'करीब' है।" />
 
 ## Top-Down vs Bottom-Up
 
@@ -140,7 +140,7 @@ function lcs(s1, s2):
 
 1. DP exponential brute-force को polynomial time में बदलता है **repeated work को cache करके**।
 2. DP लगाने से पहले overlapping sub-problems और optimal substructure identify करो।
-3. Memoisation intuitive है; tabulation efficient है — दोनों सीखो।
+3. Memoisation intuitive है; tabulation efficient है - दोनों सीखो।
 4. Edit distance, Viterbi, और sequence alignment दिखाते हैं कि DP modern AI के दिल में है।
 
-<Quiz question="एक problem में overlapping sub-problems हैं लेकिन optimal substructure नहीं है। क्या आप optimal solution पाने के लिए DP लगा सकते हैं?" options="हाँ — अगर sub-problems overlap करती हैं तो DP हमेशा काम करता है|नहीं — DP से optimality guarantee करने के लिए दोनों conditions ज़रूरी हैं|सिर्फ़ tabulation से|सिर्फ़ graph problems के लिए" answer="1" explanation="DP के लिए overlapping sub-problems (efficiency के लिए) और optimal substructure (correctness के लिए) दोनों ज़रूरी हैं। Optimal substructure के बिना, सिर्फ़ caching से global optimum की guarantee नहीं मिलती।" />
+<Quiz question="एक problem में overlapping sub-problems हैं लेकिन optimal substructure नहीं है। क्या आप optimal solution पाने के लिए DP लगा सकते हैं?" options="हाँ - अगर sub-problems overlap करती हैं तो DP हमेशा काम करता है|नहीं - DP से optimality guarantee करने के लिए दोनों conditions ज़रूरी हैं|सिर्फ़ tabulation से|सिर्फ़ graph problems के लिए" answer="1" explanation="DP के लिए overlapping sub-problems (efficiency के लिए) और optimal substructure (correctness के लिए) दोनों ज़रूरी हैं। Optimal substructure के बिना, सिर्फ़ caching से global optimum की guarantee नहीं मिलती।" />

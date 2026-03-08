@@ -1,6 +1,6 @@
 ---
-title: "Evaluation Metrics — Is Your AI Actually Good?"
-description: "Learn why accuracy alone is misleading, and master the metrics — precision, recall, F1, ROC-AUC, BLEU, and perplexity — that truly measure AI performance."
+title: "Evaluation Metrics - Is Your AI Actually Good?"
+description: "Learn why accuracy alone is misleading, and master the metrics - precision, recall, F1, ROC-AUC, BLEU, and perplexity - that truly measure AI performance."
 order: 10
 difficulty: "intermediate"
 duration: 15
@@ -8,15 +8,15 @@ icon: "📊"
 published: true
 ---
 
-# Evaluation Metrics — Is Your AI Actually Good?
+# Evaluation Metrics - Is Your AI Actually Good?
 
-You have trained a model. The loss went down. But is it actually *good*? The answer depends entirely on how you measure it — and choosing the wrong metric can give you dangerously misleading confidence. This lesson covers the metrics every AI practitioner must understand.
+You have trained a model. The loss went down. But is it actually *good*? The answer depends entirely on how you measure it - and choosing the wrong metric can give you dangerously misleading confidence. This lesson covers the metrics every AI practitioner must understand.
 
 ## The Accuracy Trap
 
-**Accuracy** = correct predictions ÷ total predictions. Sounds reasonable — until you meet **class imbalance**.
+**Accuracy** = correct predictions ÷ total predictions. Sounds reasonable - until you meet **class imbalance**.
 
-Imagine a fraud detection model. Out of 10,000 transactions, only 50 are fraudulent. A model that simply predicts "not fraud" for every single transaction achieves **99.5% accuracy** — while catching zero fraud. Utterly useless, yet the accuracy looks brilliant.
+Imagine a fraud detection model. Out of 10,000 transactions, only 50 are fraudulent. A model that simply predicts "not fraud" for every single transaction achieves **99.5% accuracy** - while catching zero fraud. Utterly useless, yet the accuracy looks brilliant.
 
 This is why accuracy alone is never enough for real-world AI.
 
@@ -26,14 +26,14 @@ In medical screening for rare diseases, a model that always predicts "healthy" c
 
 ## The Confusion Matrix
 
-Before diving into better metrics, we need the **confusion matrix** — a 2×2 table that breaks down every prediction:
+Before diving into better metrics, we need the **confusion matrix** - a 2×2 table that breaks down every prediction:
 
 |  | Predicted Positive | Predicted Negative |
 |---|---|---|
 | **Actually Positive** | True Positive (TP) | False Negative (FN) |
 | **Actually Negative** | False Positive (FP) | True Negative (TN) |
 
-**Concrete example — email spam filter on 1,000 emails (100 spam, 900 legitimate):**
+**Concrete example - email spam filter on 1,000 emails (100 spam, 900 legitimate):**
 
 |  | Predicted Spam | Predicted Legitimate |
 |---|---|---|
@@ -44,35 +44,35 @@ From this single table, we can derive every classification metric.
 
 <Illustration src="/images/lessons/evaluation-metrics.svg" alt="A confusion matrix for a spam filter with the four quadrants colour-coded: green for TP and TN, red for FP and FN, with precision and recall formulas alongside" caption="The confusion matrix is the foundation of all classification metrics." />
 
-## Precision — "Of Everything I Flagged, How Much Was Correct?"
+## Precision - "Of Everything I Flagged, How Much Was Correct?"
 
 ```
 Precision = TP ÷ (TP + FP) = 80 ÷ (80 + 30) = 72.7%
 ```
 
-In our spam filter: of all emails marked as spam, 72.7% actually were spam. The other 27.3% were legitimate emails incorrectly caught — **false positives**.
+In our spam filter: of all emails marked as spam, 72.7% actually were spam. The other 27.3% were legitimate emails incorrectly caught - **false positives**.
 
 **When precision matters most:** When false positives are expensive. A spam filter that sends important client emails to junk is a serious problem.
 
-## Recall — "Of Everything That Was Positive, How Much Did I Find?"
+## Recall - "Of Everything That Was Positive, How Much Did I Find?"
 
 ```
 Recall = TP ÷ (TP + FN) = 80 ÷ (80 + 20) = 80%
 ```
 
-The model caught 80 of the 100 actual spam emails — it *recalled* 80% of them. The other 20 slipped through as **false negatives**.
+The model caught 80 of the 100 actual spam emails - it *recalled* 80% of them. The other 20 slipped through as **false negatives**.
 
 **When recall matters most:** When missing a positive case is dangerous. In cancer screening, failing to detect a tumour (false negative) could cost a life.
 
-<Quiz question="A hospital wants a model to screen for a dangerous disease. Which metric should they prioritise?" options="Precision — avoid false alarms|Recall — catch every case, even at the cost of some false alarms|Accuracy — get the most predictions right|F1 — balance everything equally" answer="1" explanation="In medical screening, missing a true case (false negative) is far more dangerous than a false alarm. High recall ensures nearly every positive case is detected, even if some healthy patients need follow-up testing." />
+<Quiz question="A hospital wants a model to screen for a dangerous disease. Which metric should they prioritise?" options="Precision - avoid false alarms|Recall - catch every case, even at the cost of some false alarms|Accuracy - get the most predictions right|F1 - balance everything equally" answer="1" explanation="In medical screening, missing a true case (false negative) is far more dangerous than a false alarm. High recall ensures nearly every positive case is detected, even if some healthy patients need follow-up testing." />
 
 ## The Precision–Recall Trade-Off
 
 Precision and recall pull in opposite directions. Tightening the spam threshold catches fewer legitimate emails (precision rises) but lets more spam through (recall drops). Loosening it catches more spam (recall rises) but snags more good emails (precision drops).
 
-There is no free lunch — you must decide which errors are more costly for your specific use case.
+There is no free lunch - you must decide which errors are more costly for your specific use case.
 
-## F1 Score — The Harmonic Mean
+## F1 Score - The Harmonic Mean
 
 When you need a single number balancing precision and recall, use the **F1 score**:
 
@@ -80,7 +80,7 @@ When you need a single number balancing precision and recall, use the **F1 score
 F1 = 2 × (Precision × Recall) ÷ (Precision + Recall)
 ```
 
-For our spam filter: `F1 = 2 × (0.727 × 0.80) ÷ (0.727 + 0.80) = 0.762` — about 76.2%.
+For our spam filter: `F1 = 2 × (0.727 × 0.80) ÷ (0.727 + 0.80) = 0.762` - about 76.2%.
 
 The harmonic mean punishes extreme imbalances. If either precision or recall is very low, F1 drops sharply.
 
@@ -94,13 +94,13 @@ The **ROC curve** (Receiver Operating Characteristic) plots the True Positive Ra
 
 **AUC** (Area Under the Curve) summarises this into a single number:
 
-- **AUC = 1.0** — perfect separation.
-- **AUC = 0.5** — no better than random guessing (the diagonal line).
-- **AUC < 0.5** — worse than random (your labels might be flipped!).
+- **AUC = 1.0** - perfect separation.
+- **AUC = 0.5** - no better than random guessing (the diagonal line).
+- **AUC < 0.5** - worse than random (your labels might be flipped!).
 
 AUC is threshold-independent, making it excellent for comparing models before you have decided on a specific operating point.
 
-<Quiz question="What does an AUC of 0.5 mean?" options="The model is perfect|The model performs no better than random guessing|The model has 50% accuracy|The model has high recall" answer="1" explanation="An AUC of 0.5 corresponds to the diagonal on the ROC curve — the model has no ability to distinguish between classes. It is equivalent to flipping a coin." />
+<Quiz question="What does an AUC of 0.5 mean?" options="The model is perfect|The model performs no better than random guessing|The model has 50% accuracy|The model has high recall" answer="1" explanation="An AUC of 0.5 corresponds to the diagonal on the ROC curve - the model has no ability to distinguish between classes. It is equivalent to flipping a coin." />
 
 ## Metrics for Text Generation
 
@@ -114,7 +114,7 @@ BLEU is widely used in machine translation but has significant limitations: it r
 
 ### Perplexity
 
-**Perplexity** measures how surprised a language model is by new text. Lower is better — a perplexity of 20 means the model is, on average, choosing among 20 equally likely next words. A good model has low perplexity because it predicts text well.
+**Perplexity** measures how surprised a language model is by new text. Lower is better - a perplexity of 20 means the model is, on average, choosing among 20 equally likely next words. A good model has low perplexity because it predicts text well.
 
 GPT-4 achieves remarkably low perplexity on English text, reflecting its strong language understanding.
 
@@ -132,7 +132,7 @@ Offline metrics are necessary but not sufficient. The ultimate test is **A/B tes
 
 Production metrics often diverge from offline metrics because users behave unpredictably.
 
-<Quiz question="Why might a model with excellent offline metrics perform poorly in A/B testing?" options="The test set was too large|Offline metrics cannot capture real user behaviour, edge cases, and distribution shifts|A/B tests are less accurate than offline evaluation|The model was overfitting to the A/B test" answer="1" explanation="Offline evaluation uses static datasets that may not reflect real-world conditions — user behaviour evolves, data distributions shift, and edge cases emerge that test sets never anticipated. A/B testing reveals how the model performs where it actually matters." />
+<Quiz question="Why might a model with excellent offline metrics perform poorly in A/B testing?" options="The test set was too large|Offline metrics cannot capture real user behaviour, edge cases, and distribution shifts|A/B tests are less accurate than offline evaluation|The model was overfitting to the A/B test" answer="1" explanation="Offline evaluation uses static datasets that may not reflect real-world conditions - user behaviour evolves, data distributions shift, and edge cases emerge that test sets never anticipated. A/B testing reveals how the model performs where it actually matters." />
 
 ## When to Use Which Metric
 
@@ -152,7 +152,7 @@ You are building a self-driving car's pedestrian detection system. A false negat
 
 ## Key Takeaways
 
-- **Accuracy** is misleading with imbalanced data — always check the confusion matrix.
+- **Accuracy** is misleading with imbalanced data - always check the confusion matrix.
 - **Precision** measures correctness of positive predictions; **recall** measures completeness.
 - **F1** balances both; **AUC** evaluates across all thresholds.
 - Text generation uses **BLEU** and **perplexity** instead of classification metrics.
@@ -162,5 +162,5 @@ You are building a self-driving car's pedestrian detection system. A false negat
 
 ## 📚 Further Reading
 
-- [Google ML Crash Course — Classification Metrics](https://developers.google.com/machine-learning/crash-course/classification/accuracy) — Interactive walkthrough of precision, recall, and ROC curves
-- [Towards Data Science — Beyond Accuracy](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c/) — Practical guide with real-world examples of metric selection
+- [Google ML Crash Course - Classification Metrics](https://developers.google.com/machine-learning/crash-course/classification/accuracy) - Interactive walkthrough of precision, recall, and ROC curves
+- [Towards Data Science - Beyond Accuracy](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c/) - Practical guide with real-world examples of metric selection

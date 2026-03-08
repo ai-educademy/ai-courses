@@ -1,5 +1,5 @@
 ---
-title: "Chat Application डिज़ाइन करें — Real-Time Communication at Scale"
+title: "Chat Application डिज़ाइन करें - Real-Time Communication at Scale"
 description: "WhatsApp जैसा chat system डिज़ाइन करें जो millions of concurrent users को real-time delivery दे सके।"
 order: 3
 difficulty: "advanced"
@@ -12,7 +12,7 @@ published: true
 
 *"WhatsApp या Slack जैसी chat application डिज़ाइन करें जो one-to-one messaging, group chats, और online presence indicators support करे।"*
 
-यह system design interviews में एक पसंदीदा सवाल है क्योंकि यह एक ही problem में real-time communication, connection management, storage at scale, और distributed system trade-offs — सब कुछ test करता है।
+यह system design interviews में एक पसंदीदा सवाल है क्योंकि यह एक ही problem में real-time communication, connection management, storage at scale, और distributed system trade-offs - सब कुछ test करता है।
 
 ## Step 1: Requirements Gathering
 
@@ -30,7 +30,7 @@ published: true
 - 50 million concurrent connections support करे
 
 <Callout>
-Non-functional requirements को हमेशा specific numbers से quantify करें। "Fast delivery" vague है — "sub-200ms delivery" दिखाता है कि आपको domain की समझ है।
+Non-functional requirements को हमेशा specific numbers से quantify करें। "Fast delivery" vague है - "sub-200ms delivery" दिखाता है कि आपको domain की समझ है।
 </Callout>
 
 ## Step 2: API Design
@@ -78,9 +78,9 @@ user_456 → ws-server-187
 Chat applications बहुत बड़ी volume में data generate करती हैं। WhatsApp रोज़ 100 billion से ज़्यादा messages process करता है।
 
 **Storage strategy:**
-- **Recent messages** — fast datastore (Cassandra या HBase) में, conversation ID से partitioned
-- **Message index** — Elasticsearch से search enable करता है
-- **Media files** — object storage (S3) में CDN delivery के साथ
+- **Recent messages** - fast datastore (Cassandra या HBase) में, conversation ID से partitioned
+- **Message index** - Elasticsearch से search enable करता है
+- **Media files** - object storage (S3) में CDN delivery के साथ
 
 **Schema design (Cassandra):**
 ```
@@ -90,7 +90,7 @@ Table: messages
   columns: sender_id, content, type, status
 ```
 
-यह design ensure करती है कि एक conversation के सारे messages same partition पर co-located हों, जिससे "पुराने messages load करो" queries बहुत efficient हो जाती हैं — बस एक partition में sequential read।
+यह design ensure करती है कि एक conversation के सारे messages same partition पर co-located हों, जिससे "पुराने messages load करो" queries बहुत efficient हो जाती हैं - बस एक partition में sequential read।
 
 <Quiz question="Chat message storage के लिए PostgreSQL जैसे relational database की बजाय Cassandra बेहतर choice क्यों है?" options="Cassandra complex queries के लिए SQL joins support करता है|Cassandra strong ACID transactions provide करता है|Cassandra massive write throughput handle करता है और design से horizontally scale करता है|Cassandra automatically सारा data at rest encrypt करता है" answer="2" explanation="Chat systems write-heavy होते हैं (रोज़ billions messages)। Cassandra का distributed architecture massive write throughput handle करता है और nodes add करके horizontally scale करता है, जबकि PostgreSQL single primary पर इतने writes से struggle करेगा।" />
 
@@ -104,7 +104,7 @@ Table: messages
 3. अगर heartbeat नहीं आता, key expire हो जाती है और user offline दिखता है
 
 **Status updates के लिए fan-out:**
-जब कोई user online आता है, उसका status सभी online contacts को push होना चाहिए। 500 contacts वाले user के लिए, यह check करना पड़ता है कि कौन-से contacts online हैं और सिर्फ उन्हें presence updates भेजने हैं — **lazy fan-out** offline users को broadcast करने से बचाता है।
+जब कोई user online आता है, उसका status सभी online contacts को push होना चाहिए। 500 contacts वाले user के लिए, यह check करना पड़ता है कि कौन-से contacts online हैं और सिर्फ उन्हें presence updates भेजने हैं - **lazy fan-out** offline users को broadcast करने से बचाता है।
 
 <FunFact>
 WhatsApp के "last seen" feature ने दुनिया भर में unexpected social drama पैदा किया। कुछ देशों में relationship disputes बढ़ गए क्योंकि partners एक-दूसरे के exact last-active timestamps देख सकते थे। WhatsApp ने आखिरकार यह information छुपाने के लिए privacy controls add किए।
@@ -131,7 +131,7 @@ Interview discussions में E2E encryption का ज़िक्र securit
 
 - हर user अपने device पर **public/private key pair** generate करता है
 - Messages recipient की public key से encrypt होते हैं sender का device छोड़ने से पहले
-- Server को सिर्फ ciphertext दिखता है — वह message content नहीं पढ़ सकता
+- Server को सिर्फ ciphertext दिखता है - वह message content नहीं पढ़ सकता
 - Group chats एक **shared group key** use करते हैं जो members join या leave करने पर rotate होती है
 
 इसका मतलब server के message storage में सिर्फ encrypted blobs होते हैं, जो data compliance के नज़रिये से actually simpler है।
@@ -139,11 +139,11 @@ Interview discussions में E2E encryption का ज़िक्र securit
 ## Step 8: Millions तक Scale करना
 
 **Key scaling strategies:**
-- **Connection servers** horizontally scale होते हैं — users बढ़ने पर servers add करें
+- **Connection servers** horizontally scale होते हैं - users बढ़ने पर servers add करें
 - **Message routing** inter-server communication के लिए Kafka या Redis Pub/Sub use करती है
 - **Database sharding** conversation ID से storage load distribute करती है
-- **Geographic distribution** — latency कम करने के लिए multiple regions में connection servers deploy करें
-- **Message queue buffering** — peak usage hours में spikes absorb करे
+- **Geographic distribution** - latency कम करने के लिए multiple regions में connection servers deploy करें
+- **Message queue buffering** - peak usage hours में spikes absorb करे
 
 <Quiz question="London में एक user, Tokyo के user को message भेजता है। Delivery latency कम करने का सबसे effective तरीका क्या है?" options="सारे messages एक centralised database में store करें|दोनों regions में connection servers deploy करें और inter-region message routing use करें|सारे WebSocket connections London servers से force करें|सारे messages CDN edge पर cache करें" answer="1" explanation="Multiple regions में connection servers deploy करने से हर user nearby server से connect होता है। Messages optimised inter-region links से route होते हैं, जिससे हर user की latency कम होती है।" />
 
@@ -151,10 +151,10 @@ Interview discussions में E2E encryption का ज़िक्र securit
 
 ## Interview Tips
 
-1. **WebSocket decision से शुरू करें** — explain करें कि इस scale पर HTTP polling क्यों काम नहीं करेगा
-2. **Connection capacity quantify करें** — दिखाएं कि आपको server limits समझ हैं (~50-100K connections per server)
-3. **Offline delivery address करें** — बहुत से candidates भूल जाते हैं कि users हमेशा connected नहीं होते
-4. **Message ordering mention करें** — timestamp-based ordering with conflict resolution
+1. **WebSocket decision से शुरू करें** - explain करें कि इस scale पर HTTP polling क्यों काम नहीं करेगा
+2. **Connection capacity quantify करें** - दिखाएं कि आपको server limits समझ हैं (~50-100K connections per server)
+3. **Offline delivery address करें** - बहुत से candidates भूल जाते हैं कि users हमेशा connected नहीं होते
+4. **Message ordering mention करें** - timestamp-based ordering with conflict resolution
 
 <ThinkAboutIt>
 Slack और WhatsApp message history के लिए बहुत अलग approaches लेते हैं। WhatsApp messages device पर store करता है और new devices पर full history sync नहीं करता। Slack सब कुछ server-side store करता है और full search देता है। दोनों approaches के privacy, cost, और user experience trade-offs क्या हैं?

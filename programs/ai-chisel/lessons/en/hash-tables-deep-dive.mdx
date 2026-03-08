@@ -1,5 +1,5 @@
 ---
-title: "Hash Tables Deep Dive — The Engine Behind Fast AI Lookups"
+title: "Hash Tables Deep Dive - The Engine Behind Fast AI Lookups"
 description: "Understand hashing, collision handling, and the probabilistic structures that accelerate AI systems."
 order: 5
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Why Hashing Matters
 
-When a recommendation engine needs to check whether you have already watched a film — out of millions in its catalogue — it cannot afford to scan a list. A **hash table** answers that question in O(1) average time.
+When a recommendation engine needs to check whether you have already watched a film - out of millions in its catalogue - it cannot afford to scan a list. A **hash table** answers that question in O(1) average time.
 
 Hash tables are the single most used data structure in production software, and AI systems lean on them heavily for feature lookups, caching, and deduplication.
 
@@ -18,16 +18,16 @@ Hash tables are the single most used data structure in production software, and 
 
 ## How Hashing Works
 
-A **hash function** takes an input (a string, number, or object) and returns an integer — the **hash code**. That code is mapped to a **bucket index** via modulo:
+A **hash function** takes an input (a string, number, or object) and returns an integer - the **hash code**. That code is mapped to a **bucket index** via modulo:
 
 ```
 index = hashFunction(key) % numberOfBuckets
 ```
 
 A good hash function is:
-- **Deterministic** — same input always produces the same output.
-- **Uniform** — distributes keys evenly across buckets.
-- **Fast** — computable in O(1) relative to key size.
+- **Deterministic** - same input always produces the same output.
+- **Uniform** - distributes keys evenly across buckets.
+- **Fast** - computable in O(1) relative to key size.
 
 ### Example
 
@@ -39,9 +39,9 @@ function simpleHash(key, size):
     return total % size
 ```
 
-This is deliberately naïve — production hash functions like MurmurHash3 or xxHash use bit-mixing to achieve much better distribution.
+This is deliberately naïve - production hash functions like MurmurHash3 or xxHash use bit-mixing to achieve much better distribution.
 
-<Quiz question="What happens if a hash function maps many different keys to the same bucket index?" options="The hash table automatically resizes|A collision occurs and must be resolved|The duplicate keys are silently dropped|The programme crashes" answer="1" explanation="When two keys land in the same bucket, a collision occurs. The hash table must resolve it — typically via chaining or open addressing." />
+<Quiz question="What happens if a hash function maps many different keys to the same bucket index?" options="The hash table automatically resizes|A collision occurs and must be resolved|The duplicate keys are silently dropped|The programme crashes" answer="1" explanation="When two keys land in the same bucket, a collision occurs. The hash table must resolve it - typically via chaining or open addressing." />
 
 ## Collision Handling
 
@@ -104,13 +104,13 @@ Rehashing is O(n) but happens infrequently, so the **amortised** cost of inserti
 | **Caching layers** | Store precomputed model predictions keyed by input hash |
 | **Count-min sketch** | Approximate frequency counts in streaming data using multiple hash functions |
 
-<Quiz question="In the 'hashing trick' used in machine learning, why might you intentionally allow collisions?" options="Collisions improve model accuracy|It eliminates the need for a fixed vocabulary, saving memory|Hash collisions are impossible to avoid anyway|It speeds up the hash function" answer="1" explanation="Feature hashing deliberately maps an unbounded set of features into a fixed-size array, accepting some collision noise in exchange for a constant memory footprint — no vocabulary dictionary needed." />
+<Quiz question="In the 'hashing trick' used in machine learning, why might you intentionally allow collisions?" options="Collisions improve model accuracy|It eliminates the need for a fixed vocabulary, saving memory|Hash collisions are impossible to avoid anyway|It speeds up the hash function" answer="1" explanation="Feature hashing deliberately maps an unbounded set of features into a fixed-size array, accepting some collision noise in exchange for a constant memory footprint - no vocabulary dictionary needed." />
 
 ## Bloom Filters: Probabilistic Membership
 
 A **Bloom filter** answers "Is this element in the set?" with:
-- **Definite no** — the element is certainly absent.
-- **Probable yes** — the element is likely present (small false-positive rate).
+- **Definite no** - the element is certainly absent.
+- **Probable yes** - the element is likely present (small false-positive rate).
 
 It uses _k_ hash functions and a bit array. Insertion sets _k_ bits; lookup checks if all _k_ bits are set.
 
@@ -129,14 +129,14 @@ function bloomContains(filter, item):
 
 **AI uses:** Checking whether a URL has already been crawled, filtering spam, and avoiding redundant database queries in caching layers.
 
-<FunFact>Google Chrome uses a Bloom filter containing millions of known malicious URLs. Before loading any page, your browser checks the filter — if it says "probably yes", Chrome fetches the full list to confirm.</FunFact>
+<FunFact>Google Chrome uses a Bloom filter containing millions of known malicious URLs. Before loading any page, your browser checks the filter - if it says "probably yes", Chrome fetches the full list to confirm.</FunFact>
 
 ## Sets vs Maps: When to Use Which
 
 | Structure | Stores | Use When |
 |-----------|--------|----------|
-| **Set** | Keys only | You need membership checks — "have I seen this before?" |
-| **Map** | Key–value pairs | You need to associate data with each key — "what is the value for this key?" |
+| **Set** | Keys only | You need membership checks - "have I seen this before?" |
+| **Map** | Key–value pairs | You need to associate data with each key - "what is the value for this key?" |
 
 Both are backed by hash tables and offer O(1) average operations. Choose a **set** for deduplication, visited tracking, and uniqueness constraints. Choose a **map** for lookups, caches, and configuration stores.
 
@@ -144,9 +144,9 @@ Both are backed by hash tables and offer O(1) average operations. Choose a **set
 
 ## Key Takeaways
 
-1. Hash tables deliver O(1) average-case lookups — the backbone of caching, indexing, and feature engineering.
+1. Hash tables deliver O(1) average-case lookups - the backbone of caching, indexing, and feature engineering.
 2. Collisions are managed via chaining or open addressing; load factor controls when to rehash.
 3. Bloom filters trade a tiny false-positive rate for massive memory savings in membership queries.
-4. Understanding hashing internals helps you choose the right tool — set, map, or probabilistic filter — for each AI workload.
+4. Understanding hashing internals helps you choose the right tool - set, map, or probabilistic filter - for each AI workload.
 
-<Quiz question="A Bloom filter reports that an element is NOT in the set. What can you conclude?" options="The element is definitely not in the set|The element might still be in the set|The filter needs to be rebuilt|Nothing — Bloom filters are unreliable" answer="0" explanation="Bloom filters never produce false negatives. If any of the k bit positions is 0, the element was never inserted — guaranteed." />
+<Quiz question="A Bloom filter reports that an element is NOT in the set. What can you conclude?" options="The element is definitely not in the set|The element might still be in the set|The filter needs to be rebuilt|Nothing - Bloom filters are unreliable" answer="0" explanation="Bloom filters never produce false negatives. If any of the k bit positions is 0, the element was never inserted - guaranteed." />

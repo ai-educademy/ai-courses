@@ -1,5 +1,5 @@
 ---
-title: "Attention and Transformers — The Architecture That Changed Everything"
+title: "Attention and Transformers - The Architecture That Changed Everything"
 description: "A deep dive into self-attention, multi-head attention, positional encoding, and the Transformer architecture that powers every modern large language model."
 order: 6
 difficulty: "advanced"
@@ -8,34 +8,34 @@ icon: "🔦"
 published: true
 ---
 
-# Attention and Transformers — The Architecture That Changed Everything
+# Attention and Transformers - The Architecture That Changed Everything
 
-Every major language model today — GPT-4, Claude, Gemini, LLaMA — is built on the Transformer architecture. Published in the landmark 2017 paper *Attention Is All You Need*, it replaced recurrence with a mechanism called **self-attention**, unlocking unprecedented parallelism and performance.
+Every major language model today - GPT-4, Claude, Gemini, LLaMA - is built on the Transformer architecture. Published in the landmark 2017 paper *Attention Is All You Need*, it replaced recurrence with a mechanism called **self-attention**, unlocking unprecedented parallelism and performance.
 
 ## Why RNNs Hit a Wall
 
 Recurrent Neural Networks process sequences one token at a time, carrying a hidden state forward. This creates two crippling problems:
 
-- **Vanishing gradients** — By the time a gradient propagates back through hundreds of time steps, it shrinks to near zero, making it impossible to learn long-range dependencies.
-- **Sequential bottleneck** — Each step depends on the previous one, so you cannot parallelise training across a sequence. A 1,000-token input requires 1,000 serial operations.
+- **Vanishing gradients** - By the time a gradient propagates back through hundreds of time steps, it shrinks to near zero, making it impossible to learn long-range dependencies.
+- **Sequential bottleneck** - Each step depends on the previous one, so you cannot parallelise training across a sequence. A 1,000-token input requires 1,000 serial operations.
 
 LSTMs and GRUs added gating mechanisms that eased vanishing gradients, but they never solved the parallelisation problem. Training remained fundamentally slow.
 
 ## The Attention Intuition
 
-Imagine reading a long paragraph and being asked *"What did the CEO announce?"* Your eyes don't re-read every word sequentially — they **jump to the relevant sentence**. Attention works the same way: it lets each token look at every other token and decide which ones matter most for its current context.
+Imagine reading a long paragraph and being asked *"What did the CEO announce?"* Your eyes don't re-read every word sequentially - they **jump to the relevant sentence**. Attention works the same way: it lets each token look at every other token and decide which ones matter most for its current context.
 
 Think of it as a **spotlight on a stage**. Instead of illuminating the entire stage uniformly, the model learns to shine a bright beam on the tokens that carry the most relevant information for the task at hand.
 
 <Illustration src="/images/lessons/attention-and-transformers.svg" alt="Diagram showing self-attention: a query token attends to all key tokens with varying weights, producing a weighted sum of values" caption="Self-attention lets every token attend to every other token, with learned weights determining relevance." />
 
-## Query, Key, Value — The Core Mechanism
+## Query, Key, Value - The Core Mechanism
 
 Self-attention borrows terminology from information retrieval. For each token, the model computes three vectors:
 
-- **Query (Q)** — *"What am I looking for?"*
-- **Key (K)** — *"What information do I contain?"*
-- **Value (V)** — *"What do I actually contribute if selected?"*
+- **Query (Q)** - *"What am I looking for?"*
+- **Key (K)** - *"What information do I contain?"*
+- **Value (V)** - *"What do I actually contribute if selected?"*
 
 The attention score between two tokens is the **dot product of Q and K**, scaled by √d_k (the key dimension) to prevent exploding values. Applying softmax yields normalised weights, and the output is a weighted sum of all V vectors:
 
@@ -43,7 +43,7 @@ The attention score between two tokens is the **dot product of Q and K**, scaled
 Attention(Q, K, V) = softmax(Q·Kᵀ / √d_k) · V
 ```
 
-**Walkthrough:** Consider the sentence *"The cat sat on the mat because it was tired."* When processing *"it"*, the query for *"it"* attends most strongly to *"cat"* (high Q·K score), resolving the ambiguous pronoun — no recurrence needed.
+**Walkthrough:** Consider the sentence *"The cat sat on the mat because it was tired."* When processing *"it"*, the query for *"it"* attends most strongly to *"cat"* (high Q·K score), resolving the ambiguous pronoun - no recurrence needed.
 
 <Quiz question="In the self-attention formula, why do we divide by √d_k?" options="To make the model run faster on GPUs|To prevent dot products from growing too large, which would push softmax into regions with tiny gradients|To reduce the number of parameters in the model|To normalise for variable-length sequences" answer="1" explanation="When d_k is large, dot products can become very large in magnitude, causing softmax to output near-zero gradients (the saturation region). Dividing by √d_k keeps values in a range where softmax gradients remain healthy." />
 
@@ -55,15 +55,15 @@ A single attention head can only capture one type of relationship at a time. **M
 MultiHead(Q, K, V) = Concat(head₁, ..., headₕ) · Wᴼ
 ```
 
-Different heads learn different linguistic patterns — one might attend to syntactic dependencies, another to semantic similarity, and a third to positional proximity. GPT-3 uses 96 heads; each sees a 128-dimensional slice of the full 12,288-dimensional space.
+Different heads learn different linguistic patterns - one might attend to syntactic dependencies, another to semantic similarity, and a third to positional proximity. GPT-3 uses 96 heads; each sees a 128-dimensional slice of the full 12,288-dimensional space.
 
 <FunFact>
-Researchers at Google discovered that individual attention heads in BERT specialise remarkably — some track subject-verb agreement, others handle coreference resolution, and some even learn dependency parsing, all without explicit supervision.
+Researchers at Google discovered that individual attention heads in BERT specialise remarkably - some track subject-verb agreement, others handle coreference resolution, and some even learn dependency parsing, all without explicit supervision.
 </FunFact>
 
 ## Positional Encoding
 
-Self-attention is **permutation-invariant** — it treats *"dog bites man"* identically to *"man bites dog"* unless we inject positional information. The original Transformer used sinusoidal encodings:
+Self-attention is **permutation-invariant** - it treats *"dog bites man"* identically to *"man bites dog"* unless we inject positional information. The original Transformer used sinusoidal encodings:
 
 ```
 PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
@@ -76,8 +76,8 @@ Each position gets a unique pattern of sine and cosine waves at different freque
 
 The original Transformer has an **encoder-decoder** structure:
 
-- **Encoder** — Processes the full input with bidirectional self-attention (every token attends to every other). Stacks N layers of self-attention + feed-forward blocks with residual connections and layer normalisation.
-- **Decoder** — Generates output auto-regressively with **causal (masked) self-attention** (each token can only attend to previous tokens) plus cross-attention to the encoder output.
+- **Encoder** - Processes the full input with bidirectional self-attention (every token attends to every other). Stacks N layers of self-attention + feed-forward blocks with residual connections and layer normalisation.
+- **Decoder** - Generates output auto-regressively with **causal (masked) self-attention** (each token can only attend to previous tokens) plus cross-attention to the encoder output.
 
 Each sub-layer follows the pattern: `LayerNorm(x + Sublayer(x))`, where the residual connection ensures gradients flow freely through deep stacks.
 
@@ -101,24 +101,24 @@ Three architectural variants emerged from the original design:
 | **Decoder-only** | Causal (left-to-right) | GPT, LLaMA, Claude | Text generation, chat, reasoning |
 | **Encoder-decoder** | Both | T5, BART, Whisper | Translation, summarisation |
 
-Decoder-only models dominate today because **generation is the universal interface** — any NLP task can be framed as text generation. This architectural simplicity also scales more predictably.
+Decoder-only models dominate today because **generation is the universal interface** - any NLP task can be framed as text generation. This architectural simplicity also scales more predictably.
 
 <Quiz question="Why do decoder-only models use causal (masked) attention during training?" options="To reduce memory usage by half|To prevent tokens from attending to future tokens, which would leak the answer during autoregressive training|To make the model bidirectional|To speed up inference by skipping attention calculations" answer="1" explanation="During training, the model predicts the next token at every position simultaneously. Causal masking ensures each position can only see preceding tokens, preventing information leakage from future positions that would trivialise the prediction task." />
 
-<Quiz question="Which Transformer variant is BERT based on, and why is it unsuitable for open-ended text generation?" options="Decoder-only; it lacks cross-attention layers|Encoder-decoder; it requires a separate decoder to generate text|Encoder-only; its bidirectional attention means it sees the full sequence, making autoregressive generation impossible|Encoder-only; it has too few parameters for generation tasks" answer="2" explanation="BERT uses bidirectional (encoder-only) attention, meaning every token attends to every other token including future ones. This is perfect for understanding tasks but makes autoregressive generation impossible — it cannot predict 'the next token' when it can already see all tokens." />
+<Quiz question="Which Transformer variant is BERT based on, and why is it unsuitable for open-ended text generation?" options="Decoder-only; it lacks cross-attention layers|Encoder-decoder; it requires a separate decoder to generate text|Encoder-only; its bidirectional attention means it sees the full sequence, making autoregressive generation impossible|Encoder-only; it has too few parameters for generation tasks" answer="2" explanation="BERT uses bidirectional (encoder-only) attention, meaning every token attends to every other token including future ones. This is perfect for understanding tasks but makes autoregressive generation impossible - it cannot predict 'the next token' when it can already see all tokens." />
 
 <FunFact>
-The original *Attention Is All You Need* paper was rejected from an earlier venue before being accepted at NeurIPS 2017. As of 2024, it has over 130,000 citations — making it one of the most-cited computer science papers ever written.
+The original *Attention Is All You Need* paper was rejected from an earlier venue before being accepted at NeurIPS 2017. As of 2024, it has over 130,000 citations - making it one of the most-cited computer science papers ever written.
 </FunFact>
 
 <ThinkAboutIt>
-Self-attention has O(n²) complexity in sequence length — doubling the context window quadruples compute. Research into linear attention, sparse attention, and ring attention aims to break this barrier. What trade-offs might these approximations introduce?
+Self-attention has O(n²) complexity in sequence length - doubling the context window quadruples compute. Research into linear attention, sparse attention, and ring attention aims to break this barrier. What trade-offs might these approximations introduce?
 </ThinkAboutIt>
 
 ---
 
 ## 📚 Further Reading
 
-- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762) — The foundational paper introducing the Transformer architecture
-- [Andrej Karpathy — Let's build GPT: from scratch, in code](https://www.youtube.com/watch?v=kCc8FmEb1nY) — A complete walkthrough of building a Transformer from the ground up
-- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/) — Visual, intuitive explanation of every Transformer component
+- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762) - The foundational paper introducing the Transformer architecture
+- [Andrej Karpathy - Let's build GPT: from scratch, in code](https://www.youtube.com/watch?v=kCc8FmEb1nY) - A complete walkthrough of building a Transformer from the ground up
+- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/) - Visual, intuitive explanation of every Transformer component

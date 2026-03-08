@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌳 AI Branches — Level 3: Specialisations
+# 🌳 AI Branches - Level 3: Specialisations
 
 ### Explore AI specialisations at [AI Educademy](https://aieducademy.org)
 
@@ -22,7 +22,7 @@ AI Branches is **Level 3** of the AI Educademy learning path. This is a content-
 
 ### What You'll Learn
 
-- 🤖 Machine learning workflows — from data to deployment
+- 🤖 Machine learning workflows - from data to deployment
 - 👁️ Computer vision fundamentals
 - 💬 Natural language processing
 - ✨ Generative AI & large language models
@@ -42,7 +42,7 @@ lessons/
 
 ## 🚧 Status
 
-**Coming Soon** — Lessons are being written. Want to help? See [Contributing](#-contributing).
+**Coming Soon** - Lessons are being written. Want to help? See [Contributing](#-contributing).
 
 ## 🌱 Learning Path
 

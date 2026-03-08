@@ -1,5 +1,5 @@
 ---
-title: "Arbres et Graphes visualisés — Comment l'IA cartographie les relations"
+title: "Arbres et Graphes visualisés - Comment l'IA cartographie les relations"
 description: "Découvrez comment les arbres et les graphes représentent les données hiérarchiques et interconnectées qui alimentent les décisions et recommandations de l'IA."
 order: 5
 difficulty: "intermediate"
@@ -10,11 +10,11 @@ published: true
 
 ## Des données avec des relations
 
-Jusqu'ici, nous avons vu des données en ligne — tableaux, listes chaînées, piles et files d'attente organisent les éléments en séquence. Mais le monde réel n'est pas linéaire. Les arbres généalogiques se ramifient. Les réseaux sociaux forment des toiles. Les cartes routières créent des itinéraires interconnectés.
+Jusqu'ici, nous avons vu des données en ligne - tableaux, listes chaînées, piles et files d'attente organisent les éléments en séquence. Mais le monde réel n'est pas linéaire. Les arbres généalogiques se ramifient. Les réseaux sociaux forment des toiles. Les cartes routières créent des itinéraires interconnectés.
 
 Les **arbres** et les **graphes** capturent ces relations, et ils sont au cœur des techniques les plus puissantes de l'IA.
 
-## Arbres — Données hiérarchiques
+## Arbres - Données hiérarchiques
 
 Un **arbre** est une structure où chaque élément (appelé **nœud**) peut avoir des nœuds enfants, formant une hiérarchie. Un nœud spécial en haut s'appelle la **racine**, et les nœuds sans enfants sont les **feuilles**.
 
@@ -30,14 +30,14 @@ Un **arbre** est une structure où chaque élément (appelé **nœud**) peut avo
 
 ### Les arbres sont partout
 
-- **Systèmes de fichiers** : les dossiers contiennent des sous-dossiers contenant des fichiers — un arbre.
+- **Systèmes de fichiers** : les dossiers contiennent des sous-dossiers contenant des fichiers - un arbre.
 - **HTML/DOM** : chaque page web est un arbre d'éléments imbriqués.
 - **Organigrammes** : les managers ont des subordonnés qui peuvent avoir leurs propres subordonnés.
 - **Données JSON** : la structure imbriquée du JSON est fondamentalement un arbre.
 
 ### Arbres binaires
 
-Un **arbre binaire** limite chaque nœud à deux enfants maximum — un enfant gauche et un enfant droit. Cette simple contrainte permet des algorithmes puissants.
+Un **arbre binaire** limite chaque nœud à deux enfants maximum - un enfant gauche et un enfant droit. Cette simple contrainte permet des algorithmes puissants.
 
 ```
         8
@@ -51,7 +51,7 @@ Un **arbre binaire** limite chaque nœud à deux enfants maximum — un enfant g
 
 Un **BST** ajoute une règle : pour chaque nœud, toutes les valeurs du sous-arbre gauche sont plus petites, et celles du sous-arbre droit sont plus grandes.
 
-La recherche est rapide — à chaque nœud, on sait s'il faut aller à gauche ou à droite :
+La recherche est rapide - à chaque nœud, on sait s'il faut aller à gauche ou à droite :
 
 ```
 Find 6 in the BST above:
@@ -60,11 +60,11 @@ Find 6 in the BST above:
   At 6 → Found it!
 ```
 
-**Complexité** : O(log n) pour un arbre équilibré — la même magie logarithmique que la recherche binaire sur un tableau trié.
+**Complexité** : O(log n) pour un arbre équilibré - la même magie logarithmique que la recherche binaire sur un tableau trié.
 
 <Quiz question="Dans un BST équilibré avec 1 000 000 de nœuds, combien de comparaisons sont nécessaires pour trouver une valeur ?" options="1 000 000|500 000|Environ 20|Environ 100" answer="2" explanation="Un BST équilibré a une profondeur de log₂(1 000 000) ≈ 20. On fait une comparaison par niveau, donc trouver une valeur prend environ 20 étapes." />
 
-## Graphes — Tout est connecté
+## Graphes - Tout est connecté
 
 Un **graphe** généralise les arbres en supprimant la contrainte hiérarchique. Il se compose de **nœuds** (ou sommets) et d'**arêtes** (connexions entre nœuds). Les arêtes peuvent être :
 
@@ -73,9 +73,9 @@ Un **graphe** généralise les arbres en supprimant la contrainte hiérarchique.
 
 ```
 Social network (undirected):
-  Alice — Bob — Charlie
+  Alice - Bob - Charlie
     \       |
-     Diana — Eve
+     Diana - Eve
 
 Road map (weighted, directed):
   London →(2h)→ Birmingham →(1.5h)→ Manchester
@@ -108,7 +108,7 @@ Is temperature > 30°C?
     └── No: "Play tennis"
 ```
 
-Les arbres de décision sont populaires car les humains peuvent les lire — crucial en santé, finance et droit où l'explicabilité compte.
+Les arbres de décision sont populaires car les humains peuvent les lire - crucial en santé, finance et droit où l'explicabilité compte.
 
 <ThinkAboutIt>
 Un hôpital utilise une IA pour prédire le risque patient. Les régulateurs exigent que l'IA explique ses décisions. Pourquoi un arbre de décision pourrait-il être préféré à un réseau de neurones profond, même si ce dernier est légèrement plus précis ?
@@ -126,11 +126,11 @@ Un **graphe de connaissances** stocke des faits sous forme de relations : `(Lond
 
 ### Graphes de recommandation
 
-Netflix, Spotify et Amazon modélisent utilisateurs et produits comme un graphe. Si A et B ont aimé X et Y, et que A a aussi aimé Z, le graphe suggère Z à B — c'est le **filtrage collaboratif**.
+Netflix, Spotify et Amazon modélisent utilisateurs et produits comme un graphe. Si A et B ont aimé X et Y, et que A a aussi aimé Z, le graphe suggère Z à B - c'est le **filtrage collaboratif**.
 
-<Quiz question="Pourquoi les graphes sont-ils meilleurs que de simples listes pour modéliser les réseaux sociaux ?" options="Les graphes utilisent moins de mémoire|Les graphes peuvent représenter des relations complexes de type plusieurs-à-plusieurs, pas juste des séquences linéaires|Les graphes sont toujours plus rapides à parcourir|Les graphes trient automatiquement les données" answer="1" explanation="Les réseaux sociaux ont des relations complexes plusieurs-à-plusieurs — une personne peut avoir des centaines d'amis, chacun avec ses propres connexions. Les graphes modélisent naturellement ces relations." />
+<Quiz question="Pourquoi les graphes sont-ils meilleurs que de simples listes pour modéliser les réseaux sociaux ?" options="Les graphes utilisent moins de mémoire|Les graphes peuvent représenter des relations complexes de type plusieurs-à-plusieurs, pas juste des séquences linéaires|Les graphes sont toujours plus rapides à parcourir|Les graphes trient automatiquement les données" answer="1" explanation="Les réseaux sociaux ont des relations complexes plusieurs-à-plusieurs - une personne peut avoir des centaines d'amis, chacun avec ses propres connexions. Les graphes modélisent naturellement ces relations." />
 
-## Parcours — Explorer les arbres et graphes
+## Parcours - Explorer les arbres et graphes
 
 ### Parcours en profondeur (DFS)
 
@@ -144,7 +144,7 @@ Le DFS utilise une **pile** (via la récursion ou explicitement). Idéal pour : 
 
 ### Parcours en largeur (BFS)
 
-Le BFS explore tous les voisins au niveau courant avant d'aller plus profond — comme des ondulations dans l'eau.
+Le BFS explore tous les voisins au niveau courant avant d'aller plus profond - comme des ondulations dans l'eau.
 
 ```
     A → B → C → D → E → F
@@ -156,19 +156,19 @@ Le BFS utilise une **file d'attente**. Idéal pour : plus court chemin (graphe n
 Remarquez comment les piles et files d'attente de la leçon précédente se connectent au parcours d'arbres et graphes ? Le DFS utilise une pile ; le BFS utilise une file d'attente. Les structures de données s'appuient les unes sur les autres.
 </Callout>
 
-<Quiz question="Vous voulez trouver le chemin le plus court entre deux villes sur une carte où toutes les routes ont la même longueur. Quel parcours utiliser ?" options="DFS — il explore d'abord les chemins en profondeur|BFS — il trouve le plus court chemin dans les graphes non pondérés|Binary search — il fonctionne sur des données triées|Recherche aléatoire" answer="1" explanation="Le BFS explore les nœuds niveau par niveau, garantissant que la première fois qu'il atteint une destination, il a trouvé le plus court chemin (en nombre d'arêtes)." />
+<Quiz question="Vous voulez trouver le chemin le plus court entre deux villes sur une carte où toutes les routes ont la même longueur. Quel parcours utiliser ?" options="DFS - il explore d'abord les chemins en profondeur|BFS - il trouve le plus court chemin dans les graphes non pondérés|Binary search - il fonctionne sur des données triées|Recherche aléatoire" answer="1" explanation="Le BFS explore les nœuds niveau par niveau, garantissant que la première fois qu'il atteint une destination, il a trouvé le plus court chemin (en nombre d'arêtes)." />
 
 <ThinkAboutIt>
 Les plateformes de médias sociaux mesurent les « degrés de séparation ». Quel algorithme de parcours trouverait efficacement le nombre minimal de sauts entre deux utilisateurs ?
 </ThinkAboutIt>
 
 <FunFact>
-L'algorithme PageRank de Google — la percée originale qui a rendu Google dominant — modélise le web comme un graphe. L'importance d'une page est déterminée par le nombre de pages importantes qui la référencent. C'est essentiellement une marche aléatoire sur un graphe.
+L'algorithme PageRank de Google - la percée originale qui a rendu Google dominant - modélise le web comme un graphe. L'importance d'une page est déterminée par le nombre de pages importantes qui la référencent. C'est essentiellement une marche aléatoire sur un graphe.
 </FunFact>
 
 ## Points clés à retenir
 
-- Les **arbres** modélisent les données hiérarchiques — systèmes de fichiers, HTML et arbres de décision IA.
+- Les **arbres** modélisent les données hiérarchiques - systèmes de fichiers, HTML et arbres de décision IA.
 - Les **BST** permettent des recherches en O(log n) en maintenant une hiérarchie triée.
-- Les **graphes** modélisent les données interconnectées — réseaux sociaux, bases de connaissances, moteurs de recommandation.
-- **DFS** (avec pile) va en profondeur ; **BFS** (avec file) va en largeur — les deux alimentent des algorithmes IA fondamentaux comme PageRank.
+- Les **graphes** modélisent les données interconnectées - réseaux sociaux, bases de connaissances, moteurs de recommandation.
+- **DFS** (avec pile) va en profondeur ; **BFS** (avec file) va en largeur - les deux alimentent des algorithmes IA fondamentaux comme PageRank.

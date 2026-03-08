@@ -1,5 +1,5 @@
 ---
-title: "Backpropagation — De Wiskunde Achter het Leren"
+title: "Backpropagation - De Wiskunde Achter het Leren"
 description: "Begrijp hoe neurale netwerken leren door fouten terug te propageren door de lagen, met behulp van de kettingregel om elk gewicht bij te werken."
 order: 6
 difficulty: "intermediate"
@@ -8,9 +8,9 @@ icon: "⛓️"
 published: true
 ---
 
-# Backpropagation — De Motor van het Leren
+# Backpropagation - De Motor van het Leren
 
-In de vorige lessen heb je gezien dat neurale netwerken gewichten hebben, en dat training die gewichten aanpast. Maar *hoe* weet het netwerk welke gewichten het moet veranderen, en met hoeveel? Het antwoord is **backpropagation** — het allerbelangrijkste algoritme in moderne deep learning.
+In de vorige lessen heb je gezien dat neurale netwerken gewichten hebben, en dat training die gewichten aanpast. Maar *hoe* weet het netwerk welke gewichten het moet veranderen, en met hoeveel? Het antwoord is **backpropagation** - het allerbelangrijkste algoritme in moderne deep learning.
 
 Andrej Karpathy noemt het "het belangrijkste dat je moet begrijpen over neurale netwerken." Laten we kijken waarom.
 
@@ -27,33 +27,33 @@ De voorspelling wordt vervolgens vergeleken met het juiste antwoord via een **ve
 
 <Illustration src="/images/lessons/backpropagation.svg" alt="Een berekeningsgraaf die een forward pass door drie knooppunten toont, met pijlen die de datastroom van invoer naar verlies aangeven" caption="De forward pass bouwt een berekeningsgraaf op. Backpropagation doorloopt deze vervolgens in omgekeerde richting." />
 
-## Het Kernidee — Schuld Toewijzen
+## Het Kernidee - Schuld Toewijzen
 
 Stel je voor dat je een taart bakt en die vreselijk smaakt. Je hebt vijf ingrediënten gebruikt. De vraag is: *welk ingrediënt droeg het meest bij aan de slechte smaak, en in welke mate?*
 
 Backpropagation beantwoordt precies deze vraag voor neurale netwerken. Het wijst **schuld** toe aan elk afzonderlijk gewicht door te vragen: "Als ik dit gewicht een klein beetje verschuif, hoeveel verandert het verlies dan?"
 
-Die mate van verandering wordt een **gradiënt** genoemd, en die komt uit de calculus — meer specifiek de **afgeleide**.
+Die mate van verandering wordt een **gradiënt** genoemd, en die komt uit de calculus - meer specifiek de **afgeleide**.
 
 <FunFact>
 Geoffrey Hinton, een van de "peetvaders van AI," heeft gezegd dat backpropagation het kernidee is dat deep learning praktisch toepasbaar maakte. Zonder dit zou het trainen van netwerken met miljoenen parameters rekenkundig onmogelijk zijn.
 </FunFact>
 
-## De Kettingregel — Eén Idee dat Alles Beheerst
+## De Kettingregel - Eén Idee dat Alles Beheerst
 
 Neurale netwerken zijn ketens van eenvoudige bewerkingen die samen worden gecombineerd. De **kettingregel** uit de calculus vertelt ons hoe we samengestelde functies moeten differentiëren:
 
 > Als `y = f(g(x))`, dan `dy/dx = f'(g(x)) × g'(x)`.
 
-**Alledaagse analogie:** Je rijdt naar een winkel. Je snelheid hangt af van hoe hard je het gaspedaal indrukt. De stand van het gaspedaal hangt af van het verkeer. Om te weten hoe het verkeer je snelheid beïnvloedt, vermenigvuldig je: *(snelheid per gaspedaalindrukking)* × *(gaspedaalindrukking per verkeerssituatie)*. Dat is de kettingregel — het vermenigvuldigen van lokale veranderingssnelheden langs een keten.
+**Alledaagse analogie:** Je rijdt naar een winkel. Je snelheid hangt af van hoe hard je het gaspedaal indrukt. De stand van het gaspedaal hangt af van het verkeer. Om te weten hoe het verkeer je snelheid beïnvloedt, vermenigvuldig je: *(snelheid per gaspedaalindrukking)* × *(gaspedaalindrukking per verkeerssituatie)*. Dat is de kettingregel - het vermenigvuldigen van lokale veranderingssnelheden langs een keten.
 
 <FunFact>
 Backpropagation werd gepopulariseerd in een baanbrekend artikel uit 1986 door Rumelhart, Hinton en Williams, maar het kernidee van reverse-mode automatische differentiatie dateert uit de jaren zestig.
 </FunFact>
 
-## Berekeningsgrafen — De Wiskunde Visualiseren
+## Berekeningsgrafen - De Wiskunde Visualiseren
 
-Moderne frameworks zoals PyTorch bouwen een **berekeningsgraaf** op tijdens de forward pass. Elke bewerking — optellen, vermenigvuldigen, ReLU — wordt een knooppunt. Backpropagation doorloopt deze graaf vervolgens **in omgekeerde richting**, waarbij de kettingregel bij elk knooppunt wordt toegepast om gradiënten te berekenen.
+Moderne frameworks zoals PyTorch bouwen een **berekeningsgraaf** op tijdens de forward pass. Elke bewerking - optellen, vermenigvuldigen, ReLU - wordt een knooppunt. Backpropagation doorloopt deze graaf vervolgens **in omgekeerde richting**, waarbij de kettingregel bij elk knooppunt wordt toegepast om gradiënten te berekenen.
 
 Zie het als een rivierenstelsel. Het verlies is de oceaan aan het einde. Backprop volgt elke zijrivier stroomopwaarts om te achterhalen hoeveel elke bron (gewicht) heeft bijgedragen aan de uiteindelijke stroom.
 
@@ -75,21 +75,21 @@ In een diep netwerk moeten gradiënten door veel lagen reizen. Elke laag vermeni
 
 ### Verdwijnende Gradiënten
 
-Als lokale afgeleiden klein zijn (bijv. de sigmoid-functie verzadigt dicht bij 0 of 1), maakt herhaalde vermenigvuldiging de gradiënten steeds kleiner richting nul. Vroege lagen leren nauwelijks — ze ontvangen bijna geen signaal. Dit was een groot probleem bij vroege diepe netwerken.
+Als lokale afgeleiden klein zijn (bijv. de sigmoid-functie verzadigt dicht bij 0 of 1), maakt herhaalde vermenigvuldiging de gradiënten steeds kleiner richting nul. Vroege lagen leren nauwelijks - ze ontvangen bijna geen signaal. Dit was een groot probleem bij vroege diepe netwerken.
 
 ### Exploderende Gradiënten
 
 Als lokale afgeleiden groot zijn, groeien gradiënten exponentieel. Gewichten krijgen enorme updates en het netwerk wordt instabiel, wat NaN-waarden oplevert.
 
 <ThinkAboutIt>
-De afgeleide van ReLU is ofwel 0 of 1 — het verkleint de gradiënt nooit wanneer het actief is. Waarom zou deze eenvoudige eigenschap revolutionair zijn geweest voor het trainen van diepe netwerken?
+De afgeleide van ReLU is ofwel 0 of 1 - het verkleint de gradiënt nooit wanneer het actief is. Waarom zou deze eenvoudige eigenschap revolutionair zijn geweest voor het trainen van diepe netwerken?
 </ThinkAboutIt>
 
 **Moderne oplossingen zijn onder meer:**
-- **ReLU-activering** — de afgeleide is 1 voor positieve invoer, waardoor verkleining wordt vermeden.
-- **Residuele verbindingen (skip connections)** — geven gradiënten een snelweg om lagen te omzeilen.
-- **Batch-normalisatie** — houdt waarden binnen een gezond bereik.
-- **Gradiënt-clipping** — beperkt gradiënten om explosies te voorkomen.
+- **ReLU-activering** - de afgeleide is 1 voor positieve invoer, waardoor verkleining wordt vermeden.
+- **Residuele verbindingen (skip connections)** - geven gradiënten een snelweg om lagen te omzeilen.
+- **Batch-normalisatie** - houdt waarden binnen een gezond bereik.
+- **Gradiënt-clipping** - beperkt gradiënten om explosies te voorkomen.
 
 ## Hoe Gewichten Daadwerkelijk Worden Bijgewerkt
 
@@ -107,7 +107,7 @@ De leersnelheid bepaalt de stapgrootte. Te groot en je schiet door; te klein en 
 
 Elke keer dat ChatGPT zijn volgend-woord-voorspelling verbetert, elke keer dat een zelfrijdende auto zijn besturing verfijnt, draait backpropagation op de achtergrond. Het is het algoritme dat **leren van fouten** wiskundig nauwkeurig maakt.
 
-Zonder backprop zouden we geen efficiënte manier hebben om netwerken met miljoenen — of miljarden — parameters te trainen.
+Zonder backprop zouden we geen efficiënte manier hebben om netwerken met miljoenen - of miljarden - parameters te trainen.
 
 <Quiz question="Wat vertelt een gradiënt ons over een gewicht?" options="De exacte waarde die het gewicht moet hebben|Hoeveel het verlies verandert als we dat gewicht een klein beetje verschuiven|Of het gewicht verwijderd moet worden|De positie van het gewicht in het netwerk" answer="1" explanation="Een gradiënt is de veranderingssnelheid van het verlies ten opzichte van een gewicht. Het vertelt ons zowel de richting als de grootte van de verandering die nodig is om het verlies te verminderen." />
 
@@ -127,6 +127,6 @@ Karpathy benadrukt dat backprop "gewoon een herhaalde toepassing van de kettingr
 
 ## 📚 Verder Lezen
 
-- [Andrej Karpathy — nn-zero-to-hero (micrograd)](https://karpathy.ai/zero-to-hero.html) — Bouw backprop helemaal zelf op in Python
-- [3Blue1Brown — Backpropagation Calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus) — Prachtige visuele uitleg van de kettingregel in neurale netwerken
-- [CS231n Backprop Notes](https://cs231n.github.io/optimization-2/) — Stanfords beknopte referentie over berekeningsgrafen en gradiëntstroom
+- [Andrej Karpathy - nn-zero-to-hero (micrograd)](https://karpathy.ai/zero-to-hero.html) - Bouw backprop helemaal zelf op in Python
+- [3Blue1Brown - Backpropagation Calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus) - Prachtige visuele uitleg van de kettingregel in neurale netwerken
+- [CS231n Backprop Notes](https://cs231n.github.io/optimization-2/) - Stanfords beknopte referentie over berekeningsgrafen en gradiëntstroom

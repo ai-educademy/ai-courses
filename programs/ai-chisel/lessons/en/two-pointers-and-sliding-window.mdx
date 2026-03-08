@@ -1,5 +1,5 @@
 ---
-title: "Two Pointers and Sliding Window — How AI Scans Data Efficiently"
+title: "Two Pointers and Sliding Window - How AI Scans Data Efficiently"
 description: "Master two essential patterns for scanning sequences without wasting computation."
 order: 1
 difficulty: "intermediate"
@@ -10,7 +10,7 @@ published: true
 
 ## Why Scanning Smartly Matters
 
-Imagine an AI monitoring a live video feed for suspicious activity. It cannot rewatch the entire recording every second — it needs to slide a window of attention across the stream, keeping track of just enough context. That is exactly what the **two pointers** and **sliding window** patterns do for sequential data.
+Imagine an AI monitoring a live video feed for suspicious activity. It cannot rewatch the entire recording every second - it needs to slide a window of attention across the stream, keeping track of just enough context. That is exactly what the **two pointers** and **sliding window** patterns do for sequential data.
 
 Both techniques turn brute-force O(n²) scans into elegant O(n) passes.
 
@@ -24,7 +24,7 @@ Place two references into a sequence and move them according to a rule. There ar
 
 Start one pointer at each end and move them inward. Perfect for **sorted** data.
 
-**Classic problem — Pair Sum:** Given a sorted array, find two numbers that add to a target.
+**Classic problem - Pair Sum:** Given a sorted array, find two numbers that add to a target.
 
 ```
 function pairSum(arr, target):
@@ -38,13 +38,13 @@ function pairSum(arr, target):
     return null
 ```
 
-Because the array is sorted, moving `left` right increases the sum, and moving `right` left decreases it — guaranteeing we never miss a valid pair.
+Because the array is sorted, moving `left` right increases the sum, and moving `right` left decreases it - guaranteeing we never miss a valid pair.
 
 ### Same-Direction Pointers
 
 Both pointers move forward, but at different speeds. Useful for **partitioning** or **cycle detection**.
 
-**Example — Remove duplicates in-place:** A slow pointer marks the write position; a fast pointer scans ahead.
+**Example - Remove duplicates in-place:** A slow pointer marks the write position; a fast pointer scans ahead.
 
 ```
 function removeDuplicates(arr):
@@ -66,7 +66,7 @@ A sliding window maintains a contiguous sub-sequence of size _k_ (fixed) or vari
 
 Slide a window of exactly _k_ elements across the array.
 
-**Example — Maximum sum of any k consecutive elements:**
+**Example - Maximum sum of any k consecutive elements:**
 
 ```
 function maxSubarraySum(arr, k):
@@ -78,13 +78,13 @@ function maxSubarraySum(arr, k):
     return best
 ```
 
-Each step adds the new element entering the window and subtracts the one leaving — O(1) per move.
+Each step adds the new element entering the window and subtracts the one leaving - O(1) per move.
 
 ### Variable-Size Window
 
 Expand the window to include more data, then shrink it when a constraint is violated.
 
-**Example — Longest substring without repeating characters:**
+**Example - Longest substring without repeating characters:**
 
 ```
 function longestUnique(s):
@@ -99,7 +99,7 @@ function longestUnique(s):
     return best
 ```
 
-<FunFact>Streaming analytics platforms like Apache Flink use sliding and tumbling windows as first-class primitives — the same concept scaled to millions of events per second.</FunFact>
+<FunFact>Streaming analytics platforms like Apache Flink use sliding and tumbling windows as first-class primitives - the same concept scaled to millions of events per second.</FunFact>
 
 ## Real AI Applications
 
@@ -110,7 +110,7 @@ function longestUnique(s):
 | Converging pointers | Efficient nearest-neighbour checks in sorted embedding dimensions |
 | Same-direction pointers | Merging sorted result lists from multiple retrieval models |
 
-<ThinkAboutIt>A voice assistant buffers the last 3 seconds of audio to detect a wake word. Which pattern is this — fixed window or variable window? What happens if the wake word is longer than the buffer?</ThinkAboutIt>
+<ThinkAboutIt>A voice assistant buffers the last 3 seconds of audio to detect a wake word. Which pattern is this - fixed window or variable window? What happens if the wake word is longer than the buffer?</ThinkAboutIt>
 
 ## When to Use Which
 
@@ -119,14 +119,14 @@ function longestUnique(s):
 - **Fixed sliding window:** aggregate over a known window size.
 - **Variable sliding window:** find the smallest or largest window satisfying a condition.
 
-<Quiz question="Which pattern would you choose to find the smallest subarray whose sum exceeds a given value?" options="Converging two pointers|Fixed sliding window|Variable sliding window|Binary search" answer="2" explanation="A variable-size window expands until the sum exceeds the value, then contracts from the left to find the minimum length — all in O(n)." />
+<Quiz question="Which pattern would you choose to find the smallest subarray whose sum exceeds a given value?" options="Converging two pointers|Fixed sliding window|Variable sliding window|Binary search" answer="2" explanation="A variable-size window expands until the sum exceeds the value, then contracts from the left to find the minimum length - all in O(n)." />
 
-<ThinkAboutIt>Could you combine two pointers with a sliding window? Think about problems where you need to find a pair within a rolling window of data — for instance, detecting duplicate transactions within a five-minute window.</ThinkAboutIt>
+<ThinkAboutIt>Could you combine two pointers with a sliding window? Think about problems where you need to find a pair within a rolling window of data - for instance, detecting duplicate transactions within a five-minute window.</ThinkAboutIt>
 
 ## Key Takeaways
 
 1. Two pointers eliminate nested loops by leveraging ordering or partitioning.
 2. Sliding windows maintain running state so each element is processed at most twice.
-3. Both patterns are foundational in real-time AI pipelines — from anomaly detection to search ranking.
+3. Both patterns are foundational in real-time AI pipelines - from anomaly detection to search ranking.
 
-<Quiz question="What is the typical time complexity achieved by converting a brute-force nested loop into a two-pointer or sliding-window solution?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="Both patterns process each element a constant number of times, yielding O(n) overall — a significant improvement over the O(n²) brute-force approach." />
+<Quiz question="What is the typical time complexity achieved by converting a brute-force nested loop into a two-pointer or sliding-window solution?" options="O(n log n)|O(n)|O(n²)|O(1)" answer="1" explanation="Both patterns process each element a constant number of times, yielding O(n) overall - a significant improvement over the O(n²) brute-force approach." />

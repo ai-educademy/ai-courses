@@ -1,5 +1,5 @@
 ---
-title: "Recursie en Backtracking — Puzzels Oplossen als een Computer"
+title: "Recursie en Backtracking - Puzzels Oplossen als een Computer"
 description: "Begrijp recursie vanaf de call stack, en leer het backtracking-sjabloon waarmee je permutaties, N-Queens en meer oplost."
 order: 8
 difficulty: "intermediate"
@@ -8,13 +8,13 @@ icon: "🧩"
 published: true
 ---
 
-## Recursie — De Basis
+## Recursie - De Basis
 
 Een recursieve functie roept zichzelf aan met een **kleinere** versie van het probleem, totdat het een **basisgeval** bereikt dat de keten stopt.
 
 Elke recursie heeft twee dingen nodig:
-1. **Basisgeval** — de eenvoudigste invoer waarbij je direct retourneert.
-2. **Recursief geval** — splits het probleem op en roep jezelf aan.
+1. **Basisgeval** - de eenvoudigste invoer waarbij je direct retourneert.
+2. **Recursief geval** - splits het probleem op en roep jezelf aan.
 
 ```python
 def factorial(n):
@@ -23,7 +23,7 @@ def factorial(n):
     return n * factorial(n - 1)  # recursief geval
 ```
 
-## De Call Stack — Gevisualiseerd
+## De Call Stack - Gevisualiseerd
 
 Elke recursieve aanroep pusht een frame op de call stack. Wanneer het basisgeval retourneert, worden frames in omgekeerde volgorde ge-popt.
 
@@ -41,7 +41,7 @@ Als er geen basisgeval is, loopt de stack over. Python's standaard recursielimie
 
 <FunFact>Python's standaard recursielimiet van 1.000 is bewust conservatief. Je kunt het verhogen met sys.setrecursionlimit(), maar iteratieve oplossingen hebben doorgaans de voorkeur bij diepe recursie.</FunFact>
 
-## Fibonacci — De Klassieke Valkuil
+## Fibonacci - De Klassieke Valkuil
 
 De naïeve recursieve Fibonacci is O(2ⁿ) omdat het dezelfde deelproblemen herberekent. Memoisatie lost dit op in O(n) tijd en ruimte.
 
@@ -57,9 +57,9 @@ def fib(n):
 
 <Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Recursieboom voor Fibonacci met herhaalde deelproblemen" caption="Zonder memoisatie maakt fib(5) 15 aanroepen. Met memoisatie slechts 5." />
 
-## Backtracking — Probeer Alles, Maak dan Ongedaan
+## Backtracking - Probeer Alles, Maak dan Ongedaan
 
-Backtracking is recursie met een twist: je **maakt een keuze**, recurseert, en **maakt de keuze ongedaan** voordat je de volgende optie probeert. Zie het als het verkennen van een doolhof — loop vooruit, loop vast, loop terug, probeer het volgende pad.
+Backtracking is recursie met een twist: je **maakt een keuze**, recurseert, en **maakt de keuze ongedaan** voordat je de volgende optie probeert. Zie het als het verkennen van een doolhof - loop vooruit, loop vast, loop terug, probeer het volgende pad.
 
 ### Het Backtracking-Sjabloon
 
@@ -75,7 +75,7 @@ def backtrack(state, choices):
             state.remove(choice)    # maak ongedaan
 ```
 
-Dit drieledige patroon — **kiezen, verkennen, ongedaan maken** — is de ruggengraat van vrijwel elk backtracking-probleem.
+Dit drieledige patroon - **kiezen, verkennen, ongedaan maken** - is de ruggengraat van vrijwel elk backtracking-probleem.
 
 <Quiz question="Waarom maken we de keuze ongedaan na de recursieve aanroep in het backtracking-sjabloon?" options="Om geheugen vrij te maken|Om de state te herstellen voor de volgende verkenningstak|Omdat de keuze fout was|Om stack overflow te voorkomen" answer="1" explanation="De keuze ongedaan maken herstelt de state zodat de volgende iteratie van de lus een andere tak kan verkennen vanuit hetzelfde startpunt." />
 
@@ -99,11 +99,11 @@ Er zijn **n!** permutaties, dus de tijdcomplexiteit is O(n × n!).
 
 **Combinaties (n boven k):** bij elk element neem je het op of sla je het over, maar recurseer alleen vooruit om duplicaten te vermijden.
 
-**Deelverzamelingen:** zelfde idee zonder beperking — elk knooppunt in de recursieboom is een geldige deelverzameling. Er zijn **2ⁿ** deelverzamelingen.
+**Deelverzamelingen:** zelfde idee zonder beperking - elk knooppunt in de recursieboom is een geldige deelverzameling. Er zijn **2ⁿ** deelverzamelingen.
 
-<ThinkAboutIt>Permutaties leveren n! resultaten op terwijl deelverzamelingen 2ⁿ opleveren. Voor n=10 is dat 3.628.800 vs 1.024 — een enorm verschil. Waarom?</ThinkAboutIt>
+<ThinkAboutIt>Permutaties leveren n! resultaten op terwijl deelverzamelingen 2ⁿ opleveren. Voor n=10 is dat 3.628.800 vs 1.024 - een enorm verschil. Waarom?</ThinkAboutIt>
 
-## N-Queens — Stap voor Stap
+## N-Queens - Stap voor Stap
 
 Plaats N koninginnen op een N×N-bord zodat geen enkele de ander aanvalt. Voor N=4:
 
@@ -120,7 +120,7 @@ Houd conflicten bij met drie sets: `cols`, `diag` (rij − kolom) en `anti_diag`
 
 <Quiz question="Hoe controleren we diagonaalconflicten efficiënt bij het N-Queens-probleem?" options="Controleer de positie van elke geplaatste koningin|Gebruik sets die (rij-kolom) en (rij+kolom) bijhouden|Scan het hele bord elke keer|Gebruik een 2D-boolean-matrix" answer="1" explanation="Koninginnen op dezelfde diagonaal delen dezelfde (rij-kolom) waarde; dezelfde antidiagonaal delen (rij+kolom). Sets bieden O(1) opzoeking." />
 
-## Sudoku-Oplosser — Concept
+## Sudoku-Oplosser - Concept
 
 Vind een lege cel, probeer cijfers 1–9. Controleer voor elk cijfer rij-, kolom- en 3×3-vakbeperkingen. Als geldig, plaats en recurseer. Als geen cijfer werkt, maak ongedaan en backtrack. De snoeiing door beperkingen maakt het haalbaar ondanks de enorme zoekruimte.
 
@@ -155,6 +155,6 @@ Goede snoeiing kan een onpraktische zoekopdracht omzetten in een snelle.
 
 ## 📚 Verder Lezen
 
-- [NeetCode — Backtracking playlist](https://neetcode.io/roadmap) — samengestelde problemen met video-uitleg
-- [Tech Interview Handbook — Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) — patronen en veelvoorkomende valkuilen
-- [LeetCode Backtracking studieplan](https://leetcode.com/tag/backtracking/) — progressieve probleemset
+- [NeetCode - Backtracking playlist](https://neetcode.io/roadmap) - samengestelde problemen met video-uitleg
+- [Tech Interview Handbook - Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) - patronen en veelvoorkomende valkuilen
+- [LeetCode Backtracking studieplan](https://leetcode.com/tag/backtracking/) - progressieve probleemset

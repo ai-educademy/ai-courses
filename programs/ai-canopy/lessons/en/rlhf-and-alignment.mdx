@@ -1,5 +1,5 @@
 ---
-title: "RLHF and Alignment — How ChatGPT Learns Human Values"
+title: "RLHF and Alignment - How ChatGPT Learns Human Values"
 description: "Understand how raw language models are transformed into helpful, harmless assistants through supervised fine-tuning, reward modelling, and reinforcement learning from human feedback."
 order: 8
 difficulty: "advanced"
@@ -8,27 +8,27 @@ icon: "🎯"
 published: true
 ---
 
-# RLHF and Alignment — How ChatGPT Learns Human Values
+# RLHF and Alignment - How ChatGPT Learns Human Values
 
-A pre-trained language model is a powerful but uncontrolled engine. It can write poetry, generate code, and reason about physics — but it can also produce toxic content, confidently fabricate facts, and ignore user instructions. **Alignment** is the process of steering that raw capability towards being genuinely helpful, honest, and harmless.
+A pre-trained language model is a powerful but uncontrolled engine. It can write poetry, generate code, and reason about physics - but it can also produce toxic content, confidently fabricate facts, and ignore user instructions. **Alignment** is the process of steering that raw capability towards being genuinely helpful, honest, and harmless.
 
 ## The Alignment Problem
 
-Pre-training optimises a single objective: **predict the next token**. This gives the model broad knowledge but no understanding of what a human actually *wants*. Ask a base model a question and it might complete the text as if writing a forum post, an advertisement, or a conspiracy theory — because all of those patterns exist in its training data.
+Pre-training optimises a single objective: **predict the next token**. This gives the model broad knowledge but no understanding of what a human actually *wants*. Ask a base model a question and it might complete the text as if writing a forum post, an advertisement, or a conspiracy theory - because all of those patterns exist in its training data.
 
-The gap between "capable" and "useful" is the alignment problem. A model that can write medical advice but doesn't know when to refuse is potentially dangerous. Closing this gap requires teaching the model **human preferences** — not just what *could* come next, but what *should* come next.
+The gap between "capable" and "useful" is the alignment problem. A model that can write medical advice but doesn't know when to refuse is potentially dangerous. Closing this gap requires teaching the model **human preferences** - not just what *could* come next, but what *should* come next.
 
 <Illustration src="/images/lessons/rlhf-and-alignment.svg" alt="Three-stage pipeline: SFT trains on demonstrations, reward model learns preferences, PPO optimises policy against reward model" caption="The RLHF pipeline transforms a base model into an aligned assistant through three stages: SFT, reward modelling, and RL optimisation." />
 
 ## Stage 1: Supervised Fine-Tuning (SFT)
 
-The first step is straightforward: collect thousands of high-quality **demonstration examples** — ideal conversations between a user and an assistant — and fine-tune the base model on them. This teaches the model the *format* of being helpful: answer questions directly, follow instructions, admit uncertainty, and refuse harmful requests.
+The first step is straightforward: collect thousands of high-quality **demonstration examples** - ideal conversations between a user and an assistant - and fine-tune the base model on them. This teaches the model the *format* of being helpful: answer questions directly, follow instructions, admit uncertainty, and refuse harmful requests.
 
 SFT alone produces a noticeably better model, but it has limitations. Human demonstrators can only write so many examples, and the model learns to imitate the *average* quality of those demonstrations rather than consistently producing the best possible response.
 
 ## Stage 2: Reward Model Training
 
-Instead of writing ideal responses, human labellers are given **pairs of model outputs** and asked to rank which is better. This is cognitively easier — comparing is simpler than creating — and allows collecting far more preference data.
+Instead of writing ideal responses, human labellers are given **pairs of model outputs** and asked to rank which is better. This is cognitively easier - comparing is simpler than creating - and allows collecting far more preference data.
 
 These ranked pairs train a **reward model (RM)**: a separate neural network that takes a prompt and response as input and outputs a scalar score representing human preference. The RM learns patterns like:
 
@@ -47,12 +47,12 @@ With a reward model in hand, the SFT model is further optimised using **Proximal
 3. PPO updates the model weights to increase the expected reward
 4. A **KL divergence penalty** prevents the model from drifting too far from the SFT baseline (avoiding reward hacking)
 
-The KL penalty is critical. Without it, the model would learn to exploit quirks of the reward model — generating responses that score highly but are nonsensical or repetitive. By constraining how far the policy can diverge from the SFT model, PPO keeps outputs coherent while improving alignment.
+The KL penalty is critical. Without it, the model would learn to exploit quirks of the reward model - generating responses that score highly but are nonsensical or repetitive. By constraining how far the policy can diverge from the SFT model, PPO keeps outputs coherent while improving alignment.
 
-This three-stage process — SFT → Reward Model → PPO — is precisely how OpenAI transformed GPT-3.5 into ChatGPT, as described in their **InstructGPT** paper.
+This three-stage process - SFT → Reward Model → PPO - is precisely how OpenAI transformed GPT-3.5 into ChatGPT, as described in their **InstructGPT** paper.
 
 <FunFact>
-The InstructGPT paper revealed a striking result: a 1.3B parameter model aligned with RLHF was preferred by human judges over the unaligned 175B GPT-3 — a model 100× larger. Alignment can matter more than raw scale.
+The InstructGPT paper revealed a striking result: a 1.3B parameter model aligned with RLHF was preferred by human judges over the unaligned 175B GPT-3 - a model 100× larger. Alignment can matter more than raw scale.
 </FunFact>
 
 ## DPO: Cutting Out the Middleman
@@ -65,7 +65,7 @@ The DPO loss function implicitly defines a reward model within the language mode
 L_DPO = -log σ(β · (log π(y_w|x)/π_ref(y_w|x) - log π(y_l|x)/π_ref(y_l|x)))
 ```
 
-Where `y_w` is the preferred response, `y_l` is the rejected one, and `π_ref` is the reference (SFT) model. DPO is simpler, more stable, and cheaper to train — no reward model, no RL loop, no hyperparameter-sensitive PPO. Meta's LLaMA 2 and many open-source models now use DPO or its variants.
+Where `y_w` is the preferred response, `y_l` is the rejected one, and `π_ref` is the reference (SFT) model. DPO is simpler, more stable, and cheaper to train - no reward model, no RL loop, no hyperparameter-sensitive PPO. Meta's LLaMA 2 and many open-source models now use DPO or its variants.
 
 <ThinkAboutIt>
 DPO eliminates the reward model but also loses the ability to score arbitrary new responses at inference time. In what scenarios might having an explicit reward model (the full RLHF pipeline) be more valuable than the simplicity of DPO?
@@ -75,11 +75,11 @@ DPO eliminates the reward model but also loses the ability to score arbitrary ne
 
 Anthropic introduced **Constitutional AI (CAI)** to reduce reliance on human labellers. The approach:
 
-1. Define a set of principles (a "constitution") — e.g., *"Choose the response that is most helpful while being honest and harmless"*
+1. Define a set of principles (a "constitution") - e.g., *"Choose the response that is most helpful while being honest and harmless"*
 2. Generate response pairs and use the **model itself** to judge which response better adheres to the constitution
-3. Use these AI-generated preferences to train the reward model (RLAIF — RL from AI Feedback)
+3. Use these AI-generated preferences to train the reward model (RLAIF - RL from AI Feedback)
 
-CAI scales preference collection dramatically — the AI can generate and evaluate millions of comparisons at a fraction of the cost of human labelling. It also makes the alignment criteria **explicit and auditable**, encoded in the constitution rather than implicitly learned from labeller biases.
+CAI scales preference collection dramatically - the AI can generate and evaluate millions of comparisons at a fraction of the cost of human labelling. It also makes the alignment criteria **explicit and auditable**, encoded in the constitution rather than implicitly learned from labeller biases.
 
 <Quiz question="What is the core innovation of Constitutional AI compared to standard RLHF?" options="It uses a much larger base model|It replaces human preference labellers with the AI model itself, guided by explicit written principles|It eliminates the need for any fine-tuning|It trains only on synthetic data" answer="1" explanation="Constitutional AI uses the model itself to generate preference judgements, guided by a set of explicitly written principles (the constitution). This scales preference data collection enormously while making the alignment criteria transparent and modifiable." />
 
@@ -96,27 +96,27 @@ Major labs now conduct extensive red teaming before releasing models, often invo
 
 ## The Alignment Tax
 
-Alignment comes at a cost. RLHF-trained models sometimes become **overly cautious** — refusing benign requests, adding unnecessary caveats, or producing bland responses to avoid any perceived risk. This "alignment tax" is a real engineering challenge:
+Alignment comes at a cost. RLHF-trained models sometimes become **overly cautious** - refusing benign requests, adding unnecessary caveats, or producing bland responses to avoid any perceived risk. This "alignment tax" is a real engineering challenge:
 
 - Too little alignment → harmful outputs
 - Too much alignment → unhelpful, annoying refusals
 
-The frontier of alignment research is finding techniques that maximise helpfulness while maintaining genuine safety boundaries — not just pattern-matching on superficially "safe" responses.
+The frontier of alignment research is finding techniques that maximise helpfulness while maintaining genuine safety boundaries - not just pattern-matching on superficially "safe" responses.
 
-<Quiz question="What is the 'alignment tax' in the context of RLHF-trained models?" options="The financial cost of hiring human labellers for preference data|The reduction in model helpfulness and capability that results from safety training making the model overly cautious|The computational cost of running PPO optimisation|The tax that governments impose on AI companies for safety compliance" answer="1" explanation="The alignment tax refers to the capability or helpfulness lost when safety training makes a model excessively cautious — refusing benign requests, hedging unnecessarily, or producing generic responses. Balancing safety with genuine helpfulness is one of alignment's hardest open problems." />
+<Quiz question="What is the 'alignment tax' in the context of RLHF-trained models?" options="The financial cost of hiring human labellers for preference data|The reduction in model helpfulness and capability that results from safety training making the model overly cautious|The computational cost of running PPO optimisation|The tax that governments impose on AI companies for safety compliance" answer="1" explanation="The alignment tax refers to the capability or helpfulness lost when safety training makes a model excessively cautious - refusing benign requests, hedging unnecessarily, or producing generic responses. Balancing safety with genuine helpfulness is one of alignment's hardest open problems." />
 
 <FunFact>
 OpenAI spent roughly six months on alignment work (SFT data collection, reward modelling, and RLHF training) to transform GPT-4's base model into the version released to the public. The alignment phase, while a fraction of the pre-training compute, required thousands of hours of specialised human labelling.
 </FunFact>
 
 <ThinkAboutIt>
-Human labellers inevitably bring their own biases, cultural perspectives, and inconsistencies into the preference data. If alignment is ultimately "learning what humans prefer", whose preferences should count — and how do we handle fundamental disagreements about values across cultures?
+Human labellers inevitably bring their own biases, cultural perspectives, and inconsistencies into the preference data. If alignment is ultimately "learning what humans prefer", whose preferences should count - and how do we handle fundamental disagreements about values across cultures?
 </ThinkAboutIt>
 
 ---
 
 ## 📚 Further Reading
 
-- [Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — OpenAI's foundational RLHF paper
-- [Direct Preference Optimization (Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290) — The DPO paper that simplified alignment training
-- [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073) — Anthropic's approach to scalable alignment using AI self-supervision
+- [Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) - OpenAI's foundational RLHF paper
+- [Direct Preference Optimization (Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290) - The DPO paper that simplified alignment training
+- [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073) - Anthropic's approach to scalable alignment using AI self-supervision

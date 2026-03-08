@@ -1,5 +1,5 @@
 ---
-title: "Tries et arbres de préfixes — Autocomplete, correcteur orthographique et routage IP"
+title: "Tries et arbres de préfixes - Autocomplete, correcteur orthographique et routage IP"
 description: "Maîtrisez la structure de données trie pour des recherches de préfixes ultra-rapides. Construisez un autocomplete, une recherche par wildcard, et explorez les tries compressés et le routage IP."
 order: 6
 difficulty: "advanced"
@@ -42,7 +42,7 @@ Un trie complet encapsule cette classe avec des opérations d'insertion, de rech
 
 ## Opérations fondamentales
 
-### Insertion — O(m) où m = longueur du mot
+### Insertion - O(m) où m = longueur du mot
 
 Parcourez caractère par caractère, créez les nœuds nécessaires, puis marquez le dernier nœud.
 
@@ -58,7 +58,7 @@ def insert(self, word):
 
 ### Search et startsWith
 
-**Search** suit le chemin et vérifie `is_end`. **startsWith** vérifie uniquement si le chemin existe — il ne nécessite pas `is_end = True`.
+**Search** suit le chemin et vérifie `is_end`. **startsWith** vérifie uniquement si le chemin existe - il ne nécessite pas `is_end = True`.
 
 <Quiz
   question="Quelle est la différence entre search('app') et startsWith('app') lorsque 'apple' est stocké mais pas 'app' ?"
@@ -85,7 +85,7 @@ Le helper `_dfs` parcourt récursivement les enfants et ajoute aux résultats ch
 
 <ThinkAboutIt>Comment limiteriez-vous l'autocomplete aux top-k suggestions les plus fréquentes ? Quelles données supplémentaires chaque nœud devrait-il stocker ?</ThinkAboutIt>
 
-## Recherche par wildcard — Dictionnaire de mots
+## Recherche par wildcard - Dictionnaire de mots
 
 Le problème LeetCode **Design Add and Search Words Data Structure** demande de gérer `.` comme un wildcard correspondant à n'importe quel caractère.
 
@@ -115,7 +115,7 @@ Parcourez le trie depuis la racine. Le plus long préfixe commun se termine au p
 
 ## Routage IP avec les tries
 
-Les routeurs stockent les préfixes IP dans un **binary trie** — chaque bit (0 ou 1) forme une branche. Le longest prefix match trouve la route la plus spécifique. C'est ainsi que vos paquets trouvent leur chemin à travers Internet.
+Les routeurs stockent les préfixes IP dans un **binary trie** - chaque bit (0 ou 1) forme une branche. Le longest prefix match trouve la route la plus spécifique. C'est ainsi que vos paquets trouvent leur chemin à travers Internet.
 
 <FunFact>Les routeurs du backbone Internet effectuent des milliards de lookups longest-prefix-match par seconde grâce à des tries optimisés en matériel, intégrés dans des puces spécialisées appelées TCAMs.</FunFact>
 
@@ -168,6 +168,6 @@ Ici *m* est la longueur du mot, *k* le nombre de résultats et *n* le nombre tot
 
 ## 📚 Pour aller plus loin
 
-- [Trie Data Structure — Wikipédia](https://en.wikipedia.org/wiki/Trie) — Vue d'ensemble complète des variantes et de l'histoire des tries
-- [Implement Trie — LeetCode 208](https://leetcode.com/problems/implement-trie-prefix-tree/) — Le problème classique d'implémentation de trie
-- [Radix Trees in the Linux Kernel](https://lwn.net/Articles/175432/) — Comment les tries compressés alimentent les composants internes du noyau
+- [Trie Data Structure - Wikipédia](https://en.wikipedia.org/wiki/Trie) - Vue d'ensemble complète des variantes et de l'histoire des tries
+- [Implement Trie - LeetCode 208](https://leetcode.com/problems/implement-trie-prefix-tree/) - Le problème classique d'implémentation de trie
+- [Radix Trees in the Linux Kernel](https://lwn.net/Articles/175432/) - Comment les tries compressés alimentent les composants internes du noyau

@@ -1,5 +1,5 @@
 ---
-title: "Ontwerp een chatapplicatie — Real-time communicatie op schaal"
+title: "Ontwerp een chatapplicatie - Real-time communicatie op schaal"
 description: "Ontwerp een WhatsApp-achtig chatsysteem dat miljoenen gelijktijdige gebruikers bedient met real-time delivery."
 order: 3
 difficulty: "advanced"
@@ -12,7 +12,7 @@ published: true
 
 *"Ontwerp een chatapplicatie zoals WhatsApp of Slack die one-to-one messaging, groepschats en online presence indicators ondersteunt."*
 
-Dit is een favoriet bij system design interviews omdat het real-time communicatie, connection management, storage op schaal en distributed system trade-offs test — allemaal in één probleem.
+Dit is een favoriet bij system design interviews omdat het real-time communicatie, connection management, storage op schaal en distributed system trade-offs test - allemaal in één probleem.
 
 ## Stap 1: Requirements verzamelen
 
@@ -30,7 +30,7 @@ Dit is een favoriet bij system design interviews omdat het real-time communicati
 - Ondersteuning voor 50 miljoen gelijktijdige verbindingen
 
 <Callout>
-Kwantificeer je niet-functionele requirements altijd met specifieke getallen. "Snelle bezorging" is vaag — "sub-200ms delivery" toont dat je het domein begrijpt.
+Kwantificeer je niet-functionele requirements altijd met specifieke getallen. "Snelle bezorging" is vaag - "sub-200ms delivery" toont dat je het domein begrijpt.
 </Callout>
 
 ## Stap 2: API-ontwerp
@@ -78,9 +78,9 @@ Wanneer gebruiker A een bericht stuurt naar gebruiker B, is de flow:
 Chatapplicaties genereren enorme hoeveelheden data. WhatsApp verwerkt dagelijks meer dan 100 miljard berichten.
 
 **Opslagstrategie:**
-- **Recente berichten** — opgeslagen in een snelle datastore (Cassandra of HBase), gepartitioneerd op conversation ID
-- **Berichtindex** — maakt zoeken mogelijk via Elasticsearch
-- **Mediabestanden** — opgeslagen in object storage (S3) met CDN-levering
+- **Recente berichten** - opgeslagen in een snelle datastore (Cassandra of HBase), gepartitioneerd op conversation ID
+- **Berichtindex** - maakt zoeken mogelijk via Elasticsearch
+- **Mediabestanden** - opgeslagen in object storage (S3) met CDN-levering
 
 **Schema design (Cassandra):**
 ```
@@ -90,7 +90,7 @@ Table: messages
   columns: sender_id, content, type, status
 ```
 
-Dit ontwerp zorgt ervoor dat alle berichten in een conversatie op dezelfde partition staan, waardoor "laad oudere berichten"-queries extreem efficiënt zijn — slechts een sequentiële lezing binnen één partition.
+Dit ontwerp zorgt ervoor dat alle berichten in een conversatie op dezelfde partition staan, waardoor "laad oudere berichten"-queries extreem efficiënt zijn - slechts een sequentiële lezing binnen één partition.
 
 <Quiz question="Waarom is Cassandra een sterke keuze voor chatberichtopslag in vergelijking met een relationele database zoals PostgreSQL?" options="Cassandra ondersteunt SQL joins voor complexe queries|Cassandra biedt sterke ACID-transacties|Cassandra verwerkt enorme schrijfdoorvoer en schaalt horizontaal door ontwerp|Cassandra versleutelt automatisch alle data at rest" answer="2" explanation="Chatsystemen zijn write-heavy (miljarden berichten per dag). De gedistribueerde architectuur van Cassandra verwerkt enorme schrijfdoorvoer en schaalt horizontaal door nodes toe te voegen, terwijl PostgreSQL zou worstelen met dit schrijfvolume op een enkele primary." />
 
@@ -104,7 +104,7 @@ Tonen wie online is lijkt eenvoudig, maar is verrassend lastig op schaal. Je kun
 3. Als er geen heartbeat komt, verloopt de sleutel en verschijnt de gebruiker als offline
 
 **Fan-out voor statusupdates:**
-Wanneer een gebruiker online komt, moet hun status worden gepusht naar alle contacten die ook online zijn. Voor een gebruiker met 500 contacten betekent dit controleren welke contacten online zijn en presence updates alleen naar hen sturen — **lazy fan-out** vermijdt broadcasting naar offline gebruikers.
+Wanneer een gebruiker online komt, moet hun status worden gepusht naar alle contacten die ook online zijn. Voor een gebruiker met 500 contacten betekent dit controleren welke contacten online zijn en presence updates alleen naar hen sturen - **lazy fan-out** vermijdt broadcasting naar offline gebruikers.
 
 <FunFact>
 WhatsApp's "last seen"-functie veroorzaakte wereldwijd onverwachte sociale drama's. In sommige landen namen relatieconflicten toe omdat partners elkaars exacte laatst-actieve timestamps konden zien. WhatsApp voegde uiteindelijk privacyinstellingen toe om deze informatie te verbergen.
@@ -131,7 +131,7 @@ Het kort noemen van E2E encryption in interviewgesprekken toont beveiligingsbewu
 
 - Elke gebruiker genereert een **public/private key pair** op hun apparaat
 - Berichten worden versleuteld met de public key van de ontvanger vóór verzending
-- De server ziet alleen ciphertext — het kan de berichtinhoud niet lezen
+- De server ziet alleen ciphertext - het kan de berichtinhoud niet lezen
 - Groepschats gebruiken een **shared group key** die roteert wanneer leden toetreden of vertrekken
 
 Dit betekent dat de server alleen versleutelde blobs opslaat, wat vanuit data compliance-perspectief eigenlijk eenvoudiger is.
@@ -139,11 +139,11 @@ Dit betekent dat de server alleen versleutelde blobs opslaat, wat vanuit data co
 ## Stap 8: Schalen naar miljoenen
 
 **Belangrijke scaling-strategieën:**
-- **Connection servers** schalen horizontaal — voeg servers toe naarmate gebruikers groeien
+- **Connection servers** schalen horizontaal - voeg servers toe naarmate gebruikers groeien
 - **Message routing** gebruikt Kafka of Redis Pub/Sub voor inter-server communicatie
 - **Database sharding** op conversation ID verdeelt de opslagbelasting
-- **Geografische spreiding** — deploy connection servers in meerdere regio's om latency te verlagen
-- **Message queue buffering** — vangt pieken op tijdens drukke uren
+- **Geografische spreiding** - deploy connection servers in meerdere regio's om latency te verlagen
+- **Message queue buffering** - vangt pieken op tijdens drukke uren
 
 <Quiz question="Een gebruiker in Londen stuurt een bericht naar een gebruiker in Tokyo. Wat is de meest effectieve manier om de bezorglatency te minimaliseren?" options="Alle berichten opslaan in één gecentraliseerde database|Connection servers in beide regio's deployen met inter-region message routing|Alle WebSocket-verbindingen forceren via Londense servers|Alle berichten cachen op de CDN edge" answer="1" explanation="Het deployen van connection servers in meerdere regio's betekent dat elke gebruiker verbinding maakt met een nabijgelegen server. Berichten worden gerouteerd tussen regio's via geoptimaliseerde inter-region links, waardoor de latency voor elke gebruiker wordt geminimaliseerd." />
 
@@ -151,10 +151,10 @@ Dit betekent dat de server alleen versleutelde blobs opslaat, wat vanuit data co
 
 ## Interviewtips
 
-1. **Begin met de WebSocket-beslissing** — leg uit waarom HTTP polling op deze schaal niet werkt
-2. **Kwantificeer verbindingscapaciteit** — laat zien dat je serverlimieten begrijpt (~50-100K verbindingen per server)
-3. **Behandel offline bezorging** — veel kandidaten vergeten dat gebruikers niet altijd verbonden zijn
-4. **Noem berichtvolgorde** — timestamp-gebaseerde ordening met conflictoplossing
+1. **Begin met de WebSocket-beslissing** - leg uit waarom HTTP polling op deze schaal niet werkt
+2. **Kwantificeer verbindingscapaciteit** - laat zien dat je serverlimieten begrijpt (~50-100K verbindingen per server)
+3. **Behandel offline bezorging** - veel kandidaten vergeten dat gebruikers niet altijd verbonden zijn
+4. **Noem berichtvolgorde** - timestamp-gebaseerde ordening met conflictoplossing
 
 <ThinkAboutIt>
 Slack en WhatsApp hanteren zeer verschillende benaderingen voor berichtgeschiedenis. WhatsApp slaat berichten op het apparaat op en synchroniseert geen volledige geschiedenis naar nieuwe apparaten. Slack slaat alles server-side op en biedt volledige zoekfunctionaliteit. Wat zijn de privacy-, kosten- en gebruikerservaring trade-offs van elke aanpak?

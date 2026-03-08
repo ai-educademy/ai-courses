@@ -1,5 +1,5 @@
 ---
-title: "Binary Search Patronen — Verder dan Gesorteerde Arrays"
+title: "Binary Search Patronen - Verder dan Gesorteerde Arrays"
 description: "Leer de binary search-denkwijze: zoekruimten, binary search op het antwoord, en patronen die in tientallen interviewvragen terugkomen."
 order: 7
 difficulty: "intermediate"
@@ -8,7 +8,7 @@ icon: "🔍"
 published: true
 ---
 
-## Klassieke Binary Search — Korte Herhaling
+## Klassieke Binary Search - Korte Herhaling
 
 Binary search halveert de zoekruimte bij elke stap. In een gesorteerde array van n elementen vind je een doelwaarde in **O(log n)** tijd.
 
@@ -26,11 +26,11 @@ def binary_search(nums, target):
     return -1
 ```
 
-Eenvoudig — maar de echte kracht van binary search reikt veel verder dan gesorteerde arrays.
+Eenvoudig - maar de echte kracht van binary search reikt veel verder dan gesorteerde arrays.
 
 ## Het Concept van de Zoekruimte
 
-Binary search werkt wanneer er een **monotone conditie** over een bereik bestaat. De "array" hoeft niet eens te bestaan — je hebt alleen een bereik `[lo, hi]` nodig en een functie die van `False` naar `True` (of andersom) omslaagt bij een grens.
+Binary search werkt wanneer er een **monotone conditie** over een bereik bestaat. De "array" hoeft niet eens te bestaan - je hebt alleen een bereik `[lo, hi]` nodig en een functie die van `False` naar `True` (of andersom) omslaagt bij een grens.
 
 ```
 Search space:  [lo .................. hi]
@@ -38,7 +38,7 @@ Condition:      F  F  F  F  T  T  T  T
                           ^-- answer
 ```
 
-<FunFact>Binary search werd voor het eerst gepubliceerd in 1946, maar de eerste foutloze implementatie verscheen pas in 1962 — 16 jaar off-by-one errors!</FunFact>
+<FunFact>Binary search werd voor het eerst gepubliceerd in 1946, maar de eerste foutloze implementatie verscheen pas in 1962 - 16 jaar off-by-one errors!</FunFact>
 
 ## Binary Search op het Antwoord
 
@@ -61,7 +61,7 @@ def min_speed(piles, h):
     return lo
 ```
 
-De antwoordruimte is `[1, max(piles)]` en de conditie is monotoon — hogere snelheid betekent altijd minder uren.
+De antwoordruimte is `[1, max(piles)]` en de conditie is monotoon - hogere snelheid betekent altijd minder uren.
 
 <Illustration src="/images/lessons/binary-search-patterns.svg" alt="Binary search die de antwoordruimte verkleint voor minimale eetsnelheid" caption="Binary search op het antwoord: verklein het haalbare bereik bij elke iteratie." />
 
@@ -80,7 +80,7 @@ Target 1 not in [4..7] → search right.
 
 ## Eerste en Laatste Voorkomen
 
-Om het **eerste** voorkomen te vinden: als je het doel raakt, stop dan niet — zet `hi = mid` en blijf links zoeken. Voor het **laatste**: zet `lo = mid + 1` en zoek rechts.
+Om het **eerste** voorkomen te vinden: als je het doel raakt, stop dan niet - zet `hi = mid` en blijf links zoeken. Voor het **laatste**: zet `lo = mid + 1` en zoek rechts.
 
 Dit paar zoekopdrachten geeft je ook het **aantal** voorkomens: `last - first + 1`.
 
@@ -139,6 +139,6 @@ Pas `hi = mid` vs `lo = mid` aan naargelang je de **eerste True** of **laatste T
 
 ## 📚 Verder Lezen
 
-- [NeetCode — Binary Search playlist](https://neetcode.io/roadmap) — samengestelde problemen van makkelijk tot moeilijk
-- [Tech Interview Handbook — Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) — patronen, tips en valkuilen
-- [LeetCode Binary Search studieplan](https://leetcode.com/studyplan/binary-search/) — opbouwende probleemset
+- [NeetCode - Binary Search playlist](https://neetcode.io/roadmap) - samengestelde problemen van makkelijk tot moeilijk
+- [Tech Interview Handbook - Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) - patronen, tips en valkuilen
+- [LeetCode Binary Search studieplan](https://leetcode.com/studyplan/binary-search/) - opbouwende probleemset

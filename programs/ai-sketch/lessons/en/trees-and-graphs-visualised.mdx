@@ -1,5 +1,5 @@
 ---
-title: "Trees and Graphs Visualised — How AI Maps Relationships"
+title: "Trees and Graphs Visualised - How AI Maps Relationships"
 description: "See how trees and graphs represent hierarchical and interconnected data powering AI decision-making and recommendations."
 order: 5
 difficulty: "intermediate"
@@ -10,11 +10,11 @@ published: true
 
 ## Data With Relationships
 
-So far, we've looked at data in lines — arrays, linked lists, stacks, and queues all arrange items in a sequence. But the real world isn't linear. Family trees branch out. Social networks form webs. Road maps create interconnected routes.
+So far, we've looked at data in lines - arrays, linked lists, stacks, and queues all arrange items in a sequence. But the real world isn't linear. Family trees branch out. Social networks form webs. Road maps create interconnected routes.
 
 **Trees** and **graphs** capture these relationships, and they're at the heart of some of AI's most powerful techniques.
 
-## Trees — Hierarchical Data
+## Trees - Hierarchical Data
 
 A **tree** is a structure where each item (called a **node**) can have child nodes, forming a hierarchy. There's one special node at the top called the **root**, and nodes with no children are called **leaves**.
 
@@ -30,14 +30,14 @@ A **tree** is a structure where each item (called a **node**) can have child nod
 
 ### Trees Are Everywhere
 
-- **File systems**: Folders contain subfolders which contain files — a tree.
+- **File systems**: Folders contain subfolders which contain files - a tree.
 - **HTML/DOM**: Every web page is a tree of nested elements.
 - **Organisation charts**: Managers have reports who may have their own reports.
 - **JSON data**: The nested structure of JSON is fundamentally a tree.
 
 ### Binary Trees
 
-A **binary tree** restricts each node to at most two children — a left child and a right child. This simple constraint enables powerful algorithms.
+A **binary tree** restricts each node to at most two children - a left child and a right child. This simple constraint enables powerful algorithms.
 
 ```
         8
@@ -51,7 +51,7 @@ A **binary tree** restricts each node to at most two children — a left child a
 
 A **binary search tree** adds one rule: for every node, all values in the left subtree are smaller, and all values in the right subtree are larger.
 
-This makes searching fast — at each node, you know whether to go left or right:
+This makes searching fast - at each node, you know whether to go left or right:
 
 ```
 Find 6 in the BST above:
@@ -60,11 +60,11 @@ Find 6 in the BST above:
   At 6 → Found it!
 ```
 
-**Time complexity**: O(log n) for a balanced tree — the same logarithmic magic as binary search on a sorted array.
+**Time complexity**: O(log n) for a balanced tree - the same logarithmic magic as binary search on a sorted array.
 
-<Quiz question="In a balanced binary search tree with 1,000,000 nodes, roughly how many comparisons are needed to find a value?" options="1,000,000|500,000|About 20|About 100" answer="2" explanation="A balanced BST has depth log₂(1,000,000) ≈ 20. You make one comparison per level, so finding any value takes about 20 steps — identical to binary search on a sorted array." />
+<Quiz question="In a balanced binary search tree with 1,000,000 nodes, roughly how many comparisons are needed to find a value?" options="1,000,000|500,000|About 20|About 100" answer="2" explanation="A balanced BST has depth log₂(1,000,000) ≈ 20. You make one comparison per level, so finding any value takes about 20 steps - identical to binary search on a sorted array." />
 
-## Graphs — Everything Connected
+## Graphs - Everything Connected
 
 A **graph** generalises trees by removing the hierarchy constraint. It consists of **nodes** (also called vertices) and **edges** (connections between nodes). Edges can be:
 
@@ -73,9 +73,9 @@ A **graph** generalises trees by removing the hierarchy constraint. It consists 
 
 ```
 Social network (undirected):
-  Alice — Bob — Charlie
+  Alice - Bob - Charlie
     \       |
-     Diana — Eve
+     Diana - Eve
 
 Road map (weighted, directed):
   London →(2h)→ Birmingham →(1.5h)→ Manchester
@@ -89,7 +89,7 @@ Road map (weighted, directed):
 - **Recommendation systems**: Users and products are nodes; interactions are edges.
 
 <FunFact>
-Facebook's social graph contains over 3 billion nodes (users) and hundreds of billions of edges (friendships). Graph algorithms determine your News Feed, friend suggestions, and ad targeting — all running on one of the largest graphs ever built.
+Facebook's social graph contains over 3 billion nodes (users) and hundreds of billions of edges (friendships). Graph algorithms determine your News Feed, friend suggestions, and ad targeting - all running on one of the largest graphs ever built.
 </FunFact>
 
 ## How AI Uses Trees
@@ -108,7 +108,7 @@ Is temperature > 30°C?
     └── No: "Play tennis"
 ```
 
-Decision trees are popular because humans can read and understand them — crucial in healthcare, finance, and legal AI where explainability matters.
+Decision trees are popular because humans can read and understand them - crucial in healthcare, finance, and legal AI where explainability matters.
 
 <ThinkAboutIt>
 A hospital uses an AI to predict patient risk. Regulators require the AI to explain its decisions. Why might a decision tree be preferred over a deep neural network here, even if the neural network is slightly more accurate?
@@ -116,7 +116,7 @@ A hospital uses an AI to predict patient risk. Regulators require the AI to expl
 
 ### Random Forests
 
-A **random forest** builds hundreds of decision trees, each trained on a slightly different subset of the data, then takes a vote. This ensemble approach is more accurate and robust than a single tree — and it's still one of the most widely used AI techniques in industry.
+A **random forest** builds hundreds of decision trees, each trained on a slightly different subset of the data, then takes a vote. This ensemble approach is more accurate and robust than a single tree - and it's still one of the most widely used AI techniques in industry.
 
 ## How AI Uses Graphs
 
@@ -136,9 +136,9 @@ Google's Knowledge Graph powers those information panels you see in search resul
 
 Netflix, Spotify, and Amazon model users and items as a graph. If users A and B both liked items X and Y, and user A also liked item Z, the graph suggests Z to user B. This is **collaborative filtering** powered by graph structure.
 
-<Quiz question="Why are graphs better than simple lists for modelling social networks?" options="Graphs use less memory|Graphs can represent complex many-to-many relationships between people, not just linear sequences|Graphs are always faster to search|Graphs automatically sort the data" answer="1" explanation="Social networks have complex many-to-many relationships — a person can have hundreds of friends, each with their own connections. Graphs naturally model these interconnected relationships; lists cannot." />
+<Quiz question="Why are graphs better than simple lists for modelling social networks?" options="Graphs use less memory|Graphs can represent complex many-to-many relationships between people, not just linear sequences|Graphs are always faster to search|Graphs automatically sort the data" answer="1" explanation="Social networks have complex many-to-many relationships - a person can have hundreds of friends, each with their own connections. Graphs naturally model these interconnected relationships; lists cannot." />
 
-## Traversal — Walking Through Trees and Graphs
+## Traversal - Walking Through Trees and Graphs
 
 ### Depth-First Search (DFS)
 
@@ -179,22 +179,22 @@ BFS uses a **queue**. It's great for:
 - Web crawling (visiting pages level by level)
 
 <Callout>
-Notice how stacks and queues from the previous lesson connect to tree and graph traversal? DFS uses a stack; BFS uses a queue. Data structures build upon each other — that's why learning them in order matters.
+Notice how stacks and queues from the previous lesson connect to tree and graph traversal? DFS uses a stack; BFS uses a queue. Data structures build upon each other - that's why learning them in order matters.
 </Callout>
 
-<Quiz question="You want to find the shortest route between two cities on a map where all roads are the same length. Which traversal should you use?" options="Depth-first search — it explores deeper paths first|Breadth-first search — it finds the shortest path in unweighted graphs|Binary search — it works on sorted data|Random search — it tries paths randomly" answer="1" explanation="BFS explores nodes level by level, guaranteeing that the first time it reaches a destination, it has found the shortest path (in terms of number of edges). DFS might find a longer path first." />
+<Quiz question="You want to find the shortest route between two cities on a map where all roads are the same length. Which traversal should you use?" options="Depth-first search - it explores deeper paths first|Breadth-first search - it finds the shortest path in unweighted graphs|Binary search - it works on sorted data|Random search - it tries paths randomly" answer="1" explanation="BFS explores nodes level by level, guaranteeing that the first time it reaches a destination, it has found the shortest path (in terms of number of edges). DFS might find a longer path first." />
 
 <ThinkAboutIt>
-Social media platforms measure "degrees of separation" — how many friend-of-friend hops connect two people. Which traversal algorithm would efficiently find the fewest hops between two users? How does this relate to the "six degrees of separation" idea?
+Social media platforms measure "degrees of separation" - how many friend-of-friend hops connect two people. Which traversal algorithm would efficiently find the fewest hops between two users? How does this relate to the "six degrees of separation" idea?
 </ThinkAboutIt>
 
 <FunFact>
-Google's PageRank algorithm — the original breakthrough that made Google dominant — models the web as a graph. Each web page is a node, each hyperlink is a directed edge, and a page's importance is determined by how many important pages link to it. It's essentially a random walk on a graph.
+Google's PageRank algorithm - the original breakthrough that made Google dominant - models the web as a graph. Each web page is a node, each hyperlink is a directed edge, and a page's importance is determined by how many important pages link to it. It's essentially a random walk on a graph.
 </FunFact>
 
 ## Key Takeaways
 
-- **Trees** model hierarchical data — file systems, HTML, and AI decision trees all use tree structures.
+- **Trees** model hierarchical data - file systems, HTML, and AI decision trees all use tree structures.
 - **Binary search trees** enable O(log n) lookups by maintaining a sorted hierarchy.
-- **Graphs** model interconnected data — social networks, knowledge bases, and recommendation engines.
-- **DFS** (stack-based) goes deep; **BFS** (queue-based) goes wide — both power core AI algorithms like PageRank and recommendation engines.
+- **Graphs** model interconnected data - social networks, knowledge bases, and recommendation engines.
+- **DFS** (stack-based) goes deep; **BFS** (queue-based) goes wide - both power core AI algorithms like PageRank and recommendation engines.

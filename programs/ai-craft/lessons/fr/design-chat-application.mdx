@@ -1,5 +1,5 @@
 ---
-title: "Concevoir une application de chat — Communication en temps réel à grande échelle"
+title: "Concevoir une application de chat - Communication en temps réel à grande échelle"
 description: "Concevez un système de chat type WhatsApp capable de gérer des millions d'utilisateurs simultanés avec une livraison en temps réel."
 order: 3
 difficulty: "advanced"
@@ -12,7 +12,7 @@ published: true
 
 *"Concevez une application de chat comme WhatsApp ou Slack qui supporte la messagerie individuelle, les discussions de groupe et les indicateurs de présence en ligne."*
 
-C'est un grand classique des entretiens de conception système car il teste la communication en temps réel, la gestion des connexions, le stockage à grande échelle et les compromis des systèmes distribués — le tout en un seul problème.
+C'est un grand classique des entretiens de conception système car il teste la communication en temps réel, la gestion des connexions, le stockage à grande échelle et les compromis des systèmes distribués - le tout en un seul problème.
 
 ## Étape 1 : Recueil des exigences
 
@@ -30,7 +30,7 @@ C'est un grand classique des entretiens de conception système car il teste la c
 - Support de 50 millions de connexions simultanées
 
 <Callout>
-Quantifiez toujours vos exigences non fonctionnelles avec des chiffres précis. « Livraison rapide » est vague — « livraison en moins de 200 ms » montre que vous maîtrisez le domaine.
+Quantifiez toujours vos exigences non fonctionnelles avec des chiffres précis. « Livraison rapide » est vague - « livraison en moins de 200 ms » montre que vous maîtrisez le domaine.
 </Callout>
 
 ## Étape 2 : Conception de l'API
@@ -78,9 +78,9 @@ Quand l'utilisateur A envoie un message à l'utilisateur B, le flux est :
 Les applications de chat génèrent des volumes de données considérables. WhatsApp traite plus de 100 milliards de messages par jour.
 
 **Stratégie de stockage :**
-- **Messages récents** — conservés dans un datastore rapide (Cassandra ou HBase) partitionné par conversation ID
-- **Index des messages** — permet la recherche via Elasticsearch
-- **Fichiers média** — stockés dans un object storage (S3) avec livraison CDN
+- **Messages récents** - conservés dans un datastore rapide (Cassandra ou HBase) partitionné par conversation ID
+- **Index des messages** - permet la recherche via Elasticsearch
+- **Fichiers média** - stockés dans un object storage (S3) avec livraison CDN
 
 **Schema design (Cassandra) :**
 ```
@@ -90,7 +90,7 @@ Table: messages
   columns: sender_id, content, type, status
 ```
 
-Cette conception garantit que tous les messages d'une conversation sont co-localisés sur la même partition, rendant les requêtes « charger les anciens messages » extrêmement efficaces — une simple lecture séquentielle dans une partition.
+Cette conception garantit que tous les messages d'une conversation sont co-localisés sur la même partition, rendant les requêtes « charger les anciens messages » extrêmement efficaces - une simple lecture séquentielle dans une partition.
 
 <Quiz question="Pourquoi Cassandra est-il un excellent choix pour le stockage de messages de chat par rapport à une base relationnelle comme PostgreSQL ?" options="Cassandra supporte les jointures SQL pour les requêtes complexes|Cassandra fournit des transactions ACID fortes|Cassandra gère un débit d'écriture massif et scale horizontalement par conception|Cassandra chiffre automatiquement toutes les données au repos" answer="2" explanation="Les systèmes de chat sont write-heavy (des milliards de messages par jour). L'architecture distribuée de Cassandra gère un débit d'écriture massif et scale horizontalement en ajoutant des nœuds, tandis que PostgreSQL aurait du mal avec ce volume d'écritures sur un seul primary." />
 
@@ -104,7 +104,7 @@ Afficher qui est en ligne semble simple mais s'avère étonnamment complexe à g
 3. Sans heartbeat, la clé expire et l'utilisateur apparaît hors ligne
 
 **Fan-out des mises à jour de statut :**
-Quand un utilisateur se connecte, son statut doit être poussé à tous ses contacts également en ligne. Pour un utilisateur avec 500 contacts, il faut vérifier lesquels sont en ligne et envoyer les mises à jour de présence uniquement à ceux-ci — le **lazy fan-out** évite de diffuser vers les utilisateurs hors ligne.
+Quand un utilisateur se connecte, son statut doit être poussé à tous ses contacts également en ligne. Pour un utilisateur avec 500 contacts, il faut vérifier lesquels sont en ligne et envoyer les mises à jour de présence uniquement à ceux-ci - le **lazy fan-out** évite de diffuser vers les utilisateurs hors ligne.
 
 <FunFact>
 La fonctionnalité « last seen » de WhatsApp a provoqué des drames sociaux inattendus dans le monde entier. Dans certains pays, les disputes de couple ont augmenté car les partenaires pouvaient voir les horodatages exacts de dernière activité. WhatsApp a finalement ajouté des contrôles de confidentialité pour masquer cette information.
@@ -131,7 +131,7 @@ Mentionner brièvement le E2E encryption en entretien démontre votre sensibilit
 
 - Chaque utilisateur génère une **paire de clés publique/privée** sur son appareil
 - Les messages sont chiffrés avec la clé publique du destinataire avant de quitter l'appareil de l'expéditeur
-- Le serveur ne voit que du ciphertext — il ne peut pas lire le contenu
+- Le serveur ne voit que du ciphertext - il ne peut pas lire le contenu
 - Les chats de groupe utilisent une **clé de groupe partagée** qui est renouvelée quand des membres rejoignent ou quittent le groupe
 
 Le stockage du serveur ne contient donc que des blobs chiffrés, ce qui simplifie en réalité la conformité des données.
@@ -139,11 +139,11 @@ Le stockage du serveur ne contient donc que des blobs chiffrés, ce qui simplifi
 ## Étape 8 : Passer à l'échelle de millions
 
 **Stratégies de scaling clés :**
-- Les **connection servers** scalent horizontalement — ajoutez des serveurs au fur et à mesure
+- Les **connection servers** scalent horizontalement - ajoutez des serveurs au fur et à mesure
 - Le **message routing** utilise Kafka ou Redis Pub/Sub pour la communication inter-serveurs
 - Le **database sharding** par conversation ID distribue la charge de stockage
-- La **distribution géographique** — déployez des connection servers dans plusieurs régions pour réduire la latence
-- Le **message queue buffering** — absorbe les pics lors des heures de pointe
+- La **distribution géographique** - déployez des connection servers dans plusieurs régions pour réduire la latence
+- Le **message queue buffering** - absorbe les pics lors des heures de pointe
 
 <Quiz question="Un utilisateur à Londres envoie un message à un utilisateur à Tokyo. Quel est le moyen le plus efficace de minimiser la latence de livraison ?" options="Stocker tous les messages dans une base de données centralisée unique|Déployer des connection servers dans les deux régions avec routage inter-régions|Forcer toutes les connexions WebSocket via les serveurs de Londres|Mettre en cache tous les messages au niveau du CDN edge" answer="1" explanation="Déployer des connection servers dans plusieurs régions permet à chaque utilisateur de se connecter à un serveur proche. Les messages transitent entre régions via des liens inter-régions optimisés, minimisant la latence perçue par chaque utilisateur." />
 
@@ -151,10 +151,10 @@ Le stockage du serveur ne contient donc que des blobs chiffrés, ce qui simplifi
 
 ## Conseils pour l'entretien
 
-1. **Commencez par la décision WebSocket** — expliquez pourquoi le HTTP polling ne fonctionne pas à cette échelle
-2. **Quantifiez la capacité de connexion** — montrez que vous comprenez les limites serveur (~50-100K connexions par serveur)
-3. **Abordez la livraison hors ligne** — beaucoup de candidats oublient que les utilisateurs ne sont pas toujours connectés
-4. **Mentionnez l'ordre des messages** — ordonnancement par timestamp avec résolution de conflits
+1. **Commencez par la décision WebSocket** - expliquez pourquoi le HTTP polling ne fonctionne pas à cette échelle
+2. **Quantifiez la capacité de connexion** - montrez que vous comprenez les limites serveur (~50-100K connexions par serveur)
+3. **Abordez la livraison hors ligne** - beaucoup de candidats oublient que les utilisateurs ne sont pas toujours connectés
+4. **Mentionnez l'ordre des messages** - ordonnancement par timestamp avec résolution de conflits
 
 <ThinkAboutIt>
 Slack et WhatsApp adoptent des approches très différentes pour l'historique des messages. WhatsApp stocke les messages sur l'appareil et ne synchronise pas l'historique complet sur les nouveaux appareils. Slack stocke tout côté serveur et offre une recherche complète. Quels sont les compromis en termes de confidentialité, de coût et d'expérience utilisateur de chaque approche ?

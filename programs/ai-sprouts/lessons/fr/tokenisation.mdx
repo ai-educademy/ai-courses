@@ -1,5 +1,5 @@
 ---
-title: "Tokenisation — Comment l'IA lit le texte"
+title: "Tokenisation - Comment l'IA lit le texte"
 description: "Découvrez comment les modèles de langage découpent le texte en tokens à l'aide de BPE et d'autres algorithmes, et pourquoi la tokenisation influence tout, du coût aux capacités."
 order: 8
 difficulty: "intermediate"
@@ -8,35 +8,35 @@ icon: "🔤"
 published: true
 ---
 
-# Tokenisation — Comment l'IA lit le texte
+# Tokenisation - Comment l'IA lit le texte
 
-Les réseaux de neurones travaillent avec des nombres. Ils ne peuvent pas lire le mot « bonjour » comme vous le faites. Avant qu'un modèle de langage puisse traiter du texte, celui-ci doit être découpé en petits morceaux numériques appelés **tokens**. Cette étape en apparence simple a des conséquences profondes sur la façon dont l'IA comprend — et ne comprend pas — le langage.
+Les réseaux de neurones travaillent avec des nombres. Ils ne peuvent pas lire le mot « bonjour » comme vous le faites. Avant qu'un modèle de langage puisse traiter du texte, celui-ci doit être découpé en petits morceaux numériques appelés **tokens**. Cette étape en apparence simple a des conséquences profondes sur la façon dont l'IA comprend - et ne comprend pas - le langage.
 
 ## Pourquoi l'IA ne peut-elle pas simplement lire des caractères ?
 
-L'approche la plus simple : traiter chaque caractère comme un token. « Hello » devient `['H', 'e', 'l', 'l', 'o']` — cinq tokens.
+L'approche la plus simple : traiter chaque caractère comme un token. « Hello » devient `['H', 'e', 'l', 'l', 'o']` - cinq tokens.
 
-Le problème ? Les mots deviennent des séquences absurdement longues. Un essai de 500 mots pourrait produire plus de 2 500 tokens de caractères. Comme les modèles Transformer ont une complexité quadratique par rapport à la longueur de la séquence, c'est un désastre en termes de calcul. Pire, les caractères individuels ne portent presque aucun sens — le modèle doit apprendre que 'c', 'h', 'a', 't' ensemble désignent un animal à fourrure.
+Le problème ? Les mots deviennent des séquences absurdement longues. Un essai de 500 mots pourrait produire plus de 2 500 tokens de caractères. Comme les modèles Transformer ont une complexité quadratique par rapport à la longueur de la séquence, c'est un désastre en termes de calcul. Pire, les caractères individuels ne portent presque aucun sens - le modèle doit apprendre que 'c', 'h', 'a', 't' ensemble désignent un animal à fourrure.
 
 ## Tokenisation au niveau des mots
 
-L'extrême opposé : chaque mot est un token. « Le chat dort » devient `['Le', 'chat', 'dort']` — compact et porteur de sens.
+L'extrême opposé : chaque mot est un token. « Le chat dort » devient `['Le', 'chat', 'dort']` - compact et porteur de sens.
 
-Mais cela crée un problème différent : l'**explosion du vocabulaire**. Le français seul compte des centaines de milliers de mots. Ajoutez les fautes d'orthographe, le jargon technique et le code, et le vocabulaire devient ingérable. Tout mot absent du vocabulaire devient un token inconnu `[UNK]` — une impasse pour la compréhension.
+Mais cela crée un problème différent : l'**explosion du vocabulaire**. Le français seul compte des centaines de milliers de mots. Ajoutez les fautes d'orthographe, le jargon technique et le code, et le vocabulaire devient ingérable. Tout mot absent du vocabulaire devient un token inconnu `[UNK]` - une impasse pour la compréhension.
 
 <ThinkAboutIt>
 Si un modèle utilisant des tokens au niveau des mots rencontre « ChatGPT » pour la première fois et que ce mot n'est pas dans le vocabulaire, il devient `[UNK]`. Comment cela pourrait-il affecter la capacité du modèle à parler de nouvelles technologies ?
 </ThinkAboutIt>
 
-## Le juste milieu — La tokenisation en sous-mots
+## Le juste milieu - La tokenisation en sous-mots
 
 Les modèles de langage modernes utilisent la **tokenisation en sous-mots**, qui se situe entre les caractères et les mots. Les mots courants restent entiers (« the », « and »), tandis que les mots rares sont découpés en morceaux significatifs (« in » + « croyab » + « le »).
 
-Cela nous donne un vocabulaire gérable (généralement 32 000 à 100 000 tokens) tout en étant capable de traiter n'importe quel texte — même des mots que le modèle n'a jamais vus.
+Cela nous donne un vocabulaire gérable (généralement 32 000 à 100 000 tokens) tout en étant capable de traiter n'importe quel texte - même des mots que le modèle n'a jamais vus.
 
 <Illustration src="/images/lessons/tokenisation.svg" alt="Le mot 'unbelievable' découpé en trois tokens de sous-mots : 'un', 'believ' et 'able', avec des flèches montrant comment ils se recombinent" caption="La tokenisation en sous-mots découpe les mots rares en morceaux réutilisables tout en gardant les mots courants entiers." />
 
-## Byte Pair Encoding (BPE) — Étape par étape
+## Byte Pair Encoding (BPE) - Étape par étape
 
 **BPE** est l'algorithme derrière les modèles GPT. Voici comment il construit un vocabulaire :
 
@@ -57,7 +57,7 @@ Cela nous donne un vocabulaire gérable (généralement 32 000 à 100 000 tokens
 Après suffisamment de fusions, des mots courants et des fragments de mots émergent naturellement des données.
 
 <FunFact>
-BPE a été inventé à l'origine en 1994 comme algorithme de compression de données. Il a été réutilisé pour le NLP en 2015 par Sennrich et al. — un bel exemple d'idées qui traversent les disciplines.
+BPE a été inventé à l'origine en 1994 comme algorithme de compression de données. Il a été réutilisé pour le NLP en 2015 par Sennrich et al. - un bel exemple d'idées qui traversent les disciplines.
 </FunFact>
 
 ## Autres méthodes de tokenisation
@@ -68,18 +68,18 @@ Utilisé par BERT et les modèles apparentés. Similaire à BPE, mais au lieu de
 
 ### SentencePiece
 
-Traite l'entrée comme un flux brut d'octets — sans pré-tokenisation par les espaces. C'est crucial pour les langues comme le japonais et le chinois qui n'utilisent pas d'espaces entre les mots. GPT-4 et LLaMA utilisent des approches de type SentencePiece.
+Traite l'entrée comme un flux brut d'octets - sans pré-tokenisation par les espaces. C'est crucial pour les langues comme le japonais et le chinois qui n'utilisent pas d'espaces entre les mots. GPT-4 et LLaMA utilisent des approches de type SentencePiece.
 
 ## Comment GPT-4 tokenise le texte
 
 GPT-4 utilise une variante de BPE appelée **cl100k_base** avec environ 100 000 tokens dans son vocabulaire. Quelques comportements surprenants :
 
-- "Hello world" → 2 tokens (`Hello`, ` world` — notez que l'espace est attaché).
-- "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` — il découpe les mots rares).
+- "Hello world" → 2 tokens (`Hello`, ` world` - notez que l'espace est attaché).
+- "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` - il découpe les mots rares).
 - Un seul emoji 🎉 → souvent 1 à 3 tokens.
 - Du code Python `def hello():` → chaque mot-clé et symbole est généralement son propre token.
 
-<Quiz question="Pourquoi les modèles de langage utilisent-ils la tokenisation en sous-mots plutôt que des mots entiers ?" options="Cela rend le modèle plus rapide à l'inférence|Cela maintient un vocabulaire gérable tout en pouvant traiter n'importe quel texte, y compris des mots jamais vus|Cela améliore la reconnaissance d'images|Cela réduit le besoin en GPU" answer="1" explanation="La tokenisation en sous-mots équilibre la taille du vocabulaire (en la maintenant à un niveau pratique de 32k–100k tokens) avec la couverture — les mots rares ou nouveaux sont décomposés en morceaux de sous-mots connus plutôt que d'être rejetés comme inconnus." />
+<Quiz question="Pourquoi les modèles de langage utilisent-ils la tokenisation en sous-mots plutôt que des mots entiers ?" options="Cela rend le modèle plus rapide à l'inférence|Cela maintient un vocabulaire gérable tout en pouvant traiter n'importe quel texte, y compris des mots jamais vus|Cela améliore la reconnaissance d'images|Cela réduit le besoin en GPU" answer="1" explanation="La tokenisation en sous-mots équilibre la taille du vocabulaire (en la maintenant à un niveau pratique de 32k–100k tokens) avec la couverture - les mots rares ou nouveaux sont décomposés en morceaux de sous-mots connus plutôt que d'être rejetés comme inconnus." />
 
 ## Le compromis sur la taille du vocabulaire
 
@@ -105,8 +105,8 @@ Les tokeniseurs entraînés principalement sur du texte anglais sont **biaisés*
 Chaque appel API à GPT-4, Claude ou Gemini est facturé au token. Comprendre la tokenisation vous aide à :
 
 - **Estimer les coûts** avant de lancer de gros travaux.
-- **Optimiser les prompts** — des prompts plus courts avec le même sens économisent de l'argent.
-- **Respecter les fenêtres de contexte** — GPT-4 Turbo accepte 128k tokens ; dépasser cette limite tronque votre entrée silencieusement.
+- **Optimiser les prompts** - des prompts plus courts avec le même sens économisent de l'argent.
+- **Respecter les fenêtres de contexte** - GPT-4 Turbo accepte 128k tokens ; dépasser cette limite tronque votre entrée silencieusement.
 
 Une règle approximative pour l'anglais : **1 token ≈ ¾ d'un mot**, soit environ 4 caractères.
 
@@ -132,6 +132,6 @@ Si vous construisiez un modèle de langage pour une langue à faibles ressources
 
 ## 📚 Pour aller plus loin
 
-- [Andrej Karpathy — nn-zero-to-hero (cours sur le Tokenizer)](https://karpathy.ai/zero-to-hero.html) — Construire un tokeniseur BPE à partir de zéro avec Karpathy
-- [OpenAI Tokenizer Tool](https://platform.openai.com/tokenizer) — Outil interactif pour voir comment les modèles GPT tokenisent votre texte
-- [Hugging Face — Summary of Tokenizers](https://huggingface.co/docs/transformers/tokenizer_summary) — Comparaison claire entre BPE, WordPiece et SentencePiece
+- [Andrej Karpathy - nn-zero-to-hero (cours sur le Tokenizer)](https://karpathy.ai/zero-to-hero.html) - Construire un tokeniseur BPE à partir de zéro avec Karpathy
+- [OpenAI Tokenizer Tool](https://platform.openai.com/tokenizer) - Outil interactif pour voir comment les modèles GPT tokenisent votre texte
+- [Hugging Face - Summary of Tokenizers](https://huggingface.co/docs/transformers/tokenizer_summary) - Comparaison claire entre BPE, WordPiece et SentencePiece

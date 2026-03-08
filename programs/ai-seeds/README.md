@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌱 AI Seeds — Level 1: Absolute Beginners
+# 🌱 AI Seeds - Level 1: Absolute Beginners
 
 ### The first step in your AI journey at [AI Educademy](https://aieducademy.org)
 
@@ -18,7 +18,7 @@
 
 ## 📋 What is This?
 
-This repo contains the **lesson content** for AI Seeds — the first level of AI Educademy. It's a content-only package consumed by the [`ai-platform`](https://github.com/ai-educademy/ai-platform) app shell via git submodules.
+This repo contains the **lesson content** for AI Seeds - the first level of AI Educademy. It's a content-only package consumed by the [`ai-platform`](https://github.com/ai-educademy/ai-platform) app shell via git submodules.
 
 > **Looking for the live site?** Visit [aieducademy.org](https://aieducademy.org)
 > **Looking for the app code?** See [ai-platform](https://github.com/ai-educademy/ai-platform)
@@ -54,7 +54,7 @@ Each lesson is an MDX file with frontmatter:
 ```mdx
 ---
 title: "What is Artificial Intelligence?"
-description: "Discover what AI really means — no jargon."
+description: "Discover what AI really means - no jargon."
 order: 1
 duration: "10 min"
 difficulty: "beginner"

@@ -1,5 +1,5 @@
 ---
-title: "Kaggle-wedstrijdgids — Hoe Je Meedoet (en Leert) op Kaggle"
+title: "Kaggle-wedstrijdgids - Hoe Je Meedoet (en Leert) op Kaggle"
 description: "Van eerste inzending tot grandmaster-technieken: EDA-workflows, feature engineering-trucs, ensemble-methoden en strategieën die consistent in de top 1% eindigen."
 order: 7
 difficulty: "advanced"
@@ -8,15 +8,15 @@ icon: "🏆"
 published: true
 ---
 
-# Kaggle-wedstrijdgids — Hoe Je Meedoet (en Leert) op Kaggle
+# Kaggle-wedstrijdgids - Hoe Je Meedoet (en Leert) op Kaggle
 
-Kaggle is niet alleen een wedstrijdplatform — het is 's werelds grootste praktijkgerichte ML-leeromgeving. Meer dan 15 miljoen data scientists gebruiken het om vaardigheden aan te scherpen, portfolio's op te bouwen en banen te bemachtigen. Deze les leert je hoe je effectief meedoet en maximaal leert van elke wedstrijd.
+Kaggle is niet alleen een wedstrijdplatform - het is 's werelds grootste praktijkgerichte ML-leeromgeving. Meer dan 15 miljoen data scientists gebruiken het om vaardigheden aan te scherpen, portfolio's op te bouwen en banen te bemachtigen. Deze les leert je hoe je effectief meedoet en maximaal leert van elke wedstrijd.
 
 ## 🎯 Waarom Kaggle Belangrijk Is voor Je Carrière
 
 Kaggle-ervaring laat iets zien wat je CV niet kan: **je kunt modellen opleveren die werken op rommelige, echte data**. Hiring managers bij Google, Meta en topstartups recruiten actief van Kaggle-leaderboards. Zelfs zonder te winnen toont een sterk profiel met goed gedocumenteerde notebooks praktische competentie aan.
 
-<Illustration src="/images/lessons/kaggle-competition-guide.svg" alt="Kaggle-wedstrijdworkflow van dataverkenning tot uiteindelijke inzending" caption="De typische Kaggle-workflow — itereer tussen EDA, feature engineering en validatie tot convergentie." />
+<Illustration src="/images/lessons/kaggle-competition-guide.svg" alt="Kaggle-wedstrijdworkflow van dataverkenning tot uiteindelijke inzending" caption="De typische Kaggle-workflow - itereer tussen EDA, feature engineering en validatie tot convergentie." />
 
 ## 📊 Wedstrijdtypes en Winnende Strategieën
 
@@ -27,9 +27,9 @@ Kaggle-ervaring laat iets zien wat je CV niet kan: **je kunt modellen opleveren 
 | **NLP** | Sentimentanalyse, question answering | Fine-tuned transformers (DeBERTa, RoBERTa) |
 | **Simulatie** | Game AI, optimalisatie | Reinforcement learning + domein-heuristieken |
 
-<FunFact>Het populairste algoritme onder Kaggle-wedstrijdwinnaars is LightGBM — het verschijnt in meer dan 60% van de best scorende tabulaire oplossingen, vaak gecombineerd met CatBoost of XGBoost in ensembles.</FunFact>
+<FunFact>Het populairste algoritme onder Kaggle-wedstrijdwinnaars is LightGBM - het verschijnt in meer dan 60% van de best scorende tabulaire oplossingen, vaak gecombineerd met CatBoost of XGBoost in ensembles.</FunFact>
 
-## 🔍 EDA — Je Eerste 48 Uur
+## 🔍 EDA - Je Eerste 48 Uur
 
 Begin nooit met modelleren voordat je je data begrijpt. Een gedisciplineerde EDA-workflow:
 
@@ -39,30 +39,30 @@ import matplotlib.pyplot as plt
 
 df = pd.read_csv("train.csv")
 
-# Vorm en types — weet waarmee je werkt
+# Vorm en types - weet waarmee je werkt
 print(f"Shape: {df.shape}")
 print(f"Missing values:\n{df.isnull().sum().sort_values(ascending=False).head(10)}")
 
-# Verdeling van de target — is deze gebalanceerd?
+# Verdeling van de target - is deze gebalanceerd?
 df["target"].value_counts(normalize=True).plot(kind="bar")
 plt.title("Target Distribution")
 plt.show()
 
-# Correlaties — vind snel signaal
+# Correlaties - vind snel signaal
 correlations = df.select_dtypes(include="number").corr()["target"].sort_values()
 print(correlations.head(10))  # Sterkste negatieve correlaties
 print(correlations.tail(10))  # Sterkste positieve correlaties
 ```
 
-**Controleer op leakage** — features die niet zouden bestaan op het moment van voorspelling. Dit is de nummer-één fout van beginners. Als een feature verdacht sterk correleert met de target, onderzoek het eerst voordat je gaat vieren.
+**Controleer op leakage** - features die niet zouden bestaan op het moment van voorspelling. Dit is de nummer-één fout van beginners. Als een feature verdacht sterk correleert met de target, onderzoek het eerst voordat je gaat vieren.
 
-<Quiz question="Tijdens EDA ontdek je een feature met 0,98 correlatie met de target. Wat moet je EERSTE reactie zijn?" options="Vieren — deze feature gaat je model domineren|Onderzoek naar data leakage — deze correlatie is verdacht hoog|Verwijderen — hoge correlatie betekent overfitting|Alleen gebruiken in je ensemble, niet in de baseline" answer="1" explanation="Een correlatie van 0,98 is vrijwel zeker data leakage. De feature bevat waarschijnlijk informatie uit de toekomst of is afgeleid van de target. Gebruik ervan geeft opgeblazen validatiescores die instorten op het private leaderboard." />
+<Quiz question="Tijdens EDA ontdek je een feature met 0,98 correlatie met de target. Wat moet je EERSTE reactie zijn?" options="Vieren - deze feature gaat je model domineren|Onderzoek naar data leakage - deze correlatie is verdacht hoog|Verwijderen - hoge correlatie betekent overfitting|Alleen gebruiken in je ensemble, niet in de baseline" answer="1" explanation="Een correlatie van 0,98 is vrijwel zeker data leakage. De feature bevat waarschijnlijk informatie uit de toekomst of is afgeleid van de target. Gebruik ervan geeft opgeblazen validatiescores die instorten op het private leaderboard." />
 
 ## 🛠️ Feature Engineering die Wint
 
 Topkandidaten besteden 70% van hun tijd aan features, niet aan modeltuning. Beproefde technieken:
 
-**Aggregatiefeatures** — groepsstatistieken op verschillende granulariteiten:
+**Aggregatiefeatures** - groepsstatistieken op verschillende granulariteiten:
 ```python
 for col in ["category", "store_id", "day_of_week"]:
     stats = df.groupby(col)["sales"].agg(["mean", "std", "median"])
@@ -70,15 +70,15 @@ for col in ["category", "store_id", "day_of_week"]:
     df = df.merge(stats, on=col, how="left")
 ```
 
-**Target encoding** — vervang categorieën door afgevlakte target-gemiddelden (gebruik fold-gebaseerde encoding om leakage te voorkomen).
+**Target encoding** - vervang categorieën door afgevlakte target-gemiddelden (gebruik fold-gebaseerde encoding om leakage te voorkomen).
 
-**Lag features** — voor tijdreeksen zijn eerdere waarden goud waard:
+**Lag features** - voor tijdreeksen zijn eerdere waarden goud waard:
 ```python
 for lag in [1, 7, 14, 28]:
     df[f"sales_lag_{lag}"] = df.groupby("store_id")["sales"].shift(lag)
 ```
 
-## ✅ Cross-Validation — Vertrouw Je Lokale Score
+## ✅ Cross-Validation - Vertrouw Je Lokale Score
 
 Je lokale CV-score is belangrijker dan het publieke leaderboard. Een robuuste validatiestrategie:
 
@@ -100,17 +100,17 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(X, y)):
 print(f"OOF AUC: {roc_auc_score(y, oof_predictions):.5f}")
 ```
 
-**Gouden regel**: als je lokale CV en het publieke leaderboard het niet eens zijn, vertrouw je CV. Het publieke leaderboard gebruikt slechts een fractie van de testdata — erop overfitten is een valkuil.
+**Gouden regel**: als je lokale CV en het publieke leaderboard het niet eens zijn, vertrouw je CV. Het publieke leaderboard gebruikt slechts een fractie van de testdata - erop overfitten is een valkuil.
 
 <ThinkAboutIt>Je staat 15e op het publieke leaderboard, maar je lokale CV suggereert dat je model overfit is. Dien je je beste LB-score in of je beste CV-score als definitieve inzending? Waarom?</ThinkAboutIt>
 
-## 🎭 Ensemble-methoden — De Laatste Push
+## 🎭 Ensemble-methoden - De Laatste Push
 
 Bijna elke winnende oplossing gebruikt ensembles. Drie kerntechnieken:
 
-**Bagging** — train hetzelfde model op verschillende datasubsets, middel de voorspellingen. Vermindert variantie.
+**Bagging** - train hetzelfde model op verschillende datasubsets, middel de voorspellingen. Vermindert variantie.
 
-**Stacking** — train een metamodel op out-of-fold-voorspellingen van diverse basismodellen:
+**Stacking** - train een metamodel op out-of-fold-voorspellingen van diverse basismodellen:
 ```python
 # Niveau 1: diverse basismodellen produceren OOF-voorspellingen
 base_preds = np.column_stack([lgbm_oof, xgb_oof, catboost_oof, nn_oof])
@@ -121,21 +121,21 @@ meta = LogisticRegression()
 meta.fit(base_preds, y_train)
 ```
 
-**Blending** — gewogen gemiddelde van modelvoorspellingen. Eenvoudiger dan stacking maar effectief:
+**Blending** - gewogen gemiddelde van modelvoorspellingen. Eenvoudiger dan stacking maar effectief:
 ```python
 final = 0.4 * lgbm_pred + 0.35 * xgb_pred + 0.25 * catboost_pred
 ```
 
-<Quiz question="Waarom presteren ensemble-methoden bijna altijd beter dan individuele modellen in Kaggle-wedstrijden?" options="Ze gebruiken meer trainingsdata|Ze verminderen bias door diepere modellen te gebruiken|Ze verminderen variantie door diverse modellen te combineren die verschillende fouten maken|Ze zijn sneller om te trainen" answer="2" explanation="Ensembles werken omdat diverse modellen ongecorreleerde fouten maken. Bij middeling vallen individuele fouten tegen elkaar weg, terwijl correcte signalen elkaar versterken — dit verlaagt de algehele variantie zonder de bias te verhogen." />
+<Quiz question="Waarom presteren ensemble-methoden bijna altijd beter dan individuele modellen in Kaggle-wedstrijden?" options="Ze gebruiken meer trainingsdata|Ze verminderen bias door diepere modellen te gebruiken|Ze verminderen variantie door diverse modellen te combineren die verschillende fouten maken|Ze zijn sneller om te trainen" answer="2" explanation="Ensembles werken omdat diverse modellen ongecorreleerde fouten maken. Bij middeling vallen individuele fouten tegen elkaar weg, terwijl correcte signalen elkaar versterken - dit verlaagt de algehele variantie zonder de bias te verhogen." />
 
 ## 📓 Geweldige Kaggle Notebooks Schrijven
 
 Publieke notebooks bouwen je reputatie op. Een medaillewaardige notebook bevat:
 
-1. **Helder verhaal** — leg je redenering uit, niet alleen je code
-2. **Reproduceerbaarheid** — stel random seeds in, documenteer library-versies
-3. **Visualisaties** — plots die inzichten onthullen, niet alleen decoratie
-4. **Eerlijke resultaten** — deel wat niet werkte naast wat wel werkte
+1. **Helder verhaal** - leg je redenering uit, niet alleen je code
+2. **Reproduceerbaarheid** - stel random seeds in, documenteer library-versies
+3. **Visualisaties** - plots die inzichten onthullen, niet alleen decoratie
+4. **Eerlijke resultaten** - deel wat niet werkte naast wat wel werkte
 
 <Quiz question="Wat is de MEEST effectieve manier om van Kaggle Contributor naar Expert te stijgen?" options="Een solo gouden medaille winnen in een featured-wedstrijd|Consistent brons- en zilvermedailles verdienen over meerdere wedstrijden en notebooks|Inzenden op zoveel mogelijk wedstrijden, ongeacht het resultaat|Top-scorende publieke notebooks forken" answer="1" explanation="Consistente prestaties over meerdere wedstrijden leveren medailles op. Je hebt wedstrijdmedailles ÉN notebook/discussiemedailles nodig. Brede bijdragen tellen zwaarder dan één toevallig goed resultaat." />
 
@@ -153,16 +153,16 @@ Publieke notebooks bouwen je reputatie op. Een medaillewaardige notebook bevat:
 
 ## 🎯 Belangrijkste Inzichten
 
-- Eerst EDA, dan modelleren — controleer altijd op data leakage
+- Eerst EDA, dan modelleren - controleer altijd op data leakage
 - Feature engineering levert meer verbetering op dan hyperparametertuning
 - Vertrouw je lokale CV boven het publieke leaderboard
 - Combineer diverse modellen in een ensemble voor de laatste push
-- Documenteer je werk in publieke notebooks — het is je portfolio
+- Documenteer je werk in publieke notebooks - het is je portfolio
 
 ---
 
 ## 📚 Verder Lezen
 
-- [Kaggle Book door Konrad Banachewicz & Luca Massaron](https://www.kaggle.com/discussions/general/320744) — Strategieën van grandmasters samengevat in uitvoerbaar advies
-- [How to Win a Data Science Competition (Coursera)](https://www.coursera.org/learn/competitive-data-science) — Top-down Kaggle-strategiecursus van NRU HSE
-- [Papers With Code — Benchmarks](https://paperswithcode.com/sota) — State-of-the-art resultaten voor alle ML-taken
+- [Kaggle Book door Konrad Banachewicz & Luca Massaron](https://www.kaggle.com/discussions/general/320744) - Strategieën van grandmasters samengevat in uitvoerbaar advies
+- [How to Win a Data Science Competition (Coursera)](https://www.coursera.org/learn/competitive-data-science) - Top-down Kaggle-strategiecursus van NRU HSE
+- [Papers With Code - Benchmarks](https://paperswithcode.com/sota) - State-of-the-art resultaten voor alle ML-taken

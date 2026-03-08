@@ -1,5 +1,5 @@
 ---
-title: "Sorteren en Zoeken — Hoe AI Resultaten Rangschikt en Vindt"
+title: "Sorteren en Zoeken - Hoe AI Resultaten Rangschikt en Vindt"
 description: "Ontdek waarom sorteer- en zoekalgoritmen fundamenteel zijn voor hoe AI aanbevelingen rangschikt en antwoorden vindt."
 order: 3
 difficulty: "intermediate"
@@ -10,20 +10,20 @@ published: true
 
 ## Snel Dingen Vinden
 
-Als je Google doorzoekt, verschijnen resultaten in minder dan een seconde — gerangschikt van meest naar minst relevant. Wanneer Netflix films aanbeveelt, sorteert het duizenden titels op hoe waarschijnlijk je ervan geniet. Achter elke snelle opzoeking en elke gerangschikte lijst schuilt een sorteer- of zoekalgoritme.
+Als je Google doorzoekt, verschijnen resultaten in minder dan een seconde - gerangschikt van meest naar minst relevant. Wanneer Netflix films aanbeveelt, sorteert het duizenden titels op hoe waarschijnlijk je ervan geniet. Achter elke snelle opzoeking en elke gerangschikte lijst schuilt een sorteer- of zoekalgoritme.
 
 ## Waarom Sorteren Belangrijk Is
 
 Gesorteerde data is krachtige data. Zodra een lijst op orde is, kun je:
 
 - **Efficiënt zoeken** met binary search (daar komen we zo op).
-- **Duplicaten vinden** — ze staan dan direct naast elkaar.
-- **De top-N resultaten vinden** — pak simpelweg de eerste N items.
-- **Datasets samenvoegen** — twee gesorteerde lijsten combineren is veel sneller dan ongesorteerde.
+- **Duplicaten vinden** - ze staan dan direct naast elkaar.
+- **De top-N resultaten vinden** - pak simpelweg de eerste N items.
+- **Datasets samenvoegen** - twee gesorteerde lijsten combineren is veel sneller dan ongesorteerde.
 
 <Illustration src="/images/lessons/sorting-and-searching.svg" alt="Een ongesorteerde array die wordt omgezet naar een gesorteerde array, met een vergrootglas dat binary search uitlicht" caption="Sorteren verandert chaotische data in iets doorzoekbaars en gestructureerds." />
 
-## Bubble Sort — Eenvoudig maar Traag
+## Bubble Sort - Eenvoudig maar Traag
 
 Bubble sort loopt herhaaldelijk door de lijst, vergelijkt naast elkaar staande items en verwisselt ze als ze in de verkeerde volgorde staan. Grotere waarden "bubbelen" naar het einde.
 
@@ -39,10 +39,10 @@ Bubble sort loopt herhaaldelijk door de lijst, vergelijkt naast elkaar staande i
 **Tijdcomplexiteit**: O(n²). Met 1.000.000 items? Een biljoen vergelijkingen. Niet praktisch voor AI-werklasten.
 
 <ThinkAboutIt>
-Als bubble sort ongeveer n² vergelijkingen kost, hoeveel langzamer zou het zijn om een miljoen items te sorteren vergeleken met duizend? Denk aan de verhouding: (1.000.000)² vs (1.000)². Dat is een miljoen keer langzamer — alleen door duizend keer meer data.
+Als bubble sort ongeveer n² vergelijkingen kost, hoeveel langzamer zou het zijn om een miljoen items te sorteren vergeleken met duizend? Denk aan de verhouding: (1.000.000)² vs (1.000)². Dat is een miljoen keer langzamer - alleen door duizend keer meer data.
 </ThinkAboutIt>
 
-## Merge Sort — Verdeel en Heers
+## Merge Sort - Verdeel en Heers
 
 Merge sort splitst de lijst in tweeën, sorteert elke helft, en voegt de twee gesorteerde helften samen.
 
@@ -60,10 +60,10 @@ Merge sort splitst de lijst in tweeën, sorteert elke helft, en voegt de twee ge
 [1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
-**Tijdcomplexiteit**: O(n log n) — dramatisch sneller. Voor een miljoen items is dat circa 20 miljoen vergelijkingen in plaats van een biljoen.
+**Tijdcomplexiteit**: O(n log n) - dramatisch sneller. Voor een miljoen items is dat circa 20 miljoen vergelijkingen in plaats van een biljoen.
 
 <FunFact>
-Python's ingebouwde sort gebruikt Timsort — een hybride algoritme dat merge sort combineert met insertion sort. Het is uitgevonden door Tim Peters in 2002 en wordt nu gebruikt in Python, Java en Android. Het is specifiek ontworpen om goed te presteren op echte data die vaak al deels gesorteerd is.
+Python's ingebouwde sort gebruikt Timsort - een hybride algoritme dat merge sort combineert met insertion sort. Het is uitgevonden door Tim Peters in 2002 en wordt nu gebruikt in Python, Java en Android. Het is specifiek ontworpen om goed te presteren op echte data die vaak al deels gesorteerd is.
 </FunFact>
 
 ### Bubble Sort vs Merge Sort op Schaal
@@ -74,15 +74,15 @@ Python's ingebouwde sort gebruikt Timsort — een hybride algoritme dat merge so
 | 10.000 | 100.000.000 ops | ~130.000 ops |
 | 1.000.000 | 1.000.000.000.000 ops | ~20.000.000 ops |
 
-Het verschil is niet academisch — het is het verschil tussen "klaar in een seconde" en "klaar volgende week."
+Het verschil is niet academisch - het is het verschil tussen "klaar in een seconde" en "klaar volgende week."
 
 <Quiz question="Waarom heeft merge sort de voorkeur boven bubble sort voor grote datasets in AI-toepassingen?" options="Merge sort gebruikt minder geheugen|Merge sort is O(n log n) vergeleken met O(n²) van bubble sort, waardoor het op schaal dramatisch sneller is|Merge sort is recenter uitgevonden|Merge sort werkt alleen met getallen, wat AI gebruikt" answer="1" explanation="Op schaal is het verschil tussen O(n²) en O(n log n) enorm. Voor een miljoen items doet merge sort circa 20 miljoen bewerkingen vs een biljoen voor bubble sort." />
 
-## Binary Search — De Telefoonboektruc
+## Binary Search - De Telefoonboektruc
 
 Stel je voor dat je "De Vries" opzoekt in een telefoonboek. Je begint niet bij pagina één. Je opent het boek ongeveer in het midden, kijkt waar je bent, en springt naar de juiste helft. Dan herhaal je.
 
-Dat is **binary search** — en het werkt alleen op gesorteerde data.
+Dat is **binary search** - en het werkt alleen op gesorteerde data.
 
 ```
 sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
@@ -112,12 +112,12 @@ Netflix berekent een "match-score" voor duizenden titels op basis van je kijkges
 Dit klassieke AI-algoritme vindt de K meest vergelijkbare items. Het berekent afstanden en sorteert deels om de K kleinste te vinden. Efficiënt sorteren maakt dit haalbaar voor miljoenen datapunten.
 
 <Callout>
-Je hoeft niet altijd volledig te sorteren. Als je alleen de top 10 nodig hebt uit een miljoen items, kan een **gedeeltelijke sort** of **heap** ze vinden in O(n log k) tijd — veel sneller dan alles sorteren.
+Je hoeft niet altijd volledig te sorteren. Als je alleen de top 10 nodig hebt uit een miljoen items, kan een **gedeeltelijke sort** of **heap** ze vinden in O(n log k) tijd - veel sneller dan alles sorteren.
 </Callout>
 
 ### Trainingsdata Voorbereiden
 
-Vóór training sorteren AI-beoefenaars data vaak om gebalanceerde batches te maken — zodat elke batch een mix van makkelijke en moeilijke voorbeelden bevat.
+Vóór training sorteren AI-beoefenaars data vaak om gebalanceerde batches te maken - zodat elke batch een mix van makkelijke en moeilijke voorbeelden bevat.
 
 ## Wanneer Sorteren vs Wanneer Hash Map
 
@@ -134,14 +134,14 @@ Een muziekstreamingdienst moet je "Top 50 meest gespeelde nummers" tonen. Zou je
 </ThinkAboutIt>
 
 <FunFact>
-Google verwerkt meer dan 8,5 miljard zoekopdrachten per dag. Elke zoekopdracht omvat het sorteren en rangschikken van honderden potentiële resultaten in milliseconden. De efficiëntie van sorteeralgoritmen heeft directe invloed op het elektriciteitsverbruik van Google's datacentra — betere algoritmen besparen letterlijk megawatts aan stroom.
+Google verwerkt meer dan 8,5 miljard zoekopdrachten per dag. Elke zoekopdracht omvat het sorteren en rangschikken van honderden potentiële resultaten in milliseconden. De efficiëntie van sorteeralgoritmen heeft directe invloed op het elektriciteitsverbruik van Google's datacentra - betere algoritmen besparen letterlijk megawatts aan stroom.
 </FunFact>
 
 <Quiz question="Wanneer is binary search NIET geschikt?" options="Als de data gesorteerd is|Als je één specifiek item moet vinden|Als de data ongesorteerd is en vaak verandert|Als de dataset erg groot is" answer="2" explanation="Binary search vereist gesorteerde data. Als je data vaak verandert, is de gesorteerde volgorde handhaven kostbaar. Een hash map is dan beter voor snelle opzoekingen." />
 
 ## Belangrijkste Punten
 
-- **Sorteren** verandert chaotische data in gestructureerde, doorzoekbare data — essentieel voor rangschikking en aanbevelingen.
+- **Sorteren** verandert chaotische data in gestructureerde, doorzoekbare data - essentieel voor rangschikking en aanbevelingen.
 - **O(n²)**-algoritmen zoals bubble sort zijn leerzaam maar onpraktisch op schaal; **O(n log n)**-algoritmen zoals merge sort drijven echte systemen aan.
-- **Binary search** is buitengewoon efficiënt op gesorteerde data — 20 stappen om een miljoen items te doorzoeken.
+- **Binary search** is buitengewoon efficiënt op gesorteerde data - 20 stappen om een miljoen items te doorzoeken.
 - Kies tussen sorteren en hash maps op basis van of je **geordende resultaten** of **directe opzoekingen** nodig hebt.

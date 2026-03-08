@@ -1,5 +1,5 @@
 ---
-title: "Recursion and Backtracking — Solving Puzzles Like a Computer"
+title: "Recursion and Backtracking - Solving Puzzles Like a Computer"
 description: "Understand recursion from the call stack up, then learn the backtracking template that solves permutations, N-Queens, and beyond."
 order: 8
 difficulty: "intermediate"
@@ -13,8 +13,8 @@ published: true
 A recursive function calls itself with a **smaller** version of the problem until it hits a **base case** that stops the chain.
 
 Every recursion needs two things:
-1. **Base case** — the simplest input where you return directly.
-2. **Recursive case** — break the problem down and call yourself.
+1. **Base case** - the simplest input where you return directly.
+2. **Recursive case** - break the problem down and call yourself.
 
 ```python
 def factorial(n):
@@ -23,7 +23,7 @@ def factorial(n):
     return n * factorial(n - 1)  # recursive case
 ```
 
-## The Call Stack — Visualised
+## The Call Stack - Visualised
 
 Each recursive call pushes a frame onto the call stack. When the base case returns, frames pop in reverse order.
 
@@ -41,7 +41,7 @@ If there's no base case, the stack overflows. Python's default recursion limit i
 
 <FunFact>Python's default recursion limit of 1,000 is intentionally conservative. You can raise it with sys.setrecursionlimit(), but iterative solutions are usually preferred for deep recursion.</FunFact>
 
-## Fibonacci — The Classic Trap
+## Fibonacci - The Classic Trap
 
 The naïve recursive Fibonacci is O(2ⁿ) because it recomputes the same sub-problems. Memoisation fixes this in O(n) time and space.
 
@@ -57,9 +57,9 @@ def fib(n):
 
 <Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Recursion tree for Fibonacci showing repeated sub-problems" caption="Without memoisation, fib(5) makes 15 calls. With it, only 5." />
 
-## Backtracking — Try Everything, Then Undo
+## Backtracking - Try Everything, Then Undo
 
-Backtracking is recursion with a twist: you **make a choice**, recurse, then **undo the choice** before trying the next option. Think of it as exploring a maze — walk forward, hit a dead end, walk back, try the next path.
+Backtracking is recursion with a twist: you **make a choice**, recurse, then **undo the choice** before trying the next option. Think of it as exploring a maze - walk forward, hit a dead end, walk back, try the next path.
 
 ### The Backtracking Template
 
@@ -75,7 +75,7 @@ def backtrack(state, choices):
             state.remove(choice)    # un-choose
 ```
 
-This three-step pattern — **choose, explore, un-choose** — is the backbone of nearly every backtracking problem.
+This three-step pattern - **choose, explore, un-choose** - is the backbone of nearly every backtracking problem.
 
 <Quiz question="In the backtracking template, why do we undo the choice after the recursive call?" options="To free memory|To reset for the next branch of exploration|Because the choice was wrong|To avoid stack overflow" answer="1" explanation="Undoing the choice restores the state so the next iteration of the loop can explore a different branch from the same starting point." />
 
@@ -99,11 +99,11 @@ There are **n!** permutations, so the time complexity is O(n × n!).
 
 **Combinations (n choose k):** at each element, include it or skip it, but only recurse forward to avoid duplicates.
 
-**Subsets:** same idea without a size constraint — every node in the recursion tree is a valid subset. There are **2ⁿ** subsets.
+**Subsets:** same idea without a size constraint - every node in the recursion tree is a valid subset. There are **2ⁿ** subsets.
 
-<ThinkAboutIt>Permutations produce n! results while subsets produce 2ⁿ. For n=10, that's 3,628,800 vs 1,024 — a massive difference. Why?</ThinkAboutIt>
+<ThinkAboutIt>Permutations produce n! results while subsets produce 2ⁿ. For n=10, that's 3,628,800 vs 1,024 - a massive difference. Why?</ThinkAboutIt>
 
-## N-Queens — Walkthrough
+## N-Queens - Walkthrough
 
 Place N queens on an N×N board so none attack each other. For N=4:
 
@@ -120,7 +120,7 @@ Track conflicts with three sets: `cols`, `diag` (row − col), and `anti_diag` (
 
 <Quiz question="In the N-Queens problem, how do we efficiently check diagonal conflicts?" options="Check every placed queen's position|Use sets tracking (row-col) and (row+col)|Scan the entire board each time|Use a 2D boolean matrix" answer="1" explanation="Queens on the same diagonal share the same (row-col) value; same anti-diagonal share (row+col). Sets give O(1) lookup." />
 
-## Sudoku Solver — Concept
+## Sudoku Solver - Concept
 
 Find an empty cell, try digits 1–9. For each digit, check row, column, and 3×3 box constraints. If valid, place and recurse. If no digit works, undo and backtrack. The pruning from constraints makes it tractable despite the huge search space.
 
@@ -155,6 +155,6 @@ Good pruning can turn an impractical search into a fast one.
 
 ## 📚 Further Reading
 
-- [NeetCode — Backtracking playlist](https://neetcode.io/roadmap) — curated problems with video walkthroughs
-- [Tech Interview Handbook — Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) — patterns and common pitfalls
-- [LeetCode Backtracking study plan](https://leetcode.com/tag/backtracking/) — progressive problem set
+- [NeetCode - Backtracking playlist](https://neetcode.io/roadmap) - curated problems with video walkthroughs
+- [Tech Interview Handbook - Recursion](https://www.techinterviewhandbook.org/algorithms/recursion/) - patterns and common pitfalls
+- [LeetCode Backtracking study plan](https://leetcode.com/tag/backtracking/) - progressive problem set

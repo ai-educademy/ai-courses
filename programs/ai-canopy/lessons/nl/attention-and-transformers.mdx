@@ -1,5 +1,5 @@
 ---
-title: "Attention en Transformers — De Architectuur Die Alles Veranderde"
+title: "Attention en Transformers - De Architectuur Die Alles Veranderde"
 description: "Een diepgaande verkenning van self-attention, multi-head attention, positional encoding en de Transformer-architectuur die elk modern large language model aandrijft."
 order: 6
 difficulty: "advanced"
@@ -8,34 +8,34 @@ icon: "🔦"
 published: true
 ---
 
-# Attention en Transformers — De Architectuur Die Alles Veranderde
+# Attention en Transformers - De Architectuur Die Alles Veranderde
 
-Elk groot taalmodel van vandaag — GPT-4, Claude, Gemini, LLaMA — is gebouwd op de Transformer-architectuur. Gepubliceerd in het baanbrekende paper *Attention Is All You Need* uit 2017, verving het recurrentie door een mechanisme genaamd **self-attention**, waarmee ongekende parallellisatie en prestaties werden ontgrendeld.
+Elk groot taalmodel van vandaag - GPT-4, Claude, Gemini, LLaMA - is gebouwd op de Transformer-architectuur. Gepubliceerd in het baanbrekende paper *Attention Is All You Need* uit 2017, verving het recurrentie door een mechanisme genaamd **self-attention**, waarmee ongekende parallellisatie en prestaties werden ontgrendeld.
 
 ## Waarom RNN's Vastliepen
 
 Recurrent Neural Networks verwerken sequenties één token per keer en dragen een verborgen toestand voort. Dit creëert twee verlammende problemen:
 
-- **Vanishing gradients** — Tegen de tijd dat een gradient honderden tijdstappen terug propageert, krimpt deze tot bijna nul, waardoor het onmogelijk wordt om langetermijnafhankelijkheden te leren.
-- **Sequentieel knelpunt** — Elke stap hangt af van de vorige, dus je kunt het trainen niet parallelliseren over een sequentie. Een invoer van 1.000 tokens vereist 1.000 seriële bewerkingen.
+- **Vanishing gradients** - Tegen de tijd dat een gradient honderden tijdstappen terug propageert, krimpt deze tot bijna nul, waardoor het onmogelijk wordt om langetermijnafhankelijkheden te leren.
+- **Sequentieel knelpunt** - Elke stap hangt af van de vorige, dus je kunt het trainen niet parallelliseren over een sequentie. Een invoer van 1.000 tokens vereist 1.000 seriële bewerkingen.
 
 LSTM's en GRU's voegden gate-mechanismen toe die vanishing gradients verlichtten, maar ze losten het parallellisatieprobleem nooit op. Training bleef fundamenteel traag.
 
 ## De Intuïtie Achter Attention
 
-Stel je voor dat je een lange paragraaf leest en de vraag krijgt *"Wat kondigde de CEO aan?"* Je ogen lezen niet elk woord opnieuw van begin tot eind — ze **springen naar de relevante zin**. Attention werkt op dezelfde manier: het laat elk token naar elk ander token kijken en beslissen welke het belangrijkst zijn voor de huidige context.
+Stel je voor dat je een lange paragraaf leest en de vraag krijgt *"Wat kondigde de CEO aan?"* Je ogen lezen niet elk woord opnieuw van begin tot eind - ze **springen naar de relevante zin**. Attention werkt op dezelfde manier: het laat elk token naar elk ander token kijken en beslissen welke het belangrijkst zijn voor de huidige context.
 
 Beschouw het als een **schijnwerper op een podium**. In plaats van het hele podium gelijkmatig te verlichten, leert het model een heldere bundel te richten op de tokens die de meest relevante informatie bevatten voor de taak.
 
 <Illustration src="/images/lessons/attention-and-transformers.svg" alt="Diagram van self-attention: een query-token attendeert op alle key-tokens met variërende gewichten en produceert een gewogen som van values" caption="Self-attention laat elk token attenderen op elk ander token, met aangeleerde gewichten die de relevantie bepalen." />
 
-## Query, Key, Value — Het Kernmechanisme
+## Query, Key, Value - Het Kernmechanisme
 
 Self-attention leent terminologie uit information retrieval. Voor elk token berekent het model drie vectoren:
 
-- **Query (Q)** — *"Waar ben ik naar op zoek?"*
-- **Key (K)** — *"Welke informatie bevat ik?"*
-- **Value (V)** — *"Wat draag ik bij als ik geselecteerd word?"*
+- **Query (Q)** - *"Waar ben ik naar op zoek?"*
+- **Key (K)** - *"Welke informatie bevat ik?"*
+- **Value (V)** - *"Wat draag ik bij als ik geselecteerd word?"*
 
 De attention-score tussen twee tokens is het **inproduct van Q en K**, geschaald met √d_k (de key-dimensie) om exploderende waarden te voorkomen. Het toepassen van softmax levert genormaliseerde gewichten op, en de output is een gewogen som van alle V-vectoren:
 
@@ -43,7 +43,7 @@ De attention-score tussen twee tokens is het **inproduct van Q en K**, geschaald
 Attention(Q, K, V) = softmax(Q·Kᵀ / √d_k) · V
 ```
 
-**Voorbeeld:** Beschouw de zin *"De kat zat op de mat omdat hij moe was."* Bij het verwerken van *"hij"* attendeert de query voor *"hij"* het sterkst op *"kat"* (hoge Q·K-score), waarmee het ambigue voornaamwoord wordt opgelost — zonder recurrentie.
+**Voorbeeld:** Beschouw de zin *"De kat zat op de mat omdat hij moe was."* Bij het verwerken van *"hij"* attendeert de query voor *"hij"* het sterkst op *"kat"* (hoge Q·K-score), waarmee het ambigue voornaamwoord wordt opgelost - zonder recurrentie.
 
 <Quiz question="Waarom delen we in de self-attention formule door √d_k?" options="Om het model sneller te laten draaien op GPU's|Om te voorkomen dat inproducten te groot worden, wat softmax in gebieden met zeer kleine gradiënten zou duwen|Om het aantal parameters in het model te verminderen|Om te normaliseren voor sequenties van variabele lengte" answer="1" explanation="Wanneer d_k groot is, kunnen inproducten zeer groot worden in magnitude, waardoor softmax bijna-nul gradiënten produceert (het saturatiegebied). Delen door √d_k houdt waarden in een bereik waarin softmax-gradiënten gezond blijven." />
 
@@ -55,15 +55,15 @@ Eén enkele attention-head kan slechts één type relatie tegelijk vastleggen. *
 MultiHead(Q, K, V) = Concat(head₁, ..., headₕ) · Wᴼ
 ```
 
-Verschillende heads leren verschillende taalpatronen — de ene kan syntactische afhankelijkheden volgen, een andere semantische gelijkenis, en weer een andere positionele nabijheid. GPT-3 gebruikt 96 heads; elke ziet een 128-dimensionaal segment van de volledige 12.288-dimensionale ruimte.
+Verschillende heads leren verschillende taalpatronen - de ene kan syntactische afhankelijkheden volgen, een andere semantische gelijkenis, en weer een andere positionele nabijheid. GPT-3 gebruikt 96 heads; elke ziet een 128-dimensionaal segment van de volledige 12.288-dimensionale ruimte.
 
 <FunFact>
-Onderzoekers bij Google ontdekten dat individuele attention-heads in BERT opmerkelijk specialiseren — sommige volgen subject-werkwoord-congruentie, andere behandelen coreferentie-resolutie, en sommige leren zelfs dependency parsing, allemaal zonder expliciete supervisie.
+Onderzoekers bij Google ontdekten dat individuele attention-heads in BERT opmerkelijk specialiseren - sommige volgen subject-werkwoord-congruentie, andere behandelen coreferentie-resolutie, en sommige leren zelfs dependency parsing, allemaal zonder expliciete supervisie.
 </FunFact>
 
 ## Positional Encoding
 
-Self-attention is **permutatie-invariant** — het behandelt *"hond bijt man"* identiek aan *"man bijt hond"* tenzij we positie-informatie toevoegen. De oorspronkelijke Transformer gebruikte sinusvormige coderingen:
+Self-attention is **permutatie-invariant** - het behandelt *"hond bijt man"* identiek aan *"man bijt hond"* tenzij we positie-informatie toevoegen. De oorspronkelijke Transformer gebruikte sinusvormige coderingen:
 
 ```
 PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
@@ -76,8 +76,8 @@ Elke positie krijgt een uniek patroon van sinus- en cosinusgolven op verschillen
 
 De oorspronkelijke Transformer heeft een **encoder-decoder**-structuur:
 
-- **Encoder** — Verwerkt de volledige invoer met bidirectionele self-attention (elk token attendeert op elk ander). Stapelt N lagen van self-attention + feed-forward blokken met residuele verbindingen en layer normalisation.
-- **Decoder** — Genereert output auto-regressief met **causale (gemaskeerde) self-attention** (elk token kan alleen attenderen op voorgaande tokens) plus cross-attention naar de encoder-output.
+- **Encoder** - Verwerkt de volledige invoer met bidirectionele self-attention (elk token attendeert op elk ander). Stapelt N lagen van self-attention + feed-forward blokken met residuele verbindingen en layer normalisation.
+- **Decoder** - Genereert output auto-regressief met **causale (gemaskeerde) self-attention** (elk token kan alleen attenderen op voorgaande tokens) plus cross-attention naar de encoder-output.
 
 Elke sublaag volgt het patroon: `LayerNorm(x + Sublayer(x))`, waarbij de residuele verbinding ervoor zorgt dat gradiënten vrij stromen door diepe stacks.
 
@@ -101,24 +101,24 @@ Drie architectuurvarianten kwamen voort uit het oorspronkelijke ontwerp:
 | **Decoder-only** | Causaal (links-naar-rechts) | GPT, LLaMA, Claude | Tekstgeneratie, chat, redeneren |
 | **Encoder-decoder** | Beide | T5, BART, Whisper | Vertaling, samenvatting |
 
-Decoder-only modellen domineren vandaag de dag omdat **generatie de universele interface is** — elke NLP-taak kan worden geformuleerd als tekstgeneratie. Deze architecturale eenvoud schaalt ook voorspelbaarder.
+Decoder-only modellen domineren vandaag de dag omdat **generatie de universele interface is** - elke NLP-taak kan worden geformuleerd als tekstgeneratie. Deze architecturale eenvoud schaalt ook voorspelbaarder.
 
-<Quiz question="Waarom gebruiken decoder-only modellen causale (gemaskeerde) attention tijdens training?" options="Om het geheugengebruik te halveren|Om te voorkomen dat tokens attenderen op toekomstige tokens, wat het antwoord zou lekken tijdens auto-regressieve training|Om het model bidirectioneel te maken|Om inferentie te versnellen door attention-berekeningen over te slaan" answer="1" explanation="Tijdens training voorspelt het model het volgende token op elke positie tegelijkertijd. Causale maskering zorgt ervoor dat elke positie alleen voorgaande tokens kan zien, wat informatielek vanuit toekomstige posities voorkomt — dat zou de voorspeltaak triviaal maken." />
+<Quiz question="Waarom gebruiken decoder-only modellen causale (gemaskeerde) attention tijdens training?" options="Om het geheugengebruik te halveren|Om te voorkomen dat tokens attenderen op toekomstige tokens, wat het antwoord zou lekken tijdens auto-regressieve training|Om het model bidirectioneel te maken|Om inferentie te versnellen door attention-berekeningen over te slaan" answer="1" explanation="Tijdens training voorspelt het model het volgende token op elke positie tegelijkertijd. Causale maskering zorgt ervoor dat elke positie alleen voorgaande tokens kan zien, wat informatielek vanuit toekomstige posities voorkomt - dat zou de voorspeltaak triviaal maken." />
 
-<Quiz question="Op welke Transformer-variant is BERT gebaseerd, en waarom is het ongeschikt voor open tekstgeneratie?" options="Decoder-only; het mist cross-attention lagen|Encoder-decoder; het vereist een aparte decoder om tekst te genereren|Encoder-only; de bidirectionele attention betekent dat het de volledige sequentie ziet, waardoor auto-regressieve generatie onmogelijk is|Encoder-only; het heeft te weinig parameters voor generatietaken" answer="2" explanation="BERT gebruikt bidirectionele (encoder-only) attention, wat betekent dat elk token attendeert op elk ander token, inclusief toekomstige. Dit is perfect voor begripstaken maar maakt auto-regressieve generatie onmogelijk — het kan niet 'het volgende token' voorspellen als het alle tokens al kan zien." />
+<Quiz question="Op welke Transformer-variant is BERT gebaseerd, en waarom is het ongeschikt voor open tekstgeneratie?" options="Decoder-only; het mist cross-attention lagen|Encoder-decoder; het vereist een aparte decoder om tekst te genereren|Encoder-only; de bidirectionele attention betekent dat het de volledige sequentie ziet, waardoor auto-regressieve generatie onmogelijk is|Encoder-only; het heeft te weinig parameters voor generatietaken" answer="2" explanation="BERT gebruikt bidirectionele (encoder-only) attention, wat betekent dat elk token attendeert op elk ander token, inclusief toekomstige. Dit is perfect voor begripstaken maar maakt auto-regressieve generatie onmogelijk - het kan niet 'het volgende token' voorspellen als het alle tokens al kan zien." />
 
 <FunFact>
-Het oorspronkelijke *Attention Is All You Need*-paper werd afgewezen bij een eerder congres voordat het werd geaccepteerd op NeurIPS 2017. Anno 2024 heeft het meer dan 130.000 citaties — waarmee het een van de meest geciteerde informaticapapers ooit is.
+Het oorspronkelijke *Attention Is All You Need*-paper werd afgewezen bij een eerder congres voordat het werd geaccepteerd op NeurIPS 2017. Anno 2024 heeft het meer dan 130.000 citaties - waarmee het een van de meest geciteerde informaticapapers ooit is.
 </FunFact>
 
 <ThinkAboutIt>
-Self-attention heeft O(n²) complexiteit in sequentielengte — verdubbeling van het context window verviervoudigt de rekenkracht. Onderzoek naar linear attention, sparse attention en ring attention probeert deze barrière te doorbreken. Welke afwegingen zouden deze benaderingen kunnen introduceren?
+Self-attention heeft O(n²) complexiteit in sequentielengte - verdubbeling van het context window verviervoudigt de rekenkracht. Onderzoek naar linear attention, sparse attention en ring attention probeert deze barrière te doorbreken. Welke afwegingen zouden deze benaderingen kunnen introduceren?
 </ThinkAboutIt>
 
 ---
 
 ## 📚 Verder Lezen
 
-- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762) — Het fundamentele paper dat de Transformer-architectuur introduceerde
-- [Andrej Karpathy — Let's build GPT: from scratch, in code](https://www.youtube.com/watch?v=kCc8FmEb1nY) — Een complete walkthrough van het bouwen van een Transformer vanuit het niets
-- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/) — Visuele, intuïtieve uitleg van elk Transformer-onderdeel
+- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762) - Het fundamentele paper dat de Transformer-architectuur introduceerde
+- [Andrej Karpathy - Let's build GPT: from scratch, in code](https://www.youtube.com/watch?v=kCc8FmEb1nY) - Een complete walkthrough van het bouwen van een Transformer vanuit het niets
+- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/) - Visuele, intuïtieve uitleg van elk Transformer-onderdeel

@@ -1,5 +1,5 @@
 ---
-title: "Interval Problems — Merge, Insert, and Schedule"
+title: "Interval Problems - Merge, Insert, and Schedule"
 description: "Master interval-based problems from merge and insert to meeting rooms and sweep lines. Learn the sorting strategies and patterns interviewers expect."
 order: 9
 difficulty: "advanced"
@@ -57,7 +57,7 @@ Given sorted non-overlapping intervals and a new interval, insert it and merge a
 
 <ThinkAboutIt>Insert Interval is often presented without the merge step being obvious. How would you recognise it as a merge problem during an interview?</ThinkAboutIt>
 
-## Meeting Rooms I — Can Attend All?
+## Meeting Rooms I - Can Attend All?
 
 Sort by start time. If any interval's start is before the previous interval's end, there is a conflict.
 
@@ -70,7 +70,7 @@ def can_attend(intervals):
     return True
 ```
 
-## Meeting Rooms II — Minimum Rooms
+## Meeting Rooms II - Minimum Rooms
 
 This is where the **event-based approach** shines. Separate starts and ends into two sorted lists, then sweep:
 
@@ -89,13 +89,13 @@ def min_rooms(intervals):
 
 The heap tracks the earliest ending meeting. If it ends before the next one starts, we reuse the room. The heap's maximum size is the answer.
 
-<Illustration src="/images/lessons/interval-problems.svg" alt="Timeline showing overlapping meeting intervals requiring multiple rooms" caption="Each vertical slice shows simultaneous meetings — the peak is the minimum rooms needed." />
+<Illustration src="/images/lessons/interval-problems.svg" alt="Timeline showing overlapping meeting intervals requiring multiple rooms" caption="Each vertical slice shows simultaneous meetings - the peak is the minimum rooms needed." />
 
-<FunFact>Meeting Rooms II is essentially the same problem as finding the maximum number of overlapping intervals at any point — a concept used in CPU thread scheduling, bandwidth allocation, and hospital bed planning.</FunFact>
+<FunFact>Meeting Rooms II is essentially the same problem as finding the maximum number of overlapping intervals at any point - a concept used in CPU thread scheduling, bandwidth allocation, and hospital bed planning.</FunFact>
 
-## Non-Overlapping Intervals — Minimum Removals
+## Non-Overlapping Intervals - Minimum Removals
 
-Given intervals, find the minimum number to remove so none overlap (LeetCode 435). Greedy: sort by **end time**, always keep the interval that ends earliest — this leaves the most room for future intervals.
+Given intervals, find the minimum number to remove so none overlap (LeetCode 435). Greedy: sort by **end time**, always keep the interval that ends earliest - this leaves the most room for future intervals.
 
 ```python
 def erase_overlap(intervals):
@@ -118,7 +118,7 @@ def erase_overlap(intervals):
 
 ## Interval List Intersections
 
-Given two sorted interval lists, find all intersections (LeetCode 986). Use two pointers — one per list. The intersection of `[a1, a2]` and `[b1, b2]` is `[max(a1, b1), min(a2, b2)]` if it is valid (start ≤ end). Advance the pointer whose interval ends first.
+Given two sorted interval lists, find all intersections (LeetCode 986). Use two pointers - one per list. The intersection of `[a1, a2]` and `[b1, b2]` is `[max(a1, b1), min(a2, b2)]` if it is valid (start ≤ end). Advance the pointer whose interval ends first.
 
 ## The Sweep Line Technique
 
@@ -135,7 +135,7 @@ Sort events by time. Sweep left to right, maintaining a running count. The peak 
 
 **My Calendar I** (LeetCode 729): maintain booked intervals and reject overlaps. **My Calendar II**: allow single overlaps but reject triple-bookings. The sweep line makes multi-layer overlap detection straightforward.
 
-## Pattern Recognition — When to Suspect Intervals
+## Pattern Recognition - When to Suspect Intervals
 
 Look for these clues in problem statements:
 
@@ -157,6 +157,6 @@ Look for these clues in problem statements:
 
 ## 📚 Further Reading
 
-- [Merge Intervals — LeetCode 56](https://leetcode.com/problems/merge-intervals/) — The essential starting problem for interval mastery
-- [Sweep Line Algorithm — CP-Algorithms](https://cp-algorithms.com/geometry/intersecting_segments.html) — Deeper exploration of the sweep line paradigm
-- [Meeting Rooms II — LeetCode 253](https://leetcode.com/problems/meeting-rooms-ii/) — The classic min-heap interval scheduling problem
+- [Merge Intervals - LeetCode 56](https://leetcode.com/problems/merge-intervals/) - The essential starting problem for interval mastery
+- [Sweep Line Algorithm - CP-Algorithms](https://cp-algorithms.com/geometry/intersecting_segments.html) - Deeper exploration of the sweep line paradigm
+- [Meeting Rooms II - LeetCode 253](https://leetcode.com/problems/meeting-rooms-ii/) - The classic min-heap interval scheduling problem

@@ -1,5 +1,5 @@
 ---
-title: "Union-Find — Connected Components en netwerkdetectie"
+title: "Union-Find - Connected Components en netwerkdetectie"
 description: "Leer de Union-Find (disjoint set) datastructuur met path compression en union by rank. Los connectivity-, MST- en graph component-problemen efficiënt op."
 order: 7
 difficulty: "advanced"
@@ -10,13 +10,13 @@ published: true
 
 ## Het connectiviteitsprobleem
 
-Gegeven een netwerk van nodes ontvang je voortdurend twee soorten queries: *verbind node A met node B* en *zijn A en B verbonden?* Dit met BFS/DFS doen betekent de graph doorlopen bij elke query — veel te traag voor miljoenen operaties.
+Gegeven een netwerk van nodes ontvang je voortdurend twee soorten queries: *verbind node A met node B* en *zijn A en B verbonden?* Dit met BFS/DFS doen betekent de graph doorlopen bij elke query - veel te traag voor miljoenen operaties.
 
 **Union-Find** beantwoordt beide in bijna constante tijd.
 
-## Naïeve aanpak — Quick Find
+## Naïeve aanpak - Quick Find
 
-Sla een component-ID op voor elke node. Om connectiviteit te controleren, vergelijk je ID's in O(1). Maar twee componenten samenvoegen dwingt je om elk lid van een groep bij te werken — O(n) per union.
+Sla een component-ID op voor elke node. Om connectiviteit te controleren, vergelijk je ID's in O(1). Maar twee componenten samenvoegen dwingt je om elk lid van een groep bij te werken - O(n) per union.
 
 ```
 IDs:  [0, 0, 0, 3, 3]
@@ -76,7 +76,7 @@ def union(self, x, y):
 
 <Quiz
   question="Wat is de geamortiseerde tijd per operatie met zowel path compression als union by rank?"
-  options="O(log n)|O(n)|O(α(n)) — bijna O(1)|O(√n)"
+  options="O(log n)|O(n)|O(α(n)) - bijna O(1)|O(√n)"
   answer="2"
   explanation="De inverse Ackermann-functie α(n) groeit zo langzaam dat deze voor elke praktische invoer nooit boven 4 uitkomt, waardoor operaties effectief O(1) zijn."
 />
@@ -107,7 +107,7 @@ Elk account heeft e-mailadressen. Als twee accounts een e-mail delen, behoren ze
 
 ### Redundant Connection (LeetCode 684)
 
-Gegeven een boom plus één extra edge, vind de overbodige edge. Verwerk edges op volgorde — de eerste edge waarbij `union` `False` retourneert (al verbonden) is het antwoord.
+Gegeven een boom plus één extra edge, vind de overbodige edge. Verwerk edges op volgorde - de eerste edge waarbij `union` `False` retourneert (al verbonden) is het antwoord.
 
 <FunFact>Het bewijs dat Union-Find met beide optimalisaties in O(α(n)) draait, werd in 1975 door Tarjan gepubliceerd en wordt beschouwd als een van de meest elegante geamortiseerde analyses in de informatica.</FunFact>
 
@@ -126,7 +126,7 @@ Union-Find blinkt uit wanneer je edges *incrementeel* verwerkt en snelle connect
 
 <Quiz
   question="Je krijgt edges één voor één en moet de eerste edge detecteren die een cycle creëert. Welke aanpak is het beste?"
-  options="BFS from scratch na elke edge|DFS from scratch na elke edge|Union-Find — union retourneert False bij de cycle-edge|Topologische sortering"
+  options="BFS from scratch na elke edge|DFS from scratch na elke edge|Union-Find - union retourneert False bij de cycle-edge|Topologische sortering"
   answer="2"
   explanation="Union-Find detecteert cycles incrementeel in bijna O(1) per edge, terwijl BFS/DFS de hele graph opnieuw zou doorlopen."
 />
@@ -144,6 +144,6 @@ Union-Find blinkt uit wanneer je edges *incrementeel* verwerkt en snelle connect
 
 ## 📚 Verder lezen
 
-- [Disjoint-Set Data Structure — Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) — Theorie, bewijzen en geschiedenis van Union-Find
-- [Union-Find — Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) — Sedgewick's gezaghebbende behandeling met Java-voorbeelden
-- [Redundant Connection — LeetCode 684](https://leetcode.com/problems/redundant-connection/) — Een heldere toepassing van cycle-detectie met Union-Find
+- [Disjoint-Set Data Structure - Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) - Theorie, bewijzen en geschiedenis van Union-Find
+- [Union-Find - Princeton Algorithms](https://algs4.cs.princeton.edu/15uf/) - Sedgewick's gezaghebbende behandeling met Java-voorbeelden
+- [Redundant Connection - LeetCode 684](https://leetcode.com/problems/redundant-connection/) - Een heldere toepassing van cycle-detectie met Union-Find

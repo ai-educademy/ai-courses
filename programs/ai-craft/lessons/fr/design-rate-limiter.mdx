@@ -1,5 +1,5 @@
 ---
-title: "Concevoir un Rate Limiter — Protéger les APIs à grande échelle"
+title: "Concevoir un Rate Limiter - Protéger les APIs à grande échelle"
 description: "Apprenez à concevoir un rate limiter distribué en utilisant les algorithmes token bucket, sliding window et Redis pour protéger les APIs contre les abus et garantir une utilisation équitable."
 order: 6
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🛡️"
 published: true
 ---
 
-# Concevoir un Rate Limiter — Protéger les APIs à grande échelle
+# Concevoir un Rate Limiter - Protéger les APIs à grande échelle
 
-Le rate limiting est l'un des sujets de system design les plus pratiques. Chaque API en production — de GitHub à Stripe — s'en sert pour prévenir les abus, garantir une utilisation équitable et protéger les services backend contre la surcharge.
+Le rate limiting est l'un des sujets de system design les plus pratiques. Chaque API en production - de GitHub à Stripe - s'en sert pour prévenir les abus, garantir une utilisation équitable et protéger les services backend contre la surcharge.
 
-## Étape 1 — Recueil des exigences
+## Étape 1 - Recueil des exigences
 
 ### Exigences fonctionnelles
 - Limiter les requêtes selon des règles configurables (par utilisateur, IP ou API key)
@@ -20,19 +20,19 @@ Le rate limiting est l'un des sujets de system design les plus pratiques. Chaque
 - Supporter plusieurs règles de rate limiting simultanément
 
 ### Exigences non fonctionnelles
-- **Faible latence** — le limiter ne doit pas ajouter de surcharge significative
-- **Distribué** — fonctionne sur plusieurs serveurs
-- **Tolérant aux pannes** — si le limiter échoue, le trafic doit continuer (fail-open)
+- **Faible latence** - le limiter ne doit pas ajouter de surcharge significative
+- **Distribué** - fonctionne sur plusieurs serveurs
+- **Tolérant aux pannes** - si le limiter échoue, le trafic doit continuer (fail-open)
 
 <ThinkAboutIt>Un rate limiter doit-il être fail-open (autoriser le trafic) ou fail-closed (bloquer le trafic) en cas de panne ? Quels sont les compromis pour un site e-commerce par rapport à une API bancaire ?</ThinkAboutIt>
 
-## Étape 2 — Algorithmes de Rate Limiting
+## Étape 2 - Algorithmes de Rate Limiting
 
 ### Fixed Window Counter
 Divisez le temps en fenêtres fixes (par ex. intervalles de 60 secondes). Incrémentez un compteur par requête. Réinitialisez aux limites de fenêtre. **Problème :** le trafic en rafale aux bords des fenêtres peut permettre 2× la limite.
 
 ### Sliding Window Log
-Stockez le timestamp de chaque requête. Comptez les entrées dans la fenêtre glissante. Précis mais **gourmand en mémoire** — stocker chaque timestamp est coûteux à grande échelle.
+Stockez le timestamp de chaque requête. Comptez les entrées dans la fenêtre glissante. Précis mais **gourmand en mémoire** - stocker chaque timestamp est coûteux à grande échelle.
 
 ### Sliding Window Counter
 Un hybride : combinez le compteur de la fenêtre courante avec une portion pondérée de la fenêtre précédente. Équilibre entre précision et efficacité mémoire.
@@ -59,7 +59,7 @@ Time 1s: refill +2 → [🪙🪙🪙🪙] → 4 tokens
 
 <Quiz question="Quel algorithme permet des rafales contrôlées tout en maintenant un débit stable à long terme ?" options="Fixed Window Counter|Sliding Window Log|Token Bucket|Sliding Window Counter" answer="2" explanation="Le Token Bucket autorise de courtes rafales jusqu'à la capacité du bucket tout en imposant un débit moyen via le mécanisme de refill. C'est idéal pour les APIs qui doivent gérer des pics de trafic." />
 
-## Étape 3 — Architecture de haut niveau
+## Étape 3 - Architecture de haut niveau
 
 ```
 Client → API Gateway (Rate Limiter Middleware) → Backend Services
@@ -71,16 +71,16 @@ Client → API Gateway (Rate Limiter Middleware) → Backend Services
 <Illustration src="/images/lessons/design-rate-limiter.svg" alt="Architecture du rate limiter montrant les clients, l'API gateway avec le middleware de rate limiting, le cluster Redis pour l'état distribué et les services backend" caption="Le rate limiter se situe dans l'API gateway, utilisant Redis pour le stockage distribué des compteurs" />
 
 ### Où placer le Rate Limiter
-- **Côté client** — facile à contourner, peu fiable
-- **Côté serveur** — par instance uniquement, ne passe pas à l'échelle
-- **API Gateway / Middleware** — la meilleure approche pour les systèmes distribués ; application centralisée sur toutes les instances
+- **Côté client** - facile à contourner, peu fiable
+- **Côté serveur** - par instance uniquement, ne passe pas à l'échelle
+- **API Gateway / Middleware** - la meilleure approche pour les systèmes distribués ; application centralisée sur toutes les instances
 
-## Étape 4 — Approfondissement : Rate Limiting distribué
+## Étape 4 - Approfondissement : Rate Limiting distribué
 
 ### Redis + Lua Scripts
 Dans un système distribué, plusieurs serveurs doivent partager l'état du rate limiting. Redis est le choix standard grâce à ses opérations atomiques et sa latence sub-milliseconde.
 
-Un Lua script garantit l'atomicité — la vérification et la décrémentation se font en une seule opération Redis, évitant les race conditions :
+Un Lua script garantit l'atomicité - la vérification et la décrémentation se font en une seule opération Redis, évitant les race conditions :
 
 ```
 -- Token Bucket in Redis (pseudocode)
@@ -93,30 +93,30 @@ local last_refill = redis.call('GET', key..':time')
 
 ### En-têtes de réponse
 Les rate limiters bien conçus communiquent leur état aux clients :
-- `X-RateLimit-Limit: 100` — requêtes maximales par fenêtre
-- `X-RateLimit-Remaining: 42` — requêtes restantes
-- `X-RateLimit-Reset: 1672531200` — epoch UTC de réinitialisation de la fenêtre
+- `X-RateLimit-Limit: 100` - requêtes maximales par fenêtre
+- `X-RateLimit-Remaining: 42` - requêtes restantes
+- `X-RateLimit-Reset: 1672531200` - epoch UTC de réinitialisation de la fenêtre
 - HTTP `429 Too Many Requests` avec un en-tête `Retry-After`
 
-<Quiz question="Pourquoi utilise-t-on des Lua scripts avec Redis pour le rate limiting plutôt que des commandes GET et SET séparées ?" options="Lua est plus rapide que les commandes Redis|Les Lua scripts s'exécutent de manière atomique sur Redis, empêchant les race conditions|Redis ne supporte pas GET/SET nativement|Lua réduit la bande passante réseau" answer="1" explanation="Les Lua scripts s'exécutent de manière atomique sur le serveur Redis. Sans atomicité, deux requêtes concurrentes pourraient lire le même nombre de tokens, constater qu'il en reste, et toutes deux décrémenter — autorisant plus de requêtes que la limite ne le permet." />
+<Quiz question="Pourquoi utilise-t-on des Lua scripts avec Redis pour le rate limiting plutôt que des commandes GET et SET séparées ?" options="Lua est plus rapide que les commandes Redis|Les Lua scripts s'exécutent de manière atomique sur Redis, empêchant les race conditions|Redis ne supporte pas GET/SET nativement|Lua réduit la bande passante réseau" answer="1" explanation="Les Lua scripts s'exécutent de manière atomique sur le serveur Redis. Sans atomicité, deux requêtes concurrentes pourraient lire le même nombre de tokens, constater qu'il en reste, et toutes deux décrémenter - autorisant plus de requêtes que la limite ne le permet." />
 
-## Étape 5 — Gestion des cas limites
+## Étape 5 - Gestion des cas limites
 
 ### Race Conditions
 Sans opérations atomiques, des requêtes concurrentes peuvent contourner les limites. Solutions : Lua scripts Redis ou transactions Redis `MULTI/EXEC`.
 
 ### Dimensions du Rate Limiting
 Appliquez des limites à plusieurs niveaux simultanément :
-- **Par utilisateur** — 100 requêtes/minute pour les utilisateurs authentifiés
-- **Par IP** — 50 requêtes/minute pour le trafic anonyme
-- **Par API key** — plans par paliers (free : 10/min, pro : 1000/min)
+- **Par utilisateur** - 100 requêtes/minute pour les utilisateurs authentifiés
+- **Par IP** - 50 requêtes/minute pour le trafic anonyme
+- **Par API key** - plans par paliers (free : 10/min, pro : 1000/min)
 
 ### Distributed Clock Skew
 Les serveurs peuvent avoir des horloges légèrement décalées. Utilisez l'heure du serveur Redis comme source unique de vérité plutôt que les timestamps des serveurs applicatifs.
 
 <FunFact>L'API REST de GitHub autorise 5 000 requêtes par heure pour les utilisateurs authentifiés mais seulement 60 par heure pour les requêtes non authentifiées. Stripe utilise une approche sliding window avec des limites séparées pour les API keys en mode live et test.</FunFact>
 
-## Étape 6 — Goulots d'étranglement et optimisations
+## Étape 6 - Goulots d'étranglement et optimisations
 
 | Goulot d'étranglement | Solution |
 |----------------------|----------|
@@ -127,11 +127,11 @@ Les serveurs peuvent avoir des horloges légèrement décalées. Utilisez l'heur
 
 <Quiz question="Un rate limiter utilise une fixed window de 60 secondes avec une limite de 100 requêtes. Un utilisateur envoie 100 requêtes à la seconde 59 et 100 autres à la seconde 61. Combien de requêtes passent ?" options="100|150|200|Cela dépend de l'algorithme" answer="2" explanation="Avec les fixed window counters, les 200 requêtes passent car 100 tombent dans la fenêtre 1 (secondes 0-59) et 100 dans la fenêtre 2 (secondes 60-119). C'est ce problème de rafale aux bords qui fait préférer les algorithmes sliding window ou token bucket." />
 
-<ThinkAboutIt>Si vous concevez du rate limiting pour une API mondiale avec des data centres à Londres, New York et Tokyo — utiliseriez-vous un Redis centralisé unique ou des clusters Redis régionaux ? Quels compromis de cohérence accepteriez-vous ?</ThinkAboutIt>
+<ThinkAboutIt>Si vous concevez du rate limiting pour une API mondiale avec des data centres à Londres, New York et Tokyo - utiliseriez-vous un Redis centralisé unique ou des clusters Redis régionaux ? Quels compromis de cohérence accepteriez-vous ?</ThinkAboutIt>
 
 ---
 
 ## 📚 Pour aller plus loin
-- [Rate Limiting — System Design Interview, Ch. 4](https://bytebytego.com/) — conception pas à pas d'un rate limiter par Alex Xu
-- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) — comment Stripe gère le rate limiting en production
-- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) — implémentation réelle d'un API gateway
+- [Rate Limiting - System Design Interview, Ch. 4](https://bytebytego.com/) - conception pas à pas d'un rate limiter par Alex Xu
+- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) - comment Stripe gère le rate limiting en production
+- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) - implémentation réelle d'un API gateway

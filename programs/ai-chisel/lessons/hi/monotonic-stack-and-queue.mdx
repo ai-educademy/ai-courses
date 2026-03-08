@@ -1,5 +1,5 @@
 ---
-title: "Monotonic Stack और Queue — Next Greater Element और उससे आगे"
+title: "Monotonic Stack और Queue - Next Greater Element और उससे आगे"
 description: "Monotonic stack और queue patterns सीखें जिनसे next greater element, daily temperatures, histogram, और sliding window problems को O(n) time में solve कर सकते हैं।"
 order: 8
 difficulty: "advanced"
@@ -24,7 +24,7 @@ Pop 3, Push 4 → [5, 4]  (4 > 3)
 
 ## Next Greater Element
 
-हर element के लिए, उसके दाईं ओर पहला बड़ा element ढूंढना है। Brute force हर position से right की तरफ scan करता है — O(n²)। एक monotonic decreasing stack यह काम एक ही pass में कर देता है।
+हर element के लिए, उसके दाईं ओर पहला बड़ा element ढूंढना है। Brute force हर position से right की तरफ scan करता है - O(n²)। एक monotonic decreasing stack यह काम एक ही pass में कर देता है।
 
 ```python
 def next_greater(nums):
@@ -37,7 +37,7 @@ def next_greater(nums):
     return result
 ```
 
-जब हम index `j` को pop करते हैं, तो current element उसका next greater है — यह guarantee है क्योंकि बीच के सारे elements छोटे थे (वे पहले pop हो गए थे या `j` को कभी block नहीं किया)।
+जब हम index `j` को pop करते हैं, तो current element उसका next greater है - यह guarantee है क्योंकि बीच के सारे elements छोटे थे (वे पहले pop हो गए थे या `j` को कभी block नहीं किया)।
 
 <Quiz
   question="Input [4, 2, 1, 5] के लिए, 5 process करने से ठीक पहले monotonic stack में क्या होगा?"
@@ -48,7 +48,7 @@ def next_greater(nums):
 
 ## Daily Temperatures (LeetCode 739)
 
-*Daily temperatures दी गई हैं, पता करें कि गर्म दिन आने में कितने दिन लगेंगे।* यह next-greater-element है indices के साथ — index `j` का answer `i − j` होता है जब `j` को index `i` pop करता है।
+*Daily temperatures दी गई हैं, पता करें कि गर्म दिन आने में कितने दिन लगेंगे।* यह next-greater-element है indices के साथ - index `j` का answer `i − j` होता है जब `j` को index `i` pop करता है।
 
 ## Stock Span Problem
 
@@ -60,7 +60,7 @@ def next_greater(nums):
 
 LeetCode का **Largest Rectangle in Histogram** monotonic stack problems का सबसे शानदार problem है।
 
-**Key insight:** हर bar के लिए, पता करें कि वह सबसे छोटी bar होते हुए कितना left और right extend कर सकती है। एक increasing stack use करें — जब कोई bar pop होती है, popping bar उसकी right boundary define करती है, और नया stack top left boundary define करता है।
+**Key insight:** हर bar के लिए, पता करें कि वह सबसे छोटी bar होते हुए कितना left और right extend कर सकती है। एक increasing stack use करें - जब कोई bar pop होती है, popping bar उसकी right boundary define करती है, और नया stack top left boundary define करता है।
 
 ```python
 def largest_rectangle(heights):
@@ -78,7 +78,7 @@ def largest_rectangle(heights):
 
 <Illustration src="/images/lessons/monotonic-stack-and-queue.svg" alt="Histogram bars with largest rectangle highlighted" caption="Monotonic stack हर bar के लिए सबसे चौड़ा rectangle ढूंढता है जो वह सबसे छोटी bar के रूप में support कर सकती है।" />
 
-## Trapping Rain Water — Stack Approach
+## Trapping Rain Water - Stack Approach
 
 Classic two-pointer method की जगह, एक monotonic decreasing stack trapped water को layer by layer calculate करता है। जब एक ऊँची bar आती है, छोटी bars को pop करें और popped bar, current bar, और नए stack top के बीच trapped water calculate करें।
 
@@ -87,9 +87,9 @@ Heights:  [3, 1, 2, 1, 3]
 Water:       [2, 1, 2]  → total = 5
 ```
 
-<FunFact>Trapping Rain Water के कम से कम चार अलग-अलग O(n) solutions हैं — two-pointer, monotonic stack, prefix max arrays, और एक single-pass optimised approach। Interviewers को multiple strategies देखना बहुत पसंद है।</FunFact>
+<FunFact>Trapping Rain Water के कम से कम चार अलग-अलग O(n) solutions हैं - two-pointer, monotonic stack, prefix max arrays, और एक single-pass optimised approach। Interviewers को multiple strategies देखना बहुत पसंद है।</FunFact>
 
-## Monotonic Queue — Sliding Window Maximum
+## Monotonic Queue - Sliding Window Maximum
 
 एक **monotonic deque** (double-ended queue) decreasing order maintain करता है और दोनों ends से efficiently remove कर सकता है। **Sliding Window Maximum** (LeetCode 239) के लिए:
 
@@ -114,7 +114,7 @@ def max_sliding_window(nums, k):
     return result
 ```
 
-हर element deque में ज़्यादा से ज़्यादा एक बार enter और leave करता है — कुल **O(n)**।
+हर element deque में ज़्यादा से ज़्यादा एक बार enter और leave करता है - कुल **O(n)**।
 
 <Quiz
   question="Sliding window maximum के लिए monotonic deque FRONT से क्यों remove करता है?"
@@ -123,12 +123,12 @@ def max_sliding_window(nums, k):
   explanation="Front पर मौजूद elements के indices current window के बाहर हो सकते हैं। उन्हें remove करने से केवल valid candidates बचते हैं।"
 />
 
-## Pattern — Process करते समय Invariant Maintain करें
+## Pattern - Process करते समय Invariant Maintain करें
 
 हर monotonic stack/queue problem एक ही template follow करती है:
 
 1. **Invariant define करें** (increasing या decreasing)
-2. **Violators को pop करें** — और हर pop से useful information निकालें
+2. **Violators को pop करें** - और हर pop से useful information निकालें
 3. **Current element push करें**
 4. *Pop event* वह जगह है जहाँ answer compute होता है
 
@@ -145,6 +145,6 @@ def max_sliding_window(nums, k):
 
 ## 📚 और पढ़ें
 
-- [Monotonic Stack — LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) — Practice के लिए curated problem set
-- [Largest Rectangle in Histogram — LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) — Monotonic stack की सबसे classic challenge
-- [Sliding Window Maximum — LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) — Classic monotonic deque application
+- [Monotonic Stack - LeetCode Explore](https://leetcode.com/tag/monotonic-stack/) - Practice के लिए curated problem set
+- [Largest Rectangle in Histogram - LeetCode 84](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Monotonic stack की सबसे classic challenge
+- [Sliding Window Maximum - LeetCode 239](https://leetcode.com/problems/sliding-window-maximum/) - Classic monotonic deque application

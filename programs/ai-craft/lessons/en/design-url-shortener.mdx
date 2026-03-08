@@ -1,5 +1,5 @@
 ---
-title: "Design a URL Shortener — Your First System Design Interview"
+title: "Design a URL Shortener - Your First System Design Interview"
 description: "Walk through a complete URL shortener design using the structured interview framework."
 order: 2
 difficulty: "advanced"
@@ -28,7 +28,7 @@ This is the most common first system design question because it's deceptively si
 - Read-heavy: 100:1 read-to-write ratio → 4,000 redirects per second
 - URL redirection latency under 50ms
 - Short URLs should be as short as possible
-- High availability — a broken link is a terrible user experience
+- High availability - a broken link is a terrible user experience
 
 <Callout>
 Start every system design interview by asking clarifying questions. Writing down explicit numbers (40 writes/sec, 4,000 reads/sec) shows you can reason quantitatively about scale.
@@ -49,38 +49,38 @@ Response: { "clicks": 14523, "created_at": "...", "top_referrers": [...] }
 ```
 
 **Why HTTP 301 vs 302?**
-- **301 (Permanent Redirect)** — browsers cache it, reducing load on our servers
-- **302 (Temporary Redirect)** — browsers always hit our servers, enabling accurate analytics
+- **301 (Permanent Redirect)** - browsers cache it, reducing load on our servers
+- **302 (Temporary Redirect)** - browsers always hit our servers, enabling accurate analytics
 
 For a service that tracks clicks, **302 is usually the better choice** since every redirect passes through our servers.
 
-<Quiz question="Your URL shortener needs accurate click analytics. Which HTTP redirect status code should you use and why?" options="200 OK — return the page content directly|301 Permanent Redirect — browsers cache it for speed|302 Temporary Redirect — ensures every click hits our server for counting|404 Not Found — then redirect client-side via JavaScript" answer="2" explanation="302 Temporary Redirect ensures the browser contacts our server on every click, allowing us to record the visit for analytics. A 301 would be cached by browsers, meaning repeat visits wouldn't be counted." />
+<Quiz question="Your URL shortener needs accurate click analytics. Which HTTP redirect status code should you use and why?" options="200 OK - return the page content directly|301 Permanent Redirect - browsers cache it for speed|302 Temporary Redirect - ensures every click hits our server for counting|404 Not Found - then redirect client-side via JavaScript" answer="2" explanation="302 Temporary Redirect ensures the browser contacts our server on every click, allowing us to record the visit for analytics. A 301 would be cached by browsers, meaning repeat visits wouldn't be counted." />
 
 ## Step 3: Encoding Strategy
 
 The core challenge: how do we generate short, unique codes?
 
-**Base62 encoding** uses `[a-zA-Z0-9]` — 62 characters. A 7-character code gives us 62⁷ = **3.5 trillion** unique combinations, more than enough for our scale.
+**Base62 encoding** uses `[a-zA-Z0-9]` - 62 characters. A 7-character code gives us 62⁷ = **3.5 trillion** unique combinations, more than enough for our scale.
 
-**Option A — Counter-based:**
+**Option A - Counter-based:**
 - Use an auto-incrementing counter (1, 2, 3, ...) and convert to base62
 - Counter 1000 → `g8` | Counter 1000000 → `4c92`
 - **Pros:** guaranteed unique, simple, no collisions
 - **Cons:** predictable (users can guess next URL), requires a centralised counter
 
-**Option B — Hash-based:**
+**Option B - Hash-based:**
 - Hash the long URL with MD5/SHA-256, take the first 7 characters of base62
 - **Pros:** stateless, no central coordination needed
-- **Cons:** possible collisions — must check database and retry
+- **Cons:** possible collisions - must check database and retry
 
-**Option C — Pre-generated keys (recommended):**
+**Option C - Pre-generated keys (recommended):**
 - A background service pre-generates millions of unique base62 codes and stores them in a key pool
 - When a new URL arrives, grab the next available code from the pool
 - **Pros:** fast, no collision risk, no predictability
 - **Cons:** requires managing the key generation service
 
 <FunFact>
-The original TinyURL service launched in 2002 and is still running today. At one point, it was generating over 1 million short URLs per day. The domain itself — tinyurl.com — has become so iconic that "tinyurl" is used as a generic term for URL shortening.
+The original TinyURL service launched in 2002 and is still running today. At one point, it was generating over 1 million short URLs per day. The domain itself - tinyurl.com - has become so iconic that "tinyurl" is used as a generic term for URL shortening.
 </FunFact>
 
 ## Step 4: Database Choice and Schema
@@ -88,7 +88,7 @@ The original TinyURL service launched in 2002 and is still running today. At one
 With 100 million new URLs per month and a 5-year retention, we'll store roughly **6 billion records**. This is a read-heavy workload with simple key-value lookups.
 
 **Database choice: DynamoDB or Cassandra**
-- Lookups are always by short code (partition key) — no complex joins needed
+- Lookups are always by short code (partition key) - no complex joins needed
 - Both handle massive read throughput with horizontal scaling
 - Both offer sub-10ms lookups by partition key
 
@@ -113,7 +113,7 @@ Table: clicks
   device: "mobile"
 ```
 
-<Illustration src="/images/lessons/design-url-shortener.svg" alt="URL shortener architecture with API servers, key generation service, cache, and database" caption="The URL shortener architecture — read requests hit the cache first, falling back to the database on a miss." />
+<Illustration src="/images/lessons/design-url-shortener.svg" alt="URL shortener architecture with API servers, key generation service, cache, and database" caption="The URL shortener architecture - read requests hit the cache first, falling back to the database on a miss." />
 
 ## Step 5: Caching Strategy
 
@@ -139,7 +139,7 @@ TTL:   24 hours
 
 With an 80% cache hit rate, only 800 of the 4,000 requests per second actually reach the database.
 
-<Quiz question="Your URL shortener serves 4,000 redirects per second. The cache hit rate is 80%. How many database reads per second does the database need to handle?" options="4,000|3,200|800|0 — the cache handles everything" answer="2" explanation="With an 80% cache hit rate, 20% of requests miss the cache: 4,000 × 0.20 = 800 database reads per second." />
+<Quiz question="Your URL shortener serves 4,000 redirects per second. The cache hit rate is 80%. How many database reads per second does the database need to handle?" options="4,000|3,200|800|0 - the cache handles everything" answer="2" explanation="With an 80% cache hit rate, 20% of requests miss the cache: 4,000 × 0.20 = 800 database reads per second." />
 
 ## Step 6: Analytics and Click Tracking
 
@@ -161,30 +161,30 @@ URL shorteners are sometimes used to disguise malicious links. If you were desig
 ## Step 7: Scaling the System
 
 **Horizontal scaling approach:**
-- **API servers** are stateless — scale by adding instances behind a load balancer
+- **API servers** are stateless - scale by adding instances behind a load balancer
 - **Key generation service** runs as a separate microservice with its own database of pre-generated codes
 - **Redis cluster** handles cache distribution across nodes using consistent hashing
 - **Database sharding** by the first character of the short code distributes data evenly
 
 **Handling peak loads:**
 - During viral events, a single URL might receive millions of hits per minute
-- The Redis cache absorbs this naturally — one cache entry serves unlimited reads
+- The Redis cache absorbs this naturally - one cache entry serves unlimited reads
 - Kafka buffers click events, smoothing the write load on the analytics database
 
-<Quiz question="A URL goes viral and receives 500,000 clicks per minute. Which component is most likely to remain unaffected?" options="The Redis cache (single key serves all requests)|The Kafka click-event consumers|The analytics database write path|The API server CPU" answer="0" explanation="Redis handles millions of reads per second for a single cached key effortlessly. The Kafka consumers and analytics database face 500K writes/minute, and API servers handle 500K requests/minute — all under significant load." />
+<Quiz question="A URL goes viral and receives 500,000 clicks per minute. Which component is most likely to remain unaffected?" options="The Redis cache (single key serves all requests)|The Kafka click-event consumers|The analytics database write path|The API server CPU" answer="0" explanation="Redis handles millions of reads per second for a single cached key effortlessly. The Kafka consumers and analytics database face 500K writes/minute, and API servers handle 500K requests/minute - all under significant load." />
 
 <ThinkAboutIt>
 Companies like bit.ly handle billions of redirects monthly. If a short URL is shared on a billboard or TV advert, traffic can spike from zero to millions in seconds. Beyond caching, what other strategies would you use to absorb these sudden, unpredictable traffic bursts?
 </ThinkAboutIt>
 
 <FunFact>
-In 2009, bit.ly was processing over 80 million clicks per day. When Libya — whose country code is .ly — briefly took down .ly domains due to political instability, it caused panic across the internet as millions of shortened links temporarily stopped working.
+In 2009, bit.ly was processing over 80 million clicks per day. When Libya - whose country code is .ly - briefly took down .ly domains due to political instability, it caused panic across the internet as millions of shortened links temporarily stopped working.
 </FunFact>
 
 ## Key Takeaways
 
 - Follow the framework: requirements → API → encoding → data model → architecture → deep dives
-- Base62 with 7 characters yields 3.5 trillion unique codes — more than sufficient
+- Base62 with 7 characters yields 3.5 trillion unique codes - more than sufficient
 - Pre-generated key pools avoid collision issues and central counter bottlenecks
 - Use 302 redirects (not 301) when you need accurate click analytics
 - Redis caching dramatically reduces database load for read-heavy workloads

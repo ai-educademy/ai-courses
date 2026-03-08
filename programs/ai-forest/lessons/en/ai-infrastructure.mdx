@@ -1,5 +1,5 @@
 ---
-title: "AI Infrastructure — GPUs, TPUs, and the Cloud Battle"
+title: "AI Infrastructure - GPUs, TPUs, and the Cloud Battle"
 description: "Understand the hardware and cloud infrastructure powering modern AI: GPU architectures, cloud platform comparisons, custom silicon, and inference optimisation."
 order: 9
 difficulty: "advanced"
@@ -14,17 +14,17 @@ Behind every AI breakthrough is an enormous infrastructure story. Training GPT-4
 
 ## Why GPUs Beat CPUs for AI
 
-CPUs are optimised for sequential tasks — a few powerful cores handling complex logic. GPUs are optimised for parallelism — thousands of simple cores executing the same operation on different data simultaneously.
+CPUs are optimised for sequential tasks - a few powerful cores handling complex logic. GPUs are optimised for parallelism - thousands of simple cores executing the same operation on different data simultaneously.
 
 Neural network training is fundamentally matrix multiplication at scale. A single training step for a large model involves multiplying matrices with billions of elements. A CPU processes these sequentially. A GPU processes thousands of elements in parallel.
 
 An NVIDIA H100 GPU delivers roughly **4,000 TFLOPS** of FP8 compute. A high-end server CPU manages perhaps 2 TFLOPS. For the embarrassingly parallel workloads of deep learning, GPUs win by three orders of magnitude.
 
-<Illustration src="/images/lessons/ai-infrastructure.svg" alt="Comparison diagram showing CPU with few powerful cores versus GPU with thousands of parallel cores for matrix operations" caption="GPUs process thousands of matrix operations simultaneously — the fundamental advantage for AI workloads." />
+<Illustration src="/images/lessons/ai-infrastructure.svg" alt="Comparison diagram showing CPU with few powerful cores versus GPU with thousands of parallel cores for matrix operations" caption="GPUs process thousands of matrix operations simultaneously - the fundamental advantage for AI workloads." />
 
 ## NVIDIA's Dominance
 
-NVIDIA controls roughly 80-90% of the AI accelerator market. Their moat is not just hardware — it is the **CUDA ecosystem**. Nearly every ML framework (PyTorch, TensorFlow, JAX) is built on CUDA. Switching to a competitor means rewriting low-level kernels and accepting potential incompatibilities.
+NVIDIA controls roughly 80-90% of the AI accelerator market. Their moat is not just hardware - it is the **CUDA ecosystem**. Nearly every ML framework (PyTorch, TensorFlow, JAX) is built on CUDA. Switching to a competitor means rewriting low-level kernels and accepting potential incompatibilities.
 
 ### The GPU Lineup
 
@@ -35,18 +35,18 @@ NVIDIA controls roughly 80-90% of the AI accelerator market. Their moat is not j
 | **H200** | 141 GB HBM3e | 3,958 TFLOPS | Memory-bound LLM inference |
 | **B200** | 192 GB HBM3e | 9,000 TFLOPS | Next-generation training and inference |
 
-The H100 to B200 jump represents a 2.3× performance increase — but the real bottleneck is often **memory bandwidth**, not raw compute. The H200's 141 GB of HBM3e memory specifically targets LLM inference where the KV cache dominates memory usage.
+The H100 to B200 jump represents a 2.3× performance increase - but the real bottleneck is often **memory bandwidth**, not raw compute. The H200's 141 GB of HBM3e memory specifically targets LLM inference where the KV cache dominates memory usage.
 
-<FunFact>A single NVIDIA B200 GPU costs approximately $30,000-$40,000. A DGX B200 server with eight of these GPUs costs over $300,000. Meta reportedly ordered 350,000 H100 GPUs for Llama training — a hardware investment exceeding $10 billion.</FunFact>
+<FunFact>A single NVIDIA B200 GPU costs approximately $30,000-$40,000. A DGX B200 server with eight of these GPUs costs over $300,000. Meta reportedly ordered 350,000 H100 GPUs for Llama training - a hardware investment exceeding $10 billion.</FunFact>
 
 ## Google TPUs
 
 Google's Tensor Processing Units are custom ASICs designed specifically for matrix operations. Unlike GPUs, which handle graphics and compute, TPUs are purpose-built for neural networks.
 
-- **TPU v5p** — Google's latest training chip, available in pods of up to 8,960 chips connected via high-speed interconnect
-- **TPU v5e** — Cost-optimised for inference workloads
+- **TPU v5p** - Google's latest training chip, available in pods of up to 8,960 chips connected via high-speed interconnect
+- **TPU v5e** - Cost-optimised for inference workloads
 - Key advantage: tight integration with JAX and the XLA compiler
-- Key limitation: only available through Google Cloud — no on-premise option
+- Key limitation: only available through Google Cloud - no on-premise option
 
 Google trains all its foundation models (Gemini, PaLM) on TPUs, proving they compete with NVIDIA at the frontier.
 
@@ -55,14 +55,14 @@ Google trains all its foundation models (Gemini, PaLM) on TPUs, proving they com
 AMD's **MI300X** is the most credible NVIDIA alternative:
 - 192 GB HBM3 memory (more than the H100)
 - Strong ROCm software stack (improving but still behind CUDA)
-- Significant price advantage — roughly 30-40% cheaper than equivalent NVIDIA
+- Significant price advantage - roughly 30-40% cheaper than equivalent NVIDIA
 - Growing ecosystem of ML frameworks with native ROCm support (PyTorch, JAX)
 
 Microsoft, Meta, and Oracle have all adopted MI300X for inference workloads. The memory advantage is particularly compelling for large language models where the KV cache is the primary bottleneck.
 
 Intel's **Gaudi 3** accelerator is also entering the mix, offering competitive training performance with a focus on enterprise price-to-performance ratios. The AI accelerator market is finally becoming a multi-vendor ecosystem.
 
-<Quiz question="Why is NVIDIA's competitive moat not just about hardware performance?" options="They manufacture their own chips|The CUDA software ecosystem creates massive switching costs|They are the only company making GPUs|Their GPUs are the cheapest option" answer="1" explanation="NVIDIA's dominance rests on the CUDA ecosystem — nearly all ML frameworks and libraries are built on CUDA, making the cost of switching to competitors extremely high even when alternative hardware is competitive." />
+<Quiz question="Why is NVIDIA's competitive moat not just about hardware performance?" options="They manufacture their own chips|The CUDA software ecosystem creates massive switching costs|They are the only company making GPUs|Their GPUs are the cheapest option" answer="1" explanation="NVIDIA's dominance rests on the CUDA ecosystem - nearly all ML frameworks and libraries are built on CUDA, making the cost of switching to competitors extremely high even when alternative hardware is competitive." />
 
 ## Cloud Providers Comparison
 
@@ -82,7 +82,7 @@ No company outside the hyperscalers can afford to build its own GPU cluster for 
 
 AI infrastructure is now a geopolitical issue:
 
-- **TSMC** (Taiwan) fabricates nearly all advanced AI chips — for NVIDIA, AMD, Apple, and Google. A disruption to TSMC would halt AI progress globally.
+- **TSMC** (Taiwan) fabricates nearly all advanced AI chips - for NVIDIA, AMD, Apple, and Google. A disruption to TSMC would halt AI progress globally.
 - **US export controls** restrict China's access to advanced chips (A100, H100 banned). China is investing heavily in domestic alternatives (Huawei Ascend, Biren).
 - **NVIDIA's China-specific chips** (H20) offer reduced performance to comply with export rules whilst maintaining market access.
 - The **CHIPS Act** (US) and similar programmes in the EU and Japan aim to diversify semiconductor manufacturing.
@@ -93,10 +93,10 @@ AI infrastructure is now a geopolitical issue:
 
 Several startups are challenging the GPU paradigm entirely:
 
-- **Groq** — LPU (Language Processing Unit) architecture delivers deterministic, ultra-low-latency inference. No batching required.
-- **Cerebras** — Wafer-scale chip (the size of a dinner plate) eliminates memory bandwidth bottlenecks for training.
-- **SambaNova** — Reconfigurable dataflow architecture optimised for enterprise AI.
-- **Graphcore** (acquired by SoftBank) — IPU architecture with massive on-chip SRAM for graph-structured workloads.
+- **Groq** - LPU (Language Processing Unit) architecture delivers deterministic, ultra-low-latency inference. No batching required.
+- **Cerebras** - Wafer-scale chip (the size of a dinner plate) eliminates memory bandwidth bottlenecks for training.
+- **SambaNova** - Reconfigurable dataflow architecture optimised for enterprise AI.
+- **Graphcore** (acquired by SoftBank) - IPU architecture with massive on-chip SRAM for graph-structured workloads.
 
 These are not NVIDIA replacements today. But they represent genuine architectural innovation that could reshape the market as AI workloads diversify beyond transformers.
 
@@ -106,11 +106,11 @@ These are not NVIDIA replacements today. But they represent genuine architectura
 
 Training gets the headlines, but inference is where the money goes. Techniques that reduce inference cost:
 
-- **Dynamic batching** — Group incoming requests to maximise GPU utilisation
-- **KV cache management** — vLLM's PagedAttention avoids memory fragmentation
-- **Speculative decoding** — Use a small model to draft tokens, verified in parallel by the large model (2-3× speedup)
-- **Continuous batching** — Process new requests without waiting for all current requests to complete
-- **Model parallelism** — Split large models across multiple GPUs for latency-sensitive serving
+- **Dynamic batching** - Group incoming requests to maximise GPU utilisation
+- **KV cache management** - vLLM's PagedAttention avoids memory fragmentation
+- **Speculative decoding** - Use a small model to draft tokens, verified in parallel by the large model (2-3× speedup)
+- **Continuous batching** - Process new requests without waiting for all current requests to complete
+- **Model parallelism** - Split large models across multiple GPUs for latency-sensitive serving
 
 <Quiz question="How does speculative decoding accelerate LLM inference?" options="It trains the model faster|A small draft model proposes tokens that the large model verifies in parallel|It reduces the model size through quantisation|It increases GPU memory capacity" answer="1" explanation="Speculative decoding uses a fast, small model to generate candidate tokens. The large model verifies multiple candidates in a single forward pass, achieving 2-3× speedup because verification is cheaper than sequential generation." />
 
@@ -118,11 +118,11 @@ Training gets the headlines, but inference is where the money goes. Techniques t
 
 Infrastructure cost extends far beyond GPU rental. A complete picture includes:
 
-- **Compute** — GPU hours for training and inference (typically 60-70% of total cost)
-- **Storage** — Training data, checkpoints, model artefacts, and logs
-- **Networking** — Data transfer between GPUs, regions, and to end users
-- **Engineering** — ML engineers, platform engineers, and DevOps staff to operate the stack
-- **Electricity** — A single H100 server consumes 10+ kW; data centre power is a growing constraint
+- **Compute** - GPU hours for training and inference (typically 60-70% of total cost)
+- **Storage** - Training data, checkpoints, model artefacts, and logs
+- **Networking** - Data transfer between GPUs, regions, and to end users
+- **Engineering** - ML engineers, platform engineers, and DevOps staff to operate the stack
+- **Electricity** - A single H100 server consumes 10+ kW; data centre power is a growing constraint
 
 At scale, companies like Meta spend over $10 billion annually on AI infrastructure. For startups, cloud costs for a single frontier model training run can exceed $1 million. Understanding and optimising this cost stack is a core competency.
 
@@ -132,6 +132,6 @@ At scale, companies like Meta spend over $10 billion annually on AI infrastructu
 
 ## 📚 Further Reading
 
-- [NVIDIA H100 Tensor Core GPU Architecture](https://resources.nvidia.com/en-us-tensor-core) — Technical deep-dive into the Hopper architecture
-- [Google Cloud TPU Documentation](https://cloud.google.com/tpu/docs/intro-to-tpu) — Official guide to TPU architecture and programming
-- [The GPU Shortage Explained (SemiAnalysis)](https://www.semianalysis.com/) — Industry analysis of AI chip supply and demand dynamics
+- [NVIDIA H100 Tensor Core GPU Architecture](https://resources.nvidia.com/en-us-tensor-core) - Technical deep-dive into the Hopper architecture
+- [Google Cloud TPU Documentation](https://cloud.google.com/tpu/docs/intro-to-tpu) - Official guide to TPU architecture and programming
+- [The GPU Shortage Explained (SemiAnalysis)](https://www.semianalysis.com/) - Industry analysis of AI chip supply and demand dynamics

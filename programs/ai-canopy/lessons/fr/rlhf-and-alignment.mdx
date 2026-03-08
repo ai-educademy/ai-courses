@@ -1,5 +1,5 @@
 ---
-title: "RLHF et alignement — Comment ChatGPT apprend les valeurs humaines"
+title: "RLHF et alignement - Comment ChatGPT apprend les valeurs humaines"
 description: "Comprenez comment les modèles de langage bruts sont transformés en assistants utiles et inoffensifs grâce au fine-tuning supervisé, à la modélisation de la récompense et à l'apprentissage par renforcement à partir de feedback humain."
 order: 8
 difficulty: "advanced"
@@ -8,27 +8,27 @@ icon: "🎯"
 published: true
 ---
 
-# RLHF et alignement — Comment ChatGPT apprend les valeurs humaines
+# RLHF et alignement - Comment ChatGPT apprend les valeurs humaines
 
-Un modèle de langage pré-entraîné est un moteur puissant mais non maîtrisé. Il peut écrire de la poésie, générer du code et raisonner sur la physique — mais il peut aussi produire du contenu toxique, fabriquer des faits avec assurance et ignorer les instructions de l'utilisateur. L'**alignement** est le processus qui oriente cette capacité brute vers un comportement véritablement utile, honnête et inoffensif.
+Un modèle de langage pré-entraîné est un moteur puissant mais non maîtrisé. Il peut écrire de la poésie, générer du code et raisonner sur la physique - mais il peut aussi produire du contenu toxique, fabriquer des faits avec assurance et ignorer les instructions de l'utilisateur. L'**alignement** est le processus qui oriente cette capacité brute vers un comportement véritablement utile, honnête et inoffensif.
 
 ## Le problème de l'alignement
 
-Le pré-entraînement optimise un seul objectif : **prédire le prochain token**. Cela donne au modèle de vastes connaissances mais aucune compréhension de ce que l'humain *veut* réellement. Posez une question à un modèle de base et il pourrait compléter le texte comme s'il rédigeait un post de forum, une publicité ou une théorie du complot — car tous ces patrons existent dans ses données d'entraînement.
+Le pré-entraînement optimise un seul objectif : **prédire le prochain token**. Cela donne au modèle de vastes connaissances mais aucune compréhension de ce que l'humain *veut* réellement. Posez une question à un modèle de base et il pourrait compléter le texte comme s'il rédigeait un post de forum, une publicité ou une théorie du complot - car tous ces patrons existent dans ses données d'entraînement.
 
-L'écart entre « capable » et « utile » constitue le problème de l'alignement. Un modèle capable de rédiger des conseils médicaux mais qui ne sait pas quand refuser est potentiellement dangereux. Combler cet écart exige d'enseigner au modèle les **préférences humaines** — non pas ce qui *pourrait* suivre, mais ce qui *devrait* suivre.
+L'écart entre « capable » et « utile » constitue le problème de l'alignement. Un modèle capable de rédiger des conseils médicaux mais qui ne sait pas quand refuser est potentiellement dangereux. Combler cet écart exige d'enseigner au modèle les **préférences humaines** - non pas ce qui *pourrait* suivre, mais ce qui *devrait* suivre.
 
 <Illustration src="/images/lessons/rlhf-and-alignment.svg" alt="Pipeline en trois étapes : le SFT entraîne sur des démonstrations, le reward model apprend les préférences, PPO optimise la politique contre le reward model" caption="Le pipeline RLHF transforme un modèle de base en assistant aligné en trois étapes : SFT, modélisation de la récompense et optimisation par RL." />
 
 ## Étape 1 : Fine-tuning supervisé (SFT)
 
-La première étape est simple : collecter des milliers d'**exemples de démonstration** de haute qualité — des conversations idéales entre un utilisateur et un assistant — puis fine-tuner le modèle de base dessus. Cela enseigne au modèle le *format* de l'utilité : répondre directement aux questions, suivre les instructions, admettre l'incertitude et refuser les requêtes nuisibles.
+La première étape est simple : collecter des milliers d'**exemples de démonstration** de haute qualité - des conversations idéales entre un utilisateur et un assistant - puis fine-tuner le modèle de base dessus. Cela enseigne au modèle le *format* de l'utilité : répondre directement aux questions, suivre les instructions, admettre l'incertitude et refuser les requêtes nuisibles.
 
 Le SFT seul produit un modèle sensiblement meilleur, mais il a ses limites. Les démonstrateurs humains ne peuvent écrire qu'un nombre fini d'exemples, et le modèle apprend à imiter la qualité *moyenne* de ces démonstrations plutôt qu'à produire systématiquement la meilleure réponse possible.
 
 ## Étape 2 : Entraînement du reward model
 
-Au lieu de rédiger des réponses idéales, les annotateurs humains reçoivent des **paires de réponses du modèle** et doivent classer laquelle est meilleure. C'est cognitivement plus facile — comparer est plus simple que créer — et permet de collecter bien plus de données de préférence.
+Au lieu de rédiger des réponses idéales, les annotateurs humains reçoivent des **paires de réponses du modèle** et doivent classer laquelle est meilleure. C'est cognitivement plus facile - comparer est plus simple que créer - et permet de collecter bien plus de données de préférence.
 
 Ces paires classées entraînent un **reward model (RM)** : un réseau de neurones séparé qui prend un prompt et une réponse en entrée et produit un score scalaire représentant la préférence humaine. Le RM apprend des patrons comme :
 
@@ -47,12 +47,12 @@ Avec un reward model en main, le modèle SFT est optimisé davantage par **Proxi
 3. PPO met à jour les poids du modèle pour augmenter la récompense attendue
 4. Une **pénalité de divergence KL** empêche le modèle de trop s'éloigner du modèle SFT de référence (évitant le reward hacking)
 
-La pénalité KL est cruciale. Sans elle, le modèle apprendrait à exploiter les failles du reward model — générant des réponses qui obtiennent un score élevé mais sont incohérentes ou répétitives. En contraignant la déviation de la politique par rapport au modèle SFT, PPO maintient la cohérence des sorties tout en améliorant l'alignement.
+La pénalité KL est cruciale. Sans elle, le modèle apprendrait à exploiter les failles du reward model - générant des réponses qui obtiennent un score élevé mais sont incohérentes ou répétitives. En contraignant la déviation de la politique par rapport au modèle SFT, PPO maintient la cohérence des sorties tout en améliorant l'alignement.
 
-Ce processus en trois étapes — SFT → Reward Model → PPO — est précisément la façon dont OpenAI a transformé GPT-3.5 en ChatGPT, comme décrit dans leur article **InstructGPT**.
+Ce processus en trois étapes - SFT → Reward Model → PPO - est précisément la façon dont OpenAI a transformé GPT-3.5 en ChatGPT, comme décrit dans leur article **InstructGPT**.
 
 <FunFact>
-L'article InstructGPT a révélé un résultat frappant : un modèle de 1,3 milliard de paramètres aligné par RLHF était préféré par les juges humains au GPT-3 non aligné de 175 milliards de paramètres — un modèle 100 fois plus grand. L'alignement peut compter davantage que la taille brute.
+L'article InstructGPT a révélé un résultat frappant : un modèle de 1,3 milliard de paramètres aligné par RLHF était préféré par les juges humains au GPT-3 non aligné de 175 milliards de paramètres - un modèle 100 fois plus grand. L'alignement peut compter davantage que la taille brute.
 </FunFact>
 
 ## DPO : supprimer l'intermédiaire
@@ -65,7 +65,7 @@ La fonction de perte DPO définit implicitement un reward model au sein du modè
 L_DPO = -log σ(β · (log π(y_w|x)/π_ref(y_w|x) - log π(y_l|x)/π_ref(y_l|x)))
 ```
 
-Où `y_w` est la réponse préférée, `y_l` la rejetée, et `π_ref` le modèle de référence (SFT). DPO est plus simple, plus stable et moins coûteux à entraîner — pas de reward model, pas de boucle de RL, pas de PPO sensible aux hyperparamètres. LLaMA 2 de Meta et de nombreux modèles open source utilisent désormais DPO ou ses variantes.
+Où `y_w` est la réponse préférée, `y_l` la rejetée, et `π_ref` le modèle de référence (SFT). DPO est plus simple, plus stable et moins coûteux à entraîner - pas de reward model, pas de boucle de RL, pas de PPO sensible aux hyperparamètres. LLaMA 2 de Meta et de nombreux modèles open source utilisent désormais DPO ou ses variantes.
 
 <ThinkAboutIt>
 DPO élimine le reward model mais perd aussi la capacité de noter des réponses arbitraires au moment de l'inférence. Dans quels scénarios avoir un reward model explicite (le pipeline RLHF complet) serait-il plus précieux que la simplicité de DPO ?
@@ -75,11 +75,11 @@ DPO élimine le reward model mais perd aussi la capacité de noter des réponses
 
 Anthropic a introduit le **Constitutional AI (CAI)** pour réduire la dépendance aux annotateurs humains. L'approche :
 
-1. Définir un ensemble de principes (une « constitution ») — ex. *« Choisis la réponse la plus utile tout en étant honnête et inoffensif »*
+1. Définir un ensemble de principes (une « constitution ») - ex. *« Choisis la réponse la plus utile tout en étant honnête et inoffensif »*
 2. Générer des paires de réponses et utiliser le **modèle lui-même** pour juger laquelle adhère le mieux à la constitution
-3. Utiliser ces préférences générées par l'IA pour entraîner le reward model (RLAIF — RL from AI Feedback)
+3. Utiliser ces préférences générées par l'IA pour entraîner le reward model (RLAIF - RL from AI Feedback)
 
-Le CAI passe massivement à l'échelle la collecte de préférences — l'IA peut générer et évaluer des millions de comparaisons pour une fraction du coût de l'annotation humaine. Cela rend aussi les critères d'alignement **explicites et auditables**, encodés dans la constitution plutôt qu'implicitement appris des biais des annotateurs.
+Le CAI passe massivement à l'échelle la collecte de préférences - l'IA peut générer et évaluer des millions de comparaisons pour une fraction du coût de l'annotation humaine. Cela rend aussi les critères d'alignement **explicites et auditables**, encodés dans la constitution plutôt qu'implicitement appris des biais des annotateurs.
 
 <Quiz question="Quelle est l'innovation centrale du Constitutional AI par rapport au RLHF standard ?" options="Il utilise un modèle de base beaucoup plus grand|Il remplace les annotateurs de préférences humains par le modèle IA lui-même, guidé par des principes écrits explicites|Il élimine tout besoin de fine-tuning|Il n'entraîne que sur des données synthétiques" answer="1" explanation="Le Constitutional AI utilise le modèle lui-même pour générer des jugements de préférence, guidé par un ensemble de principes explicitement écrits (la constitution). Cela passe massivement à l'échelle la collecte de données de préférence tout en rendant les critères d'alignement transparents et modifiables." />
 
@@ -96,27 +96,27 @@ Les grands laboratoires mènent désormais des campagnes de red teaming extensiv
 
 ## La taxe de l'alignement
 
-L'alignement a un coût. Les modèles entraînés par RLHF deviennent parfois **excessivement prudents** — refusant des requêtes anodines, ajoutant des précautions superflues ou produisant des réponses fades pour éviter tout risque perçu. Cette « taxe de l'alignement » est un vrai défi d'ingénierie :
+L'alignement a un coût. Les modèles entraînés par RLHF deviennent parfois **excessivement prudents** - refusant des requêtes anodines, ajoutant des précautions superflues ou produisant des réponses fades pour éviter tout risque perçu. Cette « taxe de l'alignement » est un vrai défi d'ingénierie :
 
 - Trop peu d'alignement → sorties nuisibles
 - Trop d'alignement → refus agaçants et inutiles
 
-La frontière de la recherche en alignement est de trouver des techniques qui maximisent l'utilité tout en maintenant de véritables barrières de sécurité — plutôt que de simplement reproduire des réponses superficiellement « sûres ».
+La frontière de la recherche en alignement est de trouver des techniques qui maximisent l'utilité tout en maintenant de véritables barrières de sécurité - plutôt que de simplement reproduire des réponses superficiellement « sûres ».
 
-<Quiz question="Qu'est-ce que la « taxe de l'alignement » dans le contexte des modèles entraînés par RLHF ?" options="Le coût financier de l'embauche d'annotateurs humains pour les données de préférence|La réduction de l'utilité et des capacités du modèle résultant d'un entraînement à la sécurité rendant le modèle excessivement prudent|Le coût computationnel de l'optimisation PPO|La taxe que les gouvernements imposent aux entreprises d'IA pour la conformité en matière de sécurité" answer="1" explanation="La taxe de l'alignement désigne la perte de capacité ou d'utilité lorsque l'entraînement à la sécurité rend un modèle excessivement prudent — refusant des requêtes anodines, ajoutant des nuances inutiles ou produisant des réponses génériques. Équilibrer sécurité et utilité réelle est l'un des problèmes ouverts les plus difficiles de l'alignement." />
+<Quiz question="Qu'est-ce que la « taxe de l'alignement » dans le contexte des modèles entraînés par RLHF ?" options="Le coût financier de l'embauche d'annotateurs humains pour les données de préférence|La réduction de l'utilité et des capacités du modèle résultant d'un entraînement à la sécurité rendant le modèle excessivement prudent|Le coût computationnel de l'optimisation PPO|La taxe que les gouvernements imposent aux entreprises d'IA pour la conformité en matière de sécurité" answer="1" explanation="La taxe de l'alignement désigne la perte de capacité ou d'utilité lorsque l'entraînement à la sécurité rend un modèle excessivement prudent - refusant des requêtes anodines, ajoutant des nuances inutiles ou produisant des réponses génériques. Équilibrer sécurité et utilité réelle est l'un des problèmes ouverts les plus difficiles de l'alignement." />
 
 <FunFact>
 OpenAI a consacré environ six mois au travail d'alignement (collecte de données SFT, modélisation de la récompense et entraînement RLHF) pour transformer le modèle de base de GPT-4 en la version publiée. La phase d'alignement, bien que représentant une fraction du calcul de pré-entraînement, a nécessité des milliers d'heures d'annotation humaine spécialisée.
 </FunFact>
 
 <ThinkAboutIt>
-Les annotateurs humains apportent inévitablement leurs propres biais, perspectives culturelles et incohérences dans les données de préférence. Si l'alignement revient finalement à « apprendre ce que les humains préfèrent », les préférences de qui devraient compter — et comment gérer les désaccords fondamentaux sur les valeurs entre cultures ?
+Les annotateurs humains apportent inévitablement leurs propres biais, perspectives culturelles et incohérences dans les données de préférence. Si l'alignement revient finalement à « apprendre ce que les humains préfèrent », les préférences de qui devraient compter - et comment gérer les désaccords fondamentaux sur les valeurs entre cultures ?
 </ThinkAboutIt>
 
 ---
 
 ## 📚 Pour aller plus loin
 
-- [Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — L'article fondateur d'OpenAI sur le RLHF
-- [Direct Preference Optimization (Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290) — L'article DPO qui a simplifié l'entraînement à l'alignement
-- [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073) — L'approche d'Anthropic pour un alignement évolutif par auto-supervision IA
+- [Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) - L'article fondateur d'OpenAI sur le RLHF
+- [Direct Preference Optimization (Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290) - L'article DPO qui a simplifié l'entraînement à l'alignement
+- [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073) - L'approche d'Anthropic pour un alignement évolutif par auto-supervision IA

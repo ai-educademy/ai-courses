@@ -1,5 +1,5 @@
 ---
-title: "Sorting and Searching — How AI Ranks and Finds Results"
+title: "Sorting and Searching - How AI Ranks and Finds Results"
 description: "Discover why sorting and searching algorithms are fundamental to how AI ranks recommendations and finds answers."
 order: 3
 difficulty: "intermediate"
@@ -10,20 +10,20 @@ published: true
 
 ## Finding Things Fast
 
-When you search Google, results appear in under a second — ranked from most to least relevant. When Netflix recommends films, it sorts thousands of titles by how likely you are to enjoy them. Behind every fast lookup and every ranked list sits a sorting or searching algorithm.
+When you search Google, results appear in under a second - ranked from most to least relevant. When Netflix recommends films, it sorts thousands of titles by how likely you are to enjoy them. Behind every fast lookup and every ranked list sits a sorting or searching algorithm.
 
 ## Why Sorting Matters
 
 Sorted data is powerful data. Once a list is in order, you can:
 
 - **Search it efficiently** using binary search (we'll get to this shortly).
-- **Find duplicates** — they'll be sitting right next to each other.
-- **Identify the top-N results** — just grab the first N items.
-- **Merge datasets** — combining two sorted lists is much faster than combining unsorted ones.
+- **Find duplicates** - they'll be sitting right next to each other.
+- **Identify the top-N results** - just grab the first N items.
+- **Merge datasets** - combining two sorted lists is much faster than combining unsorted ones.
 
 <Illustration src="/images/lessons/sorting-and-searching.svg" alt="An unsorted array being transformed into a sorted array, with a magnifying glass highlighting binary search" caption="Sorting transforms chaotic data into something searchable and structured." />
 
-## Bubble Sort — Simple but Slow
+## Bubble Sort - Simple but Slow
 
 Bubble sort repeatedly steps through the list, comparing adjacent items and swapping them if they're in the wrong order. Larger values "bubble" to the end.
 
@@ -36,13 +36,13 @@ Bubble sort repeatedly steps through the list, comparing adjacent items and swap
 ... keep going until no swaps needed
 ```
 
-**Time complexity**: O(n²) — for each of n items, you might compare against every other item. With 1,000 items, that's up to 1,000,000 comparisons. With 1,000,000 items? A trillion comparisons. Not practical for AI workloads.
+**Time complexity**: O(n²) - for each of n items, you might compare against every other item. With 1,000 items, that's up to 1,000,000 comparisons. With 1,000,000 items? A trillion comparisons. Not practical for AI workloads.
 
 <ThinkAboutIt>
-If bubble sort takes roughly n² comparisons, how much slower would it be to sort a million items compared to a thousand? Think about the ratio: (1,000,000)² vs (1,000)². That's a million times slower — just for having a thousand times more data.
+If bubble sort takes roughly n² comparisons, how much slower would it be to sort a million items compared to a thousand? Think about the ratio: (1,000,000)² vs (1,000)². That's a million times slower - just for having a thousand times more data.
 </ThinkAboutIt>
 
-## Merge Sort — Divide and Conquer
+## Merge Sort - Divide and Conquer
 
 Merge sort takes a cleverer approach: split the list in half, sort each half, then merge the two sorted halves together.
 
@@ -60,10 +60,10 @@ Merge sort takes a cleverer approach: split the list in half, sort each half, th
 [1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
-**Time complexity**: O(n log n) — dramatically faster. For a million items, that's about 20 million comparisons instead of a trillion. This is the kind of algorithm that makes real AI systems possible.
+**Time complexity**: O(n log n) - dramatically faster. For a million items, that's about 20 million comparisons instead of a trillion. This is the kind of algorithm that makes real AI systems possible.
 
 <FunFact>
-Python's built-in sort uses Timsort — a hybrid algorithm that combines merge sort with insertion sort. It was invented by Tim Peters in 2002 and is now used in Python, Java, and Android. It's specifically designed to perform well on real-world data that's often partially sorted already.
+Python's built-in sort uses Timsort - a hybrid algorithm that combines merge sort with insertion sort. It was invented by Tim Peters in 2002 and is now used in Python, Java, and Android. It's specifically designed to perform well on real-world data that's often partially sorted already.
 </FunFact>
 
 ### Bubble Sort vs Merge Sort at Scale
@@ -74,15 +74,15 @@ Python's built-in sort uses Timsort — a hybrid algorithm that combines merge s
 | 10,000 | 100,000,000 ops | ~130,000 ops |
 | 1,000,000 | 1,000,000,000,000 ops | ~20,000,000 ops |
 
-The difference isn't academic — it's the difference between "finishes in a second" and "finishes next week."
+The difference isn't academic - it's the difference between "finishes in a second" and "finishes next week."
 
-<Quiz question="Why is merge sort preferred over bubble sort for large datasets in AI applications?" options="Merge sort uses less memory|Merge sort is O(n log n) compared to bubble sort's O(n²), making it dramatically faster at scale|Merge sort was invented more recently|Merge sort only works with numbers, which is what AI uses" answer="1" explanation="At scale, the difference between O(n²) and O(n log n) is enormous. For a million items, merge sort does about 20 million operations vs bubble sort's trillion — making it essential for AI workloads." />
+<Quiz question="Why is merge sort preferred over bubble sort for large datasets in AI applications?" options="Merge sort uses less memory|Merge sort is O(n log n) compared to bubble sort's O(n²), making it dramatically faster at scale|Merge sort was invented more recently|Merge sort only works with numbers, which is what AI uses" answer="1" explanation="At scale, the difference between O(n²) and O(n log n) is enormous. For a million items, merge sort does about 20 million operations vs bubble sort's trillion - making it essential for AI workloads." />
 
-## Binary Search — The Phone Book Trick
+## Binary Search - The Phone Book Trick
 
 Imagine looking up "Smith" in a phone book. You wouldn't start at page one and read every name. You'd open the book roughly in the middle, see where you are, and jump to the correct half. Then repeat.
 
-That's **binary search** — and it only works on sorted data.
+That's **binary search** - and it only works on sorted data.
 
 ```
 sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
@@ -95,7 +95,7 @@ Step 3: Middle = 23 → Found it!
 
 **Time complexity**: O(log n). In a sorted list of one million items, binary search finds any item in at most 20 steps. A linear search would take up to one million steps.
 
-<Quiz question="A sorted database contains 1,000,000 records. How many comparisons does binary search need in the worst case?" options="1,000,000|500,000|About 20|About 1,000" answer="2" explanation="Binary search halves the search space at each step. log₂(1,000,000) ≈ 20, so you need at most about 20 comparisons to find any item — or confirm it's not there." />
+<Quiz question="A sorted database contains 1,000,000 records. How many comparisons does binary search need in the worst case?" options="1,000,000|500,000|About 20|About 1,000" answer="2" explanation="Binary search halves the search space at each step. log₂(1,000,000) ≈ 20, so you need at most about 20 comparisons to find any item - or confirm it's not there." />
 
 ## How AI Uses Sorting and Searching
 
@@ -112,12 +112,12 @@ Netflix calculates a "match score" for thousands of titles based on your viewing
 This classic AI algorithm finds the K most similar items to a given input. It calculates distances to every item, then partially sorts to find the K smallest distances. Efficient sorting makes this practical for millions of data points.
 
 <Callout>
-You don't always need to fully sort. If you only need the top 10 results from a million items, a **partial sort** or **heap** can find them in O(n log k) time — much faster than sorting everything.
+You don't always need to fully sort. If you only need the top 10 results from a million items, a **partial sort** or **heap** can find them in O(n log k) time - much faster than sorting everything.
 </Callout>
 
 ### Training Data Preparation
 
-Before training, AI practitioners often sort data to create balanced batches — ensuring each training batch contains a mix of easy and hard examples, or a balanced distribution of categories.
+Before training, AI practitioners often sort data to create balanced batches - ensuring each training batch contains a mix of easy and hard examples, or a balanced distribution of categories.
 
 ## When to Sort vs When to Use a Hash Map
 
@@ -136,15 +136,15 @@ A music streaming service needs to show your "Top 50 most played songs." Would y
 </ThinkAboutIt>
 
 <FunFact>
-Google processes over 8.5 billion searches per day. Each search involves sorting and ranking hundreds of potential results in milliseconds. The efficiency of sorting algorithms directly impacts how much electricity Google's data centres consume — better algorithms literally save megawatts of power.
+Google processes over 8.5 billion searches per day. Each search involves sorting and ranking hundreds of potential results in milliseconds. The efficiency of sorting algorithms directly impacts how much electricity Google's data centres consume - better algorithms literally save megawatts of power.
 </FunFact>
 
 <Quiz question="When would binary search NOT be appropriate?" options="When the data is sorted|When you need to find one specific item|When the data is unsorted and changes frequently|When the dataset is very large" answer="2" explanation="Binary search requires sorted data. If your data changes frequently, maintaining sorted order is expensive. A hash map would be better for quick lookups in unsorted, dynamic data." />
 
 ## Key Takeaways
 
-- **Sorting** transforms chaotic data into structured, searchable data — essential for ranking and recommendations.
+- **Sorting** transforms chaotic data into structured, searchable data - essential for ranking and recommendations.
 - **O(n²)** algorithms like bubble sort are educational but impractical at scale; **O(n log n)** algorithms like merge sort power real systems.
-- **Binary search** is extraordinarily efficient on sorted data — 20 steps to search a million items.
+- **Binary search** is extraordinarily efficient on sorted data - 20 steps to search a million items.
 - Choose between sorting and hash maps based on whether you need **ordered results** or **instant lookups**.
 - Every search result, recommendation, and ranked list you see online relies on these fundamental algorithms.

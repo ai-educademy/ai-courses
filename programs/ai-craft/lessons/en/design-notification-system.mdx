@@ -1,5 +1,5 @@
 ---
-title: "Design a Notification System — Push, Email, and SMS at Billion Scale"
+title: "Design a Notification System - Push, Email, and SMS at Billion Scale"
 description: "Design a scalable multi-channel notification system handling push, email, SMS, and in-app notifications with message queues, deduplication, and user preference management."
 order: 7
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🔔"
 published: true
 ---
 
-# Design a Notification System — Push, Email, and SMS at Billion Scale
+# Design a Notification System - Push, Email, and SMS at Billion Scale
 
 Modern applications send billions of notifications daily across multiple channels. Designing this system teaches you about message queues, third-party integrations, and handling failures gracefully at scale.
 
-## Step 1 — Requirements Gathering
+## Step 1 - Requirements Gathering
 
 ### Functional Requirements
 - Support multiple channels: push notifications, email, SMS, and in-app
@@ -21,14 +21,14 @@ Modern applications send billions of notifications daily across multiple channel
 - Support for scheduled and immediate notifications
 
 ### Non-Functional Requirements
-- **Scalability** — handle 10 million+ notifications per day
-- **Reliability** — no lost notifications; at-least-once delivery
-- **Low latency** — urgent notifications delivered within seconds
-- **Extensible** — easy to add new channels (WhatsApp, Slack)
+- **Scalability** - handle 10 million+ notifications per day
+- **Reliability** - no lost notifications; at-least-once delivery
+- **Low latency** - urgent notifications delivered within seconds
+- **Extensible** - easy to add new channels (WhatsApp, Slack)
 
 <ThinkAboutIt>Should notification delivery be exactly-once or at-least-once? Consider the user experience of receiving a duplicate SMS vs missing a critical security alert.</ThinkAboutIt>
 
-## Step 2 — High-Level Architecture
+## Step 2 - High-Level Architecture
 
 ```
 Caller Services → Notification Service → Validation + Preference Check
@@ -44,12 +44,12 @@ Caller Services → Notification Service → Validation + Preference Check
 <Illustration src="/images/lessons/design-notification-system.svg" alt="Notification system architecture with caller services, notification service, Kafka message queues, channel-specific workers, and third-party providers" caption="Message queues decouple the notification service from delivery workers, enabling independent scaling per channel" />
 
 ### Core Components
-1. **Notification Service** — validates requests, checks user preferences, renders templates, and enqueues messages
-2. **Message Queues** — separate queues per channel for independent scaling and isolation
-3. **Delivery Workers** — channel-specific workers that handle third-party API calls
-4. **Template Service** — stores and renders notification templates with variable substitution
+1. **Notification Service** - validates requests, checks user preferences, renders templates, and enqueues messages
+2. **Message Queues** - separate queues per channel for independent scaling and isolation
+3. **Delivery Workers** - channel-specific workers that handle third-party API calls
+4. **Template Service** - stores and renders notification templates with variable substitution
 
-## Step 3 — Deep Dive: Key Components
+## Step 3 - Deep Dive: Key Components
 
 ### User Preferences and Opt-Out
 Store preferences per user and per notification type:
@@ -66,18 +66,18 @@ user_preferences:
     security: { enabled: true, override_quiet_hours: true }
 ```
 
-The notification service checks preferences **before** enqueuing — never send what the user doesn't want.
+The notification service checks preferences **before** enqueuing - never send what the user doesn't want.
 
 ### Priority Queues
 Not all notifications are equal. Use priority levels:
-- **Critical** — security alerts, OTP codes → processed immediately
-- **High** — order confirmations, payment receipts → seconds
-- **Medium** — social interactions, comments → minutes acceptable
-- **Low** — marketing, recommendations → can be batched
+- **Critical** - security alerts, OTP codes → processed immediately
+- **High** - order confirmations, payment receipts → seconds
+- **Medium** - social interactions, comments → minutes acceptable
+- **Low** - marketing, recommendations → can be batched
 
 <Quiz question="Why should the notification system use separate message queues per channel rather than a single shared queue?" options="To reduce storage costs|To allow independent scaling and prevent one slow channel from blocking others|Because Kafka requires separate topics per consumer|To make the system simpler" answer="1" explanation="If SMS delivery slows down due to a Twilio outage, a shared queue would create a backlog that delays push and email delivery too. Separate queues per channel provide fault isolation and allow each channel to scale independently." />
 
-## Step 4 — Reliability and Failure Handling
+## Step 4 - Reliability and Failure Handling
 
 ### Deduplication
 Prevent duplicate notifications using an idempotency key. Before processing, check if the notification ID exists in a deduplication store (Redis with TTL):
@@ -107,7 +107,7 @@ Protect users from notification fatigue:
 
 <FunFact>Facebook sends over 10 billion push notifications daily. To handle this, they built a custom notification pipeline that can process millions of messages per second, with separate delivery paths for iOS (APNs) and Android (FCM).</FunFact>
 
-## Step 5 — Third-Party Integration
+## Step 5 - Third-Party Integration
 
 | Channel | Provider | Protocol | Challenges |
 |---------|----------|----------|------------|
@@ -125,7 +125,7 @@ Store events in a time-series database or event stream for dashboard reporting: 
 
 <Quiz question="A notification system retries a failed SMS delivery 3 times. Without deduplication, what could happen if the first attempt actually succeeded but the acknowledgement was lost?" options="The message is lost permanently|The user receives up to 4 copies of the same SMS|The system automatically detects the duplicate|The retry mechanism prevents this scenario" answer="1" explanation="If the provider processed the request but the acknowledgement was lost, the system thinks it failed and retries. Without deduplication at the provider level or with idempotency keys, the user could receive the same SMS multiple times." />
 
-## Step 6 — Bottlenecks and Optimisations
+## Step 6 - Bottlenecks and Optimisations
 
 | Bottleneck | Solution |
 |-----------|----------|
@@ -142,6 +142,6 @@ Store events in a time-series database or event stream for dashboard reporting: 
 ---
 
 ## 📚 Further Reading
-- [Notification System — System Design Interview Vol. 1, Ch. 10](https://bytebytego.com/) — Alex Xu's comprehensive notification system design
-- [How Airbnb Built a Notification Platform](https://medium.com/airbnb-engineering) — real-world multi-channel notification architecture
-- [Firebase Cloud Messaging Docs](https://firebase.google.com/docs/cloud-messaging) — understanding push notification delivery mechanics
+- [Notification System - System Design Interview Vol. 1, Ch. 10](https://bytebytego.com/) - Alex Xu's comprehensive notification system design
+- [How Airbnb Built a Notification Platform](https://medium.com/airbnb-engineering) - real-world multi-channel notification architecture
+- [Firebase Cloud Messaging Docs](https://firebase.google.com/docs/cloud-messaging) - understanding push notification delivery mechanics

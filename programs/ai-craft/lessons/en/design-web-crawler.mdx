@@ -1,5 +1,5 @@
 ---
-title: "Design a Web Crawler — How Google Indexes the Internet"
+title: "Design a Web Crawler - How Google Indexes the Internet"
 description: "Design a distributed web crawler covering URL frontier management, politeness policies, content deduplication with SimHash, and distributed crawling with consistent hashing."
 order: 9
 difficulty: "advanced"
@@ -8,11 +8,11 @@ icon: "🕷️"
 published: true
 ---
 
-# Design a Web Crawler — How Google Indexes the Internet
+# Design a Web Crawler - How Google Indexes the Internet
 
 A web crawler systematically browses the internet to download and index web pages. It's the foundation of every search engine, and designing one teaches you about distributed systems, graph traversal, and handling the messiness of the real web.
 
-## Step 1 — Requirements Gathering
+## Step 1 - Requirements Gathering
 
 ### Functional Requirements
 - Crawl web pages starting from a set of seed URLs
@@ -21,12 +21,12 @@ A web crawler systematically browses the internet to download and index web page
 - Respect robots.txt and crawl politeness rules
 
 ### Non-Functional Requirements
-- **Scale** — crawl 1 billion pages per month
-- **Politeness** — never overwhelm a single web server
-- **Freshness** — re-crawl important pages regularly
-- **Robustness** — handle malformed HTML, infinite loops, and spider traps
+- **Scale** - crawl 1 billion pages per month
+- **Politeness** - never overwhelm a single web server
+- **Freshness** - re-crawl important pages regularly
+- **Robustness** - handle malformed HTML, infinite loops, and spider traps
 
-## Step 2 — High-Level Architecture
+## Step 2 - High-Level Architecture
 
 ```
 Seed URLs → URL Frontier (priority queue)
@@ -44,17 +44,17 @@ Seed URLs → URL Frontier (priority queue)
 
 <Illustration src="/images/lessons/design-web-crawler.svg" alt="Web crawler architecture showing the crawl loop from URL frontier through fetcher, parser, URL extraction, deduplication, and back to the frontier" caption="The crawler operates as a continuous loop: fetch a page, extract new URLs, deduplicate, and enqueue for future crawling" />
 
-## Step 3 — The Crawl Loop
+## Step 3 - The Crawl Loop
 
 ### BFS vs DFS Crawling
-- **BFS (Breadth-First)** — preferred for web crawling. Discovers a broad set of domains quickly and avoids getting trapped deep in a single site
-- **DFS (Depth-First)** — risks going infinitely deep into dynamically generated pages before discovering other domains
+- **BFS (Breadth-First)** - preferred for web crawling. Discovers a broad set of domains quickly and avoids getting trapped deep in a single site
+- **DFS (Depth-First)** - risks going infinitely deep into dynamically generated pages before discovering other domains
 
 ### URL Frontier Design
-The frontier is not a simple queue — it's a sophisticated priority system with two sub-components:
+The frontier is not a simple queue - it's a sophisticated priority system with two sub-components:
 
-1. **Priority Queue (Front)** — ranks URLs by importance. Factors include PageRank, update frequency, and domain authority
-2. **Politeness Queue (Back)** — ensures each domain has its own FIFO queue. A scheduler picks from different domain queues to avoid hammering any single server
+1. **Priority Queue (Front)** - ranks URLs by importance. Factors include PageRank, update frequency, and domain authority
+2. **Politeness Queue (Back)** - ensures each domain has its own FIFO queue. A scheduler picks from different domain queues to avoid hammering any single server
 
 ```
 Front (Priority):       Back (Politeness):
@@ -67,9 +67,9 @@ Front (Priority):       Back (Politeness):
                         └───────────────────────┘
 ```
 
-<Quiz question="Why does a web crawler use BFS rather than DFS for general-purpose crawling?" options="BFS uses less memory|BFS discovers more unique domains faster and avoids getting trapped deep in a single website|BFS is faster than DFS|DFS doesn't work with URLs" answer="1" explanation="BFS explores level by level, which means it discovers pages across many different domains quickly. DFS could follow links deep into a single site — potentially hitting millions of dynamically generated pages — before ever visiting another domain." />
+<Quiz question="Why does a web crawler use BFS rather than DFS for general-purpose crawling?" options="BFS uses less memory|BFS discovers more unique domains faster and avoids getting trapped deep in a single website|BFS is faster than DFS|DFS doesn't work with URLs" answer="1" explanation="BFS explores level by level, which means it discovers pages across many different domains quickly. DFS could follow links deep into a single site - potentially hitting millions of dynamically generated pages - before ever visiting another domain." />
 
-## Step 4 — Politeness and Robots.txt
+## Step 4 - Politeness and Robots.txt
 
 ### Respecting Robots.txt
 Before crawling any domain, fetch and cache its `robots.txt` file:
@@ -88,11 +88,11 @@ Cache robots.txt per domain with a TTL (24 hours). Always honour `Disallow` rule
 Even without explicit `Crawl-delay`, maintain politeness:
 - Maximum 1 request per second per domain (configurable)
 - Use separate download queues per domain
-- Track response times — if a server slows down, back off automatically
+- Track response times - if a server slows down, back off automatically
 
-<FunFact>Google's web crawler (Googlebot) crawls hundreds of billions of pages. To be polite, it monitors server response times and reduces its crawl rate if a site starts responding slowly — effectively letting the website "push back" against the crawler.</FunFact>
+<FunFact>Google's web crawler (Googlebot) crawls hundreds of billions of pages. To be polite, it monitors server response times and reduces its crawl rate if a site starts responding slowly - effectively letting the website "push back" against the crawler.</FunFact>
 
-## Step 5 — Deduplication
+## Step 5 - Deduplication
 
 ### URL Deduplication (Bloom Filter)
 With billions of URLs, checking if a URL has been seen before requires an efficient data structure. A Bloom filter provides O(1) lookups with a small memory footprint:
@@ -103,7 +103,7 @@ With billions of URLs, checking if a URL has been seen before requires an effici
 Normalise URLs before checking: remove fragments (#), sort query parameters, lowercase the hostname, and resolve relative paths.
 
 ### Content Deduplication (SimHash)
-Different URLs can serve identical content (mirrors, copied articles). SimHash generates a fingerprint of page content — pages with similar fingerprints (small Hamming distance) are likely duplicates:
+Different URLs can serve identical content (mirrors, copied articles). SimHash generates a fingerprint of page content - pages with similar fingerprints (small Hamming distance) are likely duplicates:
 
 ```
 Page A content → SimHash → 10110010...
@@ -111,14 +111,14 @@ Page B content → SimHash → 10110011...
 Hamming distance = 1 → likely duplicate, skip storing
 ```
 
-<Quiz question="A Bloom filter reports that a URL has been seen before. What can you conclude?" options="The URL has definitely been crawled|The URL has probably been crawled, but there's a small chance it's a false positive|The URL has not been crawled|The Bloom filter needs to be rebuilt" answer="1" explanation="Bloom filters have a small false positive rate — they may say 'yes, seen' for an unseen URL, but they never say 'no' for a URL that was actually added. This means occasionally re-crawling a page, which is acceptable for most crawlers." />
+<Quiz question="A Bloom filter reports that a URL has been seen before. What can you conclude?" options="The URL has definitely been crawled|The URL has probably been crawled, but there's a small chance it's a false positive|The URL has not been crawled|The Bloom filter needs to be rebuilt" answer="1" explanation="Bloom filters have a small false positive rate - they may say 'yes, seen' for an unseen URL, but they never say 'no' for a URL that was actually added. This means occasionally re-crawling a page, which is acceptable for most crawlers." />
 
-## Step 6 — Distributed Crawling
+## Step 6 - Distributed Crawling
 
 ### Scaling Horizontally
 A single machine cannot crawl a billion pages monthly. Distribute the work:
 
-- **Consistent hashing** on domain names assigns each domain to a specific crawler node. This ensures politeness — only one node crawls a given domain
+- **Consistent hashing** on domain names assigns each domain to a specific crawler node. This ensures politeness - only one node crawls a given domain
 - **URL frontier** is partitioned across nodes based on the hash ring
 - **Coordination** via a lightweight service that manages node assignments and rebalances when nodes join or leave
 
@@ -130,7 +130,7 @@ DNS lookups add 10-100ms per request. At scale, this is a major bottleneck:
 
 ### Spider Trap Detection
 Malicious or poorly built sites can create infinite URL spaces:
-- `/page/1/page/1/page/1/...` — repeating path patterns
+- `/page/1/page/1/page/1/...` - repeating path patterns
 - Calendar pages generating URLs for every future date
 - Session IDs in URLs creating unique URLs for identical content
 
@@ -138,7 +138,7 @@ Malicious or poorly built sites can create infinite URL spaces:
 
 <ThinkAboutIt>If you need to keep a search index fresh, how would you decide which pages to re-crawl first? Consider a news site that updates hourly vs a Wikipedia article that changes monthly. What signals would you use to prioritise re-crawl scheduling?</ThinkAboutIt>
 
-## Step 7 — Bottlenecks and Optimisations
+## Step 7 - Bottlenecks and Optimisations
 
 | Bottleneck | Solution |
 |-----------|----------|
@@ -153,6 +153,6 @@ Malicious or poorly built sites can create infinite URL spaces:
 ---
 
 ## 📚 Further Reading
-- [Web Crawler — System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) — Alex Xu's detailed web crawler design walkthrough
-- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) — foundational paper on scalable crawler architecture
-- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) — interactive tutorial on how Bloom filters work
+- [Web Crawler - System Design Interview Vol. 1, Ch. 9](https://bytebytego.com/) - Alex Xu's detailed web crawler design walkthrough
+- [Mercator: A Scalable Web Crawler](https://courses.cs.washington.edu/courses/cse454/15wi/papers/mercator.pdf) - foundational paper on scalable crawler architecture
+- [Bloom Filters by Example](https://llimllib.github.io/bloomfilter-tutorial/) - interactive tutorial on how Bloom filters work

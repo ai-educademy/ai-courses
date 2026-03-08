@@ -1,5 +1,5 @@
 ---
-title: "Bit Manipulation — XOR-trucs, machten van twee en bits tellen"
+title: "Bit Manipulation - XOR-trucs, machten van twee en bits tellen"
 description: "Leer denken op bit-niveau voor coding interviews. Beheers XOR cancellation, Brian Kernighan's trick, bit masking voor subsets en praktische toepassingen."
 order: 10
 difficulty: "advanced"
@@ -18,7 +18,7 @@ Bit value:     1  1  0  1
 Decimal:       8+ 4+ 0+ 1 = 13
 ```
 
-Bit manipulation werkt rechtstreeks op deze bits met bitwise operators — vaak worden lussen vervangen door een enkele operatie.
+Bit manipulation werkt rechtstreeks op deze bits met bitwise operators - vaak worden lussen vervangen door een enkele operatie.
 
 ## Fundamentele bitwise operaties
 
@@ -56,7 +56,7 @@ def count_bits(n):
     return count
 ```
 
-Dit draait in O(k) waarbij k het aantal gezette bits is — niet O(32).
+Dit draait in O(k) waarbij k het aantal gezette bits is - niet O(32).
 
 ### Omwisselen zonder tijdelijke variabele
 
@@ -75,9 +75,9 @@ Dit werkt omdat XOR zijn eigen inverse is: `a ^ b ^ b = a`.
   explanation="n - 1 keert alle bits om vanaf de laagste gezette bit. AND met n zet die laagste gezette bit op nul."
 />
 
-## Single Number — XOR Cancellation
+## Single Number - XOR Cancellation
 
-Elk element komt twee keer voor behalve één. Vind het. Aangezien `a ^ a = 0` en `a ^ 0 = a`, XOR je alle elementen — paren heffen elkaar op en het unieke getal blijft over.
+Elk element komt twee keer voor behalve één. Vind het. Aangezien `a ^ a = 0` en `a ^ 0 = a`, XOR je alle elementen - paren heffen elkaar op en het unieke getal blijft over.
 
 ```python
 def single_number(nums):
@@ -89,11 +89,11 @@ def single_number(nums):
 
 Tijd O(n), ruimte O(1). Geen hash map nodig.
 
-<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR-paren heffen elkaar op tot nul — alleen het ongepaarde element blijft over." />
+<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR-paren heffen elkaar op tot nul - alleen het ongepaarde element blijft over." />
 
-## Single Number III — Twee unieke getallen
+## Single Number III - Twee unieke getallen
 
-Wanneer *twee* getallen uniek zijn, XOR je alles om `x = a ^ b` te krijgen. Zoek een gezette bit in `x` (de getallen verschillen daar). Verdeel alle getallen op basis van die bit en XOR elke groep — elke groep bevat precies één uniek getal.
+Wanneer *twee* getallen uniek zijn, XOR je alles om `x = a ^ b` te krijgen. Zoek een gezette bit in `x` (de getallen verschillen daar). Verdeel alle getallen op basis van die bit en XOR elke groep - elke groep bevat precies één uniek getal.
 
 ```python
 def single_number_iii(nums):
@@ -114,7 +114,7 @@ def single_number_iii(nums):
 
 ## Number of 1 Bits (LeetCode 191)
 
-Dit is Brian Kernighan's algoritme van hierboven — een directe interviewvraag. De vervolgvraag: wat als de invoer signed is? In Python hebben integers willekeurige precisie, maar in Java/C++ moet je rekening houden met 32-bit grenzen.
+Dit is Brian Kernighan's algoritme van hierboven - een directe interviewvraag. De vervolgvraag: wat als de invoer signed is? In Python hebben integers willekeurige precisie, maar in Java/C++ moet je rekening houden met 32-bit grenzen.
 
 ## Bit Masking voor subsets
 
@@ -129,7 +129,7 @@ def all_subsets(items):
         yield subset
 ```
 
-Deze techniek is geschikt voor problemen waar n ≤ 20 — klein genoeg voor 2^n enumeratie.
+Deze techniek is geschikt voor problemen waar n ≤ 20 - klein genoeg voor 2^n enumeratie.
 
 <FunFact>Linux-bestandsrechten (rwxr-xr-x = 755) zijn een bitmask uit de praktijk. Elk cijfer codeert drie permission bits: lezen (4), schrijven (2), uitvoeren (1), gecombineerd met OR.</FunFact>
 
@@ -148,11 +148,11 @@ def reverse_bits(n):
 
 ## Missing Number (LeetCode 268)
 
-Een array van n getallen van 0 tot n met één ontbrekend getal. XOR alle array-elementen met alle indices van 0 tot n — paren heffen elkaar op en het ontbrekende getal blijft over. De somformule werkt ook, maar XOR vermijdt mogelijke overflow.
+Een array van n getallen van 0 tot n met één ontbrekend getal. XOR alle array-elementen met alle indices van 0 tot n - paren heffen elkaar op en het ontbrekende getal blijft over. De somformule werkt ook, maar XOR vermijdt mogelijke overflow.
 
 ## Hamming Distance (LeetCode 461)
 
-Het aantal posities waar de corresponderende bits verschillen. XOR de twee getallen — gezette bits in het resultaat zijn de afwijkende posities. Tel ze met Brian Kernighan's trick.
+Het aantal posities waar de corresponderende bits verschillen. XOR de twee getallen - gezette bits in het resultaat zijn de afwijkende posities. Tel ze met Brian Kernighan's trick.
 
 ```python
 def hamming_distance(x, y):
@@ -183,6 +183,6 @@ Bit manipulation is overal: Unix-bestandsrechten gebruiken OR/AND masks, feature
 
 ## 📚 Verder lezen
 
-- [Bit Manipulation — LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) — Verzameling problemen gesorteerd op moeilijkheidsgraad
-- [Brian Kernighan's Algorithm — GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) — Gedetailleerde uitleg met visualisaties
-- [Bitmask DP — CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) — Geavanceerde bitmask-technieken voor competitive programming
+- [Bit Manipulation - LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) - Verzameling problemen gesorteerd op moeilijkheidsgraad
+- [Brian Kernighan's Algorithm - GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) - Gedetailleerde uitleg met visualisaties
+- [Bitmask DP - CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) - Geavanceerde bitmask-technieken voor competitive programming

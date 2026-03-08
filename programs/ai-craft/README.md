@@ -1,4 +1,4 @@
-# ⚒️ AI Craft — System Design
+# ⚒️ AI Craft - System Design
 
 > **Level 3** of the **Craft Engineering** track at [AI Educademy](https://aieducademy.org)
 
@@ -73,16 +73,16 @@ Learn to think in **architectures**, not just code.
 
 ## 🛤️ Craft Engineering Track
 
-AI Craft is part of the **Craft Engineering** learning path — five progressive programs
+AI Craft is part of the **Craft Engineering** learning path - five progressive programs
 that take you from coding fundamentals to mastery:
 
 | Level | Program | Focus |
 |-------|---------|-------|
-| 1 | [✏️ Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations — Arrays, Strings, Sorting |
-| 2 | [🪨 Chisel](https://github.com/ai-educademy/ai-chisel) | Sharpening Skill — Trees, Graphs, DP |
-| **3** | **⚒️ Craft** (you are here) | **Building Skill — System Design** |
-| 4 | [💎 Polish](https://github.com/ai-educademy/ai-polish) | Refining Skill — Behavioural & Leadership |
-| 5 | [🏆 Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Interview Excellence — Mock Interviews |
+| 1 | [✏️ Sketch](https://github.com/ai-educademy/ai-sketch) | Foundations - Arrays, Strings, Sorting |
+| 2 | [🪨 Chisel](https://github.com/ai-educademy/ai-chisel) | Sharpening Skill - Trees, Graphs, DP |
+| **3** | **⚒️ Craft** (you are here) | **Building Skill - System Design** |
+| 4 | [💎 Polish](https://github.com/ai-educademy/ai-polish) | Refining Skill - Behavioural & Leadership |
+| 5 | [🏆 Masterpiece](https://github.com/ai-educademy/ai-masterpiece) | Interview Excellence - Mock Interviews |
 
 ```mermaid
 flowchart LR
@@ -107,13 +107,13 @@ flowchart LR
 ## 🚀 How to Use
 
 1. **Online:** Visit [aieducademy.org](https://aieducademy.org) for the full interactive experience with progress tracking
-2. **Offline:** Browse the MDX lesson files directly in [`lessons/en/`](lessons/en/) — they're readable as-is
+2. **Offline:** Browse the MDX lesson files directly in [`lessons/en/`](lessons/en/) - they're readable as-is
 
 Each lesson follows a structured format:
-- 🎯 **Requirements** — clarify the problem
-- 🏗️ **High-Level Design** — define components and APIs
-- 📐 **Deep Dive** — walk through algorithms and trade-offs
-- 📊 **Scaling** — handle growth and bottlenecks
+- 🎯 **Requirements** - clarify the problem
+- 🏗️ **High-Level Design** - define components and APIs
+- 📐 **Deep Dive** - walk through algorithms and trade-offs
+- 📊 **Scaling** - handle growth and bottlenecks
 
 ---
 
@@ -132,7 +132,7 @@ Please see the [AI Educademy org](https://github.com/ai-educademy) for contribut
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 

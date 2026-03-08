@@ -1,5 +1,5 @@
 ---
-title: "Training AI Models — Teaching Machines to Get Smarter"
+title: "Training AI Models - Teaching Machines to Get Smarter"
 description: "Understand the training loop, loss functions, overfitting, and how to know when your AI model is ready."
 order: 4
 difficulty: "beginner"
@@ -10,20 +10,20 @@ published: true
 
 # Training AI Models
 
-You now know that neural networks learn by adjusting weights and biases. But how does the full training process actually work? How do you know when a model has learned enough — or too much? In this lesson, we will walk through the complete training journey.
+You now know that neural networks learn by adjusting weights and biases. But how does the full training process actually work? How do you know when a model has learned enough - or too much? In this lesson, we will walk through the complete training journey.
 
 ## The Training Loop
 
 Training an AI model follows a cycle that repeats over and over:
 
-1. **Predict** — Feed data through the model and get a prediction.
-2. **Compare** — Check how far the prediction is from the correct answer.
-3. **Adjust** — Update the weights to reduce the error.
-4. **Repeat** — Do it again with the next batch of data.
+1. **Predict** - Feed data through the model and get a prediction.
+2. **Compare** - Check how far the prediction is from the correct answer.
+3. **Adjust** - Update the weights to reduce the error.
+4. **Repeat** - Do it again with the next batch of data.
 
 This loop runs thousands or even millions of times. Each repetition nudges the model slightly closer to the right answers.
 
-<Illustration src="/images/lessons/training-ai-models.svg" alt="A circular diagram showing the training loop: Predict, Compare, Adjust, Repeat, with arrows connecting each step in a cycle" caption="The training loop is the heartbeat of AI learning — predict, compare, adjust, and repeat." />
+<Illustration src="/images/lessons/training-ai-models.svg" alt="A circular diagram showing the training loop: Predict, Compare, Adjust, Repeat, with arrows connecting each step in a cycle" caption="The training loop is the heartbeat of AI learning - predict, compare, adjust, and repeat." />
 
 <FunFact>
 Training GPT-4 reportedly cost over $100 million in computing power alone. The training loop ran across thousands of specialised chips for months.
@@ -40,19 +40,19 @@ Think of it like a dartboard. The bullseye is the correct answer. The loss is th
 
 Common loss functions include:
 
-- **Mean Squared Error (MSE)** — measures the average squared distance between predictions and actual values. Used for predicting numbers.
-- **Cross-Entropy Loss** — measures how well predicted probabilities match the true categories. Used for classification tasks.
+- **Mean Squared Error (MSE)** - measures the average squared distance between predictions and actual values. Used for predicting numbers.
+- **Cross-Entropy Loss** - measures how well predicted probabilities match the true categories. Used for classification tasks.
 
 <Quiz question="What does a loss function measure in AI training?" options="How fast the model runs|How much memory the model uses|How far the model's predictions are from the correct answers|How many layers the model has" answer="2" explanation="A loss function quantifies the difference between what the model predicted and the actual correct answer. The training process tries to minimise this value." />
 
 ## Epochs: How Many Times Through the Data?
 
-One complete pass through the entire training dataset is called an **epoch**. Training typically involves many epochs — the model sees the same data multiple times, getting slightly better each round.
+One complete pass through the entire training dataset is called an **epoch**. Training typically involves many epochs - the model sees the same data multiple times, getting slightly better each round.
 
 - **Epoch 1:** The model makes many mistakes; loss is high.
 - **Epoch 10:** The model has improved significantly; loss is dropping.
 - **Epoch 50:** Improvements slow down; the model is nearing its best.
-- **Epoch 200:** The model might start memorising — which brings us to our next topic.
+- **Epoch 200:** The model might start memorising - which brings us to our next topic.
 
 <ThinkAboutIt>
 Revising for an exam is like running epochs. The first read-through is confusing, but each review builds understanding. However, if you re-read the same notes a hundred times, you might memorise the exact wording without truly understanding the concepts. AI has the same problem.
@@ -60,9 +60,9 @@ Revising for an exam is like running epochs. The first read-through is confusing
 
 ## Overfitting: The Student Who Memorises
 
-**Overfitting** is one of the most common problems in AI training. It happens when the model learns the training data *too well* — including its noise and quirks — and fails to perform on new, unseen data.
+**Overfitting** is one of the most common problems in AI training. It happens when the model learns the training data *too well* - including its noise and quirks - and fails to perform on new, unseen data.
 
-Imagine a student who memorises every past exam paper word for word. They score perfectly on old papers but struggle when the questions change even slightly. The student has not learned the subject — they have memorised the answers.
+Imagine a student who memorises every past exam paper word for word. They score perfectly on old papers but struggle when the questions change even slightly. The student has not learned the subject - they have memorised the answers.
 
 Signs of overfitting:
 
@@ -86,7 +86,7 @@ Causes of underfitting include:
 
 If overfitting is like memorising past papers, underfitting is like walking into the exam having barely opened the textbook.
 
-<Quiz question="A model scores 98% accuracy on training data but only 60% on new data. What is the most likely problem?" options="Underfitting|Overfitting|The data is too small|The model is too simple" answer="1" explanation="A large gap between training performance (98%) and performance on new data (60%) is the classic sign of overfitting — the model has memorised the training data instead of learning generalisable patterns." />
+<Quiz question="A model scores 98% accuracy on training data but only 60% on new data. What is the most likely problem?" options="Underfitting|Overfitting|The data is too small|The model is too simple" answer="1" explanation="A large gap between training performance (98%) and performance on new data (60%) is the classic sign of overfitting - the model has memorised the training data instead of learning generalisable patterns." />
 
 ## Validation and Test Sets
 
@@ -98,7 +98,7 @@ To detect overfitting and underfitting, we split our data into three parts:
 | **Validation set** | Used to check progress and tune settings | During training |
 | **Test set** | Final evaluation on completely unseen data | After training |
 
-A common split is 70% training, 15% validation, and 15% test. The model *never* sees the test set until the very end — it is the final exam.
+A common split is 70% training, 15% validation, and 15% test. The model *never* sees the test set until the very end - it is the final exam.
 
 <ThinkAboutIt>
 The validation set is like a practice test you take between study sessions. It tells you how well you are learning without spoiling the real exam. If your practice test scores start dropping while your study notes scores keep rising, you know something is wrong.
@@ -119,7 +119,7 @@ This prevents the model from going past the point of useful learning and slippin
 <Quiz question="What is 'early stopping' in AI training?" options="Stopping training before any data is processed|Halting when the computer runs out of memory|Stopping training when validation performance stops improving|Removing neurons that are not contributing" answer="2" explanation="Early stopping monitors validation loss and halts training when it stops improving, preventing the model from overfitting by training too long." />
 
 <FunFact>
-Some modern training runs use a technique called learning rate scheduling, which gradually reduces how much the weights change with each step — like taking smaller and more careful steps as you approach the summit of a mountain.
+Some modern training runs use a technique called learning rate scheduling, which gradually reduces how much the weights change with each step - like taking smaller and more careful steps as you approach the summit of a mountain.
 </FunFact>
 
 ## Key Takeaways
@@ -131,4 +131,4 @@ Some modern training runs use a technique called learning rate scheduling, which
 - Data is split into **training**, **validation**, and **test** sets.
 - **Early stopping** prevents training from going too far.
 
-In the final lesson, we will explore the **ethical dimensions** of AI — bias, fairness, privacy, and what responsible AI looks like.
+In the final lesson, we will explore the **ethical dimensions** of AI - bias, fairness, privacy, and what responsible AI looks like.

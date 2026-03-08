@@ -1,5 +1,5 @@
 ---
-title: "Computer Vision — Hoe AI leert de wereld te zien"
+title: "Computer Vision - Hoe AI leert de wereld te zien"
 description: "Ontdek hoe machines afbeeldingen en video interpreteren, van pixelrasters tot zelfrijdende auto's."
 order: 1
 difficulty: "intermediate"
@@ -8,16 +8,16 @@ icon: "👁️"
 published: true
 ---
 
-# Computer Vision — Hoe AI leert de wereld te zien
+# Computer Vision - Hoe AI leert de wereld te zien
 
-Je werpt een blik op een foto en weet meteen dat er een hond op het strand staat. Voor een computer is diezelfde afbeelding niets meer dan een enorm raster van getallen. **Computer vision** is de tak van AI die machines leert om betekenis uit die getallen te halen — en het hervormt nu al de industrieën om je heen.
+Je werpt een blik op een foto en weet meteen dat er een hond op het strand staat. Voor een computer is diezelfde afbeelding niets meer dan een enorm raster van getallen. **Computer vision** is de tak van AI die machines leert om betekenis uit die getallen te halen - en het hervormt nu al de industrieën om je heen.
 
 ## Hoe computers "zien"
 
 Wanneer je naar een foto kijkt, herkent je brein onmiddellijk vormen, kleuren en diepte. Een computer
 heeft niets van die intuïtie. In plaats daarvan werkt hij met ruwe getallen.
 
-Een digitale afbeelding is een raster van **pixels**. Elke pixel slaat kleurwaarden op — doorgaans drie
+Een digitale afbeelding is een raster van **pixels**. Elke pixel slaat kleurwaarden op - doorgaans drie
 **kanalen**: rood, groen en blauw (RGB). Een 1920 × 1080 HD-afbeelding bevat meer dan twee miljoen pixels,
 elk met drie waarden variërend van 0 tot 255. Vermenigvuldig die allemaal en zelfs één enkel beeld
 bevat miljoenen getallen.
@@ -25,20 +25,20 @@ bevat miljoenen getallen.
 <Illustration src="/images/lessons/computer-vision.svg" alt="Diagram dat een afbeelding toont opgedeeld in een pixelraster met RGB-kanalen" caption="Elke afbeelding is gewoon een raster van getallen over rode, groene en blauwe kanalen." />
 
 **Resolutie** bepaalt hoeveel detail het raster vastlegt. Een hogere resolutie betekent meer pixels
-en rijker detail — maar ook veel meer data voor de AI om te verwerken. Een 4K-afbeelding heeft vier keer zoveel
+en rijker detail - maar ook veel meer data voor de AI om te verwerken. Een 4K-afbeelding heeft vier keer zoveel
 pixels als HD, wat vier keer zoveel rekenkracht kost.
 
-Grijswaardenafbeeldingen hebben slechts één kanaal (helderheid), terwijl sommige gespecialiseerde formaten — zoals
-satellietbeelden of medische scans — tientallen kanalen kunnen hebben die golflengten vastleggen die onzichtbaar
+Grijswaardenafbeeldingen hebben slechts één kanaal (helderheid), terwijl sommige gespecialiseerde formaten - zoals
+satellietbeelden of medische scans - tientallen kanalen kunnen hebben die golflengten vastleggen die onzichtbaar
 zijn voor het menselijk oog.
 
 <FunFact>
-Het menselijk oog kan ongeveer 10 miljoen kleuren onderscheiden. Een standaard 8-bit RGB-afbeelding kan meer dan 16,7 miljoen unieke kleurcombinaties weergeven — meer dan we daadwerkelijk kunnen waarnemen!
+Het menselijk oog kan ongeveer 10 miljoen kleuren onderscheiden. Een standaard 8-bit RGB-afbeelding kan meer dan 16,7 miljoen unieke kleurcombinaties weergeven - meer dan we daadwerkelijk kunnen waarnemen!
 </FunFact>
 
 ## Convolutionele neurale netwerken (CNNs)
 
-Vroege pogingen tot computer vision berustten op handgemaakte regels — "zoek hier naar randen, vergelijk daar met dit
+Vroege pogingen tot computer vision berustten op handgemaakte regels - "zoek hier naar randen, vergelijk daar met dit
 sjabloon." Deze kwetsbare aanpakken faalden zodra de scène veranderde. Moderne systemen gebruiken
 **convolutionele neurale netwerken (CNNs)**, die hun eigen regels leren uit duizenden gelabelde
 voorbeelden.
@@ -49,15 +49,15 @@ Stel je een CNN voor als een lopende band van patroondetectors, waarbij elke laa
    randen, hoeken en texturen.
 2. **Pooling-lagen** verkleinen de data en behouden alleen de belangrijkste signalen terwijl overtollige
    details worden weggegooid.
-3. **Diepere convolutielagen** combineren die eenvoudige patronen tot complexere kenmerken — ogen,
+3. **Diepere convolutielagen** combineren die eenvoudige patronen tot complexere kenmerken - ogen,
    wielen, letters.
-4. **Volledig verbonden lagen** brengen alle kenmerken samen om een definitieve beslissing te nemen — "dit is een
+4. **Volledig verbonden lagen** brengen alle kenmerken samen om een definitieve beslissing te nemen - "dit is een
    kat" of "dit is een tumor."
 
 Het mooie is dat niemand deze filters met de hand programmeert. Het netwerk **leert** ze tijdens de training, beginnend met willekeurige ruis en geleidelijk scherper wordend tot bruikbare detectoren.
 
 <ThinkAboutIt>
-Wanneer je leert het gezicht van een vriend te herkennen, onthoud je niet elke pixel — je pikt belangrijke kenmerken op zoals de oogvorm, het kapsel en de gezichtsuitdrukking. CNNs doen iets opmerkelijk vergelijkbaars. Welke kenmerken denk je dat een CNN als eerste zou leren?
+Wanneer je leert het gezicht van een vriend te herkennen, onthoud je niet elke pixel - je pikt belangrijke kenmerken op zoals de oogvorm, het kapsel en de gezichtsuitdrukking. CNNs doen iets opmerkelijk vergelijkbaars. Welke kenmerken denk je dat een CNN als eerste zou leren?
 </ThinkAboutIt>
 
 ## Classificatie, detectie en segmentatie
@@ -70,7 +70,7 @@ Computer vision pakt drie steeds moeilijkere taken aan:
 | **Objectdetectie** | Wat staat er op deze afbeelding en waar? | Kaders tekenen rond elke voetganger in een straatscène. |
 | **Semantische segmentatie** | Welke pixels horen bij welk object? | Elke pixel van de weg, het trottoir, de auto en de lucht in een andere kleur inkleuren. |
 
-Zelfrijdende auto's hebben alle drie tegelijkertijd nodig — objecten classificeren, ze nauwkeurig lokaliseren en
+Zelfrijdende auto's hebben alle drie tegelijkertijd nodig - objecten classificeren, ze nauwkeurig lokaliseren en
 de volledige scène pixel voor pixel begrijpen.
 
 Elke taak vereist geleidelijk meer rekenkracht en trainingsdata. Classificatie was
@@ -83,31 +83,31 @@ grotendeels opgelost tegen 2015; realtime segmentatie op video blijft vandaag de
 Computer vision is al ingebed in industrieën die je misschien niet verwacht:
 
 - **Tesla Autopilot** gebruikt acht camera's en op visie gebaseerde AI om rijstroken, verkeerslichten en
-  obstakels in realtime te detecteren — miljoenen beelden per rit worden verwerkt.
-- **Medische beeldvorming** — AI-modellen evenaren of overtreffen nu radiologen bij het opsporen van borstkanker
+  obstakels in realtime te detecteren - miljoenen beelden per rit worden verwerkt.
+- **Medische beeldvorming** - AI-modellen evenaren of overtreffen nu radiologen bij het opsporen van borstkanker
   in een vroeg stadium op mammogrammen, en vangen soms op wat zes menselijke experts hadden gemist.
-- **Kwaliteitscontrole** — fabrieken gebruiken visiesystemen om duizenden producten per minuut te inspecteren
+- **Kwaliteitscontrole** - fabrieken gebruiken visiesystemen om duizenden producten per minuut te inspecteren
   en defecten op te sporen die te subtiel of te snel zijn voor menselijke inspecteurs.
-- **Landbouw** — drones met computer vision identificeren zieke gewassen over uitgestrekte velden,
+- **Landbouw** - drones met computer vision identificeren zieke gewassen over uitgestrekte velden,
   waardoor gerichte behandeling mogelijk wordt die het pesticidengebruik met tot wel 90% vermindert.
-- **Detailhandel** — Amazon Go-winkels gebruiken computer vision om bij te houden welke producten klanten pakken,
+- **Detailhandel** - Amazon Go-winkels gebruiken computer vision om bij te houden welke producten klanten pakken,
   waardoor winkelen zonder kassa mogelijk wordt.
 
 <FunFact>
-Google's DeepMind ontwikkelde een AI die meer dan 50 oogziekten kan detecteren op retinascans met dezelfde nauwkeurigheid als 's werelds beste oogartsen — in seconden in plaats van weken.
+Google's DeepMind ontwikkelde een AI die meer dan 50 oogziekten kan detecteren op retinascans met dezelfde nauwkeurigheid als 's werelds beste oogartsen - in seconden in plaats van weken.
 </FunFact>
 
 ## Ethische zorgen
 
 Computer vision is krachtig, maar roept serieuze vragen op waar de samenleving nog mee worstelt:
 
-- **Surveillance** — gezichtsherkenning maakt het massaal volgen van burgers mogelijk. Verschillende steden,
+- **Surveillance** - gezichtsherkenning maakt het massaal volgen van burgers mogelijk. Verschillende steden,
   waaronder San Francisco en delen van de EU, hebben het gebruik ervan door de politie verboden of beperkt.
-- **Bias** — baanbrekende studies van Joy Buolamwini aan het MIT toonden aan dat commerciële gezichtsherkenningssystemen
+- **Bias** - baanbrekende studies van Joy Buolamwini aan het MIT toonden aan dat commerciële gezichtsherkenningssystemen
   aanzienlijk minder nauwkeurig waren voor mensen met een donkere huidskleur en vrouwen, omdat trainingsdata historisch gezien lichtere mannen oververtegenwoordigden.
-- **Toestemming** — moet je gezicht zonder je medeweten gescand worden in winkels, op luchthavens of in openbare
+- **Toestemming** - moet je gezicht zonder je medeweten gescand worden in winkels, op luchthavens of in openbare
   ruimtes? Veel landen werken nog aan wetgeving om dit te regelen.
-- **Deepfakes** — door AI gegenereerde nepafbeeldingen en -video's kunnen desinformatie verspreiden en reputaties
+- **Deepfakes** - door AI gegenereerde nepafbeeldingen en -video's kunnen desinformatie verspreiden en reputaties
   beschadigen, waardoor visueel bewijs minder betrouwbaar wordt.
 
 <ThinkAboutIt>
@@ -118,13 +118,13 @@ Stel je voor dat een school gezichtsherkennningscamera's installeert om automati
 
 ## Belangrijkste inzichten
 
-- Afbeeldingen zijn rasters van pixelwaarden over kleurkanalen — computers zien getallen, geen plaatjes.
+- Afbeeldingen zijn rasters van pixelwaarden over kleurkanalen - computers zien getallen, geen plaatjes.
 - CNNs leren automatisch kenmerken te extraheren door training, beginnend bij randen en opbouwend
   tot complexe objecten.
 - Classificatie, detectie en segmentatie vertegenwoordigen toenemende niveaus van visueel begrip.
 - Computer vision drijft doorbraken aan van medische diagnostiek tot autonome voertuigen en
   precisie-landbouw.
-- Bias in trainingsdata en surveillancezorgen vereisen zorgvuldige, ethische inzet — technologie
+- Bias in trainingsdata en surveillancezorgen vereisen zorgvuldige, ethische inzet - technologie
   alleen is nooit genoeg zonder verantwoord bestuur.
 
 <Quiz question="Wat is in een CNN het doel van pooling-lagen?" options="Kleur toevoegen aan de afbeelding|De ruimtelijke dimensies verkleinen terwijl belangrijke kenmerken behouden blijven|De afbeelding omzetten naar tekst|Het aantal pixels vergroten" answer="1" explanation="Pooling-lagen verkleinen de feature maps, waardoor de rekenkosten afnemen terwijl de belangrijkste informatie die door convolutiefilters is gedetecteerd, behouden blijft." />

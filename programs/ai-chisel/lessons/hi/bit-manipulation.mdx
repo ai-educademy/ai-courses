@@ -1,5 +1,5 @@
 ---
-title: "Bit Manipulation — XOR Tricks, Power of Two, और Bits गिनना"
+title: "Bit Manipulation - XOR Tricks, Power of Two, और Bits गिनना"
 description: "Coding interviews के लिए bit-level thinking सीखें। XOR cancellation, Brian Kernighan's trick, subsets के लिए bit masking, और practical applications में महारत हासिल करें।"
 order: 10
 difficulty: "advanced"
@@ -18,7 +18,7 @@ Bit value:     1  1  0  1
 Decimal:       8+ 4+ 0+ 1 = 13
 ```
 
-Bit manipulation इन bits पर सीधे bitwise operators से काम करता है — अक्सर loops की जगह एक ही operation काफ़ी होता है।
+Bit manipulation इन bits पर सीधे bitwise operators से काम करता है - अक्सर loops की जगह एक ही operation काफ़ी होता है।
 
 ## Core Bitwise Operations
 
@@ -56,7 +56,7 @@ def count_bits(n):
     return count
 ```
 
-यह O(k) में चलता है जहाँ k set bits की संख्या है — O(32) नहीं।
+यह O(k) में चलता है जहाँ k set bits की संख्या है - O(32) नहीं।
 
 ### बिना Temp Variable के Swap
 
@@ -75,9 +75,9 @@ a ^= b
   explanation="n - 1 सबसे नीचे वाले set bit से लेकर नीचे तक सभी bits flip कर देता है। n के साथ AND करने पर वो lowest set bit zero हो जाता है।"
 />
 
-## Single Number — XOR Cancellation
+## Single Number - XOR Cancellation
 
-हर element दो बार आता है सिवाय एक के। उसे ढूँढो। चूँकि `a ^ a = 0` और `a ^ 0 = a`, सभी elements को XOR करो — pairs cancel हो जाएँगे, unique number बचेगा।
+हर element दो बार आता है सिवाय एक के। उसे ढूँढो। चूँकि `a ^ a = 0` और `a ^ 0 = a`, सभी elements को XOR करो - pairs cancel हो जाएँगे, unique number बचेगा।
 
 ```python
 def single_number(nums):
@@ -89,11 +89,11 @@ def single_number(nums):
 
 Time O(n), space O(1)। कोई hash map नहीं चाहिए।
 
-<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR pairs zero हो जाते हैं — सिर्फ़ unpaired element बचता है।" />
+<Illustration src="/images/lessons/bit-manipulation.svg" alt="XOR cancellation showing pairs eliminating to zero, leaving the single unique number" caption="XOR pairs zero हो जाते हैं - सिर्फ़ unpaired element बचता है।" />
 
-## Single Number III — दो Unique Numbers
+## Single Number III - दो Unique Numbers
 
-जब *दो* numbers unique हों, तो सबको XOR करो — `x = a ^ b` मिलेगा। `x` में कोई भी set bit ढूँढो (वहाँ दोनों numbers अलग हैं)। उस bit से सभी numbers को दो groups में बाँटो और हर group को XOR करो — हर group में ठीक एक unique number होगा।
+जब *दो* numbers unique हों, तो सबको XOR करो - `x = a ^ b` मिलेगा। `x` में कोई भी set bit ढूँढो (वहाँ दोनों numbers अलग हैं)। उस bit से सभी numbers को दो groups में बाँटो और हर group को XOR करो - हर group में ठीक एक unique number होगा।
 
 ```python
 def single_number_iii(nums):
@@ -114,7 +114,7 @@ def single_number_iii(nums):
 
 ## Number of 1 Bits (LeetCode 191)
 
-यह ऊपर वाला Brian Kernighan's algorithm ही है — सीधा interview question। Follow-up पूछता है: अगर input signed हो तो? Python में integers arbitrary precision के होते हैं, लेकिन Java/C++ में 32-bit boundaries handle करनी पड़ती हैं।
+यह ऊपर वाला Brian Kernighan's algorithm ही है - सीधा interview question। Follow-up पूछता है: अगर input signed हो तो? Python में integers arbitrary precision के होते हैं, लेकिन Java/C++ में 32-bit boundaries handle करनी पड़ती हैं।
 
 ## Subsets के लिए Bit Masking
 
@@ -129,7 +129,7 @@ def all_subsets(items):
         yield subset
 ```
 
-यह technique उन problems के लिए काम करती है जहाँ n ≤ 20 हो — 2^n enumeration के लिए काफ़ी छोटा।
+यह technique उन problems के लिए काम करती है जहाँ n ≤ 20 हो - 2^n enumeration के लिए काफ़ी छोटा।
 
 <FunFact>Linux file permissions (rwxr-xr-x = 755) real-world bitmask का एक बढ़िया example हैं। हर digit तीन permission bits encode करती है: read (4), write (2), execute (1), जो OR से combine होती हैं।</FunFact>
 
@@ -148,11 +148,11 @@ def reverse_bits(n):
 
 ## Missing Number (LeetCode 268)
 
-0 से n तक के n numbers की array जिसमें एक missing है। सभी array elements को indices 0 से n के साथ XOR करो — pairs cancel होंगे, missing number बचेगा। Sum formula भी चलेगा, लेकिन XOR में overflow का ख़तरा नहीं।
+0 से n तक के n numbers की array जिसमें एक missing है। सभी array elements को indices 0 से n के साथ XOR करो - pairs cancel होंगे, missing number बचेगा। Sum formula भी चलेगा, लेकिन XOR में overflow का ख़तरा नहीं।
 
 ## Hamming Distance (LeetCode 461)
 
-वो positions जहाँ corresponding bits अलग हैं, उनकी संख्या। दोनों numbers को XOR करो — result में set bits ही differing positions हैं। Brian Kernighan's trick से गिन लो।
+वो positions जहाँ corresponding bits अलग हैं, उनकी संख्या। दोनों numbers को XOR करो - result में set bits ही differing positions हैं। Brian Kernighan's trick से गिन लो।
 
 ```python
 def hamming_distance(x, y):
@@ -183,6 +183,6 @@ Bit manipulation हर जगह दिखता है: Unix file permissions 
 
 ## 📚 और पढ़ें
 
-- [Bit Manipulation — LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) — Difficulty के हिसाब से sorted problem collection
-- [Brian Kernighan's Algorithm — GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) — Visualisations के साथ detailed walkthrough
-- [Bitmask DP — CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) — Competitive programming के लिए advanced bitmask techniques
+- [Bit Manipulation - LeetCode Explore](https://leetcode.com/tag/bit-manipulation/) - Difficulty के हिसाब से sorted problem collection
+- [Brian Kernighan's Algorithm - GeeksforGeeks](https://www.geeksforgeeks.org/count-set-bits-in-an-integer/) - Visualisations के साथ detailed walkthrough
+- [Bitmask DP - CP-Algorithms](https://cp-algorithms.com/algebra/all-submasks.html) - Competitive programming के लिए advanced bitmask techniques

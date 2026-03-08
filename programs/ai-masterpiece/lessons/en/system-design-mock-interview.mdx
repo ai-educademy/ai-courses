@@ -1,6 +1,6 @@
 ---
-title: "System Design Mock Interview — A 45-Minute Senior Engineer Simulation"
-description: "A complete system design walkthrough for a food delivery platform — requirements, API design, architecture, deep dives, and scaling — structured exactly like a real senior engineer interview."
+title: "System Design Mock Interview - A 45-Minute Senior Engineer Simulation"
+description: "A complete system design walkthrough for a food delivery platform - requirements, API design, architecture, deep dives, and scaling - structured exactly like a real senior engineer interview."
 order: 9
 difficulty: "advanced"
 duration: 25
@@ -8,15 +8,15 @@ icon: "🏗️"
 published: true
 ---
 
-# System Design Mock Interview — A 45-Minute Senior Engineer Simulation
+# System Design Mock Interview - A 45-Minute Senior Engineer Simulation
 
-System design interviews separate senior engineers from everyone else. There's no single correct answer — interviewers evaluate your **structured thinking**, trade-off analysis, and ability to navigate ambiguity. This lesson is a complete 45-minute simulation.
+System design interviews separate senior engineers from everyone else. There's no single correct answer - interviewers evaluate your **structured thinking**, trade-off analysis, and ability to navigate ambiguity. This lesson is a complete 45-minute simulation.
 
 ## 🎯 The Problem: Design a Food Delivery System
 
 *"Design a food delivery platform like Uber Eats or Deliveroo that connects customers, restaurants, and delivery drivers."*
 
-<Illustration src="/images/lessons/system-design-mock-interview.svg" alt="High-level architecture of a food delivery system with user, restaurant, order, and driver services" caption="The four core domains of a food delivery platform — each one is a bounded context with its own service." />
+<Illustration src="/images/lessons/system-design-mock-interview.svg" alt="High-level architecture of a food delivery system with user, restaurant, order, and driver services" caption="The four core domains of a food delivery platform - each one is a bounded context with its own service." />
 
 ## Phase 1: Requirements Gathering (5 minutes)
 
@@ -34,7 +34,7 @@ System design interviews separate senior engineers from everyone else. There's n
 - **Scale**: 50M monthly active users, 5M orders per day, 500K concurrent users at peak
 - **Consistency**: eventual consistency acceptable for search; strong consistency for payments
 
-<Quiz question="Why is eventual consistency acceptable for restaurant search but NOT for payment processing?" options="Search is less important than payments|Showing a slightly stale menu is tolerable; charging a user twice is not|Eventual consistency is always faster|Payment APIs don't support eventual consistency" answer="1" explanation="A user seeing a restaurant that just closed is a minor inconvenience — a retry fixes it. But processing a payment twice causes real financial harm. The cost of inconsistency determines the consistency model." />
+<Quiz question="Why is eventual consistency acceptable for restaurant search but NOT for payment processing?" options="Search is less important than payments|Showing a slightly stale menu is tolerable; charging a user twice is not|Eventual consistency is always faster|Payment APIs don't support eventual consistency" answer="1" explanation="A user seeing a restaurant that just closed is a minor inconvenience - a retry fixes it. But processing a payment twice causes real financial harm. The cost of inconsistency determines the consistency model." />
 
 ## Phase 2: API Design (5 minutes)
 
@@ -76,12 +76,12 @@ POST   /api/v1/deliveries/{id}/complete               → Delivery
 ### Communication Patterns
 
 - **Synchronous**: API Gateway → individual services (REST/gRPC)
-- **Asynchronous**: Order events published to **Kafka** — consumed by Payment, Notification, and Analytics services
+- **Asynchronous**: Order events published to **Kafka** - consumed by Payment, Notification, and Analytics services
 - **Real-time**: Driver location updates via WebSocket → stored in **Redis** with geospatial indexing
 
 <FunFact>Uber processes over 1 million location updates per second globally. They built their own geospatial indexing system (H3) using hexagonal hierarchical grids because traditional latitude/longitude queries couldn't keep up at scale.</FunFact>
 
-## Phase 4: Deep Dive — Critical Components (15 minutes)
+## Phase 4: Deep Dive - Critical Components (15 minutes)
 
 ### Driver Matching Algorithm
 
@@ -127,29 +127,29 @@ Where:
 
 Payments follow a **two-phase pattern**:
 
-1. **Authorise** — reserve funds when order is placed (hold, don't charge)
-2. **Capture** — charge the actual amount after delivery confirmation
+1. **Authorise** - reserve funds when order is placed (hold, don't charge)
+2. **Capture** - charge the actual amount after delivery confirmation
 
 This handles order modifications, cancellations, and partial refunds gracefully. Use an **idempotency key** on every payment request to prevent double-charging during retries.
 
-<Quiz question="Why use a two-phase payment pattern (authorise then capture) instead of charging immediately?" options="It's faster than a single charge|It handles cancellations, modifications, and refunds without complex reversal logic|Payment providers require it|It reduces transaction fees" answer="1" explanation="Authorise-then-capture lets you hold funds without committing. If the restaurant cancels or the order changes, you simply release the authorisation — no refund processing needed. This dramatically simplifies edge cases." />
+<Quiz question="Why use a two-phase payment pattern (authorise then capture) instead of charging immediately?" options="It's faster than a single charge|It handles cancellations, modifications, and refunds without complex reversal logic|Payment providers require it|It reduces transaction fees" answer="1" explanation="Authorise-then-capture lets you hold funds without committing. If the restaurant cancels or the order changes, you simply release the authorisation - no refund processing needed. This dramatically simplifies edge cases." />
 
 ## Phase 5: Scaling and Bottlenecks (10 minutes)
 
 ### Database Scaling
 
-- **Order Service**: shard by `order_id` — orders are independent, horizontal scaling is straightforward
+- **Order Service**: shard by `order_id` - orders are independent, horizontal scaling is straightforward
 - **Restaurant Service**: read replicas for search queries, Elasticsearch for full-text and geospatial search
-- **Driver Location**: Redis Cluster with geospatial indexing — pure in-memory, sub-millisecond reads
+- **Driver Location**: Redis Cluster with geospatial indexing - pure in-memory, sub-millisecond reads
 
 ### Handling Peak Load (Surge)
 
 At peak times (Friday 7pm, major sporting events), order volume can spike 10×:
 
 - **Auto-scaling** application pods based on queue depth, not CPU
-- **Surge pricing** to balance supply and demand — increase delivery fees when driver supply is low
+- **Surge pricing** to balance supply and demand - increase delivery fees when driver supply is low
 - **Rate limiting** per user to prevent abuse during peak
-- **Circuit breakers** on downstream services — graceful degradation over cascading failure
+- **Circuit breakers** on downstream services - graceful degradation over cascading failure
 
 ### Single Points of Failure
 
@@ -160,30 +160,30 @@ At peak times (Friday 7pm, major sporting events), order volume can spike 10×:
 | Redis | Redis Sentinel for automatic failover |
 | Payment provider | Secondary provider with automatic fallback |
 
-<Quiz question="You're scaling the Order Service. Which sharding key provides the BEST write distribution?" options="restaurant_id — all orders for a restaurant on one shard|user_id — all orders for a user on one shard|order_id — orders distributed randomly across shards|city_id — all orders in a city on one shard" answer="2" explanation="Sharding by order_id distributes writes uniformly since order IDs are generated randomly (UUIDs or snowflake IDs). Sharding by restaurant_id or city_id creates hot spots — popular restaurants and cities receive disproportionate traffic." />
+<Quiz question="You're scaling the Order Service. Which sharding key provides the BEST write distribution?" options="restaurant_id - all orders for a restaurant on one shard|user_id - all orders for a user on one shard|order_id - orders distributed randomly across shards|city_id - all orders in a city on one shard" answer="2" explanation="Sharding by order_id distributes writes uniformly since order IDs are generated randomly (UUIDs or snowflake IDs). Sharding by restaurant_id or city_id creates hot spots - popular restaurants and cities receive disproportionate traffic." />
 
 <ThinkAboutIt>Your interviewer asks: "What happens when the payment service is down for 30 seconds during a peak period?" Walk through the exact failure mode, how orders are affected, and what recovery looks like.</ThinkAboutIt>
 
 ## 💡 Interview Tips
 
-1. **Structure your time** — don't spend 30 minutes on requirements
-2. **State trade-offs explicitly** — "I chose X over Y because..."
-3. **Start simple, then scale** — design for 1× load first, then address 100×
-4. **Draw as you talk** — visual communication is half the evaluation
-5. **Acknowledge unknowns** — "I'd need to benchmark this, but my hypothesis is..."
+1. **Structure your time** - don't spend 30 minutes on requirements
+2. **State trade-offs explicitly** - "I chose X over Y because..."
+3. **Start simple, then scale** - design for 1× load first, then address 100×
+4. **Draw as you talk** - visual communication is half the evaluation
+5. **Acknowledge unknowns** - "I'd need to benchmark this, but my hypothesis is..."
 
 ## 🎯 Key Takeaways
 
-- Always start with requirements — functional and non-functional
+- Always start with requirements - functional and non-functional
 - Design API contracts before architecture diagrams
 - Deep dive into 2–3 components, not all of them superficially
-- Every architectural choice involves trade-offs — name them
+- Every architectural choice involves trade-offs - name them
 - Practise with a timer: 45 minutes, no extensions
 
 ---
 
 ## 📚 Further Reading
 
-- [System Design Interview by Alex Xu](https://www.amazon.co.uk/System-Design-Interview-insiders-guide/dp/B08CMF2CQF) — The most practical system design interview preparation book
-- [Uber Engineering Blog](https://www.uber.com/en-GB/blog/engineering/) — Deep dives into real-world systems at massive scale
-- [Designing Data-Intensive Applications by Martin Kleppmann](https://dataintensive.net/) — The definitive reference on distributed systems fundamentals
+- [System Design Interview by Alex Xu](https://www.amazon.co.uk/System-Design-Interview-insiders-guide/dp/B08CMF2CQF) - The most practical system design interview preparation book
+- [Uber Engineering Blog](https://www.uber.com/en-GB/blog/engineering/) - Deep dives into real-world systems at massive scale
+- [Designing Data-Intensive Applications by Martin Kleppmann](https://dataintensive.net/) - The definitive reference on distributed systems fundamentals

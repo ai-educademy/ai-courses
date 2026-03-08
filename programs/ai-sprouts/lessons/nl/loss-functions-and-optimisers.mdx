@@ -1,5 +1,5 @@
 ---
-title: "Verliesfuncties en Optimalisatoren — Hoe AI Leert van Fouten"
+title: "Verliesfuncties en Optimalisatoren - Hoe AI Leert van Fouten"
 description: "Ontdek hoe verliesfuncties de fouten van een model meten en hoe optimalisatoren gradiënten gebruiken om deze systematisch te verminderen."
 order: 7
 difficulty: "intermediate"
@@ -10,17 +10,17 @@ published: true
 
 # Verliesfuncties en Optimalisatoren
 
-Backpropagation geeft ons gradiënten — maar gradiënten *waarvan*? Voordat backprop kan starten, hebben we één enkel getal nodig dat vastlegt hoe fout het model zit. Dat getal komt van een **verliesfunctie**. Zodra we gradiënten hebben, bepaalt een **optimalisator** hoe de gewichten worden bijgewerkt. Samen vormen ze de leerlus.
+Backpropagation geeft ons gradiënten - maar gradiënten *waarvan*? Voordat backprop kan starten, hebben we één enkel getal nodig dat vastlegt hoe fout het model zit. Dat getal komt van een **verliesfunctie**. Zodra we gradiënten hebben, bepaalt een **optimalisator** hoe de gewichten worden bijgewerkt. Samen vormen ze de leerlus.
 
 ## Wat Is een Verliesfunctie?
 
 Een verliesfunctie (ook wel kostenfunctie genoemd) neemt de voorspelling van het model en het juiste antwoord, en geeft een getal terug dat de "fout" meet. Het doel van het trainen is om dit getal te **minimaliseren**.
 
-Zie het als een golfscore — lager is beter. Een verlies van 0 betekent een perfecte voorspelling.
+Zie het als een golfscore - lager is beter. Een verlies van 0 betekent een perfecte voorspelling.
 
 <Illustration src="/images/lessons/loss-functions-and-optimisers.svg" alt="Een U-vormige curve met verlies op de y-as en gewichtswaarde op de x-as, met een bal die naar het minimum rolt" caption="Trainen is als een bal bergafwaarts laten rollen over het verlieslandschap, op zoek naar het laagste punt." />
 
-## Verliesfuncties voor Regressie — MSE
+## Verliesfuncties voor Regressie - MSE
 
 Bij het voorspellen van continue waarden (huizenprijzen, temperatuur) gebruiken we **Mean Squared Error (MSE)**:
 
@@ -31,10 +31,10 @@ MSE = (1/n) × Σ(voorspeld - werkelijk)²
 Kwadrateren doet twee dingen: het maakt alle fouten positief, en het bestraft grote fouten onevenredig zwaar. Een huisprijs die €100.000 afwijkt heeft een kwadratische fout die 100× erger is dan een afwijking van €10.000.
 
 <FunFact>
-MSE dateert uit 1795, toen Carl Friedrich Gauss het bedacht — meer dan twee eeuwen vóór neurale netwerken. Hij gebruikte het om de baan van de asteroïde Ceres te berekenen.
+MSE dateert uit 1795, toen Carl Friedrich Gauss het bedacht - meer dan twee eeuwen vóór neurale netwerken. Hij gebruikte het om de baan van de asteroïde Ceres te berekenen.
 </FunFact>
 
-## Verliesfuncties voor Classificatie — Cross-Entropy
+## Verliesfuncties voor Classificatie - Cross-Entropy
 
 Bij het voorspellen van categorieën (spam of niet, kat vs. hond) gebruiken we **cross-entropy-verlies**. Het meet hoe ver de voorspelde kansen van het model afstaan van de werkelijke labels.
 
@@ -44,9 +44,9 @@ Als het juiste antwoord "kat" is en het model zegt 99% kat, dan is het verlies m
 
 <Quiz question="Waarom is MSE een slechte keuze voor classificatietaken?" options="Het is te langzaam om te berekenen|Het bestraft vol vertrouwen foute antwoorden niet streng genoeg|Het vereist te veel geheugen|Het werkt alleen met afbeeldingen" answer="1" explanation="MSE beschouwt een kans van 0,4 versus 0,6 als een kleine fout, maar bij classificatie kan dat betekenen dat de volledig verkeerde klasse wordt voorspeld. Cross-entropy bestraft overtuigde foute voorspellingen veel strenger, wat sterkere gradiënten voor het leren oplevert." />
 
-## Gradiëntafdaling — Bergafwaarts Rollen
+## Gradiëntafdaling - Bergafwaarts Rollen
 
-Met een gedefinieerde verliesfunctie kunnen we het **verlieslandschap** visualiseren — een oppervlak waar elk punt een set gewichten vertegenwoordigt en de hoogte het verlies is. Trainen betekent het diepste dal vinden.
+Met een gedefinieerde verliesfunctie kunnen we het **verlieslandschap** visualiseren - een oppervlak waar elk punt een set gewichten vertegenwoordigt en de hoogte het verlies is. Trainen betekent het diepste dal vinden.
 
 **Gradiëntafdaling** is het algoritme dat ons daar brengt:
 
@@ -54,7 +54,7 @@ Met een gedefinieerde verliesfunctie kunnen we het **verlieslandschap** visualis
 2. Zet een stap in de tegenovergestelde richting (bergafwaarts).
 3. Herhaal.
 
-De grootte van elke stap wordt bepaald door de **leersnelheid** — misschien wel de belangrijkste hyperparameter in deep learning.
+De grootte van elke stap wordt bepaald door de **leersnelheid** - misschien wel de belangrijkste hyperparameter in deep learning.
 
 ### Het Leersnelheidsdilemma
 
@@ -70,11 +70,11 @@ Stel je voor dat je in dichte mist een berg afdaalt en alleen de helling direct 
 
 ### Batch Gradiëntafdaling
 
-Berekent de gradiënt op basis van de **volledige dataset** vóór elke update. Nauwkeurig maar pijnlijk langzaam voor grote datasets — stel je voor dat je elk boek in een bibliotheek opnieuw moet lezen voordat je één spelfout mag corrigeren.
+Berekent de gradiënt op basis van de **volledige dataset** vóór elke update. Nauwkeurig maar pijnlijk langzaam voor grote datasets - stel je voor dat je elk boek in een bibliotheek opnieuw moet lezen voordat je één spelfout mag corrigeren.
 
 ### Stochastische Gradiëntafdaling (SGD)
 
-Werkt gewichten bij na elk **afzonderlijk voorbeeld**. Snel maar lawaaierig — het pad zigzagt wild. Het lawaai kan juist helpen om aan lokale minima te ontsnappen, wat een verrassend voordeel is.
+Werkt gewichten bij na elk **afzonderlijk voorbeeld**. Snel maar lawaaierig - het pad zigzagt wild. Het lawaai kan juist helpen om aan lokale minima te ontsnappen, wat een verrassend voordeel is.
 
 ### Mini-Batch Gradiëntafdaling
 
@@ -108,11 +108,11 @@ In plaats van de leersnelheid vast te zetten, wordt bij moderne training vaak ee
 
 De intuïtie: neem grote stappen in het begin om breed te verkennen, en daarna kleine stappen om fijn af te stellen.
 
-## Gradiënt-Clipping — Vangrails
+## Gradiënt-Clipping - Vangrails
 
 Soms exploderen gradiënten (zoals we zagen in de les over backpropagation). **Gradiënt-clipping** beperkt de grootte van de gradiënt vóór de updatestap. Als de gradiënt een drempelwaarde overschrijdt, wordt deze proportioneel verkleind. Dit is standaardpraktijk bij het trainen van RNN's en Transformers.
 
-<Quiz question="Wat voorkomt gradiënt-clipping?" options="Verdwijnende gradiënten|Overfitting|Exploderende gradiënten die instabiele updates veroorzaken|Langzame convergentie" answer="2" explanation="Gradiënt-clipping beperkt de grootte van gradiënten tot een maximale drempelwaarde, waardoor de enorme gewichtsupdates die trainingsinstabiliteit veroorzaken — het probleem van exploderende gradiënten — worden voorkomen." />
+<Quiz question="Wat voorkomt gradiënt-clipping?" options="Verdwijnende gradiënten|Overfitting|Exploderende gradiënten die instabiele updates veroorzaken|Langzame convergentie" answer="2" explanation="Gradiënt-clipping beperkt de grootte van gradiënten tot een maximale drempelwaarde, waardoor de enorme gewichtsupdates die trainingsinstabiliteit veroorzaken - het probleem van exploderende gradiënten - worden voorkomen." />
 
 <FunFact>
 Het artikel over de Adam-optimalisator (Kingma & Ba, 2014) heeft meer dan 150.000 citaties, waardoor het een van de meest geciteerde artikelen in de gehele informatica is.
@@ -120,20 +120,20 @@ Het artikel over de Adam-optimalisator (Kingma & Ba, 2014) heeft meer dan 150.00
 
 ## Belangrijkste Punten
 
-- **Verliesfuncties** kwantificeren hoe fout een model zit — MSE voor regressie, cross-entropy voor classificatie.
+- **Verliesfuncties** kwantificeren hoe fout een model zit - MSE voor regressie, cross-entropy voor classificatie.
 - **Gradiëntafdaling** minimaliseert het verlies door herhaaldelijk een stap te zetten tegengesteld aan de gradiënt.
 - De **leersnelheid** bepaalt de stapgrootte en is cruciaal om goed in te stellen.
 - **Adam** is de meestgebruikte optimalisator, die momentum en adaptieve snelheden combineert.
 - **Leersnelheidsschema's** en **gradiënt-clipping** zijn essentiële stabilisatoren voor het trainingsproces.
 
 <ThinkAboutIt>
-Als je een model traint en het verlies stopt met dalen na een paar epochs, wat zou je dan als eerste onderzoeken — de leersnelheid, de verliesfunctie of de data? Waarom?
+Als je een model traint en het verlies stopt met dalen na een paar epochs, wat zou je dan als eerste onderzoeken - de leersnelheid, de verliesfunctie of de data? Waarom?
 </ThinkAboutIt>
 
 ---
 
 ## 📚 Verder Lezen
 
-- [Andrej Karpathy — A Recipe for Training Neural Networks](https://karpathy.github.io/2019/04/25/recipe/) — Praktische wijsheid over het debuggen van verlies en het kiezen van een optimalisator
-- [3Blue1Brown — Gradient Descent](https://www.3blue1brown.com/lessons/gradient-descent) — Prachtige visuele intuïtie over hoe gradiëntafdaling door verlieslandschappen navigeert
-- [An Overview of Gradient Descent Optimisation Algorithms (Ruder, 2016)](https://ruder.io/optimizing-gradient-descent/) — Uitgebreide vergelijking van SGD, Adam en aanverwanten
+- [Andrej Karpathy - A Recipe for Training Neural Networks](https://karpathy.github.io/2019/04/25/recipe/) - Praktische wijsheid over het debuggen van verlies en het kiezen van een optimalisator
+- [3Blue1Brown - Gradient Descent](https://www.3blue1brown.com/lessons/gradient-descent) - Prachtige visuele intuïtie over hoe gradiëntafdaling door verlieslandschappen navigeert
+- [An Overview of Gradient Descent Optimisation Algorithms (Ruder, 2016)](https://ruder.io/optimizing-gradient-descent/) - Uitgebreide vergelijking van SGD, Adam en aanverwanten

@@ -1,5 +1,5 @@
 ---
-title: "The Open-Source AI Ecosystem — Tools, Models, and Communities"
+title: "The Open-Source AI Ecosystem - Tools, Models, and Communities"
 description: "Navigate the open-source AI landscape, from key platforms and models to running inference locally and building a complete AI stack."
 order: 2
 difficulty: "advanced"
@@ -14,15 +14,15 @@ Open-source AI has fundamentally changed the game. What once required millions i
 
 ## Why Open-Source AI Matters
 
-Open-source is not just free software — it is a philosophy that shapes how AI develops.
+Open-source is not just free software - it is a philosophy that shapes how AI develops.
 
-**Democratisation** — State-of-the-art models are no longer locked behind corporate APIs. A researcher in Nairobi has the same access as an engineer in San Francisco.
+**Democratisation** - State-of-the-art models are no longer locked behind corporate APIs. A researcher in Nairobi has the same access as an engineer in San Francisco.
 
-**Innovation speed** — Open communities iterate faster than any single company. Techniques like LoRA fine-tuning, quantisation, and chain-of-thought prompting emerged from open research and were adopted by the industry within weeks.
+**Innovation speed** - Open communities iterate faster than any single company. Techniques like LoRA fine-tuning, quantisation, and chain-of-thought prompting emerged from open research and were adopted by the industry within weeks.
 
-**Transparency** — When you can inspect model weights, training data, and code, you can audit for bias, verify safety claims, and understand failure modes. Black-box APIs offer none of this.
+**Transparency** - When you can inspect model weights, training data, and code, you can audit for bias, verify safety claims, and understand failure modes. Black-box APIs offer none of this.
 
-**Data sovereignty** — Running models locally means sensitive data never leaves your infrastructure. For healthcare, legal, and financial applications, this is often a hard requirement.
+**Data sovereignty** - Running models locally means sensitive data never leaves your infrastructure. For healthcare, legal, and financial applications, this is often a hard requirement.
 
 <FunFact>
 Meta's Llama 3 was downloaded over 30 million times in its first month of release, making it the fastest-adopted open AI model in history. Open-source adoption is accelerating, not slowing.
@@ -32,15 +32,15 @@ Meta's Llama 3 was downloaded over 30 million times in its first month of releas
 
 The open-source AI ecosystem centres around a few critical platforms.
 
-**Hugging Face** — The GitHub of AI. Hosts over 500,000 models, 100,000 datasets, and thousands of demo apps (Spaces). The `transformers` library is the de facto standard for working with pre-trained models.
+**Hugging Face** - The GitHub of AI. Hosts over 500,000 models, 100,000 datasets, and thousands of demo apps (Spaces). The `transformers` library is the de facto standard for working with pre-trained models.
 
-**Ollama** — Run LLMs locally with a single command. Handles model downloading, quantisation, and serving behind a clean API. Perfect for development and privacy-sensitive deployments.
+**Ollama** - Run LLMs locally with a single command. Handles model downloading, quantisation, and serving behind a clean API. Perfect for development and privacy-sensitive deployments.
 
-**LangChain** — A framework for building LLM-powered applications. Provides abstractions for chains, agents, retrieval, and memory. Best for complex workflows involving multiple model calls.
+**LangChain** - A framework for building LLM-powered applications. Provides abstractions for chains, agents, retrieval, and memory. Best for complex workflows involving multiple model calls.
 
-**LlamaIndex** — Specialises in connecting LLMs to your data. Excellent for building RAG (Retrieval-Augmented Generation) systems with custom knowledge bases.
+**LlamaIndex** - Specialises in connecting LLMs to your data. Excellent for building RAG (Retrieval-Augmented Generation) systems with custom knowledge bases.
 
-<Quiz question="Which platform is best described as 'the GitHub of AI' for hosting models and datasets?" options="Ollama|LangChain|Hugging Face|LlamaIndex" answer="2" explanation="Hugging Face hosts hundreds of thousands of models and datasets with a collaborative, Git-based workflow — earning its reputation as the central hub of open-source AI." />
+<Quiz question="Which platform is best described as 'the GitHub of AI' for hosting models and datasets?" options="Ollama|LangChain|Hugging Face|LlamaIndex" answer="2" explanation="Hugging Face hosts hundreds of thousands of models and datasets with a collaborative, Git-based workflow - earning its reputation as the central hub of open-source AI." />
 
 ## Open Models Worth Knowing
 
@@ -62,36 +62,36 @@ The open model landscape evolves monthly, but these families define the current 
 
 You do not need a data centre to run powerful AI models. Here is how to get started.
 
-**Ollama** — The simplest path. Install it, then:
+**Ollama** - The simplest path. Install it, then:
 ```bash
 ollama pull llama3.1:8b
 ollama run llama3.1:8b "Explain transformer attention in one paragraph"
 ```
 
-**llama.cpp** — C++ inference engine optimised for consumer hardware. Supports GGUF quantised models and runs on CPU, Apple Silicon, and CUDA GPUs.
+**llama.cpp** - C++ inference engine optimised for consumer hardware. Supports GGUF quantised models and runs on CPU, Apple Silicon, and CUDA GPUs.
 
-**vLLM** — High-throughput serving engine for production deployments. Implements PagedAttention for efficient memory use and supports continuous batching.
+**vLLM** - High-throughput serving engine for production deployments. Implements PagedAttention for efficient memory use and supports continuous batching.
 
 **Hardware guidelines:**
-- **8B models** — 8GB RAM minimum, runs on most modern laptops
-- **13B models** — 16GB RAM, benefits from a GPU
-- **70B models** — 48GB+ VRAM, requires a serious GPU or multi-GPU setup
+- **8B models** - 8GB RAM minimum, runs on most modern laptops
+- **13B models** - 16GB RAM, benefits from a GPU
+- **70B models** - 48GB+ VRAM, requires a serious GPU or multi-GPU setup
 
 <Quiz question="What is the minimum RAM recommended to run an 8-billion parameter model locally?" options="2GB|4GB|8GB|32GB" answer="2" explanation="8-billion parameter models, when quantised to 4-bit precision, require approximately 4-6GB of memory, making 8GB RAM the practical minimum for comfortable operation." />
 
-<Illustration src="/images/lessons/open-source-ai.svg" alt="Open-source AI stack showing models, frameworks, and deployment tools" caption="The open-source AI stack — from models to deployment" />
+<Illustration src="/images/lessons/open-source-ai.svg" alt="Open-source AI stack showing models, frameworks, and deployment tools" caption="The open-source AI stack - from models to deployment" />
 
 ## Building a Full AI Stack
 
 Here is how to compose open-source tools into a production-ready AI system.
 
 **The reference architecture:**
-1. **Model layer** — Llama 3 or Mistral, served via vLLM or Ollama
-2. **Orchestration** — LangChain or LlamaIndex for multi-step workflows
-3. **Vector store** — Chroma, Qdrant, or Weaviate for embedding-based retrieval
-4. **Data pipeline** — Apache Airflow or Prefect for ETL and data processing
-5. **Monitoring** — Langfuse or Phoenix for LLM observability
-6. **Frontend** — Gradio or Streamlit for rapid prototyping; Next.js for production
+1. **Model layer** - Llama 3 or Mistral, served via vLLM or Ollama
+2. **Orchestration** - LangChain or LlamaIndex for multi-step workflows
+3. **Vector store** - Chroma, Qdrant, or Weaviate for embedding-based retrieval
+4. **Data pipeline** - Apache Airflow or Prefect for ETL and data processing
+5. **Monitoring** - Langfuse or Phoenix for LLM observability
+6. **Frontend** - Gradio or Streamlit for rapid prototyping; Next.js for production
 
 <ThinkAboutIt>
 If you were building a customer support AI using only open-source tools, which components from the stack above would you choose? Consider the trade-offs between simplicity and capability.
@@ -103,7 +103,7 @@ The open-source ecosystem thrives because people give back. Here is how to start
 
 **Low-barrier contributions:**
 - Report bugs with clear reproduction steps
-- Improve documentation — every project needs better docs
+- Improve documentation - every project needs better docs
 - Add tests for untested edge cases
 - Translate documentation into other languages
 
@@ -120,7 +120,7 @@ The GGUF quantisation format, now used by millions of developers worldwide, was 
 <Quiz question="What is the most practical first step for contributing to an open-source AI project?" options="Rewrite the core model architecture|Improve documentation or report bugs|Create a competing fork|Add support for a new programming language" answer="1" explanation="Documentation improvements and clear bug reports are the most accessible and valued first contributions. They build trust with maintainers and teach you the codebase." />
 
 <ThinkAboutIt>
-Browse Hugging Face or GitHub and find one open-source AI project you use regularly. Check its issues page — is there something you could contribute today, even if it is just a documentation fix?
+Browse Hugging Face or GitHub and find one open-source AI project you use regularly. Check its issues page - is there something you could contribute today, even if it is just a documentation fix?
 </ThinkAboutIt>
 
 ## Key Takeaways

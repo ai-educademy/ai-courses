@@ -1,5 +1,5 @@
 ---
-title: "System Design Fundamentals — De bouwstenen van schaalbare systemen"
+title: "System Design Fundamentals - De bouwstenen van schaalbare systemen"
 description: "Beheers de kerncomponenten die elk system design interview van je verwacht."
 order: 1
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 ## Waarom System Design ertoe doet
 
-Elke grootschalige applicatie is opgebouwd uit dezelfde fundamentele bouwstenen. Interviewers verwachten niet dat je nieuwe technologie uitvindt — ze willen zien dat je de juiste componenten kunt **selecteren en combineren** voor een gegeven probleem. Deze les behandelt de toolkit die je in elk design interview nodig hebt.
+Elke grootschalige applicatie is opgebouwd uit dezelfde fundamentele bouwstenen. Interviewers verwachten niet dat je nieuwe technologie uitvindt - ze willen zien dat je de juiste componenten kunt **selecteren en combineren** voor een gegeven probleem. Deze les behandelt de toolkit die je in elk design interview nodig hebt.
 
 ## Client-Server Architecture
 
@@ -26,9 +26,9 @@ Begin in interviews altijd met het schetsen van de high-level client-server flow
 
 Een enkele server heeft beperkte capaciteit. Load balancers verdelen inkomende requests over meerdere servers met strategieën zoals:
 
-- **Round-robin** — requests worden sequentieel over servers verdeeld
-- **Least connections** — stuurt naar de server met de minste actieve requests
-- **Consistent hashing** — koppelt requests aan specifieke servers op basis van een key (handig voor caching)
+- **Round-robin** - requests worden sequentieel over servers verdeeld
+- **Least connections** - stuurt naar de server met de minste actieve requests
+- **Consistent hashing** - koppelt requests aan specifieke servers op basis van een key (handig voor caching)
 
 Load balancers voeren ook **health checks** uit en verwijderen automatisch ongezonde servers uit de pool. In cloud-omgevingen handelen services zoals AWS ALB of Azure Front Door dit transparant af.
 
@@ -48,7 +48,7 @@ Caching slaat veelgebruikte data op dichter bij de consument. Het bestaat op mee
 **Cache invalidation** staat bekend als een van de moeilijkste problemen in de informatica. Veelgebruikte strategieën zijn **TTL (time-to-live)**, **write-through** (cache bijwerken bij elke write) en **cache-aside** (applicatie beheert de cache expliciet).
 
 <FunFact>
-Phil Karltons beroemde uitspraak — "Er zijn maar twee moeilijke dingen in Computer Science: cache invalidation en dingen een naam geven" — wordt zo vaak geciteerd dat het praktisch een rite de passage is in system design interviews.
+Phil Karltons beroemde uitspraak - "Er zijn maar twee moeilijke dingen in Computer Science: cache invalidation en dingen een naam geven" - wordt zo vaak geciteerd dat het praktisch een rite de passage is in system design interviews.
 </FunFact>
 
 ## Databases: SQL vs NoSQL
@@ -58,10 +58,10 @@ De juiste database kiezen is een van de meest impactvolle designbeslissingen:
 **SQL databases** (PostgreSQL, MySQL) bieden ACID transactions, strong consistency en gestructureerde schemas. Ze excelleren wanneer data duidelijke relaties heeft en je complexe queries met joins nodig hebt.
 
 **NoSQL databases** komen in verschillende varianten:
-- **Document stores** (MongoDB) — flexibele schemas, ideaal voor gevarieerde datastructuren
-- **Key-value stores** (DynamoDB, Redis) — razendsnelle lookups op key
-- **Wide-column stores** (Cassandra) — enorme write throughput, distributed by design
-- **Graph databases** (Neo4j) — data met veel relaties zoals sociale netwerken
+- **Document stores** (MongoDB) - flexibele schemas, ideaal voor gevarieerde datastructuren
+- **Key-value stores** (DynamoDB, Redis) - razendsnelle lookups op key
+- **Wide-column stores** (Cassandra) - enorme write throughput, distributed by design
+- **Graph databases** (Neo4j) - data met veel relaties zoals sociale netwerken
 
 <Quiz question="Je ontwerpt een systeem dat gebruikersprofielen opslaat met veelveranderende, semi-gestructureerde data (verschillende velden per gebruikerstype). Welk database type past het beste?" options="Relationeel (PostgreSQL)|Document store (MongoDB)|Wide-column (Cassandra)|Graph (Neo4j)" answer="1" explanation="Document stores zoals MongoDB verwerken semi-gestructureerde, schema-flexibele data op een natuurlijke manier. Elk document kan verschillende velden hebben zonder kostbare schema-migraties." />
 
@@ -69,13 +69,13 @@ De juiste database kiezen is een van de meest impactvolle designbeslissingen:
 
 Niet elke operatie vereist een onmiddellijk antwoord. Message queues (RabbitMQ, Apache Kafka, AWS SQS) ontkoppelen producers van consumers, wat het volgende mogelijk maakt:
 
-- **Asynchrone verwerking** — een e-mail versturen na registratie zonder de response te blokkeren
-- **Load levelling** — verkeerspieken opvangen door requests te bufferen
-- **Fault tolerance** — als een consumer crasht, wachten berichten in de queue
+- **Asynchrone verwerking** - een e-mail versturen na registratie zonder de response te blokkeren
+- **Load levelling** - verkeerspieken opvangen door requests te bufferen
+- **Fault tolerance** - als een consumer crasht, wachten berichten in de queue
 
 Kafka verdient speciale vermelding: het is niet zomaar een queue maar een **distributed event log**, dat event-driven architecturen mogelijk maakt waarin meerdere consumers onafhankelijk dezelfde stroom events kunnen verwerken.
 
-<Illustration src="/images/lessons/system-design-fundamentals.svg" alt="Architecture diagram showing client, load balancer, application servers, cache layer, database, and message queue" caption="De fundamentele bouwstenen van een schaalbaar systeem — elke laag richt zich op een specifiek aandachtspunt." />
+<Illustration src="/images/lessons/system-design-fundamentals.svg" alt="Architecture diagram showing client, load balancer, application servers, cache layer, database, and message queue" caption="De fundamentele bouwstenen van een schaalbaar systeem - elke laag richt zich op een specifiek aandachtspunt." />
 
 ## Microservices vs Monolith
 
@@ -89,44 +89,44 @@ Kafka verdient speciale vermelding: het is niet zomaar een queue maar een **dist
 **Begin met een monolith, extraheer microservices wanneer nodig.** De meeste interviewers waarderen kandidaten die erkennen dat microservices complexiteit van gedistribueerde systemen met zich meebrengen (netwerkfouten, dataconsistentie, deployment-orchestratie) en niet altijd de juiste keuze zijn.
 
 <ThinkAboutIt>
-Netflix migreerde over meerdere jaren van een monolith naar microservices. Maar Shopify — dat miljarden aan transacties verwerkt — draait nog steeds een modulaire monolith. Welke factoren zouden de ene aanpak beter maken dan de andere voor een bepaald bedrijf?
+Netflix migreerde over meerdere jaren van een monolith naar microservices. Maar Shopify - dat miljarden aan transacties verwerkt - draait nog steeds een modulaire monolith. Welke factoren zouden de ene aanpak beter maken dan de andere voor een bepaald bedrijf?
 </ThinkAboutIt>
 
 ## CAP Theorem vereenvoudigd
 
 Het CAP theorem stelt dat een gedistribueerd systeem slechts **twee van de drie** eigenschappen tegelijk kan garanderen:
 
-- **Consistency** — elke read retourneert de meest recente write
-- **Availability** — elke request krijgt een response
-- **Partition tolerance** — het systeem blijft werken ondanks netwerkfouten
+- **Consistency** - elke read retourneert de meest recente write
+- **Availability** - elke request krijgt een response
+- **Partition tolerance** - het systeem blijft werken ondanks netwerkfouten
 
 Aangezien network partitions onvermijdelijk zijn in gedistribueerde systemen, is de echte keuze tussen **CP** (consistency boven availability) en **AP** (availability boven consistency).
 
-- **CP systems** (bijv. HBase, MongoDB met majority reads) — geven fouten terug in plaats van verouderde data
-- **AP systems** (bijv. Cassandra, DynamoDB) — reageren altijd, maar data kan licht verouderd zijn
+- **CP systems** (bijv. HBase, MongoDB met majority reads) - geven fouten terug in plaats van verouderde data
+- **AP systems** (bijv. Cassandra, DynamoDB) - reageren altijd, maar data kan licht verouderd zijn
 
-<Quiz question="Je ontwerpt een banktransactiesysteem waarbij onjuiste saldi tot financieel verlies kunnen leiden. Welke CAP-afweging moet je prioriteren?" options="AP — altijd beschikbaar, eventually consistent|CP — consistent, kan requests afwijzen tijdens partitions|CA — consistent en beschikbaar, partitions negeren|Geen — moderne systemen vermijden CAP" answer="1" explanation="Financiële systemen moeten consistency (CP) prioriteren. Het is beter om tijdelijk een request af te wijzen dan een onjuist saldo te tonen of een dubbele transactie te verwerken." />
+<Quiz question="Je ontwerpt een banktransactiesysteem waarbij onjuiste saldi tot financieel verlies kunnen leiden. Welke CAP-afweging moet je prioriteren?" options="AP - altijd beschikbaar, eventually consistent|CP - consistent, kan requests afwijzen tijdens partitions|CA - consistent en beschikbaar, partitions negeren|Geen - moderne systemen vermijden CAP" answer="1" explanation="Financiële systemen moeten consistency (CP) prioriteren. Het is beter om tijdelijk een request af te wijzen dan een onjuist saldo te tonen of een dubbele transactie te verwerken." />
 
 ## Het interviewframework
 
 Volg bij een system design interview deze structuur:
 
-1. **Requirements** — verduidelijk functionele en niet-functionele eisen (5 min)
-2. **API design** — definieer de belangrijkste endpoints of interfaces (5 min)
-3. **Data model** — kies databases en definieer schemas (5 min)
-4. **High-level architecture** — schets het systeem met de bouwstenen van vandaag (10 min)
-5. **Deep dives** — schaal bottlenecks, behandel fouten, optimaliseer (15 min)
+1. **Requirements** - verduidelijk functionele en niet-functionele eisen (5 min)
+2. **API design** - definieer de belangrijkste endpoints of interfaces (5 min)
+3. **Data model** - kies databases en definieer schemas (5 min)
+4. **High-level architecture** - schets het systeem met de bouwstenen van vandaag (10 min)
+5. **Deep dives** - schaal bottlenecks, behandel fouten, optimaliseer (15 min)
 
 <ThinkAboutIt>
-Denk aan een systeem dat je dagelijks gebruikt — Instagram, Uber of Spotify. Kun je identificeren welke bouwstenen uit deze les het waarschijnlijk gebruikt? Waar zou de load balancer zitten? Wat zou gecached worden? Welk database type past bij het datamodel?
+Denk aan een systeem dat je dagelijks gebruikt - Instagram, Uber of Spotify. Kun je identificeren welke bouwstenen uit deze les het waarschijnlijk gebruikt? Waar zou de load balancer zitten? Wat zou gecached worden? Welk database type past bij het datamodel?
 </ThinkAboutIt>
 
 ## Belangrijkste punten
 
-- Elk schaalbaar systeem gebruikt dezelfde kernbouwstenen — leer ze één keer, pas ze overal toe
+- Elk schaalbaar systeem gebruikt dezelfde kernbouwstenen - leer ze één keer, pas ze overal toe
 - Load balancers, caches en message queues lossen elk afzonderlijke schaalproblemen op
 - De keuze van database (SQL vs NoSQL) hangt af van de datavorm, consistency-behoeften en access patterns
-- Het CAP theorem dwingt afwegingen af — weet welke kant jouw systeem moet kiezen
+- Het CAP theorem dwingt afwegingen af - weet welke kant jouw systeem moet kiezen
 - Volg het gestructureerde interviewframework: requirements → API → data → architecture → deep dives
 
 Volgende les: we passen deze fundamenten toe om een URL shortener vanaf nul te ontwerpen.

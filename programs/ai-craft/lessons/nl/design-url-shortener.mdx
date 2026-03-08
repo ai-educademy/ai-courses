@@ -1,5 +1,5 @@
 ---
-title: "Ontwerp een URL Shortener — Je eerste System Design Interview"
+title: "Ontwerp een URL Shortener - Je eerste System Design Interview"
 description: "Doorloop stap voor stap het volledige ontwerp van een URL shortener met het gestructureerde interview-framework."
 order: 2
 difficulty: "advanced"
@@ -28,7 +28,7 @@ Dit is de meest voorkomende eerste system design-vraag, omdat ze bedrieglijk een
 - Read-heavy: 100:1 read-to-write ratio → 4.000 redirects per seconde
 - URL-redirectlatentie onder 50 ms
 - Korte URLs moeten zo kort mogelijk zijn
-- Hoge beschikbaarheid — een gebroken link is een verschrikkelijke gebruikerservaring
+- Hoge beschikbaarheid - een gebroken link is een verschrikkelijke gebruikerservaring
 
 <Callout>
 Begin elk system design-interview met het stellen van verduidelijkende vragen. Het opschrijven van expliciete cijfers (40 writes/sec, 4.000 reads/sec) laat zien dat je kwantitatief kunt redeneren over scale.
@@ -49,31 +49,31 @@ Response: { "clicks": 14523, "created_at": "...", "top_referrers": [...] }
 ```
 
 **Waarom HTTP 301 vs 302?**
-- **301 (Permanent Redirect)** — browsers cachen dit, wat de load op onze servers vermindert
-- **302 (Temporary Redirect)** — browsers raken altijd onze servers, wat nauwkeurige analytics mogelijk maakt
+- **301 (Permanent Redirect)** - browsers cachen dit, wat de load op onze servers vermindert
+- **302 (Temporary Redirect)** - browsers raken altijd onze servers, wat nauwkeurige analytics mogelijk maakt
 
 Voor een service die kliks bijhoudt, is **302 meestal de betere keuze** omdat elke redirect via onze servers loopt.
 
-<Quiz question="Je URL shortener heeft nauwkeurige klik-analytics nodig. Welke HTTP redirect-statuscode gebruik je en waarom?" options="200 OK — de pagina-inhoud direct teruggeven|301 Permanent Redirect — browsers cachen het voor snelheid|302 Temporary Redirect — elke klik raakt onze server voor telling|404 Not Found — dan client-side redirecten via JavaScript" answer="2" explanation="302 Temporary Redirect zorgt ervoor dat de browser bij elke klik contact opneemt met onze server, zodat we het bezoek kunnen registreren voor analytics. Een 301 zou door de browser gecachet worden, waardoor herhaalde bezoeken niet geteld worden." />
+<Quiz question="Je URL shortener heeft nauwkeurige klik-analytics nodig. Welke HTTP redirect-statuscode gebruik je en waarom?" options="200 OK - de pagina-inhoud direct teruggeven|301 Permanent Redirect - browsers cachen het voor snelheid|302 Temporary Redirect - elke klik raakt onze server voor telling|404 Not Found - dan client-side redirecten via JavaScript" answer="2" explanation="302 Temporary Redirect zorgt ervoor dat de browser bij elke klik contact opneemt met onze server, zodat we het bezoek kunnen registreren voor analytics. Een 301 zou door de browser gecachet worden, waardoor herhaalde bezoeken niet geteld worden." />
 
 ## Stap 3: Encoding-strategie
 
 De kernuitdaging: hoe genereren we korte, unieke codes?
 
-**Base62 encoding** gebruikt `[a-zA-Z0-9]` — 62 tekens. Een 7-tekencode geeft ons 62⁷ = **3,5 biljoen** unieke combinaties, ruim voldoende voor onze schaal.
+**Base62 encoding** gebruikt `[a-zA-Z0-9]` - 62 tekens. Een 7-tekencode geeft ons 62⁷ = **3,5 biljoen** unieke combinaties, ruim voldoende voor onze schaal.
 
-**Optie A — Op basis van een teller:**
+**Optie A - Op basis van een teller:**
 - Gebruik een auto-incrementerende teller (1, 2, 3, ...) en converteer naar base62
 - Teller 1000 → `g8` | Teller 1000000 → `4c92`
 - **Voordelen:** gegarandeerd uniek, eenvoudig, geen collisions
 - **Nadelen:** voorspelbaar (gebruikers kunnen de volgende URL raden), vereist een gecentraliseerde teller
 
-**Optie B — Op basis van hash:**
+**Optie B - Op basis van hash:**
 - Hash de lange URL met MD5/SHA-256, neem de eerste 7 tekens van base62
 - **Voordelen:** stateless, geen centrale coördinatie nodig
-- **Nadelen:** mogelijke collisions — database controleren en opnieuw proberen
+- **Nadelen:** mogelijke collisions - database controleren en opnieuw proberen
 
-**Optie C — Vooraf gegenereerde keys (aanbevolen):**
+**Optie C - Vooraf gegenereerde keys (aanbevolen):**
 - Een achtergrondservice genereert vooraf miljoenen unieke base62-codes en slaat ze op in een key pool
 - Bij een nieuwe URL pak je de volgende beschikbare code uit de pool
 - **Voordelen:** snel, geen collision-risico, niet voorspelbaar
@@ -88,7 +88,7 @@ De originele TinyURL-service werd gelanceerd in 2002 en draait nog steeds. Op ee
 Met 100 miljoen nieuwe URLs per maand en een bewaarperiode van 5 jaar slaan we ongeveer **6 miljard records** op. Dit is een read-heavy workload met eenvoudige key-value lookups.
 
 **Database-keuze: DynamoDB of Cassandra**
-- Lookups zijn altijd op short code (partition key) — geen complexe joins nodig
+- Lookups zijn altijd op short code (partition key) - geen complexe joins nodig
 - Beide verwerken enorme read throughput met horizontal scaling
 - Beide bieden sub-10ms lookups op partition key
 
@@ -113,7 +113,7 @@ Table: clicks
   device: "mobile"
 ```
 
-<Illustration src="/images/lessons/design-url-shortener.svg" alt="URL shortener-architectuur met API servers, key generation service, cache en database" caption="De URL shortener-architectuur — leesverzoeken raken eerst de cache, met een fallback naar de database bij een miss." />
+<Illustration src="/images/lessons/design-url-shortener.svg" alt="URL shortener-architectuur met API servers, key generation service, cache en database" caption="De URL shortener-architectuur - leesverzoeken raken eerst de cache, met een fallback naar de database bij een miss." />
 
 ## Stap 5: Caching-strategie
 
@@ -139,7 +139,7 @@ TTL:   24 hours
 
 Met een cache hit rate van 80% bereiken slechts 800 van de 4.000 verzoeken per seconde daadwerkelijk de database.
 
-<Quiz question="Je URL shortener verwerkt 4.000 redirects per seconde. De cache hit rate is 80%. Hoeveel database-reads per seconde moet de database verwerken?" options="4.000|3.200|800|0 — de cache verwerkt alles" answer="2" explanation="Met een cache hit rate van 80% mist 20% van de verzoeken de cache: 4.000 × 0,20 = 800 database-reads per seconde." />
+<Quiz question="Je URL shortener verwerkt 4.000 redirects per seconde. De cache hit rate is 80%. Hoeveel database-reads per seconde moet de database verwerken?" options="4.000|3.200|800|0 - de cache verwerkt alles" answer="2" explanation="Met een cache hit rate van 80% mist 20% van de verzoeken de cache: 4.000 × 0,20 = 800 database-reads per seconde." />
 
 ## Stap 6: Analytics en klikregistratie
 
@@ -161,30 +161,30 @@ URL shorteners worden soms gebruikt om kwaadaardige links te verbergen. Als je b
 ## Stap 7: Het systeem opschalen
 
 **Horizontal scaling-aanpak:**
-- **API servers** zijn stateless — schaal op door instances toe te voegen achter een load balancer
+- **API servers** zijn stateless - schaal op door instances toe te voegen achter een load balancer
 - **Key generation service** draait als aparte microservice met een eigen database van vooraf gegenereerde codes
 - **Redis cluster** verdeelt de cache over nodes met consistent hashing
 - **Database sharding** op het eerste teken van de short code verdeelt data gelijkmatig
 
 **Omgaan met piekbelasting:**
 - Tijdens virale events kan een enkele URL miljoenen hits per minuut ontvangen
-- De Redis cache absorbeert dit van nature — één cache-entry bedient onbeperkte reads
+- De Redis cache absorbeert dit van nature - één cache-entry bedient onbeperkte reads
 - Kafka buffert klikgebeurtenissen en vlakt de schrijfbelasting op de analytics database af
 
-<Quiz question="Een URL gaat viraal en ontvangt 500.000 kliks per minuut. Welk component blijft hoogstwaarschijnlijk onaangetast?" options="De Redis cache (één key bedient alle verzoeken)|De Kafka klikgebeurtenis-consumers|Het schrijfpad van de analytics database|De CPU van de API server" answer="0" explanation="Redis verwerkt moeiteloos miljoenen reads per seconde voor een enkele gecachete key. De Kafka consumers en analytics database krijgen 500K writes/minuut, en de API servers verwerken 500K verzoeken/minuut — allemaal onder aanzienlijke belasting." />
+<Quiz question="Een URL gaat viraal en ontvangt 500.000 kliks per minuut. Welk component blijft hoogstwaarschijnlijk onaangetast?" options="De Redis cache (één key bedient alle verzoeken)|De Kafka klikgebeurtenis-consumers|Het schrijfpad van de analytics database|De CPU van de API server" answer="0" explanation="Redis verwerkt moeiteloos miljoenen reads per seconde voor een enkele gecachete key. De Kafka consumers en analytics database krijgen 500K writes/minuut, en de API servers verwerken 500K verzoeken/minuut - allemaal onder aanzienlijke belasting." />
 
 <ThinkAboutIt>
 Bedrijven zoals bit.ly verwerken maandelijks miljarden redirects. Als een korte URL op een billboard of tv-reclame wordt gedeeld, kan het verkeer in seconden van nul naar miljoenen springen. Welke andere strategieën, naast caching, zou je gebruiken om deze plotselinge, onvoorspelbare verkeerspieken op te vangen?
 </ThinkAboutIt>
 
 <FunFact>
-In 2009 verwerkte bit.ly meer dan 80 miljoen kliks per dag. Toen Libië — met landcode .ly — tijdelijk .ly-domeinen uitschakelde vanwege politieke instabiliteit, ontstond er paniek op het internet doordat miljoenen verkorte links tijdelijk niet meer werkten.
+In 2009 verwerkte bit.ly meer dan 80 miljoen kliks per dag. Toen Libië - met landcode .ly - tijdelijk .ly-domeinen uitschakelde vanwege politieke instabiliteit, ontstond er paniek op het internet doordat miljoenen verkorte links tijdelijk niet meer werkten.
 </FunFact>
 
 ## Belangrijkste inzichten
 
 - Volg het framework: requirements → API → encoding → data model → architecture → deep dives
-- Base62 met 7 tekens levert 3,5 biljoen unieke codes op — ruim voldoende
+- Base62 met 7 tekens levert 3,5 biljoen unieke codes op - ruim voldoende
 - Vooraf gegenereerde key pools voorkomen collision-problemen en bottlenecks van centrale tellers
 - Gebruik 302 redirects (niet 301) wanneer je nauwkeurige klik-analytics nodig hebt
 - Redis caching vermindert de database-belasting drastisch voor read-heavy workloads

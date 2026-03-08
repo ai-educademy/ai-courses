@@ -1,5 +1,5 @@
 ---
-title: "Publier un projet IA open source — Votre chef-d'œuvre"
+title: "Publier un projet IA open source - Votre chef-d'œuvre"
 description: "De l'idée au lancement : planifier, construire, documenter, publier et promouvoir un projet IA open source qui devient un accélérateur de carrière et la pièce maîtresse de votre portfolio."
 order: 10
 difficulty: "advanced"
@@ -8,26 +8,26 @@ icon: "🚀"
 published: true
 ---
 
-# Publier un projet IA open source — Votre chef-d'œuvre
+# Publier un projet IA open source - Votre chef-d'œuvre
 
 C'est la dernière leçon. Tout ce que vous avez appris converge ici : pipelines ML, implémentation de recherche, conception système et rigueur d'ingénierie. Vous allez **publier un vrai projet IA open source** qui résout un problème concret et qui perdurera au-delà de ce cours.
 
 ## 💡 Choisir votre idée de projet
 
-Les meilleurs projets open source naissent d'une **frustration personnelle**. Ne construisez pas une énième application TODO avec de l'IA — trouvez un manque :
+Les meilleurs projets open source naissent d'une **frustration personnelle**. Ne construisez pas une énième application TODO avec de l'IA - trouvez un manque :
 
-- **Résolvez votre propre problème** — un outil que vous aimeriez avoir dans votre workflow quotidien
-- **Améliorez un outil existant** — trouvez la limitation d'une bibliothèque populaire et résolvez-la
-- **Implémentez un article de recherche** — transformez une avancée en bibliothèque utilisable
-- **Comblez un fossé** — connectez deux écosystèmes qui ne communiquent pas entre eux
+- **Résolvez votre propre problème** - un outil que vous aimeriez avoir dans votre workflow quotidien
+- **Améliorez un outil existant** - trouvez la limitation d'une bibliothèque populaire et résolvez-la
+- **Implémentez un article de recherche** - transformez une avancée en bibliothèque utilisable
+- **Comblez un fossé** - connectez deux écosystèmes qui ne communiquent pas entre eux
 
-<Illustration src="/images/lessons/open-source-ai-project.svg" alt="Cycle de vie d'un projet open source, de l'idée au lancement puis à la croissance de la communauté" caption="Le cycle de vie open source — la publication est le milieu du parcours, pas la ligne d'arrivée." />
+<Illustration src="/images/lessons/open-source-ai-project.svg" alt="Cycle de vie d'un projet open source, de l'idée au lancement puis à la croissance de la communauté" caption="Le cycle de vie open source - la publication est le milieu du parcours, pas la ligne d'arrivée." />
 
-**Validez avant de construire** : cherchez sur GitHub, PyPI et npm. Si quelque chose de similaire existe, votre projet a besoin d'un différenciateur clair — plus rapide, API plus simple, meilleure documentation ou approche innovante.
+**Validez avant de construire** : cherchez sur GitHub, PyPI et npm. Si quelque chose de similaire existe, votre projet a besoin d'un différenciateur clair - plus rapide, API plus simple, meilleure documentation ou approche innovante.
 
-<FunFact>Hugging Face a démarré comme une entreprise de chatbot pour adolescents. Quand ils ont mis en open source leur bibliothèque Transformers comme projet annexe, elle est devenue si populaire qu'ils ont pivoté toute l'entreprise autour — désormais valorisée à plus de 4,5 milliards de dollars.</FunFact>
+<FunFact>Hugging Face a démarré comme une entreprise de chatbot pour adolescents. Quand ils ont mis en open source leur bibliothèque Transformers comme projet annexe, elle est devenue si populaire qu'ils ont pivoté toute l'entreprise autour - désormais valorisée à plus de 4,5 milliards de dollars.</FunFact>
 
-## 📋 Planification du projet — Périmètre MVP
+## 📋 Planification du projet - Périmètre MVP
 
 Définissez votre **Minimum Viable Project** sans concession :
 
@@ -52,9 +52,9 @@ Définissez votre **Minimum Viable Project** sans concession :
 
 ## 🏗️ Configuration du dépôt
 
-La première impression compte. Un dépôt professionnel nécessite : un répertoire `src/` pour le code, `tests/`, `examples/`, `docs/`, `.github/workflows/ci.yml`, plus les fichiers racine — `LICENSE` (MIT ou Apache 2.0), `README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` et `pyproject.toml`.
+La première impression compte. Un dépôt professionnel nécessite : un répertoire `src/` pour le code, `tests/`, `examples/`, `docs/`, `.github/workflows/ci.yml`, plus les fichiers racine - `LICENSE` (MIT ou Apache 2.0), `README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` et `pyproject.toml`.
 
-### Le README — Votre fichier le plus important
+### Le README - Votre fichier le plus important
 
 Votre README est une page de vente. Il doit contenir : **description en une ligne**, **installation** (`pip install mon-projet`), **quickstart** (code fonctionnel en moins de 10 lignes), **fonctionnalités clés** (liste à puces), **tableau comparatif** avec les alternatives et un **lien vers la documentation**.
 
@@ -89,7 +89,7 @@ python -m build
 twine upload dist/*
 ```
 
-**Releases automatisées** : utilisez GitHub Actions pour publier sur PyPI à chaque release taguée — ne publiez plus jamais manuellement après la première fois.
+**Releases automatisées** : utilisez GitHub Actions pour publier sur PyPI à chaque release taguée - ne publiez plus jamais manuellement après la première fois.
 
 ## 🎨 Créer des démos
 
@@ -102,7 +102,7 @@ Une démo convertit les sceptiques en utilisateurs. Trois excellentes plateforme
 | **Gradio** | Interfaces ML rapides | Hugging Face Spaces ou autonome |
 
 ```python
-# Démo Gradio — 8 lignes pour une interface partageable
+# Démo Gradio - 8 lignes pour une interface partageable
 import gradio as gr
 from my_ai_project import predict
 
@@ -115,21 +115,21 @@ demo = gr.Interface(
 demo.launch()
 ```
 
-<Quiz question="Quelle plateforme de démo est la PLUS efficace pour obtenir de la traction initiale sur un projet ML ?" options="Un frontend React personnalisé déployé sur Vercel|Hugging Face Spaces — découvrable par la communauté ML avec des fonctionnalités sociales intégrées|Un notebook Jupyter dans le dépôt|Une démo en ligne de commande dans le README" answer="1" explanation="Hugging Face Spaces est découvrable par des millions de praticiens ML, supporte les likes et les commentaires, et apparaît dans les résultats de recherche. Il combine la simplicité de déploiement avec une distribution intégrée — votre démo trouve ses utilisateurs, pas l'inverse." />
+<Quiz question="Quelle plateforme de démo est la PLUS efficace pour obtenir de la traction initiale sur un projet ML ?" options="Un frontend React personnalisé déployé sur Vercel|Hugging Face Spaces - découvrable par la communauté ML avec des fonctionnalités sociales intégrées|Un notebook Jupyter dans le dépôt|Une démo en ligne de commande dans le README" answer="1" explanation="Hugging Face Spaces est découvrable par des millions de praticiens ML, supporte les likes et les commentaires, et apparaît dans les résultats de recherche. Il combine la simplicité de déploiement avec une distribution intégrée - votre démo trouve ses utilisateurs, pas l'inverse." />
 
 ## 📖 Rédiger la documentation
 
-Suivez le **framework Diátaxis** — quatre types de documentation : **Tutoriels** (orientés apprentissage, pas à pas), **Guides pratiques** (orientés tâches, concrets), **Référence** (documentation API complète) et **Explications** (compréhension conceptuelle). Utilisez **MkDocs** ou **Docusaurus** pour générer des sites depuis du Markdown. Déployez gratuitement sur GitHub Pages ou Read the Docs.
+Suivez le **framework Diátaxis** - quatre types de documentation : **Tutoriels** (orientés apprentissage, pas à pas), **Guides pratiques** (orientés tâches, concrets), **Référence** (documentation API complète) et **Explications** (compréhension conceptuelle). Utilisez **MkDocs** ou **Docusaurus** pour générer des sites depuis du Markdown. Déployez gratuitement sur GitHub Pages ou Read the Docs.
 
 ## 📣 Promouvoir votre projet
 
 Le construire, c'est la moitié du travail. Amener les gens à l'utiliser, c'est l'autre moitié :
 
-1. **Hacker News** — post « Show HN : [description] » le jour du lancement
-2. **Reddit** — r/MachineLearning, r/Python, subreddits pertinents
-3. **Twitter/X** — thread expliquant le problème et votre solution, avec un GIF de démo
-4. **Product Hunt** — si votre projet a une interface web
-5. **Article de blog** — write-up technique détaillé sur votre site personnel ou Medium/Dev.to
+1. **Hacker News** - post « Show HN : [description] » le jour du lancement
+2. **Reddit** - r/MachineLearning, r/Python, subreddits pertinents
+3. **Twitter/X** - thread expliquant le problème et votre solution, avec un GIF de démo
+4. **Product Hunt** - si votre projet a une interface web
+5. **Article de blog** - write-up technique détaillé sur votre site personnel ou Medium/Dev.to
 
 **Le timing compte** : lancez du mardi au jeudi matin (GMT). Évitez les week-ends et jours fériés.
 
@@ -142,14 +142,14 @@ Le construire, c'est la moitié du travail. Amener les gens à l'utiliser, c'est
 La pérennité compte plus que la viralité :
 
 - **Étiquetez les issues** avec `good-first-issue`, `help-wanted`, `bug`, `enhancement`
-- **Répondez aux issues sous 48 heures** — même un « Merci, je vais regarder ça » construit la confiance
+- **Répondez aux issues sous 48 heures** - même un « Merci, je vais regarder ça » construit la confiance
 - **Rédigez un CONTRIBUTING.md** avec les instructions d'installation, les standards de code et les guidelines pour les PR
-- **Utilisez le versionnement sémantique** — les changements cassants incrémentent la version majeure
-- **Automatisez tout** — CI, releases, génération du changelog, mises à jour des dépendances
+- **Utilisez le versionnement sémantique** - les changements cassants incrémentent la version majeure
+- **Automatisez tout** - CI, releases, génération du changelog, mises à jour des dépendances
 
 ## 💰 Pistes de monétisation
 
-L'open source ne signifie pas travailler gratuitement pour toujours. Modèles durables : **GitHub Sponsors** (faible effort, dons récurrents), **consulting** (installation et formation payantes), **wrapper SaaS** (version hébergée avec fonctionnalités entreprise — effort maximal mais le plus durable), **double licence** (open source + commerciale) et **sponsoring d'entreprise** (fonctionnalités prioritaires pour les entreprises payantes).
+L'open source ne signifie pas travailler gratuitement pour toujours. Modèles durables : **GitHub Sponsors** (faible effort, dons récurrents), **consulting** (installation et formation payantes), **wrapper SaaS** (version hébergée avec fonctionnalités entreprise - effort maximal mais le plus durable), **double licence** (open source + commerciale) et **sponsoring d'entreprise** (fonctionnalités prioritaires pour les entreprises payantes).
 
 <Quiz question="Quelle est la stratégie de monétisation la PLUS durable à long terme pour une bibliothèque IA open source populaire ?" options="Compter sur les dons via GitHub Sponsors|Construire une version SaaS hébergée avec fonctionnalités entreprise et support|Vendre le projet à une grande entreprise|Placer de la publicité dans la documentation" answer="1" explanation="Un wrapper SaaS (version hébergée avec fonctionnalités entreprise, SLA et support) crée des revenus récurrents liés à la valeur que reçoivent les utilisateurs. Les dons sont imprévisibles, les acquisitions sont ponctuelles et la publicité érode la confiance." />
 
@@ -172,6 +172,6 @@ Avant de considérer le projet comme livré :
 
 ## 📚 Lectures complémentaires
 
-- [The Diátaxis Documentation Framework](https://diataxis.fr/) — Une approche systématique pour rédiger une meilleure documentation technique
-- [Open Source Guides par GitHub](https://opensource.guide/) — Guides officiels pour lancer, développer et maintenir des projets open source
-- [Working in Public par Nadia Eghbal](https://www.amazon.co.uk/Working-Public-Making-Maintenance-Software/dp/0578675862) — L'économie et la sociologie de la maintenance open source
+- [The Diátaxis Documentation Framework](https://diataxis.fr/) - Une approche systématique pour rédiger une meilleure documentation technique
+- [Open Source Guides par GitHub](https://opensource.guide/) - Guides officiels pour lancer, développer et maintenir des projets open source
+- [Working in Public par Nadia Eghbal](https://www.amazon.co.uk/Working-Public-Making-Maintenance-Software/dp/0578675862) - L'économie et la sociologie de la maintenance open source

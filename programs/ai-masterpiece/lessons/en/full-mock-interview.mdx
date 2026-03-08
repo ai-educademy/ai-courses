@@ -1,5 +1,5 @@
 ---
-title: "Full Mock Interview — 60-Minute Senior Engineer Simulation"
+title: "Full Mock Interview - 60-Minute Senior Engineer Simulation"
 description: "Walk through a complete senior-level AI engineering interview from start to finish."
 order: 2
 difficulty: "advanced"
@@ -10,7 +10,7 @@ published: true
 
 # Full Mock Interview
 
-This lesson simulates a complete 60-minute senior AI engineering interview. Read it actively — pause at each section, form your own answer before reading the model response, and score yourself honestly.
+This lesson simulates a complete 60-minute senior AI engineering interview. Read it actively - pause at each section, form your own answer before reading the model response, and score yourself honestly.
 
 Treat this as a dress rehearsal, not a spectator sport.
 
@@ -37,7 +37,7 @@ The interviewer says: *"Tell me about yourself and what brought you here."*
 Your answer should be a **two-minute elevator pitch** covering:
 
 1. Your current role and one headline achievement.
-2. A brief arc of your career — how you got here.
+2. A brief arc of your career - how you got here.
 3. Why this specific role and company excite you.
 
 Avoid reciting your CV. Tell a story with a clear thread connecting past, present, and future.
@@ -71,10 +71,10 @@ Keep it simple. One endpoint, clear contract, extensible with new content types.
 
 The system has four layers:
 
-1. **Ingestion** — Kafka topic receives every new post. Decouples producers from moderation.
-2. **Classification pipeline** — Text classifier (fine-tuned transformer) and image classifier (vision model) run in parallel.
-3. **Decision engine** — Combines classifier outputs with user reputation score and platform policy rules.
-4. **Action layer** — Executes the decision: allow, flag for human review, or block immediately.
+1. **Ingestion** - Kafka topic receives every new post. Decouples producers from moderation.
+2. **Classification pipeline** - Text classifier (fine-tuned transformer) and image classifier (vision model) run in parallel.
+3. **Decision engine** - Combines classifier outputs with user reputation score and platform policy rules.
+4. **Action layer** - Executes the decision: allow, flag for human review, or block immediately.
 
 <Quiz question="Why is it important to decouple ingestion from classification using a message queue?" options="It makes the system look more impressive in diagrams|It allows the classification pipeline to scale independently and absorb traffic spikes|It eliminates the need for a database|It guarantees zero false positives" answer="1" explanation="A message queue like Kafka lets the ingestion layer accept posts at any rate while the classification pipeline processes them at its own pace, absorbing spikes without dropping requests." />
 
@@ -92,7 +92,7 @@ The system has four layers:
 
 **Scaling considerations:**
 - Horizontal scaling of classifier pods behind a load balancer.
-- Model versioning with canary deployments — roll out new models to 5 per cent of traffic first.
+- Model versioning with canary deployments - roll out new models to 5 per cent of traffic first.
 - Circuit breakers: if the classifier is down, default to "allow and queue for async review" rather than blocking all content.
 
 <ThinkAboutIt>
@@ -119,15 +119,15 @@ Use the **STAR** framework:
 - **Action**: I proposed we both implement our approaches in a time-boxed experiment and let the metrics decide.
 - **Result**: The simpler model performed within 2 per cent of the ensemble at one-tenth the inference cost. We shipped the simple model and agreed to revisit if accuracy became a bottleneck.
 
-<Quiz question="What is the most important element of a strong STAR answer?" options="Making yourself look like the hero of every story|Providing a specific, measurable result that demonstrates impact|Using as many technical buzzwords as possible|Keeping the answer under 30 seconds" answer="1" explanation="Concrete results with numbers — time saved, cost reduced, accuracy improved — make your stories credible and memorable. Vague outcomes like 'it went well' fall flat." />
+<Quiz question="What is the most important element of a strong STAR answer?" options="Making yourself look like the hero of every story|Providing a specific, measurable result that demonstrates impact|Using as many technical buzzwords as possible|Keeping the answer under 30 seconds" answer="1" explanation="Concrete results with numbers - time saved, cost reduced, accuracy improved - make your stories credible and memorable. Vague outcomes like 'it went well' fall flat." />
 
 ## Phase 4: Your Questions (10 Minutes)
 
 Asking great questions shows judgement and genuine interest. Here are three strong examples:
 
-1. *"What does the on-call rotation look like for the ML platform team, and how do you handle model incidents?"* — Shows you think about production realities.
-2. *"What is the biggest technical challenge the team expects to tackle in the next six months?"* — Shows forward thinking.
-3. *"How does the team decide when to build in-house versus buy a managed solution?"* — Shows pragmatism and architecture sense.
+1. *"What does the on-call rotation look like for the ML platform team, and how do you handle model incidents?"* - Shows you think about production realities.
+2. *"What is the biggest technical challenge the team expects to tackle in the next six months?"* - Shows forward thinking.
+3. *"How does the team decide when to build in-house versus buy a managed solution?"* - Shows pragmatism and architecture sense.
 
 **Avoid:** Questions about perks, holidays, or anything easily found on the company website.
 
@@ -137,7 +137,7 @@ A Harvard Business Review study found that candidates who asked thoughtful quest
 
 ## Phase 5: Wrap-Up (5 Minutes)
 
-Thank the interviewer by name. Summarise your enthusiasm in one sentence: *"I am genuinely excited about the content moderation challenges here — it is exactly the kind of high-scale ML systems work I want to be doing."*
+Thank the interviewer by name. Summarise your enthusiasm in one sentence: *"I am genuinely excited about the content moderation challenges here - it is exactly the kind of high-scale ML systems work I want to be doing."*
 
 Send a brief thank-you email within 24 hours referencing one specific thing you discussed.
 
@@ -155,7 +155,7 @@ Rate yourself 1–5 on each dimension:
 | **Questions asked** | Showed genuine curiosity and good judgement |
 
 <FunFact>
-Google's internal interview data revealed that the single strongest predictor of a candidate's success was not their algorithm score but their ability to structure ambiguous problems — exactly what system design questions test.
+Google's internal interview data revealed that the single strongest predictor of a candidate's success was not their algorithm score but their ability to structure ambiguous problems - exactly what system design questions test.
 </FunFact>
 
 <Quiz question="During a system design interview, what should you do FIRST?" options="Start drawing the architecture diagram immediately|Ask clarifying questions about requirements and constraints|Write the API endpoints|Choose the database technology" answer="1" explanation="Clarifying requirements first ensures you solve the right problem. Jumping to solutions without understanding constraints is the most common mistake in system design interviews." />

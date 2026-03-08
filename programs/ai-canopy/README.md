@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏕️ AI Canopy — Level 4: Production AI
+# 🏕️ AI Canopy - Level 4: Production AI
 
 ### Build production AI systems at [AI Educademy](https://aieducademy.org)
 
@@ -8,7 +8,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md)
 [![Status](https://img.shields.io/badge/status-coming_soon-yellow)]()
 
-Move beyond experiments. Learn to design, deploy, and maintain AI systems in the real world — from MLOps pipelines to responsible AI governance and scaling strategies.
+Move beyond experiments. Learn to design, deploy, and maintain AI systems in the real world - from MLOps pipelines to responsible AI governance and scaling strategies.
 
 [🚀 AI Educademy](https://aieducademy.org) · [🌳 Level 3: AI Branches](https://github.com/ai-educademy/ai-branches) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
 
@@ -43,7 +43,7 @@ lessons/
 
 ## 🚧 Status
 
-**Coming Soon** — Lessons are being written. Want to help? See [Contributing](#-contributing).
+**Coming Soon** - Lessons are being written. Want to help? See [Contributing](#-contributing).
 
 ## 🌱 Learning Path
 

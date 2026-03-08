@@ -1,5 +1,5 @@
 ---
-title: "Strings en Tekstverwerking — Hoe AI Tekst Leest en Begrijpt"
+title: "Strings en Tekstverwerking - Hoe AI Tekst Leest en Begrijpt"
 description: "Ontdek hoe AI-systemen tekst ontleden, doorzoeken en manipuleren met stringbewerkingen en patroonherkenning."
 order: 2
 difficulty: "intermediate"
@@ -10,13 +10,13 @@ published: true
 
 ## Tekst Is Overal in AI
 
-Voordat een AI je vraag kan begrijpen, een essay kan schrijven of een zin kan vertalen, moet het ruwe tekst verwerken. Elke chatbot, zoekmachine en taalmodel begint met **strings** — reeksen karakters die menselijke taal vertegenwoordigen.
+Voordat een AI je vraag kan begrijpen, een essay kan schrijven of een zin kan vertalen, moet het ruwe tekst verwerken. Elke chatbot, zoekmachine en taalmodel begint met **strings** - reeksen karakters die menselijke taal vertegenwoordigen.
 
 Begrijpen hoe strings werken opent de deur naar natural language processing, een van de meest opwindende gebieden van kunstmatige intelligentie.
 
 ## String-Basis
 
-Een string is simpelweg een reeks karakters — letters, cijfers, spaties en symbolen — opgeslagen in volgorde.
+Een string is simpelweg een reeks karakters - letters, cijfers, spaties en symbolen - opgeslagen in volgorde.
 
 ```
 message = "Hello, World!"
@@ -29,23 +29,23 @@ index:  0  1  2  3  4  5  6  7  8  9  10  11  12
 char:   H  e  l  l  o  ,     W  o  r   l   d   !
 ```
 
-<Illustration src="/images/lessons/strings-and-text.svg" alt="Een string opgesplitst in individuele karakters met indexposities eronder" caption="Onder de motorkap is een string een array van karakters — elk met een eigen index." />
+<Illustration src="/images/lessons/strings-and-text.svg" alt="Een string opgesplitst in individuele karakters met indexposities eronder" caption="Onder de motorkap is een string een array van karakters - elk met een eigen index." />
 
 ### Substrings
 
-Een **substring** is een deel van een string. Uit "Hello, World!" kun je "World" extraheren (indices 7 tot 11). AI-systemen extraheren voortdurend substrings — namen uit zinnen, hashtags uit tweets, of URL's uit webpagina's.
+Een **substring** is een deel van een string. Uit "Hello, World!" kun je "World" extraheren (indices 7 tot 11). AI-systemen extraheren voortdurend substrings - namen uit zinnen, hashtags uit tweets, of URL's uit webpagina's.
 
 ### Immutabiliteit
 
-In de meeste talen zijn strings **immutable** — je kunt een karakter niet ter plekke wijzigen. In plaats daarvan maak je een nieuwe string. Dit is belangrijk voor prestaties: als je AI-pipeline tekst miljoenen keren wijzigt, kan het telkens aanmaken van nieuwe strings vertragen.
+In de meeste talen zijn strings **immutable** - je kunt een karakter niet ter plekke wijzigen. In plaats daarvan maak je een nieuwe string. Dit is belangrijk voor prestaties: als je AI-pipeline tekst miljoenen keren wijzigt, kan het telkens aanmaken van nieuwe strings vertragen.
 
 <FunFact>
-Het complete werk van Shakespeare bevat ongeveer 900.000 woorden. GPT-4 werd getraind op datasets duizenden keren groter — honderden miljarden woorden, allemaal als strings verwerkt voordat ze in getallen werden omgezet.
+Het complete werk van Shakespeare bevat ongeveer 900.000 woorden. GPT-4 werd getraind op datasets duizenden keren groter - honderden miljarden woorden, allemaal als strings verwerkt voordat ze in getallen werden omgezet.
 </FunFact>
 
 ## Hoe ChatGPT Tekst Leest: Tokenisatie
 
-AI-modellen lezen woorden niet zoals mensen. Ze gebruiken **tokenisatie** — tekst opsplitsen in kleinere stukken genaamd tokens.
+AI-modellen lezen woorden niet zoals mensen. Ze gebruiken **tokenisatie** - tekst opsplitsen in kleinere stukken genaamd tokens.
 
 ```
 Invoer:  "unhappiness"
@@ -65,9 +65,9 @@ Wanneer je een lang, ongebruikelijk woord zoals "antidisestablishmentarianism" t
 
 - Een typisch taalmodel heeft een vocabulaire van 50.000–100.000 tokens.
 - Elk token wordt omgezet naar een nummer (zijn ID), dat het model daadwerkelijk verwerkt.
-- De manier waarop tekst getokeniseerd wordt beïnvloedt de kosten — meer tokens betekent meer berekening en hogere API-kosten.
+- De manier waarop tekst getokeniseerd wordt beïnvloedt de kosten - meer tokens betekent meer berekening en hogere API-kosten.
 
-## Patroonherkenning — Naalden Vinden in Hooibergen
+## Patroonherkenning - Naalden Vinden in Hooibergen
 
 Een kernbewerking op strings is het zoeken van een patroon in een grotere tekst. Bevat deze e-mail het woord "urgent"? Bevat deze code een beveiligingslek?
 
@@ -86,7 +86,7 @@ Positie 4: "cat" → match gevonden op index 4!
 
 Dit is **O(n × m)** in het slechtste geval. Voor korte patronen is het prima. Voor het scannen van miljoenen documenten hebben we slimmere aanpakken nodig.
 
-<Quiz question="Waarom is naïeve patroonherkenning traag voor zeer grote teksten?" options="Het gebruikt te veel geheugen|Het controleert elke mogelijke startpositie en vergelijkt karakter voor karakter|Het werkt alleen met letters|De tekst moet eerst gesorteerd worden" answer="1" explanation="De naïeve aanpak schuift het patroon over elke positie in de tekst en vergelijkt tot m karakters per positie — wat O(n × m) tijdcomplexiteit geeft." />
+<Quiz question="Waarom is naïeve patroonherkenning traag voor zeer grote teksten?" options="Het gebruikt te veel geheugen|Het controleert elke mogelijke startpositie en vergelijkt karakter voor karakter|Het werkt alleen met letters|De tekst moet eerst gesorteerd worden" answer="1" explanation="De naïeve aanpak schuift het patroon over elke positie in de tekst en vergelijkt tot m karakters per positie - wat O(n × m) tijdcomplexiteit geeft." />
 
 ## Klassieke String-Uitdagingen
 
@@ -96,7 +96,7 @@ Dit is **O(n × m)** in het slechtste geval. Voor korte patronen is het prima. V
 reverse("hello") → "olleh"
 ```
 
-AI gebruikt omkering in sequence-to-sequence modellen — sommige vroege vertaalmodellen keerden de invoerzin om voor betere nauwkeurigheid.
+AI gebruikt omkering in sequence-to-sequence modellen - sommige vroege vertaalmodellen keerden de invoerzin om voor betere nauwkeurigheid.
 
 ### Palindroomdetectie
 
@@ -116,11 +116,11 @@ are_anagrams(word1, word2):
     return character_counts(word1) == character_counts(word2)
 ```
 
-Dit sluit aan bij het frequentietelpatroon uit de vorige les — hash maps maken het O(n).
+Dit sluit aan bij het frequentietelpatroon uit de vorige les - hash maps maken het O(n).
 
-<Quiz question="Welke aanpak controleert het meest efficiënt of twee woorden anagrammen zijn?" options="Sorteer beide woorden en vergelijk ze|Vergelijk elk karakter in woord1 met elk karakter in woord2|Tel karakterfrequenties in elk woord met een hash map en vergelijk|Keer één woord om en controleer of het gelijk is aan het andere" answer="2" explanation="Karakterfrequenties tellen met een hash map is O(n) — één doorgang door elk woord. Sorteren werkt ook in O(n log n), maar de hash-map-aanpak is sneller voor grote strings." />
+<Quiz question="Welke aanpak controleert het meest efficiënt of twee woorden anagrammen zijn?" options="Sorteer beide woorden en vergelijk ze|Vergelijk elk karakter in woord1 met elk karakter in woord2|Tel karakterfrequenties in elk woord met een hash map en vergelijk|Keer één woord om en controleer of het gelijk is aan het andere" answer="2" explanation="Karakterfrequenties tellen met een hash map is O(n) - één doorgang door elk woord. Sorteren werkt ook in O(n log n), maar de hash-map-aanpak is sneller voor grote strings." />
 
-## Reguliere Expressies — Patroonherkenning op Steroïden
+## Reguliere Expressies - Patroonherkenning op Steroïden
 
 | Patroon | Matcht | Toepassing |
 |---------|--------|------------|
@@ -129,10 +129,10 @@ Dit sluit aan bij het frequentietelpatroon uit de vorige les — hash maps maken
 | `\b\w+@\w+\.\w+\b` | E-mailadressen | Data-extractie |
 | `(cat\|dog\|bird)` | Een van drie woorden | Classificatietrefwoorden |
 
-AI-datapipelines gebruiken regex uitgebreid voor **datacleaning** — HTML-tags verwijderen, datums extraheren en ongewenste tekens wegfilteren.
+AI-datapipelines gebruiken regex uitgebreid voor **datacleaning** - HTML-tags verwijderen, datums extraheren en ongewenste tekens wegfilteren.
 
 <Callout>
-Reguliere expressies zijn krachtig maar lastig. Een slecht geschreven regex kan exponentieel lang duren — bekend als "catastrofale backtracking." Test je patronen altijd op randgevallen.
+Reguliere expressies zijn krachtig maar lastig. Een slecht geschreven regex kan exponentieel lang duren - bekend als "catastrofale backtracking." Test je patronen altijd op randgevallen.
 </Callout>
 
 ## Echte AI-Tekstverwerkingspipeline
@@ -144,21 +144,21 @@ Reguliere expressies zijn krachtig maar lastig. Een slecht geschreven regex kan 
 5. **Token-ID's** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
 6. **Het model in** → Getallen die de AI kan verwerken
 
-Elke stap omvat stringbewerkingen — knippen, zoeken, vervangen en splitsen.
+Elke stap omvat stringbewerkingen - knippen, zoeken, vervangen en splitsen.
 
 <ThinkAboutIt>
 Wanneer je een bericht stuurt in een taal zonder spaties (zoals Chinees of Japans), hoe zou tokenisatie anders werken?
 </ThinkAboutIt>
 
 <FunFact>
-OpenAI's tokeniser splitst "tokenisation" in ["token", "isation"] — twee tokens. Maar "tokenization" wordt ["token", "ization"]. Hetzelfde concept kost verschillende bedragen afhankelijk van de spelling!
+OpenAI's tokeniser splitst "tokenisation" in ["token", "isation"] - twee tokens. Maar "tokenization" wordt ["token", "ization"]. Hetzelfde concept kost verschillende bedragen afhankelijk van de spelling!
 </FunFact>
 
-<Quiz question="Waarom wordt tokenisatie uitgevoerd voordat tekst aan een AI-model wordt gevoed?" options="Om de tekst er mooier uit te laten zien|Om tekst om te zetten in numerieke token-ID's die het model wiskundig kan verwerken|Om spelfouten te controleren|Om tekst te comprimeren" answer="1" explanation="AI-modellen werken met getallen, niet met letters. Tokenisatie zet tekst om in token-ID's — numerieke representaties voor wiskundige bewerkingen in het model." />
+<Quiz question="Waarom wordt tokenisatie uitgevoerd voordat tekst aan een AI-model wordt gevoed?" options="Om de tekst er mooier uit te laten zien|Om tekst om te zetten in numerieke token-ID's die het model wiskundig kan verwerken|Om spelfouten te controleren|Om tekst te comprimeren" answer="1" explanation="AI-modellen werken met getallen, niet met letters. Tokenisatie zet tekst om in token-ID's - numerieke representaties voor wiskundige bewerkingen in het model." />
 
 ## Belangrijkste Punten
 
-- Strings zijn reeksen karakters — het ruwe materiaal voor alle tekst-gebaseerde AI.
+- Strings zijn reeksen karakters - het ruwe materiaal voor alle tekst-gebaseerde AI.
 - **Tokenisatie** vormt de brug tussen menselijke taal en machine learning.
 - Patroonherkenning en regex zijn essentieel voor het opschonen en extraheren van data.
 - Klassieke stringproblemen bouwen het denkvermogen voor AI-tekstverwerking.

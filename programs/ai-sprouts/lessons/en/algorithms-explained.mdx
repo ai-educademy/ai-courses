@@ -1,5 +1,5 @@
 ---
-title: "Algorithms Explained — The Recipes Behind Every AI System"
+title: "Algorithms Explained - The Recipes Behind Every AI System"
 description: "Learn what algorithms are, how they work with everyday examples, and why choosing the right one matters for AI."
 order: 2
 difficulty: "beginner"
@@ -10,7 +10,7 @@ published: true
 
 # Algorithms Explained
 
-In the previous lesson, you learned that data is the fuel for AI. But fuel alone does not move a car — you need an engine. In AI, that engine is an **algorithm**. Every time an AI system makes a prediction, recommends a video, or detects spam, an algorithm is doing the heavy lifting behind the scenes.
+In the previous lesson, you learned that data is the fuel for AI. But fuel alone does not move a car - you need an engine. In AI, that engine is an **algorithm**. Every time an AI system makes a prediction, recommends a video, or detects spam, an algorithm is doing the heavy lifting behind the scenes.
 
 ## What Is an Algorithm?
 
@@ -20,9 +20,9 @@ An algorithm is simply a **step-by-step set of instructions** for solving a prob
 - **Flat-pack furniture instructions** are an algorithm: follow each step to build a bookshelf.
 - **Driving directions** are an algorithm: turn left, go straight, turn right, arrive.
 
-The key idea is that an algorithm must be **precise**, **ordered**, and **repeatable** — anyone following the same steps should get the same result.
+The key idea is that an algorithm must be **precise**, **ordered**, and **repeatable** - anyone following the same steps should get the same result.
 
-<Illustration src="/images/lessons/algorithms-explained.svg" alt="A flowchart showing a simple decision algorithm: Is it raining? If yes, take an umbrella. If no, wear sunglasses." caption="An algorithm is a clear set of instructions — like a flowchart that guides you to a decision." />
+<Illustration src="/images/lessons/algorithms-explained.svg" alt="A flowchart showing a simple decision algorithm: Is it raining? If yes, take an umbrella. If no, wear sunglasses." caption="An algorithm is a clear set of instructions - like a flowchart that guides you to a decision." />
 
 <FunFact>
 The word "algorithm" comes from the name of a 9th-century Persian mathematician, Muhammad ibn Musa al-Khwarizmi, who wrote one of the first books on systematic problem-solving.
@@ -40,7 +40,7 @@ When you pick up a hand of playing cards and arrange them in order, you are runn
 2. Move to the next pair. Compare and swap again.
 3. Repeat until the entire hand is sorted.
 
-This is essentially how **bubble sort** works — one of the simplest sorting algorithms in computer science.
+This is essentially how **bubble sort** works - one of the simplest sorting algorithms in computer science.
 
 ### Finding a Word in a Dictionary
 
@@ -62,7 +62,7 @@ AI algorithms are more sophisticated than sorting cards, but the principle is th
 
 A decision tree asks a series of yes-or-no questions to classify something.
 
-**Example — Is this email spam?**
+**Example - Is this email spam?**
 
 1. Does the subject line contain "FREE MONEY"? → If yes, likely spam.
 2. Is the sender in your contacts? → If yes, probably not spam.
@@ -76,10 +76,10 @@ KNN classifies something by looking at the **closest examples** it has already s
 
 Imagine you move to a new neighbourhood and want to know if a house is expensive or affordable. You look at the five nearest houses (your "neighbours") and check their prices. If most are expensive, you predict yours is too.
 
-KNN works exactly the same way with data points — it finds the K closest examples and takes a vote.
+KNN works exactly the same way with data points - it finds the K closest examples and takes a vote.
 
 <ThinkAboutIt>
-If you asked three friends for a film recommendation and two of them suggested the same film, you would probably watch that one. That is the core idea behind KNN — majority rules among your nearest neighbours.
+If you asked three friends for a film recommendation and two of them suggested the same film, you would probably watch that one. That is the core idea behind KNN - majority rules among your nearest neighbours.
 </ThinkAboutIt>
 
 <Quiz question="In a K-Nearest Neighbours algorithm with K=5, how does the model make its prediction?" options="It averages all data points in the dataset|It picks the single closest data point|It takes a majority vote from the 5 closest data points|It randomly selects 5 data points" answer="2" explanation="KNN with K=5 finds the five data points closest to the new example and uses a majority vote among them to decide the classification." />
@@ -102,19 +102,19 @@ Google processes over 8.5 billion searches per day. If their search algorithm we
 </FunFact>
 
 <Callout>
-Big O notation is not about exact speed — it is about how speed *scales*. An O(n) algorithm might be slow on tiny data but will always outperform an O(n²) algorithm as the dataset grows large.
+Big O notation is not about exact speed - it is about how speed *scales*. An O(n) algorithm might be slow on tiny data but will always outperform an O(n²) algorithm as the dataset grows large.
 </Callout>
 
 ## Why Choosing the Right Algorithm Matters
 
 There is no single "best" algorithm. The right choice depends on:
 
-- **The problem type** — Are you classifying images or predicting numbers?
-- **The data size** — Some algorithms struggle with millions of rows.
-- **Explainability needs** — Can you use a black box, or must you explain every decision?
-- **Speed requirements** — Does the answer need to arrive in milliseconds or can it take minutes?
+- **The problem type** - Are you classifying images or predicting numbers?
+- **The data size** - Some algorithms struggle with millions of rows.
+- **Explainability needs** - Can you use a black box, or must you explain every decision?
+- **Speed requirements** - Does the answer need to arrive in milliseconds or can it take minutes?
 
-A decision tree might be perfect for a simple loan approval system where transparency is required. But for recognising objects in a photo, you would need a neural network — which we will explore in the next lesson.
+A decision tree might be perfect for a simple loan approval system where transparency is required. But for recognising objects in a photo, you would need a neural network - which we will explore in the next lesson.
 
 <ThinkAboutIt>
 A hospital needs an AI to help diagnose patients. Should they choose an algorithm that is highly accurate but impossible to explain, or one that is slightly less accurate but shows its reasoning clearly? What are the trade-offs?

@@ -1,6 +1,6 @@
 ---
-title: "Rate Limiter डिज़ाइन करें — APIs को Scale पर प्रोटेक्ट करना"
-description: "जानें कि token bucket, sliding window, और Redis-backed algorithms का इस्तेमाल करके एक distributed rate limiter कैसे डिज़ाइन करें — ताकि APIs को abuse से बचाया जा सके और fair usage ensure हो।"
+title: "Rate Limiter डिज़ाइन करें - APIs को Scale पर प्रोटेक्ट करना"
+description: "जानें कि token bucket, sliding window, और Redis-backed algorithms का इस्तेमाल करके एक distributed rate limiter कैसे डिज़ाइन करें - ताकि APIs को abuse से बचाया जा सके और fair usage ensure हो।"
 order: 6
 difficulty: "advanced"
 duration: 20
@@ -8,11 +8,11 @@ icon: "🛡️"
 published: true
 ---
 
-# Rate Limiter डिज़ाइन करें — APIs को Scale पर प्रोटेक्ट करना
+# Rate Limiter डिज़ाइन करें - APIs को Scale पर प्रोटेक्ट करना
 
-Rate limiting सबसे practical system design topics में से एक है। हर production API — GitHub से लेकर Stripe तक — इस पर depend करती है ताकि abuse रोका जा सके, fair usage ensure हो, और backend services को overwhelm होने से बचाया जा सके।
+Rate limiting सबसे practical system design topics में से एक है। हर production API - GitHub से लेकर Stripe तक - इस पर depend करती है ताकि abuse रोका जा सके, fair usage ensure हो, और backend services को overwhelm होने से बचाया जा सके।
 
-## Step 1 — Requirements इकट्ठा करना
+## Step 1 - Requirements इकट्ठा करना
 
 ### Functional Requirements
 - Configurable rules के basis पर requests limit करें (per user, IP, या API key)
@@ -20,19 +20,19 @@ Rate limiting सबसे practical system design topics में से ए�
 - एक साथ multiple rate limiting rules support करें
 
 ### Non-Functional Requirements
-- **Low latency** — limiter को significant overhead नहीं add करना चाहिए
-- **Distributed** — multiple servers पर काम करे
-- **Fault-tolerant** — अगर limiter fail हो जाए, तो traffic flow होता रहे (fail-open)
+- **Low latency** - limiter को significant overhead नहीं add करना चाहिए
+- **Distributed** - multiple servers पर काम करे
+- **Fault-tolerant** - अगर limiter fail हो जाए, तो traffic flow होता रहे (fail-open)
 
 <ThinkAboutIt>क्या rate limiter crash होने पर fail-open (traffic allow करे) होना चाहिए या fail-closed (traffic block करे)? एक e-commerce site vs banking API के लिए trade-offs क्या होंगे?</ThinkAboutIt>
 
-## Step 2 — Rate Limiting Algorithms
+## Step 2 - Rate Limiting Algorithms
 
 ### Fixed Window Counter
 Time को fixed windows में divide करें (जैसे 60-second intervals)। हर request पर counter increment करें। Window boundary पर reset करें। **Problem:** window edges पर burst traffic 2× limit allow कर सकता है।
 
 ### Sliding Window Log
-हर request का timestamp store करें। Trailing window के अंदर entries count करें। Precise लेकिन **memory-intensive** — scale पर हर timestamp store करना expensive है।
+हर request का timestamp store करें। Trailing window के अंदर entries count करें। Precise लेकिन **memory-intensive** - scale पर हर timestamp store करना expensive है।
 
 ### Sliding Window Counter
 एक hybrid approach: current window count को previous window के weighted portion के साथ combine करें। Accuracy और memory efficiency का balance बनाए रखता है।
@@ -59,7 +59,7 @@ Time 1s: refill +2 → [🪙🪙🪙🪙] → 4 tokens
 
 <Quiz question="कौन सा algorithm controlled bursts allow करता है और साथ ही steady long-term rate maintain करता है?" options="Fixed Window Counter|Sliding Window Log|Token Bucket|Sliding Window Counter" answer="2" explanation="Token Bucket, bucket capacity तक short bursts allow करता है और refill mechanism के ज़रिए average rate enforce करता है। यह उन APIs के लिए ideal है जिन्हें bursty traffic patterns handle करने होते हैं।" />
 
-## Step 3 — High-Level Architecture
+## Step 3 - High-Level Architecture
 
 ```
 Client → API Gateway (Rate Limiter Middleware) → Backend Services
@@ -71,16 +71,16 @@ Client → API Gateway (Rate Limiter Middleware) → Backend Services
 <Illustration src="/images/lessons/design-rate-limiter.svg" alt="Rate limiter architecture जिसमें clients, rate limiting middleware वाला API gateway, distributed state के लिए Redis cluster, और backend services दिखाए गए हैं" caption="Rate limiter API gateway में बैठता है, distributed counter storage के लिए Redis का इस्तेमाल करता है" />
 
 ### Rate Limiter कहाँ रखें
-- **Client-side** — spoof करना आसान, unreliable
-- **Server-side** — सिर्फ per-instance, scale नहीं करता
-- **API Gateway / Middleware** — distributed systems के लिए सबसे अच्छा approach; सभी instances पर centralised enforcement
+- **Client-side** - spoof करना आसान, unreliable
+- **Server-side** - सिर्फ per-instance, scale नहीं करता
+- **API Gateway / Middleware** - distributed systems के लिए सबसे अच्छा approach; सभी instances पर centralised enforcement
 
-## Step 4 — Deep Dive: Distributed Rate Limiting
+## Step 4 - Deep Dive: Distributed Rate Limiting
 
 ### Redis + Lua Scripts
 Distributed setup में, multiple servers को rate limiting state share करनी होती है। Redis standard choice है क्योंकि इसके atomic operations और sub-millisecond latency होती है।
 
-Lua script atomicity ensure करता है — check-and-decrement एक single Redis operation में होता है, जिससे race conditions prevent होती हैं:
+Lua script atomicity ensure करता है - check-and-decrement एक single Redis operation में होता है, जिससे race conditions prevent होती हैं:
 
 ```
 -- Token Bucket in Redis (pseudocode)
@@ -93,30 +93,30 @@ local last_refill = redis.call('GET', key..':time')
 
 ### Response Headers
 अच्छे rate limiters clients को state communicate करते हैं:
-- `X-RateLimit-Limit: 100` — per window maximum requests
-- `X-RateLimit-Remaining: 42` — बची हुई requests
-- `X-RateLimit-Reset: 1672531200` — UTC epoch जब window reset होगी
+- `X-RateLimit-Limit: 100` - per window maximum requests
+- `X-RateLimit-Remaining: 42` - बची हुई requests
+- `X-RateLimit-Reset: 1672531200` - UTC epoch जब window reset होगी
 - HTTP `429 Too Many Requests` with a `Retry-After` header
 
-<Quiz question="Rate limiting में Redis के साथ Lua scripts क्यों use होते हैं, अलग-अलग GET और SET commands की जगह?" options="Lua, Redis commands से faster है|Lua scripts Redis पर atomically execute होती हैं, race conditions prevent करती हैं|Redis natively GET/SET support नहीं करता|Lua network bandwidth कम करता है" answer="1" explanation="Lua scripts Redis server पर atomically run होती हैं। Atomicity के बिना, दो concurrent requests एक ही token count read कर सकती हैं, दोनों tokens available देखें, और दोनों decrement करें — जिससे limit से ज़्यादा requests allow हो जाएँ।" />
+<Quiz question="Rate limiting में Redis के साथ Lua scripts क्यों use होते हैं, अलग-अलग GET और SET commands की जगह?" options="Lua, Redis commands से faster है|Lua scripts Redis पर atomically execute होती हैं, race conditions prevent करती हैं|Redis natively GET/SET support नहीं करता|Lua network bandwidth कम करता है" answer="1" explanation="Lua scripts Redis server पर atomically run होती हैं। Atomicity के बिना, दो concurrent requests एक ही token count read कर सकती हैं, दोनों tokens available देखें, और दोनों decrement करें - जिससे limit से ज़्यादा requests allow हो जाएँ।" />
 
-## Step 5 — Edge Cases Handle करना
+## Step 5 - Edge Cases Handle करना
 
 ### Race Conditions
 Atomic operations के बिना, concurrent requests limits bypass कर सकती हैं। Solutions: Redis Lua scripts या Redis `MULTI/EXEC` transactions।
 
 ### Rate Limiting Dimensions
 एक साथ multiple levels पर limits apply करें:
-- **Per user** — authenticated users के लिए 100 requests/minute
-- **Per IP** — anonymous traffic के लिए 50 requests/minute
-- **Per API key** — tiered plans (free: 10/min, pro: 1000/min)
+- **Per user** - authenticated users के लिए 100 requests/minute
+- **Per IP** - anonymous traffic के लिए 50 requests/minute
+- **Per API key** - tiered plans (free: 10/min, pro: 1000/min)
 
 ### Distributed Clock Skew
 Servers के clocks थोड़े different हो सकते हैं। Application server timestamps पर depend करने की बजाय Redis server time को single source of truth के रूप में use करें।
 
 <FunFact>GitHub की REST API authenticated users के लिए 5,000 requests per hour allow करती है लेकिन unauthenticated requests के लिए सिर्फ 60 per hour। Stripe sliding window approach use करता है जिसमें live और test mode API keys के लिए अलग-अलग limits होती हैं।</FunFact>
 
-## Step 6 — Bottlenecks और Optimisations
+## Step 6 - Bottlenecks और Optimisations
 
 | Bottleneck | Solution |
 |-----------|----------|
@@ -127,11 +127,11 @@ Servers के clocks थोड़े different हो सकते हैं।
 
 <Quiz question="एक rate limiter 60 seconds की fixed window use करता है जिसकी limit 100 requests है। एक user second 59 पर 100 requests भेजता है और second 61 पर 100 और। कितनी requests through होंगी?" options="100|150|200|यह algorithm पर depend करता है" answer="2" explanation="Fixed window counters के साथ, सभी 200 requests pass हो जाती हैं क्योंकि 100 window 1 (seconds 0-59) में और 100 window 2 (seconds 60-119) में आती हैं। यही edge-burst problem है जिसकी वजह से sliding window या token bucket algorithms prefer किए जाते हैं।" />
 
-<ThinkAboutIt>अगर आप London, New York, और Tokyo में data centres वाली global API के लिए rate limiting डिज़ाइन कर रहे हैं — तो क्या आप single centralised Redis use करेंगे या regional Redis clusters? आप कौन से consistency trade-offs accept करेंगे?</ThinkAboutIt>
+<ThinkAboutIt>अगर आप London, New York, और Tokyo में data centres वाली global API के लिए rate limiting डिज़ाइन कर रहे हैं - तो क्या आप single centralised Redis use करेंगे या regional Redis clusters? आप कौन से consistency trade-offs accept करेंगे?</ThinkAboutIt>
 
 ---
 
 ## 📚 और पढ़ें
-- [Rate Limiting — System Design Interview, Ch. 4](https://bytebytego.com/) — Alex Xu का step-by-step rate limiter design
-- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) — Stripe production में rate limiting कैसे handle करता है
-- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) — real-world API gateway implementation
+- [Rate Limiting - System Design Interview, Ch. 4](https://bytebytego.com/) - Alex Xu का step-by-step rate limiter design
+- [Stripe Rate Limiting](https://stripe.com/blog/rate-limiters) - Stripe production में rate limiting कैसे handle करता है
+- [Kong Rate Limiting Plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/) - real-world API gateway implementation
