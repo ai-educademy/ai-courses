@@ -128,7 +128,7 @@ cd ai-polish/lessons/en
 | File | Lesson |
 |------|--------|
 | [`star-framework.mdx`](lessons/en/star-framework.mdx) | The STAR Framework |
-| [`system-design-communication.mdx`](lessons/en/system-design-communication.mdx) | System Design Communication |
+| [`communicating-technical-ideas.mdx`](lessons/en/communicating-technical-ideas.mdx) | Communicating Technical Ideas |
 | [`ai-era-leadership.mdx`](lessons/en/ai-era-leadership.mdx) | AI-Era Leadership |
 
 SVG framework diagrams are in [`public/images/`](public/images/).
