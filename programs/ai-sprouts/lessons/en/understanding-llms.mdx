@@ -1,0 +1,181 @@
+---
+title: "Understanding Large Language Models"
+description: "How GPT, Claude and other LLMs work under the hood"
+order: 11
+difficulty: "intermediate"
+duration: 15
+icon: "🔤"
+published: true
+---
+
+# Understanding Large Language Models 🔤
+
+ChatGPT, Claude, Gemini, Llama — they're everywhere. But what are these things actually doing when they respond to your messages? The answer is both simpler and more mind-bending than you might expect.
+
+At their core, Large Language Models (LLMs) are doing one thing: **predicting the next token**. Over and over again. That's it. And yet from this simple process emerges the ability to write code, explain quantum physics, compose poetry, and hold surprisingly coherent conversations.
+
+Let's unpack how.
+
+---
+
+## 🔡 First: What's a Token?
+
+Before we get to the model itself, we need to understand **tokens** — the unit of language LLMs work with.
+
+A token is not exactly a word. It's more like a **chunk of text** that appears frequently enough in language to be worth treating as a unit. In English, common words like "the", "and", "is" are single tokens. Longer, rarer words might be split: "extraordinary" might become "extra" + "ordinary". Numbers and punctuation are often their own tokens.
+
+A rough rule of thumb: **1 token ≈ 0.75 words** in English.
+
+Why not just use words? Because tokenisation handles:
+- Multiple languages with different word structures
+- Code (where whitespace and symbols matter differently)
+- Novel words, names, and technical terms
+- Mathematical expressions
+
+When you type a message to an LLM, it's immediately converted to a sequence of token IDs — numbers in a vocabulary of typically 30,000 to 100,000 tokens.
+
+<FunFact>
+GPT-4 has a vocabulary of around 100,000 tokens. The entire English language has roughly 170,000 words in common use, but an LLM's token vocabulary also covers many languages, code syntax, emoji, and specialised terminology simultaneously.
+</FunFact>
+
+---
+
+## 🎯 The Core Task: Predicting What Comes Next
+
+Here's the fundamental training objective for every LLM:
+
+> Given a sequence of tokens, **predict the probability of each possible next token**.
+
+During training, the model is shown billions of examples like:
+- "The cat sat on the ___" → (likely: mat, floor, sofa, roof...)
+- "def calculate_sum(a, b):\n    return ___" → (likely: a + b)
+- "The capital of France is ___" → (almost certainly: Paris)
+
+By seeing enough examples, the model learns the statistical patterns of language — not just word-by-word, but the deep structures of meaning, causality, and context.
+
+When generating text, the model:
+1. Looks at all previous tokens
+2. Outputs a probability distribution over its entire vocabulary
+3. Samples a token from that distribution (with some randomness controlled by "temperature")
+4. Appends that token to the sequence
+5. Repeats
+
+Every word you read in an LLM's response was generated one token at a time, each informed by everything that came before it.
+
+---
+
+## 🔄 The Transformer Architecture
+
+The architecture that made modern LLMs possible is called the **Transformer**, introduced by Google researchers in a landmark 2017 paper called "Attention is All You Need".
+
+Before Transformers, language models processed text sequentially — word by word, like reading a sentence slowly with your finger under each word. This was slow and made it hard to connect words that were far apart in a sentence.
+
+Transformers process **all tokens simultaneously** and let every token directly interact with every other token. This is called **parallel processing**, and it's part of why they're so powerful.
+
+But the real magic is in the **attention mechanism**.
+
+---
+
+## 👁️ Attention: How the Model Focuses
+
+Imagine reading this sentence:
+
+> *"The trophy didn't fit in the suitcase because it was too big."*
+
+What does "it" refer to? The trophy. You knew that because you quickly scanned back and gave extra weight to "trophy" when interpreting "it".
+
+The **attention mechanism** lets the model do exactly this — for every token, it computes how much "attention" to pay to every other token in the context. It asks:
+
+> *"To understand this word, which other words in the sequence are most relevant?"*
+
+These attention weights are learned during training. The model learns that when processing a pronoun, nouns earlier in the sentence deserve high attention. When processing a verb, the subject deserves high attention.
+
+### Multi-Head Attention
+
+Modern Transformers use **multi-head attention** — they run many attention computations in parallel, each looking for different kinds of relationships:
+- One "head" might track grammatical relationships (subject-verb agreement)
+- Another might track coreference (what pronouns refer to)
+- Another might track semantic similarity (which words mean similar things)
+
+The outputs of all heads are combined to build a rich, multi-dimensional understanding of each token's relationship to the whole context.
+
+<FunFact>
+GPT-3 has 96 attention heads across 96 layers. That means at every layer of processing, 96 different "perspectives" on the relationships between words are being computed simultaneously. No one fully understands what each head has learned — it's one of the many mysteries of large neural networks.
+</FunFact>
+
+---
+
+## 📏 Context Window: How Much Can It Remember?
+
+The **context window** is the maximum number of tokens an LLM can consider at once. Think of it as the model's working memory.
+
+Early GPT models had context windows of 2,048 tokens (~1,500 words). Modern models like GPT-4o, Claude 3, and Gemini 1.5 Pro have context windows of 128,000 tokens or more — enough to hold an entire novel.
+
+Everything within the context window is accessible to every attention head at every layer. Everything outside it is simply invisible to the model. There's no fuzzy "fading memory" like humans have — it's a hard cut-off.
+
+This is why conversations with LLMs can go wrong if they get very long: eventually, the early parts of the conversation fall out of the context window.
+
+---
+
+## 🏋️ Training: Scale is Everything
+
+LLMs are trained on truly staggering quantities of text:
+- **GPT-3** was trained on ~300 billion tokens — roughly 570GB of text
+- **GPT-4** training details are secret, but estimates suggest trillions of tokens
+- **Llama 3** was trained on over 15 trillion tokens of text
+
+The training data comes from web crawls (Common Crawl), books, Wikipedia, code repositories, academic papers, and much more — essentially a significant fraction of the written text on the internet.
+
+Training compute costs are enormous: GPT-3's training cost an estimated $4.6 million in compute alone. GPT-4 is thought to have cost over $100 million.
+
+### Emergent Abilities: The Surprise
+
+Something strange happens as models get larger: they develop **emergent abilities** — capabilities that weren't explicitly trained, didn't appear in smaller models, and seem to appear suddenly at scale.
+
+GPT-2 (2019) could barely write coherent paragraphs. GPT-3 (2020) could write essays, solve logic puzzles, and translate languages it had barely seen. GPT-4 can pass medical and legal exams.
+
+These weren't explicitly programmed. They emerged from scale.
+
+<ThinkAboutIt>
+An LLM has never "experienced" anything. It has never seen a sunrise, felt cold, or had a conversation in real time. Yet it can write convincingly about these things because it has processed millions of human descriptions of them. Does this mean the model "understands" these experiences, or is it doing something fundamentally different?
+</ThinkAboutIt>
+
+---
+
+## 🎛️ From Prediction Machine to Helpful Assistant
+
+Raw next-token prediction would produce something that continues any text you give it — useful for completion, but not for conversation.
+
+To make LLMs into helpful assistants, they go through a second training phase called **RLHF (Reinforcement Learning from Human Feedback)**:
+
+1. The model generates many possible responses to prompts
+2. Human raters rank the responses from best to worst
+3. A "reward model" learns to predict human preferences
+4. The LLM is fine-tuned to produce responses the reward model rates highly
+
+This is how a raw language model becomes the ChatGPT or Claude you interact with — helpful, harmless, and relatively honest.
+
+---
+
+## 🔬 What LLMs Can and Can't Do
+
+**LLMs are remarkably good at:**
+- Generating fluent, contextually appropriate text
+- Translating between languages
+- Writing and explaining code
+- Summarising long documents
+- Following complex instructions
+- Creative tasks: stories, poems, brainstorming
+
+**LLMs still struggle with:**
+- Precise arithmetic (they're not calculators)
+- Reliably knowing what they don't know (hallucination)
+- Keeping up with events after their training cutoff
+- Long multi-step reasoning without errors
+- True causal reasoning vs statistical correlation
+
+Understanding these limitations isn't pessimism — it's how you use LLMs effectively, building systems that play to their strengths while compensating for their weaknesses.
+
+<Quiz question="What is the core training objective of a Large Language Model?" options={["To memorise all text it has been trained on", "To predict the probability of the next token given all previous tokens", "To understand the meaning of human language", "To translate between programming languages"]} correct={1} explanation="LLMs are trained on next-token prediction: given a sequence of tokens, predict the most likely next token. By doing this billions of times on vast amounts of text, the model learns deep statistical patterns of language — which gives rise to apparent understanding and reasoning ability." />
+
+<Quiz question="What does the 'attention mechanism' in Transformers allow a model to do?" options={["Process tokens faster than previous architectures", "Store information beyond its context window", "Weigh the importance of different tokens in the sequence when processing each token", "Translate between different tokenisation formats"]} correct={2} explanation="The attention mechanism lets every token 'attend to' every other token, computing relevance weights dynamically. This is how the model resolves pronoun references, maintains subject-verb agreement across long sentences, and builds contextual understanding — connecting information that may be far apart in the text." />

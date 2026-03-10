@@ -1,0 +1,251 @@
+---
+title: "Prompt Engineering: The Art of Talking to AI"
+description: "Master the craft of writing prompts that get brilliant results"
+order: 11
+difficulty: "intermediate"
+duration: 15
+icon: "🎯"
+published: true
+---
+
+# Prompt Engineering: The Art of Talking to AI 🎯
+
+The difference between a mediocre AI response and a brilliant one often has nothing to do with the AI itself — it has everything to do with how you asked.
+
+Prompt engineering is the practice of crafting inputs to AI language models that reliably produce high-quality, useful outputs. It's part communication skill, part systems thinking, and part structured experimentation.
+
+The good news: you don't need to be an engineer to become good at it.
+
+---
+
+## 🧠 Why Prompting Matters More Than You Think
+
+LLMs are remarkably capable but also remarkably literal. They don't know what you *meant* to ask — they only know what you *actually* asked.
+
+A prompt is essentially a context-setting exercise. You're not just asking a question; you're shaping:
+- What role the model should take
+- What output format you expect
+- How detailed and technical to be
+- What constraints to respect
+- What the goal of the response is
+
+Master this, and the same underlying model will feel several generations more powerful.
+
+---
+
+## 🎯 Zero-Shot Prompting: Just Ask
+
+The simplest form of prompting is zero-shot: you describe your task and ask the model to do it, without any examples.
+
+**Before:**
+```
+Summarise this article.
+
+[article text]
+```
+
+**After:**
+```
+Summarise the following article in 3 bullet points. Each bullet should be 
+one sentence. Focus on the main argument, the key evidence, and the 
+conclusion. Avoid jargon.
+
+[article text]
+```
+
+The "after" version specifies format (3 bullets), length (one sentence each), priorities (argument, evidence, conclusion), and style (no jargon). The model has a much clearer target.
+
+**Common zero-shot mistakes:**
+- Asking a vague question and expecting a specific answer
+- Forgetting to specify output format
+- Not stating your audience (technical vs general)
+- Omitting length constraints
+
+<FunFact>
+Research from OpenAI and others has shown that simply adding "Let's think step by step" to a reasoning prompt can increase accuracy on math and logic problems by 40–50%. This is chain-of-thought prompting at its simplest — and it works because it encourages the model to show its work rather than jump to an answer.
+</FunFact>
+
+---
+
+## 📚 Few-Shot Prompting: Learning by Example
+
+Sometimes telling the model isn't as effective as showing it. **Few-shot prompting** provides 2–5 examples of the input-output pattern you want before presenting your actual task.
+
+**Example — Sentiment classification:**
+```
+Classify the sentiment of each customer review as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast but the product was broken."
+Sentiment: Negative
+
+Review: "Absolutely love this! Will buy again."
+Sentiment: Positive
+
+Review: "It arrived on time."
+Sentiment: Neutral
+
+Review: "The quality exceeded my expectations but the packaging was wasteful."
+Sentiment: [complete this]
+```
+
+The model has now seen what format you want, how to handle mixed signals, and what granularity of analysis is expected. Without those examples, you might get a paragraph instead of a single word.
+
+**When to use few-shot:**
+- Unusual output formats the model might not naturally produce
+- Domain-specific classification tasks
+- Style matching (writing in a specific author's voice)
+- Complex structured outputs (JSON schemas, tables)
+
+---
+
+## 🔗 Chain-of-Thought: Making the Model Think Out Loud
+
+**Chain-of-thought (CoT) prompting** asks the model to reason through a problem step-by-step before giving its final answer. This dramatically improves performance on reasoning, maths, and multi-step tasks.
+
+**Without CoT:**
+```
+A shop sells apples for £0.50 each. If I buy 7 apples and pay with a £5 note, 
+how much change do I get?
+
+Answer: £1.50
+```
+(Sometimes correct, sometimes not — and you can't see the working)
+
+**With CoT:**
+```
+A shop sells apples for £0.50 each. If I buy 7 apples and pay with a £5 note, 
+how much change do I get? Work through this step by step.
+
+Step 1: Cost of 7 apples = 7 × £0.50 = £3.50
+Step 2: Change = £5.00 - £3.50 = £1.50
+Answer: £1.50
+```
+
+The visible reasoning lets you spot errors, and the act of writing the steps actually makes the model less likely to make them.
+
+For **very complex problems**, you can push this further with "zero-shot CoT" — just add: *"Think step by step, showing your reasoning clearly before giving your final answer."*
+
+---
+
+## 🎭 Role Prompting: Persona and Expertise
+
+One of the most powerful techniques is giving the model a specific role or persona. This activates relevant knowledge, sets the appropriate tone, and often improves accuracy in specialised domains.
+
+**Without role:**
+```
+Explain photosynthesis.
+```
+
+**With role:**
+```
+You are a science teacher explaining photosynthesis to a 12-year-old who 
+loves video games. Use gaming analogies where helpful. Be enthusiastic 
+and encouraging.
+```
+
+The second prompt will produce a fundamentally different and (for that audience) far more useful explanation.
+
+**Role prompting works especially well for:**
+- Technical explanations at the right level
+- Legal, medical, or financial questions (always add appropriate disclaimers)
+- Creative writing in a specific style
+- Code review ("act as a senior Python developer reviewing this code")
+- Interview practice ("you are a tough interviewer at a FAANG company")
+
+**A complete system prompt pattern:**
+```
+You are [role] with expertise in [domain].
+Your audience is [description of user].
+Your goal is to [specific objective].
+Always [constraint 1].
+Never [constraint 2].
+Format your response as [format specification].
+```
+
+---
+
+## ⛓️ Prompt Chaining: Breaking Down Complex Tasks
+
+For complex, multi-stage tasks, a single prompt often isn't enough. **Prompt chaining** breaks the task into steps, using the output of one prompt as input to the next.
+
+**Example — Writing a blog post:**
+
+Instead of one monster prompt, chain:
+1. **Prompt 1**: "Generate 5 possible angles for a blog post about [topic]. For each, give a one-line description."
+2. **Prompt 2**: "Using angle #3 from above, write a detailed outline with 5 sections and bullet-point sub-points."
+3. **Prompt 3**: "Expand section 2 of the outline into a full 300-word draft, writing in a conversational but authoritative tone."
+4. **Prompt 4**: "Review the draft for clarity, cut any redundant sentences, and ensure it ends with a clear call to action."
+
+This produces significantly better results than asking for a finished blog post in one go — each step gets the model's full attention on a focused task.
+
+<ThinkAboutIt>
+Prompt chaining mirrors how human experts work. A good author doesn't just start writing — they brainstorm, outline, draft, and revise. A good engineer doesn't code from scratch — they design, prototype, test, refactor. Why would we expect AI to skip these steps and produce masterwork on the first attempt?
+</ThinkAboutIt>
+
+---
+
+## 🚫 Common Mistakes and How to Fix Them
+
+### Mistake 1: Asking for Everything at Once
+❌ *"Write a comprehensive guide to machine learning including history, techniques, applications, tools, career paths, and future trends."*
+
+✅ Break it into focused prompts, one topic at a time.
+
+### Mistake 2: Negative Instructions Only
+❌ *"Don't be too technical. Don't write too much. Don't include jargon."*
+
+✅ *"Write at a Year 9 level, in 200 words, using everyday language."* — tell it what TO do.
+
+### Mistake 3: Not Specifying the Output Format
+❌ *"List the pros and cons of electric vehicles."*
+
+✅ *"Create a table comparing electric vs petrol vehicles. Use columns: Factor, Electric, Petrol. Include 6 rows covering cost, environment, range, charging, maintenance, and resale value."*
+
+### Mistake 4: Forgetting Context
+❌ *"Rewrite this to be better."*
+
+✅ *"This paragraph is from a technical report aimed at non-technical executives. Rewrite it to remove jargon, reduce length by 30%, and add a one-sentence summary at the start."*
+
+### Mistake 5: Accepting the First Response
+The best prompt engineers iterate. If the first response isn't quite right, tell the model exactly what to change: *"The tone is too formal — make it more conversational. And move the statistics to a sidebar rather than the main text."*
+
+---
+
+## 🔬 Advanced Technique: Structured Output
+
+For programmatic use (APIs, workflows, pipelines), you often need structured output. Simply ask for it explicitly:
+
+```
+Analyse the following job description and return a JSON object with this 
+exact structure:
+{
+  "required_skills": ["skill1", "skill2"],
+  "nice_to_have_skills": ["skill3"],
+  "seniority_level": "junior|mid|senior",
+  "remote_friendly": true|false,
+  "key_responsibilities": ["resp1", "resp2", "resp3"]
+}
+
+Job description:
+[text here]
+```
+
+Modern LLMs are remarkably good at this. Many APIs now offer a "JSON mode" that enforces valid JSON output, making this even more reliable.
+
+---
+
+## 🏆 Building Your Prompting Practice
+
+Prompt engineering is a skill that compounds. Start with these habits:
+
+1. **Keep a prompt library** — save prompts that work well for recurring tasks
+2. **A/B test** — try the same task with two different prompts and compare results
+3. **Diagnose failures** — when a response is poor, ask: what context was missing? What was ambiguous?
+4. **Read research** — OpenAI, Anthropic, and Google DeepMind regularly publish papers on prompting techniques
+5. **Teach others** — explaining why a prompt works cements your own understanding
+
+The models are improving rapidly, but so is the ceiling of what a skilled prompt engineer can extract from them. The fundamentals here — clarity, specificity, context, iteration — will remain valuable regardless of which model you're using.
+
+<Quiz question="What is the primary benefit of few-shot prompting compared to zero-shot?" options={["The model responds faster", "You can provide examples of the exact input-output format you want, guiding the model's response more precisely", "It uses less of the context window", "The model is allowed to ask clarifying questions"]} correct={1} explanation="Few-shot prompting provides 2-5 examples of the pattern you want before presenting your actual task. This is particularly powerful for unusual output formats, domain-specific classifications, or style matching — cases where telling the model isn't as effective as showing it." />
+
+<Quiz question="Why does chain-of-thought prompting improve accuracy on reasoning tasks?" options={["It makes the prompt shorter and clearer", "By making the model show its step-by-step reasoning, errors are more visible and the model is less likely to skip logical steps", "It gives the model more training examples", "It reduces the temperature of the model's outputs"]} correct={1} explanation="When a model reasons step-by-step, two things happen: first, visible reasoning lets you spot errors; second, the act of generating each step actually reduces the probability of making logical leaps that skip important reasoning. It's similar to how humans make fewer mistakes when they write out their working in maths." />

@@ -1,0 +1,137 @@
+---
+title: "AI Ethics & Bias: When Machines Get It Wrong"
+description: "Understanding bias in AI systems and why ethical AI matters"
+order: 12
+difficulty: "beginner"
+duration: 10
+icon: "⚖️"
+published: true
+---
+
+# AI Ethics & Bias: When Machines Get It Wrong ⚖️
+
+AI systems are making decisions that affect people's lives. Who gets a loan. Who gets a job interview. Whether a medical scan looks suspicious. Whether someone's face matches a criminal database.
+
+These aren't abstract possibilities. They're happening right now — and they're sometimes getting it badly wrong.
+
+---
+
+## 🤔 What Is AI Bias?
+
+AI bias happens when an AI system produces results that are systematically unfair to certain groups of people.
+
+The important word is **systematically**. We're not talking about random errors — we're talking about patterns of errors that disproportionately affect women, people of colour, people from certain regions, or other groups.
+
+And here's the uncomfortable truth: **AI systems learn their biases from us**.
+
+<FunFact>
+A 2019 study found that a widely-used healthcare algorithm in the United States was biased against Black patients — assigning them lower risk scores than equally sick white patients, which meant they received less medical care. The algorithm hadn't been trained on race directly; it used healthcare cost as a proxy, which reflected existing inequalities in healthcare access.
+</FunFact>
+
+---
+
+## 📚 Where Does Bias Come From?
+
+Bias in AI almost always starts with the **training data**. Here's how it creeps in:
+
+### Historical Bias — The Past Frozen in Data
+
+If an AI is trained on historical hiring decisions, and those decisions historically favoured men for technical roles, the AI learns to replicate that pattern. It doesn't understand discrimination — it just sees "male applicants tended to get hired" and acts accordingly.
+
+Amazon famously built a hiring algorithm that downgraded CVs from women. It had been trained on 10 years of successful hires — a period when tech hiring was heavily male-dominated. The algorithm was quietly scrapped when the bias was discovered.
+
+### Representation Bias — Who's Missing from the Data?
+
+If your training data doesn't include diverse examples, the AI performs poorly on groups that were underrepresented.
+
+Facial recognition technology provides a stark example. Several widely-used systems were tested and found to:
+- Identify white male faces with accuracy over 99%
+- Identify darker-skinned female faces with error rates as high as 34%
+
+The reason? Training datasets were heavily skewed towards lighter-skinned faces. The systems weren't tested on diverse populations before deployment.
+
+### Measurement Bias — What You Measure Shapes What You Get
+
+If you measure success in a biased way, your AI learns to optimise for biased outcomes. Using "graduation from a top university" as a proxy for intelligence disadvantages people who never had the opportunity to attend top universities — not because of their intelligence, but because of their socioeconomic background.
+
+---
+
+## 🌍 Real-World Consequences
+
+This isn't academic. AI bias causes real harm:
+
+**Criminal Justice** — COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) was a tool used in US courts to predict the likelihood of reoffending. A 2016 investigation by ProPublica found it labelled Black defendants as "high risk" at nearly twice the rate of white defendants, even when controlling for criminal history.
+
+**Healthcare** — The healthcare algorithm mentioned above directed less preventive care to Black patients who were as sick as white patients receiving more resources.
+
+**Lending** — Multiple studies have found that algorithmic lending tools approve loans for white applicants at higher rates than equally creditworthy Black or Hispanic applicants.
+
+**Employment** — AI CV screening tools have been found to penalise words like "women's" (as in "women's chess club") or filter out graduates of historically Black colleges.
+
+<ThinkAboutIt>
+If an algorithm makes thousands of decisions per day, a small percentage error becomes an enormous number of real people affected. A 5% error rate on a system processing 10,000 loan applications means 500 people get an outcome they don't deserve every single day. Does scale change your view of what an "acceptable" error rate is?
+</ThinkAboutIt>
+
+---
+
+## 🔬 Why Is This Hard to Fix?
+
+You might be thinking: "Can't we just check for bias and remove it?" If only it were that simple.
+
+**The proxy problem**: AI systems can discriminate without using protected characteristics directly. Postcode correlates with race due to historical segregation. Shopping habits correlate with income. Voice patterns correlate with accent and region. You can remove "race" from the data but the algorithm can still learn to discriminate.
+
+**Trade-offs between fairness metrics**: There are mathematically different ways to define "fair". A system that has equal error rates across groups will produce different overall outcomes than a system that gives equal positive rates. Satisfying all definitions simultaneously is often mathematically impossible.
+
+**Feedback loops**: If an AI decides who gets policed more heavily, those communities will have more recorded crime, which trains the next AI to police them even more heavily — a self-reinforcing cycle.
+
+---
+
+## 🌟 Why Diversity in AI Teams Matters
+
+One of the most effective ways to catch bias before it causes harm is to have **diverse teams** building AI systems.
+
+Homogeneous teams have blind spots. When everyone in a room shares similar backgrounds, life experiences, and assumptions, they're less likely to ask: "But how would this affect someone who doesn't look like us?"
+
+A diverse team is more likely to:
+- Notice when training data misses important groups
+- Question whether an outcome metric is fair to everyone
+- Advocate for testing on underrepresented populations
+- Anticipate unintended consequences
+
+<FunFact>
+Research by McKinsey found that companies with diverse executive teams are 36% more likely to outperform on profitability — and in AI-product companies specifically, diverse teams are better at building products that work for diverse users.
+</FunFact>
+
+---
+
+## 🛡️ Building More Ethical AI
+
+The AI research community is actively working on solutions:
+
+**Algorithmic auditing** — Systematically testing AI systems across different demographic groups before and after deployment to find disparities.
+
+**Diverse and representative datasets** — Deliberately building training datasets that include underrepresented groups, and documenting who is and isn't included.
+
+**Explainability tools** — Techniques that help humans understand why an AI made a specific decision, making it easier to spot unfair patterns.
+
+**Regulation and accountability** — The EU AI Act and similar legislation are creating legal requirements for certain high-risk AI systems to be audited for bias.
+
+**Participatory design** — Involving the communities who will be most affected by an AI system in designing and testing it.
+
+---
+
+## 🎯 What You Can Do
+
+You don't need to be a machine learning engineer to contribute to ethical AI:
+
+- **Ask questions** when AI systems are deployed in high-stakes decisions affecting people
+- **Demand transparency** — who trained this? On what data? Has it been tested for bias?
+- **Support regulation** that requires accountability for AI systems
+- **Advocate for diversity** in technology teams
+- **Stay curious** — the field is evolving fast, and informed citizens create pressure for better standards
+
+AI is a tool. Like all tools, it can be used well or badly. The question of whether it's used ethically isn't a technical question — it's a human one.
+
+<Quiz question="What is 'representation bias' in AI training data?" options={["When the AI is too slow to represent all users", "When certain groups are underrepresented in training data, causing the model to perform poorly for those groups", "When the AI represents all groups equally", "When the training data is stored in the wrong format"]} correct={1} explanation="Representation bias occurs when some demographic groups appear far less frequently in training data than others. The AI learns mainly from the dominant groups, leading to lower accuracy and unfair outcomes for underrepresented populations — as seen with facial recognition systems that performed poorly on darker-skinned faces." />
+
+<Quiz question="Why can removing 'race' from an AI's training data fail to eliminate racial bias?" options={["Because AI systems always remember deleted data", "Because race determines intelligence", "Because other variables like postcode or shopping habits can act as proxies for race", "Because racial bias only comes from the algorithm, not the data"]} correct={2} explanation="Due to historical segregation and systemic inequality, many seemingly neutral variables (postcode, school attended, healthcare cost) correlate strongly with race. An AI trained on these proxy variables can effectively discriminate by race without ever seeing race in the data — this is called the proxy problem." />
