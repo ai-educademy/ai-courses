@@ -1,0 +1,252 @@
+---
+title: "Feature Engineering: Teaching Machines What Matters"
+description: "Learn how feature engineering transforms raw data into powerful machine learning inputs — the skill that separates good models from great ones."
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+---
+
+# Feature Engineering: Teaching Machines What Matters
+
+There's a saying in machine learning: **garbage in, garbage out**. You can have the most sophisticated algorithm in the world, but if you feed it poorly prepared data, the results will be poor. Conversely, a simple algorithm given excellent, thoughtfully prepared data can outperform a complex algorithm given raw, messy data.
+
+Feature engineering is the craft of transforming raw data into representations that machine learning algorithms can learn from effectively. It's arguably the single most impactful skill in applied machine learning — and it's where deep domain knowledge meets data science.
+
+## 🧩 What Are Features?
+
+In machine learning, a **feature** is any measurable property or attribute of the thing you're trying to predict. Features are the inputs to your model; the **label** (or target) is the output.
+
+For a house price prediction model:
+- Features: square footage, number of bedrooms, postcode, year built, distance to nearest school
+- Label: sale price
+
+For an email spam classifier:
+- Features: word frequencies, sender domain, presence of certain phrases, email length
+- Label: spam (1) or not spam (0)
+
+The quality, quantity, and relevance of your features are often more important than which algorithm you choose.
+
+## 🗃️ Why Raw Data Is Rarely Model-Ready
+
+Real-world data is messy. Machine learning algorithms have specific requirements that raw data almost never satisfies:
+
+- **Numerical only**: most algorithms can't directly process text, categories, or dates
+- **No missing values**: most algorithms can't handle NaN or null values
+- **Similar scales**: features with very different value ranges can distort gradient-based learning
+- **Meaningful representation**: raw timestamps or postcodes don't encode the patterns that matter (is it a weekend? is it a wealthy area?)
+
+Feature engineering is the process of bridging the gap between raw data and model-ready inputs.
+
+## 📏 Normalisation and Standardisation
+
+When features have very different scales, models can be misled. A feature with values in the thousands can dominate a feature with values between 0 and 1.
+
+### Min-Max Normalisation (Scaling to [0, 1])
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### Standardisation (Z-score, mean=0, std=1)
+
+More robust to outliers than min-max scaling:
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**Rule of thumb**: use standardisation by default. Use min-max when you need values in a specific bounded range (e.g., neural network inputs).
+
+## 🏷️ Encoding Categorical Variables
+
+Categories like "red/green/blue" or "London/Manchester/Birmingham" have no natural numerical ordering. You need to encode them before feeding them to most algorithms.
+
+### One-Hot Encoding
+
+Creates a binary column for each category. Best when categories have no inherent order:
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### Label Encoding
+
+Maps each category to an integer. Only use when the categories have a natural order:
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>A common beginner mistake is to label-encode city names, accidentally telling the model that Tokyo is "more than" London, which leads to bizarre predictions. Always use one-hot encoding for unordered categories.</FunFact>
+
+## 🕳️ Handling Missing Values
+
+Missing data is almost universal in real-world datasets. You have several options:
+
+### Imputation
+
+Fill missing values with a calculated substitute:
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### Adding a Missingness Indicator
+
+Sometimes the fact that data is missing is itself informative:
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### When to Drop
+
+Drop a column if it has more than ~70-80% missing values (rarely informative). Drop a row only if you have plenty of data and the row is randomly missing (not systematically).
+
+## 🛠️ Creating New Features
+
+This is where feature engineering becomes an art. You use domain knowledge to create features that capture patterns not visible in the raw data.
+
+### Date/Time Decomposition
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+A raw timestamp tells the model nothing directly; these derived features expose patterns like "fraud peaks at 3am" or "sales spike at weekends".
+
+### Interaction Features
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### Text Features
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>If you were building a model to predict restaurant health inspection failures, what raw data might you have access to, and what new features could you engineer from it that would be more useful than the raw data alone?</ThinkAboutIt>
+
+## 📊 Feature Importance
+
+Once you've built a model, you can measure which features it found most useful. This is valuable both for understanding your model and for deciding which features to keep or drop:
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+Features with near-zero importance can usually be dropped without affecting performance — and dropping them simplifies the model, reduces training time, and can improve generalisation.
+
+## 🗜️ Dimensionality Reduction: A Brief Introduction
+
+When you have hundreds or thousands of features, models can struggle — this is called the **curse of dimensionality**. Dimensionality reduction techniques compress features while preserving the most important patterns:
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA (Principal Component Analysis) is the most common approach, but others include t-SNE (for visualisation) and UMAP (for preserving local structure).
+
+<Quiz question="You have a dataset with a 'city' column containing 50 different city names. What encoding approach should you use?" options="Label encoding — assign each city an integer from 0 to 49|One-hot encoding — create a binary column for each city|Leave it as text — most models handle strings|Convert all cities to their country's GDP" answer="1" explanation="City names have no natural order, so label encoding would incorrectly imply a hierarchy (City 49 > City 0). One-hot encoding creates a binary column for each city, correctly representing them as distinct unordered categories." />
+
+## Key Takeaways
+
+- **Features** are the inputs to your model; feature quality often matters more than algorithm choice
+- Raw data is almost never model-ready — it needs cleaning, transformation, and enrichment
+- **Normalisation/standardisation** puts features on comparable scales; use standardisation by default
+- **One-hot encoding** is correct for unordered categorical variables; **label encoding** only for ordered ones
+- **Missing values** can be handled by imputation (median/mean/mode) and by adding a missingness indicator flag
+- **Creating new features** from domain knowledge — time decomposition, ratios, interactions — often produces the biggest performance gains
+- **Feature importance** scores help you understand which inputs your model relies on and which can be dropped
+- **Dimensionality reduction** (e.g., PCA) compresses high-dimensional data while preserving most of the useful variance

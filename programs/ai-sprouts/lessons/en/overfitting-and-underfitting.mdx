@@ -1,0 +1,224 @@
+---
+title: "Overfitting and Underfitting: Why ML Models Fail"
+description: "Understand the two most common machine learning failure modes — overfitting and underfitting — with clear examples and how to fix them."
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+---
+
+# Overfitting and Underfitting: Why ML Models Fail
+
+You've trained your first machine learning model. It performs brilliantly on your training data — 98% accuracy! You test it on new data and it falls apart: 61% accuracy. What went wrong?
+
+Almost certainly, your model has **overfit**. This is one of the two most common failure modes in machine learning, and understanding it — alongside its opposite, **underfitting** — is essential to building models that actually work in the real world.
+
+## 📐 The Bias-Variance Tradeoff
+
+Before diving into examples, it helps to understand the theoretical framework behind these concepts: the **bias-variance tradeoff**.
+
+Every model makes prediction errors. Those errors can be decomposed into three parts:
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**Bias** is the error from wrong assumptions in the model. A high-bias model is too simple — it systematically misses the true pattern in the data.
+
+**Variance** is the error from sensitivity to small fluctuations in the training data. A high-variance model is too complex — it memorises the training data, including its noise, rather than learning the underlying pattern.
+
+**Irreducible noise** is the natural randomness in the data that no model can eliminate.
+
+The tradeoff: reducing bias tends to increase variance, and vice versa. Your job as a machine learning practitioner is to find the sweet spot.
+
+## 📈 Underfitting: Too Simple to Learn
+
+**Underfitting** occurs when your model is too simple to capture the true pattern in the data. It performs poorly on *both* training data and new data.
+
+### A Visual Example
+
+Imagine you have data showing house prices based on size. The true relationship is roughly a gentle curve — prices rise with size, but with some plateauing at the top end.
+
+If you fit a straight horizontal line to this data:
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+The model ignores the actual relationship between house size and price. It doesn't matter whether you show it training data or new data — it's wrong either way.
+
+### Signs of Underfitting
+- High training error AND high test error
+- Model predictions cluster around a mean regardless of input
+- Learning curves show both training and validation error are high and close together
+
+### Causes of Underfitting
+- Model is too simple for the complexity of the data (e.g., linear model for non-linear data)
+- Too few training epochs (model hasn't had time to learn)
+- Too aggressive regularisation (see below)
+- Important features are missing from the input
+
+## 📉 Overfitting: Too Complex, Memorising Noise
+
+**Overfitting** occurs when your model learns the training data *too well* — including its noise and random variation — and fails to generalise to new examples.
+
+### A Visual Example
+
+Using a 15-degree polynomial to fit the same house price data:
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+The polynomial has twisted itself into knots to pass through every training point — including the noisy outliers. It has memorised the training set rather than learning the underlying pattern. On unseen data, it's useless.
+
+<FunFact>A model that perfectly memorises all its training data is sometimes called "the world's worst model" — it has 100% training accuracy but cannot generalise at all, making it completely useless for its actual purpose.</FunFact>
+
+### Signs of Overfitting
+- Very low training error, but much higher test error (a large **generalisation gap**)
+- Model performance degrades significantly on any new data
+- The model is surprisingly sensitive to small changes in input
+
+## 🔀 Train / Validation / Test Split
+
+A fundamental tool for detecting overfitting is splitting your data into three sets:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **Training set**: what the model learns from
+- **Validation set**: what you use to tune hyperparameters and detect overfitting *during development*
+- **Test set**: the final, held-out evaluation — touch it only once, at the very end
+
+The validation set is your early warning system. If training accuracy keeps improving but validation accuracy plateaus or drops, you're overfitting.
+
+<ThinkAboutIt>Why is it important to keep your test set completely separate and only use it once? What could go wrong if you repeatedly evaluated on the test set and made adjustments based on it?</ThinkAboutIt>
+
+## 🛡️ Fixes for Overfitting
+
+### 1. Regularisation
+
+Regularisation adds a penalty to the loss function that discourages the model from learning overly complex patterns.
+
+**L2 Regularisation (Ridge)** penalises large weights:
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**L1 Regularisation (Lasso)** can drive some weights all the way to zero, performing feature selection:
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Dropout (Neural Networks)
+
+During training, randomly "drop out" (set to zero) a proportion of neurons:
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+This prevents neurons from co-adapting and forces the network to learn more robust, distributed representations.
+
+### 3. Early Stopping
+
+Monitor validation loss during training and stop when it starts to increase:
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. More Training Data
+
+More data makes it harder for the model to memorise noise — there's simply too much to fit exactly. When data collection is expensive, **data augmentation** (creating modified copies of existing examples) can help.
+
+### 5. Simpler Architecture
+
+Sometimes the right fix is simply choosing a less complex model for the problem.
+
+## 🔄 Cross-Validation
+
+With small datasets, a single train/val split might be misleading due to randomness. **K-fold cross-validation** gives a more reliable estimate:
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+The data is split into 5 folds; the model trains on 4 and validates on 1, rotating each time. The final score is the average across all 5 — much more reliable than a single split.
+
+<Quiz question="A model achieves 99% accuracy on training data but only 62% on test data. What does this indicate?" options="The model is underfitting — it's too simple|The model is perfectly calibrated|The model is overfitting — it has memorised the training data rather than generalising|The test dataset must be broken" answer="2" explanation="A large gap between training accuracy (99%) and test accuracy (62%) is the classic signature of overfitting. The model has memorised the training data, including its noise, and fails to generalise to new examples." />
+
+## Key Takeaways
+
+- **Underfitting** (high bias): the model is too simple; it performs poorly on *both* training and test data — fix by using a more complex model or adding features
+- **Overfitting** (high variance): the model is too complex; it performs great on training data but poorly on test data — fix by regularising, adding data, or simplifying the model
+- The **bias-variance tradeoff** is the fundamental tension: reducing one tends to increase the other; your goal is to find the sweet spot
+- Always split data into **train / validation / test** sets — the test set should only be touched once, at the end
+- **Key fixes for overfitting**: L1/L2 regularisation, dropout, early stopping, more data, simpler architecture
+- **Cross-validation** gives a more reliable performance estimate when data is limited, by averaging results across multiple train/validation splits

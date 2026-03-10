@@ -1,0 +1,226 @@
+---
+title: "Supervised vs Unsupervised Learning: Key Differences Explained"
+description: "A clear comparison of supervised and unsupervised machine learning — when to use each approach, with real-world examples and algorithms."
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+---
+
+# Supervised vs Unsupervised Learning: Key Differences Explained
+
+When you start learning machine learning, one of the first forks in the road is this: what kind of learning are you doing? The answer changes everything — the algorithms available to you, the data you need, and what you can expect your model to do.
+
+The two foundational categories are **supervised learning** and **unsupervised learning**. Understanding the difference isn't just academic — it's the first decision you'll make when approaching any new ML problem.
+
+## 🏷️ The Core Distinction: Labels
+
+The most fundamental difference between supervised and unsupervised learning is **whether your training data includes labels**.
+
+**Labelled data** means each example in your dataset comes with the "right answer" — the outcome you want the model to predict or classify:
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**Unlabelled data** means you have the inputs but no pre-defined answers — just the raw observations:
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+Labelled data is expensive and time-consuming to produce — it requires humans to manually annotate examples. Unlabelled data is abundant (most of the data in the world has no labels). This practical constraint shapes which approach is possible for a given problem.
+
+## ✅ Supervised Learning
+
+In supervised learning, the model learns a mapping from inputs to outputs by studying labelled examples. The "supervisor" is the labelled data itself — every training example tells the model what the correct output should be.
+
+### Classification
+
+When the output is a **discrete category**, it's a classification problem.
+
+**Examples:**
+- Is this email spam or not spam?
+- Does this image contain a cat or a dog?
+- Will this loan applicant default? (Yes/No)
+- Which digit (0–9) does this handwritten number represent?
+
+**Common algorithms:**
+- Logistic Regression
+- Decision Trees and Random Forests
+- Support Vector Machines (SVM)
+- Neural Networks
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### Regression
+
+When the output is a **continuous number**, it's a regression problem.
+
+**Examples:**
+- What will this house sell for?
+- What will this stock price be tomorrow?
+- How many units will we sell next month?
+- What will a patient's blood pressure be in six months?
+
+**Common algorithms:**
+- Linear Regression
+- Ridge / Lasso Regression
+- Gradient Boosting (XGBoost, LightGBM)
+- Neural Networks
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>Gradient Boosting models (XGBoost, LightGBM, CatBoost) have won more Kaggle machine learning competitions than any other algorithm category. They remain the go-to choice for structured/tabular data in industry.</FunFact>
+
+## 🔍 Unsupervised Learning
+
+In unsupervised learning, the model explores the structure of data **without any labels**. Rather than learning a mapping to a known output, it discovers hidden patterns, groupings, or representations on its own.
+
+### Clustering
+
+Cluster algorithms group similar data points together without being told what the groups should be.
+
+**Examples:**
+- Segment customers by purchasing behaviour (without pre-defining segments)
+- Group documents by topic
+- Identify communities in a social network
+- Detect anomalies (points that don't belong to any cluster)
+
+**Common algorithms:**
+- K-Means Clustering
+- DBSCAN (density-based, handles irregular shapes)
+- Hierarchical Clustering
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### Dimensionality Reduction
+
+Compress high-dimensional data into fewer dimensions while preserving as much structure as possible. Used for visualisation, pre-processing, and removing redundant information.
+
+**Common algorithms:**
+- PCA (Principal Component Analysis) — linear compression
+- t-SNE — non-linear, excellent for visualisation
+- UMAP — fast, preserves both local and global structure
+- Autoencoders — neural network-based compression
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>A retailer has transaction data for 10 million customers but no pre-defined customer segments. Why would unsupervised clustering be useful here? What business decisions could the discovered segments inform?</ThinkAboutIt>
+
+## 🔄 Beyond the Binary: Other Learning Paradigms
+
+The supervised/unsupervised distinction is foundational, but the ML landscape is richer than just these two categories.
+
+### Semi-Supervised Learning
+
+Uses a **small amount of labelled data** combined with a **large amount of unlabelled data**. This is very practical because labelling is expensive.
+
+**Example**: You have 1,000 labelled medical scans and 100,000 unlabelled ones. Semi-supervised learning lets you benefit from the unlabelled data to improve performance beyond what the 1,000 labels alone could achieve.
+
+### Self-Supervised Learning
+
+A special case where the **labels are generated automatically from the data itself**. This is how modern large language models are pre-trained.
+
+**Example**: Take a sentence, hide some words, and train the model to predict the missing words. The "labels" (the correct words) are free — they come directly from the text itself. This is how BERT was trained.
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+Self-supervised learning has been transformative because it allows training on internet-scale data without human annotation.
+
+### Reinforcement Learning
+
+An agent learns by taking **actions** in an **environment** and receiving **rewards** or **penalties**. There are no labels — only feedback signals from outcomes.
+
+**Examples**: Playing chess, training a robot to walk, optimising a data centre's cooling system. We cover this in depth in its own lesson.
+
+## 🗺️ Choosing the Right Approach
+
+Here's a practical decision framework:
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="You have 50,000 product reviews with no star ratings or sentiment labels. You want to automatically group them by topic. Which learning approach should you use?" options="Supervised classification — train a model to classify topics|Unsupervised clustering — discover topic groups in the data|Reinforcement learning — let an agent read and sort reviews|Regression — predict a numerical topic score for each review" answer="1" explanation="Without labels, supervised learning isn't possible. Unsupervised clustering (e.g., K-Means or topic modelling with LDA) can discover natural groupings in the review text without any pre-defined categories." />
+
+## Key Takeaways
+
+- **Supervised learning** requires labelled data; the model learns a mapping from inputs to known outputs — used for classification (discrete output) and regression (continuous output)
+- **Unsupervised learning** works with unlabelled data; the model discovers hidden structure — used for clustering, dimensionality reduction, and anomaly detection
+- The choice between supervised and unsupervised is primarily driven by **whether you have labelled data** and what question you're trying to answer
+- **Semi-supervised learning** bridges the gap, using a small amount of labelled data alongside large quantities of unlabelled data
+- **Self-supervised learning** generates its own labels from the data — it's the technique behind modern LLMs like BERT and GPT
+- **Reinforcement learning** is distinct from both: an agent learns from reward signals through interaction with an environment, without labels
+- Use the decision framework: labelled + category output → classification; labelled + continuous output → regression; unlabelled + find groups → clustering
