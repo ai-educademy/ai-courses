@@ -1,0 +1,295 @@
+---
+title: "How to Learn AI From Scratch in 2026 (Complete Roadmap)"
+description: "A complete, honest roadmap for learning AI from zero — what to study, in what order, which free resources to use, and how long it realistically takes. No CS degree required."
+date: "2026-03-11"
+author: "Ramesh Reddy Adutla"
+tags:
+  - learning-ai
+  - roadmap
+  - beginner
+  - machine-learning
+  - career
+published: true
+---
+
+"I want to learn AI, but I don't know where to start."
+
+This is one of the most common things we hear. And honestly? The confusion is understandable. Search for "learn AI" and you're buried under conflicting advice — some people say learn Python first, others say start with maths, others say just use ChatGPT API and figure it out. Reddit threads argue about whether a degree is necessary. YouTube thumbnails promise you can "master AI in 30 days."
+
+This guide gives you the honest, structured roadmap that we wish had existed when we were starting out. No hype, no shortcuts — just a clear path.
+
+---
+
+## First: What Kind of AI Do You Want to Learn?
+
+"Learning AI" means very different things depending on your goal. Before diving in, decide which of these describes you best:
+
+**Path A — AI User / Power User**
+You want to use AI tools effectively for your job or business: prompt engineering, building with AI APIs, automating workflows. You don't need to train models.
+*Timeline: 4–8 weeks to become highly proficient.*
+
+**Path B — AI Practitioner / ML Engineer**
+You want to build, train, and deploy machine learning models. You'll work with data, write ML code, and solve real problems.
+*Timeline: 6–18 months for solid foundations.*
+
+**Path C — AI Researcher**
+You want to push the boundaries of what AI can do — publishing papers, inventing new architectures, doing foundational work.
+*Timeline: Usually requires a Masters or PhD; 3–6+ years.*
+
+Most people reading this are on Path A or Path B. This guide covers both, clearly labelled at each stage.
+
+---
+
+## The Prerequisites (Don't Skip This)
+
+### Programming: Python is Non-Negotiable (for Path B)
+
+Python is the language of AI and machine learning. If you don't know Python, start here. You don't need to be an expert — you need to be comfortable enough to read and write code.
+
+**What to learn:**
+- Variables, data types, lists, dictionaries
+- Loops (`for`, `while`) and conditionals (`if/else`)
+- Functions and modules
+- File I/O
+- Basic object-oriented programming
+
+**Free resources:**
+- [Python.org's official tutorial](https://docs.python.org/3/tutorial/)
+- [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/) — free online, practical, excellent
+- freeCodeCamp's Python course on YouTube
+
+**Time estimate**: 4–6 weeks if you're consistent (1–2 hours per day)
+
+### Maths: How Much Do You Actually Need?
+
+This is where people panic unnecessarily. Here's the honest answer:
+
+**For using AI tools (Path A)**: No maths needed. Seriously.
+
+**For building ML models (Path B)**: You need a working knowledge of:
+- **Linear algebra**: vectors, matrices, matrix multiplication — how data is represented
+- **Calculus**: derivatives, the chain rule — how models learn through gradient descent
+- **Probability and statistics**: distributions, mean/variance, Bayes' theorem — how uncertainty is handled
+
+You do **not** need to be able to prove theorems. You need intuition and the ability to read equations.
+
+**Free resources:**
+- [3Blue1Brown's Essence of Linear Algebra](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab) — the best visual explanation, free on YouTube
+- [3Blue1Brown's Essence of Calculus](https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr) — same quality
+- Khan Academy Statistics and Probability — comprehensive and free
+
+**Time estimate**: 6–10 weeks of gentle study alongside Python
+
+---
+
+## Stage 1: AI Literacy (Both Paths — 2–4 Weeks)
+
+Before writing a single line of ML code, build your mental model of the AI landscape. You should understand:
+
+- What AI, machine learning, and deep learning are (and how they differ)
+- How large language models work at a conceptual level
+- What training, inference, parameters, and fine-tuning mean
+- The key players: OpenAI, Anthropic, Google DeepMind, Meta AI, Mistral
+- Current capabilities and limitations
+
+**Resources:**
+- [fast.ai's Practical Deep Learning for Coders](https://course.fast.ai/) — starts with working code before theory (revolutionary approach)
+- Google's free [Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course)
+- Andrej Karpathy's [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — arguably the best free deep learning course ever made
+
+**Milestone**: You can explain AI concepts to a non-technical colleague without checking notes.
+
+---
+
+## Stage 2: Core Machine Learning (Path B — 8–12 Weeks)
+
+This is where you get into the actual mechanics. Work through the fundamentals in this order:
+
+### 2a. Data Handling with NumPy and Pandas
+
+Before building models, you need to handle data. NumPy and Pandas are the foundational Python libraries for numerical computation and data manipulation.
+
+```python
+import pandas as pd
+
+# Load a dataset
+df = pd.read_csv('housing_data.csv')
+
+# Explore it
+print(df.head())
+print(df.describe())
+
+# Handle missing values
+df = df.dropna()
+
+# Feature selection
+X = df[['bedrooms', 'bathrooms', 'sqft']]
+y = df['price']
+```
+
+**Resource**: [Kaggle's free Pandas micro-course](https://www.kaggle.com/learn/pandas) — 4 hours, hands-on
+
+### 2b. Scikit-Learn for Classical ML
+
+Scikit-Learn is the go-to Python library for traditional machine learning. It includes implementations of dozens of algorithms with a consistent, clean API.
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+print(f"Accuracy: {accuracy_score(y_test, predictions):.2f}")
+```
+
+Work through: linear regression, logistic regression, decision trees, random forests, k-means clustering, and SVMs. Understand when to use each.
+
+**Resource**: [Scikit-Learn's official tutorials](https://scikit-learn.org/stable/tutorial/) + [Kaggle's ML micro-courses](https://www.kaggle.com/learn)
+
+### 2c. Your First Real Project
+
+Learning without building is memorising without understanding. Pick a dataset (Kaggle is full of them) and build an end-to-end model:
+
+1. Load and explore the data (EDA)
+2. Clean and preprocess it
+3. Choose and train a model
+4. Evaluate its performance
+5. Tune it and improve
+6. Write up what you learned
+
+**Milestone**: A trained ML model on a real dataset, posted to GitHub.
+
+---
+
+## Stage 3: Deep Learning (Path B — 8–12 Weeks)
+
+Now you're ready to dive into neural networks.
+
+### 3a. PyTorch or TensorFlow?
+
+These are the two dominant deep learning frameworks. The honest recommendation in 2026: **start with PyTorch**. It's more Pythonic, more widely used in research, and easier to debug. TensorFlow/Keras is still widely used in production, but PyTorch is where the momentum is.
+
+```python
+import torch
+import torch.nn as nn
+
+# Define a simple neural network
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(784, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, 10)
+        )
+
+    def forward(self, x):
+        return self.layers(x)
+
+model = SimpleNet()
+```
+
+### 3b. Key Deep Learning Concepts to Master
+
+- **Forward pass and backpropagation** — how models learn
+- **Activation functions** — ReLU, sigmoid, softmax
+- **Loss functions** — cross-entropy, MSE
+- **Optimisers** — SGD, Adam
+- **Regularisation** — dropout, batch normalisation
+- **Convolutional Neural Networks (CNNs)** — for images
+- **Recurrent Neural Networks (RNNs)** — for sequences
+- **The Transformer architecture** — the foundation of modern LLMs
+
+**Resources:**
+- [fast.ai Practical Deep Learning](https://course.fast.ai/) — top-down, practical
+- [Andrej Karpathy's Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — builds a GPT from scratch
+
+**Milestone**: Build and train a neural network from scratch (not just calling a pre-built model).
+
+---
+
+## Stage 4: Working With LLMs (Both Paths — 4–6 Weeks)
+
+In 2026, an understanding of how to work with large language models is essential regardless of your path.
+
+### For Path A (Using LLMs):
+- Learn prompt engineering thoroughly — zero-shot, few-shot, chain-of-thought
+- Understand RAG (Retrieval-Augmented Generation) — combining LLMs with your own data
+- Build simple applications using the OpenAI API, Anthropic API, or open-source models
+
+### For Path B (Building with LLMs):
+- Understand the Transformer architecture deeply (attention mechanism, positional encoding)
+- Learn fine-tuning with Hugging Face Transformers
+- Understand parameter-efficient fine-tuning (LoRA, QLoRA)
+- Experiment with open-source models (Llama, Mistral, Phi)
+
+```python
+from transformers import pipeline
+
+# Using a pre-trained model in 3 lines
+summariser = pipeline("summarization", model="facebook/bart-large-cnn")
+result = summariser("Your long text here...", max_length=130)
+print(result[0]['summary_text'])
+```
+
+---
+
+## Stage 5: Specialise and Build a Portfolio (Ongoing)
+
+After the foundations, choose a specialisation based on your interests:
+
+- **Computer Vision** — image classification, object detection, generative models (DALL-E style)
+- **NLP / LLMs** — text understanding, generation, fine-tuning language models
+- **ML Engineering** — deploying models to production, MLOps, monitoring
+- **Data Science** — business analytics, statistical modelling, A/B testing
+- **AI for specific domains** — healthcare AI, finance ML, autonomous systems
+
+**Build in public**: Post your projects on GitHub. Write about what you're learning. Contribute to open-source. This is how you get noticed.
+
+---
+
+## Realistic Timeline Summary
+
+| Stage | Duration | Path |
+|---|---|---|
+| Python basics | 4–6 weeks | B |
+| Maths foundations | 6–10 weeks (can overlap) | B |
+| AI literacy | 2–4 weeks | A + B |
+| Classical ML (scikit-learn) | 8–12 weeks | B |
+| Deep learning (PyTorch) | 8–12 weeks | B |
+| LLM fundamentals | 4–6 weeks | A + B |
+| Specialisation + portfolio | Ongoing | A + B |
+
+**For Path A (AI user)**: 6–10 weeks to become genuinely proficient
+**For Path B (ML engineer)**: 12–18 months for solid foundations job-ready skills
+
+---
+
+## Common Mistakes to Avoid
+
+**Tutorial hell** — Watching tutorial after tutorial without building anything. After every tutorial, immediately apply what you learned to a project.
+
+**Trying to understand everything before starting** — You don't need to master the maths before touching code. Intuition comes from doing.
+
+**Learning alone** — Find a community. Join AI Discord servers, Kaggle competitions, or a structured learning programme.
+
+**Skipping the fundamentals** — Jumping straight to fine-tuning LLMs without understanding gradient descent will leave gaps that bite you later.
+
+**Chasing new things** — The AI landscape changes weekly. Master the fundamentals, which change slowly, before chasing every new model release.
+
+---
+
+## Your Next Step
+
+The best time to start learning AI was two years ago. The second best time is right now.
+
+At **AI Educademy**, we've designed learning paths that follow exactly this roadmap — structured, project-based, and built for people starting from zero. Whether you want to use AI tools more effectively or become an ML engineer, we have a path for you.
+
+👉 **Start your AI learning journey today at [aieducademy.org](https://aieducademy.org)** — and join thousands of learners building real AI skills.
