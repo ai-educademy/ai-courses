@@ -1,0 +1,104 @@
+---
+title: "Decision Trees: The Algorithm You Can Draw on Paper"
+description: "Learn how decision trees work, why they're one of the most intuitive ML algorithms, and when to use them."
+order: 15
+difficulty: "intermediate"
+duration: 25
+icon: "🌳"
+published: true
+---
+
+# Decision Trees: The Algorithm You Can Draw on Paper 🌳
+
+Most machine learning algorithms are black boxes — you feed in data, something mathematical happens inside, and a prediction comes out. Decision trees are different. They are one of the few algorithms you can fully explain to a non-technical colleague, draw on a whiteboard, and still trust to make accurate predictions.
+
+---
+
+## 🎮 The 20 Questions Analogy
+
+You've probably played 20 Questions: one person thinks of something, and others ask yes/no questions to narrow it down. "Is it alive? Is it bigger than a car? Does it live in water?" Each answer eliminates a huge swath of possibilities until the answer becomes obvious.
+
+A decision tree works exactly like this. Given a new data point to classify, the tree asks a series of questions about its features, following the branches that match each answer, until it reaches a leaf — a final prediction.
+
+<Illustration src="/images/lessons/decision-trees-explained.svg" alt="A decision tree for classifying animals: first split on 'has wings?', then 'lives in water?', leading to leaf nodes with animal names" caption="A decision tree asks a series of questions about features, narrowing down to a prediction at each leaf node." />
+
+---
+
+## 🌿 Anatomy of a Tree
+
+Before we get into how trees learn, let's name the parts:
+
+- **Root node** — the very top question; the most important feature
+- **Internal nodes** — questions at each branch point
+- **Branches** — the paths taken based on yes/no (or value-range) answers
+- **Leaf nodes** — the endpoints; each holds a final prediction
+
+A single data point travels from root to leaf, answering one question at each node, until it reaches a prediction.
+
+---
+
+## 📐 How a Decision Tree Learns
+
+The clever part: how does the algorithm decide *which* question to ask at each node? It tries every possible split on every feature and picks the one that best separates the data.
+
+### Information Gain and Gini Impurity
+
+Two common measures of "best separation":
+
+**Gini impurity** measures how mixed a group is. A perfectly pure node — all examples belong to one class — has a Gini impurity of 0. A completely mixed node has the maximum impurity. The algorithm prefers splits that produce the purest child nodes.
+
+**Information gain** is similar: it measures how much a split reduces uncertainty (entropy) about the class label. Higher information gain = better split.
+
+Both measures ask the same underlying question: *after splitting on this feature, how much more certain am I about the class?*
+
+<FunFact>
+The CART algorithm (Classification and Regression Trees), introduced in 1984 by Breiman, Friedman, Olshen, and Stone, is the foundation of most modern decision tree implementations. Despite being 40 years old, it remains one of the most widely used ML algorithms.
+</FunFact>
+
+---
+
+## ✂️ Overfitting and Pruning
+
+Left unconstrained, a decision tree will grow until every training example has its own leaf — achieving 100% accuracy on training data but failing completely on new data. This is **overfitting**.
+
+Imagine memorising every past exam question word-for-word instead of understanding the subject. You'd ace the past papers but fail the real exam.
+
+Two main remedies:
+
+1. **Pre-pruning (early stopping)** — set limits during training: maximum depth, minimum samples per leaf, minimum information gain threshold. The tree stops growing when it hits these limits.
+
+2. **Post-pruning** — grow the full tree, then trim back branches that don't improve performance on a validation set.
+
+<ThinkAboutIt>
+A decision tree with depth 1 (a single question) is called a "decision stump". It's extremely simple — almost certainly underfitting. A tree of depth 100 with one sample per leaf is overfitting. How would you decide where to stop?
+</ThinkAboutIt>
+
+---
+
+## 🌲 From Trees to Forests
+
+A single decision tree is powerful but brittle — small changes in training data can produce very different trees. The solution: grow hundreds of trees, each trained on a random subset of the data and features, then **average their predictions**.
+
+This is a **Random Forest** — one of the most reliable and widely-used algorithms in all of machine learning. You'll cover it in depth in a later lesson. For now, remember: individual trees are interpretable, forests are robust.
+
+---
+
+## ✅ Strengths and ⚠️ Weaknesses
+
+| Strengths | Weaknesses |
+|---|---|
+| Fully interpretable — can be visualised | Prone to overfitting without pruning |
+| No need to normalise or scale features | Small data changes = very different trees |
+| Handles both numerical and categorical features | Biased towards features with more values |
+| Works without feature engineering | Not great at capturing linear relationships |
+| Fast to train and predict | Single trees often underperform ensembles |
+
+---
+
+<Quiz question="What does a leaf node in a decision tree represent?" options={["A question about a feature", "The final prediction after all questions have been answered", "The training dataset", "A measure of model accuracy"]} correct={1} explanation="Leaf nodes are the endpoints of a decision tree. When a data point has followed all the branches from root to leaf, the leaf node holds the final prediction — a class label for classification tasks, or a value for regression." />
+
+<Quiz question="What does 'Gini impurity' measure in a decision tree?" options={["How large the tree has grown", "How mixed a set of class labels is — lower means purer", "The computing cost of training the tree", "How many features are in the dataset"]} correct={1} explanation="Gini impurity measures the probability of incorrectly classifying a randomly chosen element if it were labelled according to the distribution of labels in a node. A Gini of 0 means all examples in the node belong to the same class — perfect purity." />
+
+<Quiz question="What is overfitting in the context of decision trees?" options={["When the tree is too shallow to learn anything useful", "When the tree memorises training data perfectly but fails to generalise to new data", "When the tree takes too long to train", "When the tree uses too many features"]} correct={1} explanation="An overfitted decision tree has grown so deep that it creates a unique path for every training example. It achieves near-perfect training accuracy but performs poorly on unseen data because it has memorised noise rather than learned genuine patterns." />
+
+<Quiz question="What is a Random Forest?" options={["A dataset of images of forests used to train vision models", "An ensemble of many decision trees, each trained on random subsets of data and features, with predictions averaged", "A single very deep decision tree", "A pruning technique for removing unimportant branches"]} correct={1} explanation="A Random Forest combines hundreds of decision trees, each built from a random sample of training data and a random subset of features. Averaging their predictions reduces variance and makes the ensemble far more robust than any individual tree." />

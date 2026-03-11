@@ -1,0 +1,294 @@
+---
+title: "Learn Python for AI: The Minimal Python You Actually Need"
+description: "You don't need to master Python to use it for AI. Here's the minimal subset of Python that will get you reading, writing, and understanding AI code fast."
+date: "2026-06-10"
+author: "AI Educademy Team"
+tags:
+  - python
+  - ai
+  - programming
+  - tutorial
+published: true
+---
+
+Python is the language of AI. If you've spent any time reading about machine learning, you've seen Python code everywhere — in tutorials, GitHub repos, research papers, and courses. Eventually, you'll want to read it, run it, and maybe modify it.
+
+The good news: you don't need to become a Python expert. You need a focused subset of the language. This guide teaches you exactly that — the minimal Python required to understand and work with AI code — with examples drawn from real ML workflows.
+
+---
+
+## Setting Up Python
+
+Before anything else, get Python installed.
+
+**The recommended way**: Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html), a lightweight Python distribution manager. It makes managing packages and environments straightforward.
+
+Once installed, open a terminal and type:
+```
+python --version
+```
+
+If you see `Python 3.x.x`, you're ready. You can write and run Python in:
+- **Jupyter Notebook** — the standard tool for AI experiments (browser-based, interactive)
+- **VS Code** — a free editor with excellent Python support
+- **Google Colab** — free, browser-based, no installation needed
+
+For AI learning, start with Google Colab. It's free, runs in your browser, and has GPU access.
+
+---
+
+## 1. Variables and Data Types
+
+In Python, you store values in variables. No type declarations needed.
+
+```python
+name = "neural network"       # string (text)
+layers = 4                    # integer (whole number)
+accuracy = 0.94               # float (decimal)
+is_trained = True             # boolean (True/False)
+```
+
+**Why this matters for AI**: Model hyperparameters, accuracy scores, and configuration values are stored as variables. You'll see things like `learning_rate = 0.001` or `epochs = 50` constantly.
+
+---
+
+## 2. Lists
+
+A list is an ordered collection of items. You can store multiple values in one variable.
+
+```python
+scores = [0.82, 0.87, 0.91, 0.95]
+labels = ["cat", "dog", "bird"]
+
+# Access by index (starts at 0)
+print(labels[0])    # "cat"
+print(labels[-1])   # "bird" (last item)
+
+# Add an item
+labels.append("fish")
+
+# Number of items
+print(len(scores))  # 4
+```
+
+**Why this matters for AI**: Training histories, lists of labels, batches of data — all stored in lists (or NumPy arrays, which work similarly).
+
+---
+
+## 3. Dictionaries
+
+Dictionaries store key-value pairs. Think of them like labelled boxes.
+
+```python
+model_config = {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "epochs": 10,
+    "optimizer": "adam"
+}
+
+# Access a value
+print(model_config["learning_rate"])    # 0.001
+
+# Update a value
+model_config["epochs"] = 20
+```
+
+**Why this matters for AI**: Model configuration, training arguments, and results are almost always represented as dictionaries. When you see `config = {...}` in AI code, this is what's happening.
+
+---
+
+## 4. Loops
+
+Loops let you repeat an action for each item in a collection.
+
+```python
+# for loop — iterate over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# range — loop a specific number of times
+for i in range(5):
+    print(i)    # prints 0, 1, 2, 3, 4
+```
+
+**Why this matters for AI**: Training loops iterate over data for multiple epochs. Data preprocessing loops clean each row in a dataset. You'll see `for epoch in range(epochs):` in virtually every training script.
+
+---
+
+## 5. Functions
+
+Functions are reusable blocks of code. You define them once and call them many times.
+
+```python
+def calculate_accuracy(correct, total):
+    return correct / total
+
+result = calculate_accuracy(85, 100)
+print(result)    # 0.85
+```
+
+Functions can have default values for parameters:
+
+```python
+def train_model(data, epochs=10, learning_rate=0.001):
+    print(f"Training for {epochs} epochs at lr={learning_rate}")
+
+train_model(data)                          # uses defaults
+train_model(data, epochs=20)               # override one
+train_model(data, epochs=20, learning_rate=0.01)   # override both
+```
+
+**Why this matters for AI**: Every ML library is made of functions. `model.fit()`, `model.predict()`, `train_test_split()` — these are all function calls. Understanding how functions work (including default arguments) unlocks your ability to read library documentation.
+
+---
+
+## 6. Conditionals
+
+```python
+accuracy = 0.92
+
+if accuracy > 0.90:
+    print("Model is performing well")
+elif accuracy > 0.75:
+    print("Model is acceptable")
+else:
+    print("Model needs improvement")
+```
+
+**Why this matters for AI**: Conditional logic appears in data validation, early stopping criteria, and decision-making during inference.
+
+---
+
+## 7. Importing Libraries
+
+Python's real power comes from its libraries. You import them at the top of your file.
+
+```python
+import numpy as np           # numerical computing
+import pandas as pd          # data manipulation
+import matplotlib.pyplot as plt   # plotting
+```
+
+The `as np` part creates an alias — you type `np.array()` instead of `numpy.array()`. This is standard convention.
+
+**Why this matters for AI**: Every AI workflow starts with imports. The three above — NumPy, Pandas, and Matplotlib — appear in virtually every data science notebook.
+
+---
+
+## 8. NumPy Basics
+
+NumPy is the foundation of numerical computing in Python. Its core object is the **array**.
+
+```python
+import numpy as np
+
+# Create arrays
+a = np.array([1, 2, 3, 4, 5])
+b = np.array([10, 20, 30, 40, 50])
+
+# Operations apply element-wise
+print(a + b)         # [11, 22, 33, 44, 55]
+print(a * 2)         # [2, 4, 6, 8, 10]
+print(np.mean(a))    # 3.0
+
+# 2D arrays (matrices)
+matrix = np.array([[1, 2], [3, 4], [5, 6]])
+print(matrix.shape)  # (3, 2) — 3 rows, 2 columns
+```
+
+**Why this matters for AI**: Neural network weights, image pixel data, word embeddings — all stored as NumPy arrays. When you see `X_train.shape == (1000, 28, 28)`, that's a NumPy array of 1,000 images, each 28×28 pixels.
+
+---
+
+## 9. Pandas Basics
+
+Pandas is for working with tabular data — spreadsheets in Python.
+
+```python
+import pandas as pd
+
+# Load a CSV file
+df = pd.read_csv("data.csv")
+
+# Explore the data
+print(df.head())         # first 5 rows
+print(df.shape)          # (rows, columns)
+print(df.columns)        # column names
+print(df.describe())     # statistics
+
+# Select a column
+ages = df["age"]
+
+# Filter rows
+adults = df[df["age"] >= 18]
+
+# Check for missing values
+print(df.isnull().sum())
+```
+
+**Why this matters for AI**: Real-world datasets come as CSV files. Pandas is how you load, explore, clean, and prepare data before training a model.
+
+---
+
+## 10. A Complete Mini Example
+
+Here's a complete Python script that loads data, splits it, trains a simple model, and evaluates it:
+
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# 1. Load data
+df = pd.read_csv("customers.csv")
+
+# 2. Separate features and target
+X = df[["age", "income", "years_customer"]]
+y = df["will_churn"]
+
+# 3. Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 4. Train a model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 5. Evaluate
+predictions = model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy:.2%}")
+```
+
+**Read through this line by line.** With the concepts above, you can understand every single line of it. That's the goal — not to write ML code from scratch, but to be able to read, understand, and modify it.
+
+---
+
+## What You Don't Need (Yet)
+
+To be practical with AI code, you don't need to immediately learn:
+
+- Object-oriented programming (classes, inheritance)
+- Decorators and advanced Python features
+- Concurrency and async code
+- Writing Python packages and modules
+
+These become valuable as you go deeper, but they're not prerequisites for working with AI tools and tutorials.
+
+---
+
+## Where to Practice
+
+- **[Google Colab](https://colab.research.google.com)** — free notebooks with GPU access
+- **[Kaggle Learn](https://www.kaggle.com/learn)** — free Python and ML micro-courses
+- **[Exercism Python track](https://exercism.org/tracks/python)** — hands-on exercises with mentoring
+
+The best way to learn is to run code, break it, fix it, and experiment. Pick a Kaggle dataset on a topic you find interesting and start exploring it with Pandas.
+
+---
+
+Python fluency for AI is not about memorising syntax. It's about recognising patterns — knowing what a loop looks like, what a function call does, what an import brings in. With the concepts in this guide, you have the foundation to read AI tutorials, follow along with code examples, and begin experimenting yourself.
+
+Want a structured path through AI fundamentals? [AI Educademy](https://aieducademy.org) offers free courses that take you from the basics of what AI is through to building and training your own models — no prior experience needed.

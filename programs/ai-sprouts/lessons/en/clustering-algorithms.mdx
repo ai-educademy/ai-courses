@@ -1,0 +1,112 @@
+---
+title: "Clustering: How AI Finds Patterns Without Labels"
+description: "Understand clustering — a key unsupervised learning technique — through K-Means, hierarchical clustering, and real-world applications."
+order: 16
+difficulty: "intermediate"
+duration: 25
+icon: "🔵"
+published: true
+---
+
+# Clustering: How AI Finds Patterns Without Labels 🔵
+
+Every algorithm you've studied so far has been **supervised**: you feed it labelled examples and it learns to predict labels for new ones. But what happens when you have a mountain of data and no labels at all?
+
+This is where **unsupervised learning** comes in — and clustering is one of its most powerful tools.
+
+---
+
+## 🔍 What Is Clustering?
+
+Clustering is the task of grouping data points together so that points in the same group (cluster) are more **similar** to each other than to points in other groups.
+
+Crucially, nobody tells the algorithm how many groups there are or what they represent. It finds the structure on its own.
+
+Think of it like sorting a pile of mixed sweets with your eyes closed, just using touch. You'd group them by shape — round ones together, long ones together, chewy ones apart from hard ones — without anyone defining the categories in advance.
+
+<FunFact>
+Clustering is used by astronomers to group galaxies by shape and composition, by geneticists to identify disease subtypes, and by Spotify to generate personalised playlists — all without anyone labelling the data by hand.
+</FunFact>
+
+---
+
+## 📍 K-Means: The Most Famous Clustering Algorithm
+
+**K-Means** is simple, fast, and surprisingly powerful. Here's the full algorithm in plain English:
+
+1. **Choose K** — decide in advance how many clusters you want.
+2. **Place K centroids randomly** — scatter K points randomly across the data space. A centroid is just the "centre" of a cluster.
+3. **Assign each data point to its nearest centroid** — every point belongs to whichever centroid it's closest to.
+4. **Recalculate each centroid** — move each centroid to the average position of all points assigned to it.
+5. **Repeat steps 3 and 4** — keep reassigning and recalculating until the assignments stop changing.
+
+<Illustration src="/images/lessons/clustering-algorithms.svg" alt="Three iterations of K-Means: random centroids, first assignment, final converged clusters shown in different colours" caption="K-Means iterates between assigning points to centroids and recalculating centroid positions until clusters stabilise." />
+
+The analogy: imagine placing K magnets on a map of customer addresses. Each customer is attracted to the nearest magnet. Then you move each magnet to the centre of its customers. Repeat until the magnets stop moving.
+
+<ThinkAboutIt>
+K-Means depends on the initial random placement of centroids. Two runs on the same data can produce different clusters. How would you decide which result is better? What would you even measure?
+</ThinkAboutIt>
+
+---
+
+## 🔢 Choosing K: The Elbow Method
+
+A practical problem: how do you choose K? If you set K equal to the number of data points, every point is its own cluster — perfect but useless. If K = 1, everything is one big blob — also useless.
+
+The **elbow method** helps: run K-Means for K = 1, 2, 3, … N and plot how much "error" (within-cluster variance) decreases as K increases. More clusters always reduce error, but there's usually a K where the improvement starts to slow dramatically — the "elbow" in the curve. That's a good candidate for the right K.
+
+It's not a hard rule, but it gives you a principled starting point.
+
+---
+
+## 🌿 Hierarchical Clustering
+
+K-Means requires you to fix K upfront. **Hierarchical clustering** does not.
+
+Instead, it builds a tree (called a **dendrogram**) of clusters by either:
+
+- **Agglomerative (bottom-up)**: start with every point as its own cluster. Repeatedly merge the two most similar clusters until everything is one big cluster.
+- **Divisive (top-down)**: start with everything in one cluster. Repeatedly split the most dissimilar cluster until every point is its own cluster.
+
+The resulting dendrogram lets you "cut" at any level to get any number of clusters, which is extremely flexible. The downside: hierarchical clustering is computationally expensive on large datasets.
+
+---
+
+## 🌍 Real-World Applications
+
+Clustering turns up everywhere:
+
+| Application | What Gets Clustered |
+|---|---|
+| Customer segmentation | Customers grouped by purchase behaviour |
+| Image compression | Pixel colours reduced to K representative colours |
+| Document organisation | Articles grouped by topic without manual labels |
+| Anomaly detection | Outliers that don't fit any cluster = suspicious |
+| Genetics | Gene expression patterns grouped by disease subtype |
+| Social networks | Communities identified by connection patterns |
+
+---
+
+## ⚠️ Limitations of Clustering
+
+Clustering is powerful but has real limitations:
+
+- **Interpreting clusters is hard** — the algorithm groups the data, but you still have to work out what each group *means*.
+- **K-Means assumes roughly spherical clusters** — it struggles with elongated, irregular, or nested cluster shapes.
+- **Sensitive to scale** — features with large numerical ranges dominate distance calculations; always normalise features before clustering.
+- **No ground truth** — without labels, evaluating quality is subjective. Two analysts might draw different conclusions from the same clustering.
+
+<FunFact>
+K-Means was first proposed by Stuart Lloyd in 1957 (as an internal Bell Labs technical note) and independently re-described by Forgy in 1965. Despite its age, it remains one of the most widely-used algorithms in data science.
+</FunFact>
+
+---
+
+<Quiz question="What is the fundamental difference between supervised learning and clustering?" options={["Clustering requires more data", "Clustering finds structure in unlabelled data, while supervised learning learns from labelled examples", "Supervised learning is always more accurate", "Clustering can only handle numerical data"]} correct={1} explanation="Supervised learning requires labelled training data — inputs paired with correct answers. Clustering is unsupervised: it discovers natural groupings in data without any labels. Nobody tells the algorithm what the groups should be." />
+
+<Quiz question="In K-Means, what is a 'centroid'?" options={["The largest data point in a cluster", "The representative centre point of a cluster, calculated as the average of all its members", "The boundary between two clusters", "The number of clusters"]} correct={1} explanation="A centroid is the geometric centre of a cluster. In K-Means, it is recalculated after each assignment step as the mean position of all data points belonging to that cluster. The algorithm converges when centroids stop moving." />
+
+<Quiz question="What does the 'elbow method' help you determine in K-Means?" options={["How to initialise centroids more reliably", "The optimal number of clusters K by identifying where adding more clusters yields diminishing returns", "How to scale features before clustering", "Which distance metric to use"]} correct={1} explanation="The elbow method plots within-cluster variance against K. As K increases, variance always decreases, but at some point the rate of decrease slows sharply — the 'elbow'. This inflection point is typically a good estimate for the right number of clusters." />
+
+<Quiz question="Why should you normalise features before running K-Means?" options={["To make the algorithm faster", "Because features with large numerical ranges would otherwise dominate distance calculations and bias cluster assignments", "To reduce the number of data points", "Because K-Means cannot handle categorical variables"]} correct={1} explanation="K-Means uses Euclidean distance to assign points to centroids. If one feature has values in the thousands (e.g., income) and another in the tens (e.g., age), the first feature dominates the distance calculation. Normalising puts all features on an equal footing." />

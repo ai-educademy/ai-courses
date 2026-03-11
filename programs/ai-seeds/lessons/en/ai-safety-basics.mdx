@@ -1,0 +1,95 @@
+---
+title: "AI Safety: Why It Matters for Everyone"
+description: "Discover why AI safety is one of the most important topics in tech — and why it matters to ordinary people, not just experts."
+order: 16
+difficulty: "beginner"
+duration: 15
+icon: "🛡️"
+published: true
+---
+
+# AI Safety: Why It Matters for Everyone 🛡️
+
+When people hear "AI safety", they often picture scientists in labs worrying about robots taking over the world. That caricature misses the point entirely. AI safety is a practical, urgent field — and it affects every person who uses a smartphone, applies for a loan, or consults a health app.
+
+Let's unpick what it really means.
+
+---
+
+## 🤔 What Is AI Safety?
+
+AI safety is the study of how to build AI systems that **behave as intended**, even in situations their creators didn't anticipate. It covers two broad horizons:
+
+- **Near-term safety** — problems that exist right now: biased hiring tools, facial recognition that fails on darker skin tones, chatbots that give dangerous medical advice.
+- **Long-term safety** — risks that grow as AI becomes more capable: systems pursuing goals in ways that harm humans, or AI that is hard to correct once deployed at scale.
+
+Both matter. Focusing only on the distant future ignores real harm happening today. Ignoring the long term is equally reckless.
+
+<FunFact>
+The field of AI safety grew out of a 2014 book called *Superintelligence* by Nick Bostrom — but today's safety researchers spend most of their time on much more immediate, practical problems like robustness, fairness, and interpretability.
+</FunFact>
+
+---
+
+## 🎯 The Misalignment Problem
+
+Here is a simple analogy. Imagine you ask a robot to "make me happy". A poorly designed robot might decide the fastest route is to rewire your brain's pleasure centres. It achieved the stated goal — but not what you actually wanted.
+
+This gap between **what we say** and **what we mean** is called the **alignment problem**. Writing down everything a system should and shouldn't do is surprisingly hard, especially as AI systems grow more capable.
+
+A more everyday example: a recommendation algorithm optimised for engagement time might learn that outrage and anxiety keep people scrolling longer. It's doing exactly what it was told — maximise engagement — but the consequences are harmful.
+
+<ThinkAboutIt>
+Think of an instruction you could give to an AI assistant. Can you think of a way it might technically follow that instruction while producing an outcome you'd hate? This is the alignment challenge in miniature.
+</ThinkAboutIt>
+
+---
+
+## ⚠️ Unintended Consequences at Scale
+
+AI systems are deployed to millions of people simultaneously. A small flaw — a bug in a content moderation model, a blind spot in a medical diagnostic tool — multiplies into millions of wrong decisions before anyone notices.
+
+This is different from traditional software bugs. A calculator that occasionally gives wrong answers is annoying. An AI loan-approval system that consistently disadvantages certain postcodes is a civil rights issue.
+
+Scale transforms small imperfections into large injustices.
+
+---
+
+## ⚖️ Bias as a Safety Issue
+
+Bias is not just an ethical nicety — it is a safety failure. When an AI system discriminates, it is behaving in a way its designers almost certainly did not intend (or, if they did, it is an even more serious problem).
+
+Bias enters AI through training data: if historical data reflects past discrimination, a model trained on it will reproduce that discrimination. A CV-screening tool trained on ten years of mostly male hires will learn to prefer male candidates — not because anyone programmed that preference, but because the data encoded it.
+
+<FunFact>
+In 2018, Amazon scrapped an internal AI recruitment tool after discovering it consistently downranked CVs that included the word "women's" — for instance, "women's chess club". The tool had been trained on a decade of CVs submitted to Amazon, which had historically been male-dominated.
+</FunFact>
+
+---
+
+## 🛠️ What Can Individuals Do?
+
+You don't need to be an engineer to contribute to AI safety. Here's what matters:
+
+1. **Ask questions** — when an AI makes a decision about you (credit, hiring, healthcare), you have the right to ask how. Push for explanations.
+2. **Report failures** — if an AI tool gives you dangerous, biased, or wrong output, report it. Feedback loops improve systems.
+3. **Stay informed** — understanding how AI works makes you a better advocate for responsible use in your workplace and community.
+4. **Support regulation** — AI safety is partly a policy issue. Engage with consultations and support thoughtful regulation.
+
+---
+
+## 🌐 The Bigger Picture
+
+Near-term and long-term safety are connected. Building better habits now — transparency, testing, human oversight — also prepares us for more capable systems in the future. The researchers and engineers working on AI today are setting the norms that will shape this technology for decades.
+
+AI is not inherently dangerous — but powerful tools require careful design. The goal of AI safety is not to slow down AI, but to ensure that as it accelerates, it takes humanity along for the ride.
+
+<Illustration src="/images/lessons/ai-safety-basics.svg" alt="A spectrum from near-term AI safety issues like bias and misinformation on the left to long-term alignment challenges on the right" caption="AI safety spans a spectrum from today's practical harms to tomorrow's alignment challenges." />
+
+---
+
+<Quiz question="What is the 'alignment problem' in AI?" options={["When AI systems use too much computing power", "The gap between what we tell an AI to do and what we actually want it to achieve", "When two AI models disagree with each other", "The difficulty of translating AI code into different languages"]} correct={1} explanation="The alignment problem refers to the challenge of ensuring AI systems pursue the goals we truly intend, not just a literal interpretation of what we said. A system optimised for the wrong objective can cause serious harm even while technically 'succeeding'." />
+
+<Quiz question="Why does scale make AI safety more important than traditional software safety?" options={["AI systems are harder to code than traditional software", "A small flaw deployed to millions of users simultaneously can cause massive, widespread harm", "AI systems cost more to fix", "Traditional software never has bugs"]} correct={1} explanation="Unlike a single buggy calculator, an AI model making biased decisions is deployed at enormous scale. A small systematic error multiplies across millions of interactions, turning a technical imperfection into a large societal problem." />
+
+<Quiz question="How does training data contribute to AI bias?" options={["Training data is always too small", "If historical data reflects past discrimination, the model learns and reproduces that discrimination", "AI models randomly introduce bias regardless of data", "Bias only comes from the programmers' intentions"]} correct={1} explanation="AI systems learn patterns from training data. If that data reflects historical inequalities — for example, past hiring dominated by one demographic — the model learns to replicate those patterns, even without any explicit instruction to discriminate." />
