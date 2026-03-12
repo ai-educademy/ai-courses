@@ -1,0 +1,228 @@
+---
+title: "Debugging Under Pressure"
+description: "Develop a systematic debugging approach that works even when the clock is ticking and the interviewer is watching."
+order: 6
+difficulty: "intermediate"
+duration: 15
+icon: "🐛"
+published: true
+---
+
+# Debugging Under Pressure
+
+There's a special kind of stress that comes from debugging code while someone watches you and a timer counts down. Your palms get sweaty, your mind goes blank, and suddenly you can't remember how a for loop works. Every engineer has been there. The difference between candidates who crumble and those who shine isn't raw talent — it's having a systematic process that works even when your brain wants to panic. This lesson gives you that process.
+
+## The RIIFV Debugging Framework
+
+When you're handed buggy code in an interview, resist the urge to immediately start scanning for the bug. Instead, follow this five-step framework:
+
+### R — Reproduce
+
+Confirm the bug exists and understand its symptoms.
+
+- What is the expected behaviour?
+- What is the actual behaviour?
+- Under what inputs does the bug occur?
+
+```python
+# You're told this function should return the second largest element
+def second_largest(nums):
+    first = second = float('-inf')
+    for num in nums:
+        if num > first:
+            second = first
+            first = num
+        elif num > second:
+            second = num
+    return second
+
+# Step 1: Reproduce with test cases
+print(second_largest([3, 1, 4, 1, 5]))  # Expected: 4, Got: 4 ✓
+print(second_largest([5, 5, 5]))         # Expected: 5, Got: -inf ✗ — BUG!
+print(second_largest([1]))               # Expected: None?, Got: -inf — Edge case
+```
+
+### I — Isolate
+
+Narrow down where the bug lives. Use divide-and-conquer thinking:
+
+- Is the bug in the input parsing, the logic, or the output?
+- Which specific line or block produces the wrong result?
+- Can you isolate it to a minimal failing test case?
+
+### I — Identify
+
+Once isolated, determine the root cause — not just the symptom:
+
+- **Symptom**: Returns `-inf` for `[5, 5, 5]`
+- **Root cause**: The `elif num > second` condition doesn't handle duplicates. When all elements are equal, `num > first` is only true once, and `num > second` is never true for the remaining equal elements.
+
+### F — Fix
+
+Apply the minimal fix that addresses the root cause without introducing new bugs:
+
+```python
+def second_largest(nums):
+    if len(nums) < 2:
+        return None
+    first = second = float('-inf')
+    for num in nums:
+        if num > first:
+            second = first
+            first = num
+        elif num > second and num != first:  # Handle case: distinct second
+            second = num
+    return second if second != float('-inf') else first  # All same → return that value
+```
+
+<ThinkAboutIt>Wait — should `second_largest([5, 5, 5])` return 5 or None? This is ambiguous, and in a real interview, this is exactly the kind of question you should ask the interviewer. Clarifying requirements is part of debugging.</ThinkAboutIt>
+
+### V — Verify
+
+Confirm the fix works for all cases — the original failing case, edge cases, and previously passing cases:
+
+```python
+assert second_largest([3, 1, 4, 1, 5]) == 4    # Normal case
+assert second_largest([5, 5, 5]) == 5            # Duplicates
+assert second_largest([1, 2]) == 1               # Minimum valid input
+assert second_largest([1]) is None               # Too few elements
+assert second_largest([-1, -2, -3]) == -2        # Negative numbers
+```
+
+<Callout>Always re-run your original test cases after fixing a bug. It's surprisingly common to fix one bug while introducing another. The "verify" step catches regressions that would cost you the interview.</Callout>
+
+## Common Debugging Interview Formats
+
+### Format 1: "Here's Buggy Code — Fix It"
+
+You receive a function with 1-3 bugs. Apply RIIFV:
+- Read the code and understand intent
+- Run mental test cases to find failures
+- Fix each bug and explain your reasoning
+
+### Format 2: "This System Is Broken — Diagnose It"
+
+You're given a scenario: "Users report that the checkout page sometimes shows the wrong price." You need to:
+- Ask clarifying questions ("Sometimes? Is it random, or does it follow a pattern?")
+- Form hypotheses ("Could be a caching issue, a race condition, or a currency conversion bug")
+- Propose investigation steps in priority order
+
+### Format 3: "Debug This Live System" (Pair Debugging)
+
+You and the interviewer debug together. They may play the role of a teammate or a system:
+- Verbalise your thought process
+- Propose what you'd check first and why
+- Interpret logs and metrics they provide
+
+## Thinking Aloud While Debugging
+
+The biggest difference between debugging alone and debugging in an interview is that you need to narrate. Here's how to do it without it feeling forced:
+
+**State your observations**:
+"I see that the function takes a list and should return the second largest. Let me trace through with a simple example..."
+
+**Form hypotheses**:
+"My first thought is that it might not handle edge cases like duplicate values. Let me test with [5, 5, 5]..."
+
+**Explain your reasoning**:
+"The condition `num > second` is never true when all values are equal because `first` is already 5, and the remaining 5s are not greater than `second` which is also `-inf`... wait, actually `5 > -inf` is true, so second becomes 5 on the second element... Hmm, let me trace more carefully."
+
+**Admit when you're wrong**:
+"Actually, my initial hypothesis was incorrect. Let me re-trace this..."
+
+<FunFact>Research by psychologist Gary Klein found that expert debuggers solve problems up to 10x faster than novices, not because they're smarter, but because they recognise patterns from past experience. This is why practising with diverse bug types matters more than raw intelligence.</FunFact>
+
+## Strategic Use of Print Statements
+
+In a coding interview, print statements are your debugger. Use them strategically:
+
+```python
+def merge_sorted_lists(list1, list2):
+    result = []
+    i = j = 0
+    while i < len(list1) and j < len(list2):
+        print(f"Comparing list1[{i}]={list1[i]} with list2[{j}]={list2[j]}")
+        if list1[i] <= list2[j]:
+            result.append(list1[i])
+            i += 1
+        else:
+            result.append(list2[j])
+            j += 1
+        print(f"Result so far: {result}")
+
+    # Don't forget: add remaining elements
+    result.extend(list1[i:])
+    result.extend(list2[j:])
+    print(f"Final result: {result}")
+    return result
+```
+
+**Tips for effective print debugging**:
+- Print at decision points (before if/else, inside loops)
+- Include variable names and indices in the output
+- Print before and after the suspected bug location
+- Remove or comment out prints before submitting your final solution
+
+## Debugging Distributed Systems
+
+For senior-level interviews, you may be asked about debugging distributed systems:
+
+### The Debugging Toolkit
+
+| Tool/Technique | What It Reveals |
+|---|---|
+| **Logs** (structured, with correlation IDs) | Sequence of events, error details |
+| **Metrics** (latency, error rate, throughput) | Trends and anomalies |
+| **Traces** (distributed tracing) | Request flow across services |
+| **Health checks** | Which components are degraded |
+
+### Systematic Approach
+
+1. **Check metrics dashboards** — is it a spike or gradual degradation?
+2. **Narrow the scope** — which service, endpoint, or region is affected?
+3. **Check recent deployments** — "what changed?" is the highest-signal question
+4. **Follow the trace** — use correlation IDs to track a failing request across services
+5. **Check dependencies** — is a downstream service (database, cache, third-party API) the root cause?
+
+```
+User reports slow checkout
+→ Metrics show p99 latency spike at 14:30
+→ Correlated with deployment of payment-service v2.3.1
+→ Traces show payment-service waiting 10s on database query
+→ Database query plan changed due to missing index after schema migration
+→ Root cause: migration in v2.3.1 dropped an index
+→ Fix: recreate index, add migration test
+```
+
+<Quiz question="A production service suddenly shows a 5x increase in p99 latency. No code was deployed in the last 24 hours. What should you investigate first?" options="Search the codebase for recent bugs|Check if a downstream dependency is experiencing issues|Roll back to the previous version|Add more logging and wait for the issue to recur" answer="1" explanation="When no code changed, the root cause is likely external: a downstream dependency (database, cache, third-party API) may be degraded, or there could be infrastructure changes (network, DNS, certificate expiry). Checking dependencies first is the highest-signal investigation step." />
+
+## Time Management During Debugging Rounds
+
+A typical debugging round is 30-45 minutes. Budget your time:
+
+| Phase | Time | Activity |
+|---|---|---|
+| **Understand** | 5 min | Read the code, clarify the problem, identify expected vs actual behaviour |
+| **Reproduce** | 5 min | Create test cases that trigger the bug |
+| **Isolate & Identify** | 10 min | Narrow down the root cause using tracing and print statements |
+| **Fix** | 5 min | Apply the minimal, correct fix |
+| **Verify** | 5 min | Test the fix against all cases, including edge cases |
+
+<Callout>If you're 15 minutes in and haven't found the bug, step back and change your approach. Re-read the problem statement — you may have misunderstood the expected behaviour. Try a completely different test case. Sometimes the bug is in your assumptions, not in the code.</Callout>
+
+## What to Do When You're Stuck
+
+1. **Re-read the problem statement** — you may have made an incorrect assumption
+2. **Try a minimal test case** — reduce the input to the smallest case that still fails
+3. **Trace through line by line** — with pen and paper if needed, track every variable
+4. **Check the boundaries** — first iteration, last iteration, empty input
+5. **Explain the problem to the interviewer** — "rubber duck debugging" works even with a human audience
+6. **Ask for a hint** — this is much better than sitting in silence for 10 minutes
+
+## Key Takeaways
+
+- **Use the RIIFV framework**: Reproduce → Isolate → Identify → Fix → Verify. It works under pressure because it gives your brain a process when instinct fails.
+- **Think aloud continuously**: narrate your observations, hypotheses, and reasoning. Silence is your enemy in a debugging interview.
+- **Prioritise edge cases**: most interview bugs hide in empty inputs, duplicates, negative numbers, or boundary conditions.
+- **Print statements are your friend**: use them strategically at decision points, and clean them up before finalising.
+- **Know when to pivot**: if your approach isn't working after 10-15 minutes, step back and try a completely different angle.

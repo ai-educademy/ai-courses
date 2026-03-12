@@ -1,0 +1,187 @@
+---
+title: "ML System Design Interviews"
+description: "Design end-to-end machine learning systems — from problem framing to deployment — using a structured framework interviewers love."
+order: 1
+difficulty: "advanced"
+duration: 25
+icon: "🏗️"
+published: true
+---
+
+# 🏗️ ML System Design Interviews
+
+You've made it through the coding rounds. Now the interviewer slides a whiteboard marker across the table and says, "Design a recommendation system for 50 million users." Your palms go damp — not because you don't know ML, but because you've never practised *thinking out loud* about entire systems. This lesson gives you a repeatable framework that turns that open-ended question into a structured conversation.
+
+---
+
+## 🗺️ Why ML System Design Is Different
+
+Traditional software system design focuses on data flow, storage, and scalability. ML system design adds an extra dimension: **the model is a living component** that degrades over time, depends on data quality, and requires continuous evaluation.
+
+Interviewers aren't looking for a perfect architecture diagram. They want to see that you can:
+
+- Translate a vague business problem into a well-scoped ML task
+- Identify data requirements and potential pitfalls early
+- Reason about trade-offs rather than recite textbook answers
+- Think about what happens *after* the model is deployed
+
+<Callout>
+The biggest mistake candidates make is jumping straight to model selection. Interviewers consistently report that problem framing and data discussion are where candidates differentiate themselves.
+</Callout>
+
+---
+
+## 🧩 The Eight-Step ML System Design Framework
+
+Use this framework as your skeleton for every design question. You don't need to spend equal time on every step — adapt based on the question — but touching each one signals maturity.
+
+### 1. Problem Definition & Business Metrics
+
+Start by clarifying the goal. Ask: *What does success look like for the business?*
+
+- **Search ranking**: Maximise click-through rate? Time-to-result?
+- **Fraud detection**: Minimise false negatives (missed fraud) while controlling false positives (blocked legitimate users)?
+- **Content moderation**: Prioritise recall (catch everything harmful) over precision?
+
+Map the business metric to an ML-friendly objective early. For example, "increase user engagement" might translate to "predict probability of click on each item and rank by score."
+
+### 2. Data Pipeline & Collection
+
+Discuss where data comes from, how it's collected, and what problems you anticipate:
+
+- **Data sources**: user behaviour logs, transaction records, third-party APIs
+- **Labelling strategy**: explicit labels (user ratings), implicit signals (clicks, dwell time), or human annotation
+- **Data freshness**: how often does the data change, and does staleness hurt performance?
+
+### 3. Feature Engineering
+
+Describe the features you'd extract. Group them logically:
+
+| Feature Group | Examples |
+|---|---|
+| User features | age bucket, tenure, historical click rate |
+| Item features | category, price range, popularity score |
+| Context features | time of day, device type, location |
+| Interaction features | user×item co-occurrence, session depth |
+
+### 4. Model Selection
+
+Now — and only now — discuss models. Justify your choice:
+
+- **Baseline**: logistic regression or gradient-boosted trees (fast to train, interpretable)
+- **Advanced**: deep learning (two-tower models for retrieval, transformer-based rankers)
+- **Ensemble**: combine a fast retrieval model with a slower but more accurate re-ranker
+
+### 5. Training Strategy
+
+Cover how you'd train and validate:
+
+- Train/validation/test splits (time-based splits for temporal data)
+- Handling class imbalance (oversampling, loss weighting)
+- Hyperparameter tuning approach
+
+### 6. Offline Evaluation
+
+Pick metrics that align with the business goal. Precision@K for ranking, AUC-ROC for binary classification, NDCG for ordered lists.
+
+### 7. Deployment & Serving
+
+Discuss how the model reaches users:
+
+- **Batch inference**: pre-compute predictions nightly (good for email recommendations)
+- **Real-time inference**: score on every request (needed for search ranking)
+- **Hybrid**: pre-compute candidate set, re-rank in real time
+
+### 8. Monitoring & Iteration
+
+Explain what you'd watch after launch: data drift, prediction distribution shifts, and online metrics via A/B tests.
+
+<ThinkAboutIt>
+Imagine you're designing a fraud detection system. The business says "catch all fraud." Why is 100% recall a dangerous target, and how would you frame the conversation around acceptable trade-offs?
+</ThinkAboutIt>
+
+---
+
+## 🎯 Common ML Design Questions & How to Approach Them
+
+### Recommendation System
+
+- **Framing**: predict P(user clicks item) → rank items by score
+- **Key challenge**: cold-start problem for new users/items
+- **Architecture**: candidate generation (fast, approximate) → ranking (accurate, slower) → re-ranking (business rules, diversity)
+
+### Search Ranking
+
+- **Framing**: given a query, rank documents by relevance
+- **Key challenge**: balancing relevance, freshness, and personalisation
+- **Architecture**: inverted index retrieval → learning-to-rank model → blending with business rules
+
+### Fraud Detection
+
+- **Framing**: binary classification — is this transaction fraudulent?
+- **Key challenge**: extreme class imbalance (fraud is < 0.1% of transactions)
+- **Architecture**: rule-based filters → ML model → human review queue for uncertain cases
+
+<Quiz
+  question="In an ML system design interview, what should you do FIRST when given a design prompt?"
+  options="Choose a neural network architecture|Clarify the problem and define business metrics|Draw the data pipeline|Discuss model evaluation metrics"
+  answer="1"
+  explanation="Always start by clarifying the problem. Understanding what success looks like for the business determines every downstream decision — from data collection to metric selection to deployment strategy."
+/>
+
+---
+
+## ⚖️ Discussing Trade-Offs Like a Senior Engineer
+
+Interviewers love trade-off discussions because they reveal depth of experience. Here are the trade-offs that come up most:
+
+| Trade-Off | When to Favour Left | When to Favour Right |
+|---|---|---|
+| Latency vs Accuracy | Real-time user-facing (search) | Batch offline (email recs) |
+| Simple vs Complex model | Small data, need interpretability | Large data, accuracy is critical |
+| Batch vs Real-time serving | Predictions don't change quickly | Predictions must reflect latest context |
+| Build vs Buy | Core differentiator for the business | Commodity capability (e.g., OCR) |
+
+When you discuss a trade-off, use this pattern:
+
+> "We could go with **option A** which gives us [benefit], but the downside is [cost]. Alternatively, **option B** [benefit], though it introduces [cost]. Given [specific constraint from the problem], I'd lean towards **option A** because..."
+
+<FunFact>
+Netflix estimates that its recommendation system saves the company over $1 billion per year in reduced churn. That single ML system's value exceeds the GDP of some small countries.
+</FunFact>
+
+---
+
+## 🛠️ Putting It All Together: A Mini Walkthrough
+
+**Prompt**: "Design a content moderation system for a social media platform."
+
+1. **Problem**: classify user-generated content (text + images) as safe, borderline, or harmful
+2. **Data**: labelled moderation decisions from human reviewers, user reports
+3. **Features**: text embeddings, image features (nudity score, violence indicators), user history (prior violations)
+4. **Model**: multi-modal classifier (text branch + image branch → fusion layer → classification head)
+5. **Training**: stratified sampling to handle class imbalance; regular retraining as new harmful patterns emerge
+6. **Evaluation**: high recall on harmful content; precision matters for borderline (avoid over-censorship)
+7. **Serving**: real-time inference at upload time; queue borderline cases for human review
+8. **Monitoring**: track false positive rate via user appeals; monitor for new abuse patterns
+
+<Quiz
+  question="Why is a hybrid serving approach (batch candidate generation + real-time ranking) common in recommendation systems?"
+  options="It's cheaper than pure real-time serving|It balances the need for broad coverage with personalised, context-aware ranking|It's easier to implement than batch-only|It eliminates the need for feature stores"
+  answer="1"
+  explanation="Batch candidate generation can efficiently sift through millions of items to produce a manageable shortlist. Real-time ranking then personalises that shortlist using the latest context (time of day, session behaviour), giving the best balance of coverage and relevance."
+/>
+
+---
+
+## 🔑 Key Takeaways
+
+- **Use a framework**: problem → data → features → model → training → evaluation → deployment → monitoring
+- **Start with the business problem**, not the model — interviewers notice when you skip this
+- **Discuss trade-offs explicitly** — this is the single biggest differentiator between mid-level and senior candidates
+- **Think beyond accuracy** — latency, cost, fairness, and maintainability all matter in production
+- **Practise out loud** — ML system design is a communication exercise as much as a technical one
+
+<Callout>
+The best ML system design answers feel like a conversation, not a lecture. Pause to check in with the interviewer, ask clarifying questions, and be willing to pivot when they nudge you in a different direction.
+</Callout>

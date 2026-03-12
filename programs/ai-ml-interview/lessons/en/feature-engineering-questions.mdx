@@ -1,0 +1,214 @@
+---
+title: "Feature Engineering Questions"
+description: "Handle feature engineering interview questions with confidence — from raw data to production-ready features."
+order: 3
+difficulty: "intermediate"
+duration: 18
+icon: "🔧"
+published: true
+---
+
+# 🔧 Feature Engineering Questions
+
+Here's a secret that seasoned ML engineers know: **the model you choose matters far less than the features you feed it.** A simple logistic regression with brilliant features will beat a deep neural network with poor features almost every time. That's why interviewers love feature engineering questions — they test whether you understand the *data* side of machine learning, not just the algorithms.
+
+---
+
+## 🤔 Why Interviewers Care About Feature Engineering
+
+Feature engineering sits at the intersection of domain knowledge, data intuition, and engineering skill. When an interviewer asks you to "design features for a ride-sharing ETA prediction system," they're testing:
+
+- Can you think creatively about what signals exist in the data?
+- Do you understand how raw data transforms into model inputs?
+- Can you anticipate problems like leakage, sparsity, and scale?
+- Do you think about production constraints (latency, storage, freshness)?
+
+<Callout>
+A common interview pattern: the interviewer describes a business problem and asks you to brainstorm features. Start by asking about available data sources — this shows you think about feasibility, not just theory.
+</Callout>
+
+---
+
+## 📦 Types of Features
+
+### Numerical Features
+
+Raw numbers that can be fed directly into models — but often benefit from transformation:
+
+- **Standardisation**: centre to mean 0, scale to unit variance (essential for distance-based models like SVM, KNN)
+- **Log transformation**: compress right-skewed distributions (income, page views)
+- **Binning**: convert continuous values into discrete buckets (age → age_group)
+
+```python
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+
+# Log transform for skewed feature
+df['log_income'] = np.log1p(df['income'])
+
+# Standardisation
+scaler = StandardScaler()
+df[['age_scaled', 'income_scaled']] = scaler.fit_transform(df[['age', 'income']])
+```
+
+### Categorical Features
+
+Non-numeric data like country, product category, or user segment. Encoding strategy matters:
+
+| Method | When to Use | Pros | Cons |
+|---|---|---|---|
+| One-Hot Encoding | Low cardinality (< 20 categories) | Simple, no ordinal assumption | Sparse, high-dimensional |
+| Label Encoding | Ordinal categories (low/medium/high) | Compact | Implies false ordering for non-ordinal |
+| Target Encoding | High cardinality (city, postcode) | Captures category-target relationship | Risk of data leakage |
+| Embeddings | Very high cardinality, deep learning | Learns dense representations | Needs neural network |
+
+<ThinkAboutIt>
+You're building a recommendation model and one of your features is `product_id` with 500,000 unique values. One-hot encoding would create 500K sparse columns. What encoding strategies would you consider, and what are the trade-offs?
+</ThinkAboutIt>
+
+### Temporal Features
+
+Time-based data is rich with signal — if you extract it properly:
+
+- **Cyclical encoding**: hour of day, day of week (use sin/cos to capture cyclical nature)
+- **Lag features**: value at t-1, t-7, t-30 (critical for time series)
+- **Rolling statistics**: 7-day moving average, 30-day rolling std
+- **Time since event**: days since last purchase, hours since last login
+
+```python
+# Cyclical encoding for hour of day
+df['hour_sin'] = np.sin(2 * np.pi * df['hour'] / 24)
+df['hour_cos'] = np.cos(2 * np.pi * df['hour'] / 24)
+
+# Lag and rolling features
+df['sales_lag_7'] = df['sales'].shift(7)
+df['sales_rolling_mean_7'] = df['sales'].rolling(window=7).mean()
+```
+
+### Text Features
+
+When models need to consume text data:
+
+- **Bag of Words / TF-IDF**: simple, interpretable, works well with traditional ML
+- **Word embeddings**: Word2Vec, GloVe — dense representations capturing semantic meaning
+- **Sentence embeddings**: BERT, Sentence-BERT — contextual representations
+- **Handcrafted**: word count, average word length, sentiment score, presence of specific keywords
+
+### Interaction Features
+
+Combinations of features that capture relationships the model might not learn on its own:
+
+- **Feature crosses**: `city × device_type` (urban mobile users behave differently from rural desktop users)
+- **Ratios**: `clicks / impressions` = click-through rate
+- **Differences**: `current_price - avg_price` = relative pricing signal
+
+<Quiz
+  question="Which encoding is MOST appropriate for a 'city' feature with 10,000 unique values in a gradient-boosted tree model?"
+  options="One-Hot Encoding|Target Encoding|Binary Encoding|Label Encoding"
+  answer="1"
+  explanation="With 10,000 unique cities, one-hot encoding creates an impractically sparse matrix. Target encoding maps each city to the mean of the target variable, creating a single dense feature that captures the city-target relationship. It requires careful regularisation to prevent data leakage (use within cross-validation folds)."
+/>
+
+---
+
+## 🧹 Handling Missing Data
+
+Missing data is everywhere in production. Your approach signals your experience level:
+
+**Simple strategies:**
+- Drop rows (only if missing data is rare and random)
+- Fill with mean/median (numerical) or mode (categorical)
+- Fill with a sentinel value (-1 or "UNKNOWN")
+
+**Better strategies:**
+- Create a binary indicator feature: `is_income_missing` (the *fact* that data is missing can be informative!)
+- Use model-based imputation (KNN imputer, iterative imputer)
+- For tree-based models, many implementations handle missing values natively
+
+```python
+# Indicator feature + median imputation
+df['is_income_missing'] = df['income'].isna().astype(int)
+df['income'] = df['income'].fillna(df['income'].median())
+```
+
+<FunFact>
+In the famous Netflix Prize competition, one of the most powerful features was simply *whether a user had rated a movie* — not the rating itself. The pattern of missing ratings revealed user preferences better than the ratings themselves.
+</FunFact>
+
+---
+
+## 🔍 Feature Selection Methods
+
+More features isn't always better. Feature selection reduces overfitting, improves latency, and makes models interpretable.
+
+### Filter Methods
+Rank features by statistical correlation with the target — fast but ignores feature interactions:
+- Correlation coefficient (numerical targets)
+- Mutual information (works for any feature type)
+- Chi-squared test (categorical features)
+
+### Wrapper Methods
+Train models with different feature subsets — accurate but expensive:
+- Forward selection: start empty, add the best feature one at a time
+- Backward elimination: start with all features, remove the least useful one at a time
+
+### Embedded Methods
+Feature selection is built into the model training process:
+- **L1 regularisation** (Lasso): drives unimportant feature weights to exactly zero
+- **Tree-based importance**: gradient-boosted trees report feature importance scores
+
+```python
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
+
+# Select top 20 features by mutual information
+selector = SelectKBest(mutual_info_classif, k=20)
+X_selected = selector.fit_transform(X, y)
+```
+
+<Quiz
+  question="You discover that adding a 'current_timestamp' feature to your model dramatically improves test set performance. What's the most likely explanation?"
+  options="Timestamps genuinely help the model learn temporal patterns|This is likely data leakage — the timestamp correlates with the train/test split|The model has learned to memorise the training data|Your test set is too small"
+  answer="1"
+  explanation="A raw timestamp that increases monotonically can act as a proxy for the train/test split itself, leaking information about whether a sample is in the training or test set. This is a classic example of data leakage that inflates test performance but fails in production."
+/>
+
+---
+
+## 🏭 Feature Engineering in Production
+
+Interview-level feature engineering doesn't stop at notebooks. Production considerations include:
+
+### Feature Stores
+
+A feature store is a centralised system for managing, storing, and serving features. It solves:
+- **Consistency**: same feature definition in training and serving
+- **Reusability**: teams share features instead of re-implementing them
+- **Freshness**: scheduled pipelines keep features up to date
+
+Popular tools: **Feast**, **Tecton**, **Hopsworks**, **AWS SageMaker Feature Store**
+
+### Training-Serving Skew
+
+The most dangerous production bug in ML: features computed differently during training vs serving. Common causes:
+- Different code paths for batch (training) and real-time (serving)
+- Stale feature values in the serving path
+- Different library versions between environments
+
+<Callout>
+When an interviewer asks about feature engineering in production, always mention training-serving skew. It's the issue that most candidates overlook and most production ML systems suffer from.
+</Callout>
+
+---
+
+## 🔑 Key Takeaways
+
+- **Features trump algorithms** — invest more time in feature engineering than model architecture
+- **Match encoding to cardinality**: one-hot for low, target encoding or embeddings for high
+- **Missing data is a feature**, not just a problem — create indicator variables
+- **Watch for leakage** — if a feature seems too good to be true, it probably is
+- **Think about production**: feature stores, training-serving skew, and latency constraints
+- **Practise brainstorming features** for common problems: recommendations, fraud, ETA prediction, search
+
+<ThinkAboutIt>
+Pick a product you use daily (e.g., Spotify, Uber, Amazon). What features would you engineer to predict whether you'll use that product tomorrow? Think about user features, temporal features, and interaction features.
+</ThinkAboutIt>

@@ -1,0 +1,220 @@
+---
+title: "Model Evaluation Deep Dives"
+description: "Master the metrics, methodologies, and trade-offs of model evaluation — the topic that separates ML engineers from ML practitioners."
+order: 2
+difficulty: "advanced"
+duration: 20
+icon: "📊"
+published: true
+---
+
+# 📊 Model Evaluation Deep Dives
+
+"Your model has 95% accuracy — ship it!" If that sentence doesn't immediately make you uncomfortable, this lesson is exactly what you need. Model evaluation is the interview topic that separates candidates who've *trained* models from those who've *deployed* them. Interviewers probe evaluation knowledge because it reveals whether you understand what a model is actually doing — and whether it should be trusted.
+
+---
+
+## 🎯 Classification Metrics: Beyond Accuracy
+
+Accuracy — the percentage of correct predictions — is the metric everyone learns first and the metric that misleads most often. Consider a fraud detection model on a dataset where only 0.5% of transactions are fraudulent. A model that predicts "not fraud" for everything achieves **99.5% accuracy** while catching zero fraud.
+
+### Precision, Recall, and F1
+
+These three metrics form the backbone of classification evaluation:
+
+- **Precision** = TP / (TP + FP) — "Of everything I flagged as positive, how much actually was?"
+- **Recall** = TP / (TP + FN) — "Of everything that was actually positive, how much did I catch?"
+- **F1 Score** = 2 × (Precision × Recall) / (Precision + Recall) — the harmonic mean, balancing both
+
+```
+              Predicted Positive    Predicted Negative
+Actual Positive       TP                   FN
+Actual Negative       FP                   TN
+```
+
+<ThinkAboutIt>
+You're building a model to detect cancer from medical images. Would you optimise for precision or recall? What are the real-world consequences of getting this wrong in each direction?
+</ThinkAboutIt>
+
+### When to Use Which
+
+| Scenario | Optimise For | Why |
+|---|---|---|
+| Spam filter | Precision | Sending real email to spam is worse than letting some spam through |
+| Cancer screening | Recall | Missing a cancer case is far worse than a false alarm |
+| Search ranking | Precision@K | Users only look at top results |
+| Fraud detection | F1 or custom | Need balance — too many false positives block real customers |
+
+---
+
+## 📈 AUC-ROC and AUC-PR: The Full Picture
+
+### ROC Curve
+
+The Receiver Operating Characteristic curve plots **True Positive Rate** (recall) against **False Positive Rate** (FP / (FP + TN)) at every classification threshold. The area under this curve (**AUC-ROC**) gives a threshold-independent measure of model quality.
+
+- **AUC = 1.0**: perfect separation
+- **AUC = 0.5**: random guessing (the diagonal line)
+- **AUC < 0.5**: worse than random (your labels might be flipped!)
+
+### Precision-Recall Curve
+
+When classes are heavily imbalanced, AUC-ROC can be misleadingly optimistic. The **Precision-Recall curve** plots precision vs recall and is more informative for rare-event detection.
+
+```python
+from sklearn.metrics import precision_recall_curve, auc
+
+precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
+pr_auc = auc(recall, precision)
+```
+
+<Callout>
+Interview tip: if the interviewer mentions an imbalanced dataset, immediately suggest AUC-PR over AUC-ROC. This signals that you understand the limitation of ROC curves in imbalanced settings — a distinction many candidates miss.
+</Callout>
+
+<Quiz
+  question="A fraud detection model has AUC-ROC of 0.98 on a dataset where 0.1% of transactions are fraudulent. What's the most valid concern?"
+  options="The model is clearly excellent and ready for production|AUC-ROC can be misleadingly high on imbalanced data — check AUC-PR instead|The model is overfitting because AUC is too high|You should use accuracy instead of AUC"
+  answer="1"
+  explanation="With extreme class imbalance, a model can achieve high AUC-ROC by correctly classifying the overwhelming majority class. AUC-PR focuses on performance on the minority (positive) class and gives a more honest picture of how well the model detects fraud."
+/>
+
+---
+
+## 📐 Regression Metrics
+
+Not everything is classification. When predicting continuous values, these metrics matter:
+
+### Mean Squared Error (MSE)
+
+$$MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+
+Penalises large errors heavily (quadratic penalty). Good when big mistakes are much worse than small ones — e.g., predicting house prices where being off by £100K is far worse than being off by £10K.
+
+### Mean Absolute Error (MAE)
+
+$$MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|$$
+
+Treats all errors linearly. More robust to outliers than MSE. Use when outliers are expected and shouldn't dominate your metric.
+
+### R² (Coefficient of Determination)
+
+$$R^2 = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}$$
+
+Measures how much variance your model explains compared to simply predicting the mean. R² = 1 means perfect fit; R² = 0 means your model is no better than predicting the average.
+
+<FunFact>
+R² can actually go negative! This happens when your model's predictions are worse than simply predicting the mean of the target variable for every input. It's a sign something has gone very wrong.
+</FunFact>
+
+---
+
+## 🔄 Cross-Validation Strategies
+
+Holding out a single test set works for large datasets, but cross-validation gives more reliable estimates of generalisation performance.
+
+### K-Fold Cross-Validation
+
+Split data into K equal folds. Train on K-1 folds, validate on the remaining fold. Repeat K times. Report the mean and standard deviation of your metric.
+
+```python
+from sklearn.model_selection import cross_val_score
+
+scores = cross_val_score(model, X, y, cv=5, scoring='f1')
+print(f"F1: {scores.mean():.3f} ± {scores.std():.3f}")
+```
+
+### Stratified K-Fold
+
+Preserves class distribution in each fold — essential for imbalanced datasets.
+
+### Time-Series Split
+
+For temporal data, **never** use random splits. Use expanding or sliding window cross-validation to respect the time ordering:
+
+```
+Fold 1: Train [Jan-Mar]  → Test [Apr]
+Fold 2: Train [Jan-Apr]  → Test [May]
+Fold 3: Train [Jan-May]  → Test [Jun]
+```
+
+<Quiz
+  question="You're evaluating a stock price prediction model. Which cross-validation strategy is most appropriate?"
+  options="Standard K-Fold|Leave-One-Out|Time-Series Split|Stratified K-Fold"
+  answer="2"
+  explanation="Stock prices are temporal data. Using random K-Fold would let the model 'peek' at future data during training, giving overly optimistic results. Time-Series Split ensures the model is always validated on data that comes after the training period."
+/>
+
+---
+
+## 🌐 Offline vs Online Evaluation
+
+Offline metrics (computed on historical data) don't always predict online performance. A model with better AUC might actually reduce user engagement once deployed.
+
+| Aspect | Offline Evaluation | Online Evaluation (A/B Test) |
+|---|---|---|
+| Speed | Fast — run on saved data | Slow — need real traffic |
+| Cost | Low | High (engineering + opportunity cost) |
+| Measures | Model quality on historical data | Actual business impact |
+| Limitation | Doesn't capture user behaviour changes | Requires statistical rigour |
+
+### A/B Testing for ML Models
+
+When running an A/B test for a new model:
+
+1. **Define the primary metric** (e.g., revenue per user) and guardrail metrics (e.g., latency, error rate)
+2. **Calculate required sample size** for statistical significance
+3. **Randomise correctly** — split at the user level, not the request level
+4. **Run long enough** — account for novelty effects and weekly seasonality
+5. **Check for interference** — does the treatment group's behaviour affect the control group?
+
+<ThinkAboutIt>
+Your new recommendation model shows a 3% improvement in AUC-ROC offline but a 1% *decrease* in click-through rate during A/B testing. What could explain this discrepancy, and what would you investigate?
+</ThinkAboutIt>
+
+---
+
+## ⚖️ Dealing with Imbalanced Datasets
+
+Imbalanced data affects both training and evaluation. Common strategies:
+
+**During training:**
+- Oversample the minority class (SMOTE)
+- Undersample the majority class
+- Use class weights in the loss function
+- Generate synthetic examples
+
+**During evaluation:**
+- Use precision, recall, F1 instead of accuracy
+- Use AUC-PR instead of AUC-ROC
+- Report metrics per class
+- Use stratified cross-validation
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+# Class weight approach — inversely proportional to class frequency
+model = RandomForestClassifier(class_weight='balanced')
+```
+
+<Quiz
+  question="Which metric is LEAST suitable for evaluating a model on a highly imbalanced dataset?"
+  options="Precision-Recall AUC|Accuracy|F1 Score|Recall"
+  answer="1"
+  explanation="Accuracy treats all classes equally and is dominated by the majority class. On a 99:1 imbalanced dataset, a model predicting the majority class every time achieves 99% accuracy while being completely useless for detecting the minority class."
+/>
+
+---
+
+## 🔑 Key Takeaways
+
+- **Never rely on accuracy alone** — especially with imbalanced data
+- **Match the metric to the business goal**: recall for safety-critical, precision when false positives are costly
+- **AUC-PR over AUC-ROC** for imbalanced problems — this is a high-signal interview tip
+- **Use time-based splits** for temporal data — random splits cause data leakage
+- **Offline metrics aren't enough** — plan for A/B testing to validate real-world impact
+- **Know the formulas** — interviewers may ask you to derive or explain precision, recall, F1, MSE, and R²
+
+<Callout>
+When an interviewer asks "how would you evaluate this model?", they're really asking "do you understand what this model needs to get right, and can you measure that?" Start with the business context, then choose your metrics.
+</Callout>

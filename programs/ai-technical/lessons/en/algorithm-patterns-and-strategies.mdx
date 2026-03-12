@@ -1,0 +1,294 @@
+---
+title: "Algorithm Patterns and Strategies"
+description: "Learn the 10 algorithm patterns that solve 80% of coding interview problems — from sliding window to dynamic programming."
+order: 2
+difficulty: "intermediate"
+duration: 25
+icon: "🧩"
+published: true
+---
+
+# Algorithm Patterns and Strategies
+
+Coding interviews aren't about memorising 500 LeetCode solutions. They're about recognising which of roughly ten patterns applies to the problem in front of you. Once you identify the pattern, the solution structure writes itself. This lesson breaks down each pattern — when to use it, how to recognise it, and a concrete example to anchor your understanding. Think of these patterns as lenses: the more you practise looking through them, the faster every new problem comes into focus.
+
+## Pattern 1: Two Pointers
+
+**Recognise it when**: The input is sorted (or can be sorted), and you need to find pairs or subarrays meeting some condition.
+
+Two pointers work by placing one pointer at each end of the array (or at the start for the "fast/slow" variant) and moving them toward each other based on a condition.
+
+```python
+# Three Sum: find all triplets that sum to zero
+def three_sum(nums):
+    nums.sort()
+    result = []
+    for i in range(len(nums) - 2):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue  # Skip duplicates
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            total = nums[i] + nums[left] + nums[right]
+            if total < 0:
+                left += 1
+            elif total > 0:
+                right -= 1
+            else:
+                result.append([nums[i], nums[left], nums[right]])
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                left += 1
+                right -= 1
+    return result
+```
+
+**Time**: O(n²) — a massive improvement over the O(n³) brute force.
+
+## Pattern 2: Sliding Window
+
+**Recognise it when**: You need to find a contiguous subarray or substring that satisfies some constraint (maximum sum, contains all characters, etc.).
+
+The window expands by moving the right pointer and contracts by moving the left pointer. The key is knowing when to shrink.
+
+```python
+# Longest substring without repeating characters
+def length_of_longest_substring(s: str) -> int:
+    char_index = {}
+    max_length = 0
+    left = 0
+    for right, char in enumerate(s):
+        if char in char_index and char_index[char] >= left:
+            left = char_index[char] + 1
+        char_index[char] = right
+        max_length = max(max_length, right - left + 1)
+    return max_length
+```
+
+<Callout>The sliding window pattern has a fixed template: initialise two pointers, expand right, shrink left when constraint is violated, and track your answer. Once you internalise this template, every sliding window problem feels manageable.</Callout>
+
+## Pattern 3: BFS (Breadth-First Search)
+
+**Recognise it when**: You need the shortest path in an unweighted graph, level-order traversal, or to explore neighbours layer by layer.
+
+BFS uses a queue and processes nodes level by level. It guarantees the shortest path in unweighted graphs.
+
+```python
+from collections import deque
+
+# Number of islands — BFS variant
+def num_islands(grid):
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+    count = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':
+                count += 1
+                queue = deque([(r, c)])
+                grid[r][c] = '0'
+                while queue:
+                    row, col = queue.popleft()
+                    for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                        nr, nc = row + dr, col + dc
+                        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == '1':
+                            grid[nr][nc] = '0'
+                            queue.append((nr, nc))
+    return count
+```
+
+## Pattern 4: DFS (Depth-First Search)
+
+**Recognise it when**: You need to explore all paths, check connectivity, detect cycles, or the problem has a recursive/tree structure.
+
+DFS goes deep before wide. It's naturally recursive and maps beautifully to tree traversals and backtracking.
+
+```python
+# Path sum in a binary tree
+def has_path_sum(root, target_sum):
+    if not root:
+        return False
+    if not root.left and not root.right:
+        return target_sum == root.val
+    return (has_path_sum(root.left, target_sum - root.val) or
+            has_path_sum(root.right, target_sum - root.val))
+```
+
+<ThinkAboutIt>When would you choose BFS over DFS, and vice versa? Consider: BFS finds shortest paths but uses O(width) memory. DFS uses O(depth) memory but doesn't guarantee shortest paths. How does the shape of the graph influence your choice?</ThinkAboutIt>
+
+## Pattern 5: Binary Search
+
+**Recognise it when**: The search space is sorted or monotonic (if condition is true at index i, it's true for all indices > i or < i).
+
+Binary search isn't just for sorted arrays — it works on any monotonic condition. This insight unlocks problems like "minimum capacity to ship packages" or "find peak element".
+
+```python
+# Binary search on answer: minimum days to make m bouquets
+def min_days(bloom_day, m, k):
+    if m * k > len(bloom_day):
+        return -1
+
+    def can_make(days):
+        bouquets = flowers = 0
+        for bloom in bloom_day:
+            if bloom <= days:
+                flowers += 1
+                if flowers == k:
+                    bouquets += 1
+                    flowers = 0
+            else:
+                flowers = 0
+        return bouquets >= m
+
+    lo, hi = min(bloom_day), max(bloom_day)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if can_make(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+```
+
+<FunFact>Despite binary search being one of the simplest algorithms conceptually, a study by Jon Bentley found that only about 10% of professional programmers could implement it correctly on the first try. The most common bug? Off-by-one errors in the boundary conditions.</FunFact>
+
+## Pattern 6: Backtracking
+
+**Recognise it when**: You need to generate all combinations, permutations, or subsets that satisfy constraints. The problem often says "find all", "generate all", or "list every possible".
+
+Backtracking = DFS with pruning. You explore a path, and if it violates a constraint, you backtrack and try the next option.
+
+```python
+# Generate all valid combinations of n pairs of parentheses
+def generate_parenthesis(n):
+    result = []
+    def backtrack(current, open_count, close_count):
+        if len(current) == 2 * n:
+            result.append(current)
+            return
+        if open_count < n:
+            backtrack(current + '(', open_count + 1, close_count)
+        if close_count < open_count:
+            backtrack(current + ')', open_count, close_count + 1)
+    backtrack('', 0, 0)
+    return result
+```
+
+## Pattern 7: Dynamic Programming
+
+**Recognise it when**: The problem has overlapping subproblems and optimal substructure. Classic signals include "minimum cost", "number of ways", "longest/shortest sequence", or "can you reach the target?"
+
+The DP recipe: define the state, write the recurrence, decide between top-down (memoisation) and bottom-up (tabulation).
+
+```python
+# Longest Increasing Subsequence — O(n²) DP
+def length_of_lis(nums):
+    if not nums:
+        return 0
+    dp = [1] * len(nums)  # dp[i] = length of LIS ending at index i
+    for i in range(1, len(nums)):
+        for j in range(i):
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
+    return max(dp)
+```
+
+<Callout>When you're stuck on a DP problem, start with brute-force recursion first. Then add memoisation. Converting to bottom-up tabulation is an optimisation step, not the first step. This approach prevents getting lost in the table dimensions.</Callout>
+
+## Pattern 8: Greedy
+
+**Recognise it when**: Making the locally optimal choice at each step leads to the globally optimal solution. Greedy problems often involve intervals, scheduling, or making choices that don't need revisiting.
+
+```python
+# Minimum number of meeting rooms (interval scheduling)
+def min_meeting_rooms(intervals):
+    starts = sorted([i[0] for i in intervals])
+    ends = sorted([i[1] for i in intervals])
+    rooms = max_rooms = 0
+    s = e = 0
+    while s < len(starts):
+        if starts[s] < ends[e]:
+            rooms += 1
+            max_rooms = max(max_rooms, rooms)
+            s += 1
+        else:
+            rooms -= 1
+            e += 1
+    return max_rooms
+```
+
+## Pattern 9: Topological Sort
+
+**Recognise it when**: There are dependencies between tasks (course prerequisites, build order, task scheduling). The input is a directed acyclic graph (DAG).
+
+```python
+from collections import deque, defaultdict
+
+def course_order(num_courses, prerequisites):
+    graph = defaultdict(list)
+    in_degree = [0] * num_courses
+    for course, prereq in prerequisites:
+        graph[prereq].append(course)
+        in_degree[course] += 1
+
+    queue = deque([i for i in range(num_courses) if in_degree[i] == 0])
+    order = []
+    while queue:
+        node = queue.popleft()
+        order.append(node)
+        for neighbour in graph[node]:
+            in_degree[neighbour] -= 1
+            if in_degree[neighbour] == 0:
+                queue.append(neighbour)
+    return order if len(order) == num_courses else []
+```
+
+## Pattern 10: Union-Find (Disjoint Set)
+
+**Recognise it when**: You need to group elements, detect connected components, or determine if two elements belong to the same set — especially when connections are added dynamically.
+
+```python
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Path compression
+        return self.parent[x]
+
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+        if px == py:
+            return False
+        if self.rank[px] < self.rank[py]:
+            px, py = py, px
+        self.parent[py] = px
+        if self.rank[px] == self.rank[py]:
+            self.rank[px] += 1
+        return True
+```
+
+<Quiz question="You're given a problem: 'Find the minimum window substring of s that contains all characters in t.' Which pattern is the best fit?" options="Two Pointers|Sliding Window|Dynamic Programming|Binary Search" answer="1" explanation="This is a classic sliding window problem. You expand the window by moving the right pointer to include characters, and shrink from the left once all characters in t are included, tracking the minimum window size throughout." />
+
+## How to Recognise the Right Pattern
+
+Build a decision tree in your head:
+
+1. **Is the input sorted or can it be sorted?** → Two Pointers or Binary Search
+2. **Do you need a contiguous subarray/substring?** → Sliding Window
+3. **Is it a graph/tree traversal?** → BFS (shortest path) or DFS (all paths)
+4. **"Find all combinations/permutations"?** → Backtracking
+5. **"Minimum cost / number of ways"?** → Dynamic Programming
+6. **"Schedule / interval" problem?** → Greedy or Sorting
+7. **Dependencies or ordering?** → Topological Sort
+8. **Grouping / connectivity?** → Union-Find
+
+## Key Takeaways
+
+- **Learn patterns, not problems**: 10 patterns cover the vast majority of interview questions.
+- **Start with brute force**: identify the pattern from the brute-force approach, then optimise.
+- **Practise pattern recognition**: for every problem you solve, label which pattern it uses.
+- **Combine patterns**: many medium/hard problems use two patterns together (e.g., binary search + sliding window, BFS + topological sort).
+- **Verbalise your reasoning**: in interviews, saying "this looks like a sliding window problem because..." shows strong analytical thinking.

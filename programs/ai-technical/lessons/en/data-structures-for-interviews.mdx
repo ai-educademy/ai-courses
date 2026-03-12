@@ -1,0 +1,211 @@
+---
+title: "Data Structures for Interviews"
+description: "Master the essential data structures that appear in 90% of coding interviews — arrays, trees, graphs, hash maps, and when to use each."
+order: 1
+difficulty: "intermediate"
+duration: 20
+icon: "📊"
+published: true
+---
+
+# Data Structures for Interviews
+
+Here's a secret that top interview coaches won't charge you $500 to learn: roughly 90% of coding interview problems revolve around just seven data structures. If you deeply understand when and why to reach for each one, you've already won half the battle. The other half is practice — but without the right mental models, practice is just memorisation. This lesson gives you the map so every problem you encounter feels like familiar territory.
+
+## The 7 Must-Know Data Structures
+
+Every technical interview draws from the same well. Here are the structures you'll encounter, ranked by frequency:
+
+| Data Structure | Interview Frequency | Core Operations | When Interviewers Expect It |
+|---|---|---|---|
+| **Arrays / Strings** | ★★★★★ | Access O(1), Search O(n), Insert O(n) | Almost every problem starts here |
+| **Hash Maps / Sets** | ★★★★★ | Insert O(1), Lookup O(1), Delete O(1) | "Optimise this from O(n²) to O(n)" |
+| **Linked Lists** | ★★★★☆ | Insert O(1), Delete O(1), Access O(n) | Pointer manipulation, cycle detection |
+| **Stacks & Queues** | ★★★★☆ | Push/Pop O(1), Enqueue/Dequeue O(1) | Parsing, BFS, undo operations |
+| **Trees (Binary, BST)** | ★★★★☆ | Search O(log n), Insert O(log n) | Hierarchical data, sorted operations |
+| **Graphs** | ★★★☆☆ | Depends on representation | Relationships, paths, connectivity |
+| **Heaps** | ★★★☆☆ | Insert O(log n), Extract-min O(log n) | "Find the k largest/smallest" |
+
+<Callout>If you only have one week to prepare, focus on arrays, hash maps, and trees. These three account for the majority of interview questions at FAANG-level companies.</Callout>
+
+## Arrays and Strings — Your Foundation
+
+Arrays are the starting point for almost every interview problem. The key insight is that most array problems aren't really about arrays — they're about recognising patterns like two pointers, sliding window, or prefix sums.
+
+```python
+# Two Sum — the most classic interview problem
+# "Given an array and target, find two numbers that add to target"
+def two_sum(nums, target):
+    seen = {}  # Hash map to store complement
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+    return []
+
+# Time: O(n), Space: O(n) — trading space for time
+```
+
+Notice how even this "array" problem is really a hash map problem. That pattern repeats constantly: the brute force uses nested loops over an array, and the optimal solution introduces a hash map.
+
+## Hash Maps — The Interview Swiss Army Knife
+
+If you're stuck on any problem and the brute force is O(n²), ask yourself: "Can a hash map reduce this to O(n)?" The answer is yes surprisingly often.
+
+Hash maps shine when you need to:
+- **Count frequencies** — character counts, word counts, element frequencies
+- **Track seen elements** — duplicate detection, two-sum style problems
+- **Group items** — anagram grouping, categorisation
+- **Cache computations** — memoisation in dynamic programming
+
+```java
+// Group Anagrams — a classic hash map problem
+public List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> map = new HashMap<>();
+    for (String s : strs) {
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        String key = new String(chars);
+        map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+    }
+    return new ArrayList<>(map.values());
+}
+```
+
+<ThinkAboutIt>When you see a problem asking you to "find", "count", or "check if exists", what data structure should immediately come to mind? How would you explain the trade-off between a hash map's O(1) lookup and a sorted array's O(log n) binary search?</ThinkAboutIt>
+
+## Linked Lists — Pointer Mastery
+
+Linked list problems test your ability to manipulate pointers without losing track of nodes. The three techniques you need are:
+
+1. **Two-pointer (fast/slow)** — cycle detection, finding the middle node
+2. **Dummy head node** — simplifies edge cases when the head might change
+3. **Reversal** — iterative reversal is a building block for many problems
+
+```python
+# Detect a cycle in a linked list (Floyd's Algorithm)
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False
+```
+
+<FunFact>Floyd's cycle detection algorithm, also known as the "tortoise and hare" algorithm, was published in 1967. It's one of the oldest algorithms still commonly asked in modern coding interviews — over 55 years and counting.</FunFact>
+
+## Stacks and Queues — Order Matters
+
+Stacks (LIFO) and queues (FIFO) are simpler structures, but they unlock entire categories of problems:
+
+- **Stacks**: Valid parentheses, expression evaluation, monotonic stack problems, undo/redo
+- **Queues**: BFS traversal, sliding window maximum (with deque), task scheduling
+
+```python
+# Valid Parentheses — classic stack problem
+def is_valid(s: str) -> bool:
+    stack = []
+    matching = {')': '(', '}': '{', ']': '['}
+    for char in s:
+        if char in matching:
+            if not stack or stack[-1] != matching[char]:
+                return False
+            stack.pop()
+        else:
+            stack.append(char)
+    return len(stack) == 0
+```
+
+## Trees — Hierarchical Thinking
+
+Tree problems typically involve recursion and one of three traversal orders (in-order, pre-order, post-order). The mental model to develop is: "What do I need from the left subtree, the right subtree, and how do I combine them at the current node?"
+
+```python
+# Maximum depth of a binary tree — the template for tree recursion
+def max_depth(root):
+    if not root:
+        return 0
+    left_depth = max_depth(root.left)
+    right_depth = max_depth(root.right)
+    return 1 + max(left_depth, right_depth)
+```
+
+BST (Binary Search Tree) problems add one crucial property: in-order traversal yields sorted elements. If you see "sorted" and "tree" in the same problem, think BST immediately.
+
+## Graphs — Modelling Relationships
+
+Graph problems feel intimidating but most reduce to BFS or DFS once you've built the adjacency list. The key skills are:
+
+- **Building the graph** from edge lists or matrices
+- **BFS** for shortest path in unweighted graphs
+- **DFS** for connectivity, cycle detection, topological sort
+
+```python
+# BFS shortest path in an unweighted graph
+from collections import deque
+
+def shortest_path(graph, start, end):
+    queue = deque([(start, 0)])
+    visited = {start}
+    while queue:
+        node, distance = queue.popleft()
+        if node == end:
+            return distance
+        for neighbour in graph[node]:
+            if neighbour not in visited:
+                visited.add(neighbour)
+                queue.append((neighbour, distance + 1))
+    return -1  # Not reachable
+```
+
+## Heaps — The "Top K" Signal
+
+Whenever a problem says "find the K largest", "K closest", or "merge K sorted lists", a heap (priority queue) is almost certainly the answer. In Python, `heapq` provides a min-heap; for a max-heap, negate the values.
+
+```python
+import heapq
+
+# Find the K largest elements in an array
+def k_largest(nums, k):
+    return heapq.nlargest(k, nums)  # Uses a min-heap of size k internally
+```
+
+<Quiz question="You need to find the median of a stream of numbers in O(log n) per insertion. Which data structure combination is most appropriate?" options="Two sorted arrays|A single balanced BST|Two heaps (max-heap + min-heap)|A hash map with running totals" answer="2" explanation="The two-heap approach uses a max-heap for the lower half and a min-heap for the upper half. Balancing them after each insertion takes O(log n), and the median is always available in O(1) from the heap tops." />
+
+## Time and Space Complexity Cheat Sheet
+
+| Structure | Access | Search | Insert | Delete | Space |
+|---|---|---|---|---|---|
+| Array | O(1) | O(n) | O(n) | O(n) | O(n) |
+| Hash Map | — | O(1)* | O(1)* | O(1)* | O(n) |
+| Linked List | O(n) | O(n) | O(1) | O(1) | O(n) |
+| Stack/Queue | O(n) | O(n) | O(1) | O(1) | O(n) |
+| BST (balanced) | O(log n) | O(log n) | O(log n) | O(log n) | O(n) |
+| Heap | — | O(n) | O(log n) | O(log n) | O(n) |
+
+*\* Average case; worst case is O(n) due to hash collisions.*
+
+## Pattern Recognition — Choosing the Right Structure
+
+Develop this mental checklist when reading a problem:
+
+- **Need fast lookup?** → Hash Map
+- **Need sorted order?** → BST or sorted array + binary search
+- **Need FIFO processing?** → Queue (BFS)
+- **Need LIFO / backtracking?** → Stack (DFS)
+- **Need top-K or priority?** → Heap
+- **Need to model connections?** → Graph
+- **Need O(1) access by index?** → Array
+
+<Callout>In your interview, explicitly state which data structure you're choosing and why. Saying "I'll use a hash map here because we need O(1) lookups to avoid the nested loop" demonstrates exactly the engineering thinking interviewers want to see.</Callout>
+
+## Key Takeaways
+
+- **Seven structures cover 90% of interviews**: arrays, hash maps, linked lists, stacks/queues, trees, graphs, and heaps.
+- **Hash maps are your best friend**: when in doubt, a hash map probably helps.
+- **Know your complexities cold**: interviewers will ask "what's the time complexity?" after every solution.
+- **Pattern recognition beats memorisation**: learn to map problem signals ("top K" → heap, "shortest path" → BFS) to the right structure.
+- **Practice deliberately**: solve 3-5 problems per data structure, focusing on understanding rather than speed. Speed comes from understanding.

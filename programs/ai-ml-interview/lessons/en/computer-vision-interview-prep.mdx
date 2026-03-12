@@ -1,0 +1,245 @@
+---
+title: "Computer Vision Interview Prep"
+description: "Prepare for computer vision interview rounds — from CNNs to modern architectures, with the theory and practical knowledge interviewers test."
+order: 6
+difficulty: "advanced"
+duration: 20
+icon: "👁️"
+published: true
+---
+
+# 👁️ Computer Vision Interview Prep
+
+Computer vision interviews have a unique flavour: they mix mathematical fundamentals (convolutions, backpropagation through spatial layers) with practical engineering (how do you handle a 4K image on a mobile device?). Whether you're interviewing for an autonomous driving team or a retail analytics startup, this lesson covers the concepts interviewers test most — and the practical knowledge that sets candidates apart.
+
+---
+
+## 🧱 CV Fundamentals: What Interviewers Expect You to Know
+
+### Convolutions
+
+A convolutional layer slides a small filter (kernel) across an input image, computing element-wise multiplications and summing them to produce a feature map. This is the core operation in computer vision.
+
+```
+Input (5×5)      Kernel (3×3)      Output (3×3)
+┌─────────────┐  ┌─────────┐      ┌─────────┐
+│ 1 0 1 0 1   │  │ 1  0  1 │      │ 4 3 4   │
+│ 0 1 0 1 0   │  │ 0  1  0 │  →   │ 2 4 3   │
+│ 1 0 1 0 1   │  │ 1  0  1 │      │ 4 3 4   │
+│ 0 1 0 1 0   │                   └─────────┘
+│ 1 0 1 0 1   │
+└─────────────┘
+```
+
+**Key parameters**:
+- **Kernel size**: typically 3×3 or 5×5 — smaller kernels stacked deeper are preferred over one large kernel
+- **Stride**: step size of the sliding window (stride 2 halves spatial dimensions)
+- **Padding**: add zeros around the border to preserve spatial size ('same' padding)
+- **Channels**: a 3×3 kernel on an RGB image is actually 3×3×3
+
+**Output size formula**:
+
+$$O = \frac{W - K + 2P}{S} + 1$$
+
+Where W = input width, K = kernel size, P = padding, S = stride.
+
+### Pooling
+
+Pooling reduces spatial dimensions while retaining important information:
+- **Max pooling**: takes the maximum value in each window (most common)
+- **Average pooling**: takes the mean (used in some architectures before the final layer)
+- **Global average pooling**: reduces each feature map to a single value (replaces fully connected layers in modern networks)
+
+### Feature Maps and Receptive Fields
+
+- **Feature maps**: the output of each convolutional layer — early layers detect edges and textures, deeper layers detect complex patterns (faces, objects)
+- **Receptive field**: the region of the input image that influences a particular output neuron — grows deeper in the network
+
+<ThinkAboutIt>
+Why do modern architectures use multiple stacked 3×3 convolutions instead of a single 7×7 convolution? Think about the number of parameters, non-linearities, and receptive field size.
+</ThinkAboutIt>
+
+---
+
+## 🏛️ Key Architectures You Must Know
+
+### ResNet (Residual Networks)
+
+The architecture that solved the "degradation problem" — deeper networks performing worse than shallower ones.
+
+**Key innovation**: skip connections (residual connections) that let gradients flow directly through the network:
+
+```python
+# Residual block (simplified)
+def residual_block(x):
+    identity = x
+    out = conv_bn_relu(x)
+    out = conv_bn(out)
+    out = out + identity  # Skip connection
+    return relu(out)
+```
+
+**Why it matters**: skip connections enable training of very deep networks (100+ layers). This idea appears in almost every modern architecture.
+
+### YOLO (You Only Look Once)
+
+The go-to architecture for real-time object detection.
+
+**Key innovation**: treats detection as a single regression problem — divides the image into a grid and predicts bounding boxes and class probabilities simultaneously.
+
+| Version | Key Feature | Speed |
+|---|---|---|
+| YOLOv3 | Multi-scale detection | ~30 FPS |
+| YOLOv5 | PyTorch-native, easy to use | ~45 FPS |
+| YOLOv8 | Anchor-free, state-of-the-art | ~80 FPS |
+
+### Vision Transformers (ViT)
+
+Applies the transformer architecture to images by splitting them into patches:
+
+```
+Image (224×224) → Split into 16×16 patches → 196 patch tokens
+→ Linear projection → Add position embeddings → Transformer encoder → Classification
+```
+
+**Key interview point**: ViT needs more data than CNNs to train well (less inductive bias), but scales better with more data and compute.
+
+<Quiz
+  question="What problem do residual (skip) connections in ResNet solve?"
+  options="Overfitting in deep networks|Vanishing/exploding gradients that prevent training very deep networks|Slow inference time|High memory usage"
+  answer="1"
+  explanation="Without skip connections, gradients become vanishingly small as they backpropagate through many layers, making deep networks very difficult to train. Residual connections provide a direct path for gradients, enabling effective training of networks with hundreds of layers."
+/>
+
+---
+
+## ❓ Common CV Interview Questions
+
+### Object Detection vs Segmentation
+
+Interviewers love asking you to distinguish these tasks:
+
+| Task | Output | Example |
+|---|---|---|
+| **Classification** | Single label for the image | "This is a cat" |
+| **Object detection** | Bounding boxes + labels | "Cat at (x1,y1,x2,y2), dog at (x3,y3,x4,y4)" |
+| **Semantic segmentation** | Per-pixel class label | Every pixel labelled as cat, dog, or background |
+| **Instance segmentation** | Per-pixel label + instance ID | Distinguishes cat_1 from cat_2 at pixel level |
+
+### Transfer Learning
+
+One of the most practical CV techniques — and a frequent interview topic:
+
+1. **Take a pre-trained model** (e.g., ResNet-50 trained on ImageNet)
+2. **Replace the final classification head** with your task-specific layers
+3. **Fine-tune**:
+   - **Feature extraction**: freeze all pre-trained layers, train only the new head (fast, works with small datasets)
+   - **Full fine-tuning**: unfreeze all layers, train end-to-end with a small learning rate (better results, needs more data)
+
+```python
+import torchvision.models as models
+import torch.nn as nn
+
+# Transfer learning with ResNet-50
+model = models.resnet50(pretrained=True)
+
+# Freeze pre-trained layers
+for param in model.parameters():
+    param.requires_grad = False
+
+# Replace final layer for 10-class problem
+model.fc = nn.Linear(model.fc.in_features, 10)
+```
+
+<Callout>
+When discussing transfer learning in interviews, always mention *when it might fail*: when your target domain is very different from the pre-trained domain (e.g., medical X-rays vs ImageNet natural images). In these cases, you may need domain-specific pre-training.
+</Callout>
+
+### Data Augmentation
+
+Critical for training robust models, especially with limited data:
+
+- **Geometric**: rotation, flipping, cropping, scaling
+- **Colour**: brightness, contrast, saturation, hue jitter
+- **Advanced**: CutOut (mask random patches), MixUp (blend two images), CutMix (replace patches with another image's patches)
+- **Test-time augmentation (TTA)**: augment at inference and average predictions for better accuracy
+
+<FunFact>
+The ImageNet dataset — the benchmark that sparked the deep learning revolution — contains over 14 million hand-labelled images across 21,841 categories. The annual ImageNet challenge (2010-2017) drove error rates from 28% to 2.3%, surpassing human performance of about 5%.
+</FunFact>
+
+---
+
+## 🖼️ Practical Considerations
+
+### Image Preprocessing
+
+Production CV systems need robust preprocessing:
+
+- **Resizing**: models expect fixed input sizes — but naïve resizing distorts aspect ratios. Use padding or centre-cropping.
+- **Normalisation**: subtract ImageNet mean and divide by std (when using pre-trained models): `mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]`
+- **Handling variable resolutions**: batch images of similar sizes, or use adaptive pooling layers
+
+### Deployment: Edge vs Cloud
+
+| Factor | Edge (Mobile/IoT) | Cloud |
+|---|---|---|
+| Latency | Very low (no network round-trip) | Higher (network dependent) |
+| Model size | Constrained (MobileNet, EfficientNet-Lite) | Unconstrained |
+| Privacy | Data stays on device | Data sent to server |
+| Cost | No server costs, but hardware is fixed | Pay per inference |
+| Updates | Difficult (app update required) | Easy (swap model server-side) |
+
+**Model compression techniques** for edge deployment:
+- **Quantisation**: reduce weights from FP32 to INT8 (4× smaller, faster inference)
+- **Pruning**: remove low-magnitude weights (structured pruning for actual speedup)
+- **Knowledge distillation**: train a small "student" model to mimic a large "teacher" model
+
+<Quiz
+  question="You need to deploy an object detection model on a mobile phone running at 30 FPS. Which approach is most appropriate?"
+  options="Use a full ResNet-152 backbone with FP32 precision|Use MobileNet backbone with INT8 quantisation|Use Vision Transformer with full attention|Use an ensemble of three detection models"
+  answer="1"
+  explanation="MobileNet is specifically designed for mobile and edge devices, using depthwise separable convolutions to reduce computation. INT8 quantisation further reduces model size and speeds up inference, making real-time detection feasible on mobile hardware."
+/>
+
+---
+
+## 🌊 Recent Trends Worth Knowing
+
+### Multimodal Models
+
+Models that process both images and text:
+- **CLIP** (Contrastive Language-Image Pre-training): aligns image and text embeddings in a shared space. Enables zero-shot image classification — describe a category in text and find matching images.
+- **SAM** (Segment Anything Model): a foundation model for segmentation that can segment any object given a point, box, or text prompt.
+
+### Diffusion Models
+
+The architecture behind DALL-E, Stable Diffusion, and Midjourney:
+- **Forward process**: gradually add noise to an image until it becomes pure noise
+- **Reverse process**: learn to denoise — given noisy input, predict and remove the noise
+- **Applications beyond art**: image super-resolution, inpainting, medical image synthesis
+
+### Self-Supervised Learning in CV
+
+Reducing the need for labelled data:
+- **Contrastive learning** (SimCLR, MoCo): learn representations by pulling augmented views of the same image together and pushing different images apart
+- **Masked image modelling** (MAE): mask random patches and train the model to reconstruct them (the BERT approach, applied to images)
+
+<ThinkAboutIt>
+CLIP can classify images into categories it has never seen during training, simply by matching images to text descriptions. What are the implications of this for traditional CV pipelines that require labelled training data for every new category?
+</ThinkAboutIt>
+
+---
+
+## 🔑 Key Takeaways
+
+- **Master the fundamentals**: convolutions, pooling, feature maps, and receptive fields — these come up in every CV interview
+- **Know the key architectures**: ResNet (skip connections), YOLO (real-time detection), ViT (transformers for vision)
+- **Understand the task hierarchy**: classification → detection → segmentation → instance segmentation
+- **Transfer learning is your default approach** — fine-tuning pre-trained models beats training from scratch in most practical scenarios
+- **Think about deployment constraints**: edge vs cloud, model compression, and latency budgets
+- **Stay current**: multimodal models (CLIP), foundation models (SAM), and diffusion models are reshaping the field
+
+<Callout>
+CV interviews test breadth and depth. Be ready to go deep on one architecture (derive the output size formula, explain skip connections mathematically) AND wide across the field (compare detection approaches, discuss when to use ViT vs CNN). Prepare both modes.
+</Callout>
