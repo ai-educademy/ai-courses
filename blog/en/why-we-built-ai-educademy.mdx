@@ -1,0 +1,99 @@
+---
+title: "Why We Built AI Educademy"
+description: "The story behind a free, open-source AI education platform that teaches artificial intelligence in 11 languages — from absolute beginners to advanced practitioners."
+date: "2026-03-12"
+author: "Ramesh Reddy Adutla"
+tags: ["ai-education", "open-source", "launch", "multilingual"]
+published: true
+image: "/images/blog/why-we-built-ai-educademy.png"
+---
+
+# Why We Built AI Educademy
+
+AI is reshaping every industry — yet most AI education is locked behind paywalls, written only in English, and assumes you already know how to code. We set out to change that.
+
+## The Problem
+
+When I started learning AI, I noticed three barriers that kept most of the world out:
+
+1. **Language** — Nearly all quality AI courses are in English. That excludes billions of learners.
+2. **Cost** — Premium AI courses range from $50 to $500+. For students in developing economies, that's a non-starter.
+3. **Prerequisites** — Most courses begin with "first, install Python..." — immediately alienating anyone without a technical background.
+
+These aren't small gaps. They're walls that keep AI literacy concentrated in a handful of wealthy, English-speaking communities.
+
+## Our Solution
+
+AI Educademy is a **free, open-source platform** that teaches AI from absolute zero, in your language. No coding required to start. No credit card required. Ever.
+
+### What makes it different
+
+- **11 languages** — English, French, Dutch, Hindi, Telugu, Spanish, Portuguese, German, Chinese, Japanese, and Arabic. More coming.
+- **Two learning tracks** — The *AI Learning Path* (🌱 Seeds → 🌲 Forest) for conceptual understanding, and the *Craft Engineering Path* (✏️ Sketch → 🏆 Masterpiece) for hands-on building.
+- **10 structured programs** — Each with carefully sequenced MDX lessons, interactive elements, and progress tracking.
+- **Interactive Lab** — Seven experiments including a Neural Network Playground, Prompt Lab, and Sentiment Analyzer — all running in the browser.
+- **AI-powered features** — Edu, our built-in chatbot, answers questions about any program. The Mock Interview simulator conducts realistic STAR-method interviews with feedback.
+- **Completion certificates** — Finish all lessons in a program and download a personalised PDF certificate.
+
+## The Architecture
+
+We built AI Educademy as a modern, composable platform:
+
+```
+┌─────────────────────────────────────────────┐
+│              aieducademy.org                 │
+│         Next.js 16 + React 19               │
+│      ┌──────────┐  ┌──────────────┐         │
+│      │  MDX      │  │  Interactive │         │
+│      │  Lessons  │  │  Lab         │         │
+│      └────┬─────┘  └──────┬───────┘         │
+│           │               │                  │
+│      ┌────▼───────────────▼──────┐           │
+│      │     Content Layer         │           │
+│      │  (Git Submodules per      │           │
+│      │   program — own repos)    │           │
+│      └───────────────────────────┘           │
+│                                              │
+│      ┌─────────┐  ┌──────────┐  ┌────────┐  │
+│      │ Auth    │  │ Progress │  │ AI Chat│  │
+│      │ NextAuth│  │ Neon PG  │  │ Gemini │  │
+│      └─────────┘  └──────────┘  └────────┘  │
+└──────────────────────────────────────────────┘
+```
+
+Each course lives in its own GitHub repository, pulled into the platform as a git submodule. This means:
+
+- **Content authors** can write lessons without touching the platform code.
+- **Translators** can add a language by creating a folder in any course repo.
+- **The platform rebuilds automatically** when any content repo pushes changes.
+
+The tech stack: Next.js 16 with App Router + Turbopack, TypeScript in strict mode, Tailwind CSS 4, next-intl for i18n, NextAuth v5 for authentication, and Neon Postgres for persistence. The design system is a [separate npm package](https://www.npmjs.com/package/@aieducademy/ai-ui-library) with a published [Storybook](https://aieducademy.github.io/ai-ui-library/).
+
+## Open Source by Default
+
+Every line of platform code is MIT-licensed and available on [GitHub](https://github.com/ai-educademy). We believe education infrastructure should be a public good.
+
+You can:
+- **Self-host** the entire platform for your school or organisation.
+- **Fork** a course repo and adapt it for your curriculum.
+- **Contribute** translations, lessons, bug fixes, or features.
+
+## What's Next
+
+We're just getting started. On our roadmap:
+
+- 🌍 **More languages** — community-driven translation portal coming soon.
+- 🔌 **LMS integration** — LTI support for universities and schools.
+- 🧪 **Interactive code exercises** — In-browser coding with instant feedback.
+- 📱 **Mobile app** — Taking AI education offline.
+- 🎯 **Personalised learning paths** — AI-powered recommendations based on your progress.
+
+## Try It
+
+Head to [aieducademy.org](https://aieducademy.org) and start with **AI Seeds** — our beginner track designed for people with zero technical background. It takes about 10 minutes to complete your first lesson.
+
+If you find it useful, [star the repo on GitHub](https://github.com/ai-educademy/ai-platform) ⭐ — it helps more people discover us.
+
+---
+
+*AI Educademy is built and maintained by [Ramesh Reddy Adutla](https://github.com/rameshreddy-adutla) and the open-source community.*
