@@ -1,0 +1,256 @@
+---
+title: "Cómo construimos una plataforma educativa de IA multilingüe con Next.js y MDX"
+description: "Explore la arquitectura técnica detrás de AI Educademy: Next.js 15 App Router, next-intl para i18n, canalización de contenido MDX, submódulos git, compatibilidad con PWA e implementación de Vercel."
+date: "2026-03-06"
+author: "AI Educademy Team"
+tags:
+  - nextjs
+  - open-source
+  - architecture
+  - webdev
+published: true
+image: "/images/blog/placeholder.png"
+machineTranslated: true
+---
+La creación de AI Educademy presentó un desafío técnico único: crear una plataforma que fuera accesible para estudiantes de todo el mundo, fácil de mantener y lo suficientemente escalable para servir a millones de usuarios, todo ello manteniendo la base de código limpia y amigable para los desarrolladores.
+
+En esta inmersión profunda, analizaremos las decisiones arquitectónicas que dieron forma a nuestra plataforma, desde nuestra elección de Next.js 15 hasta cómo administramos el contenido multilingüe con submódulos de git. Ya sea que esté creando una plataforma educativa, un sitio de documentación o cualquier aplicación con mucho contenido, aquí encontrará información práctica.
+
+## ¿Por qué el enrutador de aplicaciones Next.js 15? 🏗️
+
+Cuando comenzamos a crear AI Educademy, Next.js 14 era el estándar. En el momento del lanzamiento, Next.js 15 se lanzó con mejoras significativas en App Router. Dimos el salto porque varios factores se alineaban perfectamente con nuestros objetivos:
+
+**Componentes del servidor de forma predeterminada**: Next.js 15 App Router utiliza componentes del servidor de forma predeterminada, lo que significa que podemos recuperar datos directamente en nuestros componentes sin rutas API adicionales para operaciones simples. Esto reduce la complejidad y mejora el rendimiento desde el primer momento.
+
+**Regeneración estática incremental (ISR)**: el contenido educativo no cambia constantemente, pero sí cambia. ISR nos permite renderizar previamente páginas en el momento de la compilación y luego revalidarlas según un cronograma. Esto significa que nuestras publicaciones de blog, tutoriales y materiales de cursos están siempre actualizados sin el impacto en el rendimiento del renderizado bajo demanda.
+
+**Optimización incorporada**: la optimización de imágenes, la carga de fuentes y la división de código se manejan automáticamente. No tuvimos que dedicar ciclos a crear o configurar estas funciones: simplemente funcionan.
+
+**Enrutamiento basado en archivos**: la estructura de archivos intuitiva del App Router hace evidente dónde se encuentran las páginas y las rutas API. Los nuevos contribuyentes pueden acceder al código base y comprender la estructura de inmediato.
+
+```typescript
+// Our routing structure is intuitive and scalable
+app/
+├── [locale]/
+│   ├── page.tsx
+│   ├── programs/
+│   │   ├── page.tsx
+│   │   └── [slug]/
+│   │       └── page.tsx
+│   └── blog/
+│       ├── page.tsx
+│       └── [slug]/
+│           └── page.tsx
+├── api/
+└── layout.tsx
+```
+
+## Soporte multilingüe con next-intl 🌍
+
+AI Educademy está diseñada para la comunidad global. Ofrecer contenido en varios idiomas no es sólo algo agradable de tener: es esencial para cumplir nuestra misión de educación gratuita sobre IA para todos.
+
+Elegimos `next-intl` porque:
+
+- **Se integra perfectamente con App Router** sin requerir configuraciones complejas de middleware
+- **Proporciona traducciones con seguridad de escritura** para que detectemos las claves de traducción que faltan en el momento de la compilación.
+- **Admite estructuras locales anidadas** (podemos tener `/en/programs` y `/es/programas` con el mismo componente de página)
+- **Maneja el formato de fecha/número** automáticamente según la configuración regional
+- **Funciona con componentes de servidor y cliente** sin fricciones
+
+Así es como estructuramos nuestra configuración i18n:
+
+```typescript
+// middleware.ts - Detects user locale and routes accordingly
+import { createMiddleware } from 'next-intl/middleware';
+
+export default createMiddleware({
+  locales: ['en', 'es', 'fr', 'de', 'zh'],
+  defaultLocale: 'en'
+});
+
+export const config = {
+  matcher: ['/((?!api|_next|.*\\..*).*)']
+};
+```
+
+Nuestros archivos de traducción están organizados por configuración regional y cuentan con:
+
+```
+messages/
+├── en/
+│   ├── common.json
+│   ├── programs.json
+│   └── blog.json
+├── es/
+│   ├── common.json
+│   └── ...
+└── fr/
+    └── ...
+```
+
+Este enfoque se adapta maravillosamente. Agregar un nuevo idioma significa agregar una nueva carpeta con archivos JSON; no se requieren cambios de código.
+
+## MDX: el contenido se une a los componentes 📝
+
+Aquí es donde las cosas se ponen interesantes. Podríamos haber usado un CMS tradicional sin cabeza, pero elegimos MDX porque nos brinda lo mejor de ambos mundos: administración de contenido controlada por versiones junto con nuestro código y la capacidad de integrar componentes interactivos de React directamente en nuestro contenido educativo.
+
+Cuando lees una publicación de blog o un tutorial sobre AI Educademy, no estás simplemente leyendo HTML estático. Podrías estar interactuando con:
+
+- **Ejemplos de código interactivo** que muestran la entrada y la salida una al lado de la otra
+- **Cuestionarios integrados** que comprueban tu comprensión
+- **Diagramas visuales** que explican conceptos complejos
+- **Cuadros de llamadas** que resaltan información importante
+
+Todo esto es posible porque usamos MDX. Nuestros autores de contenido pueden escribir en Markdown, pero los desarrolladores pueden pasar componentes personalizados:
+
+```mdx
+---
+title: "Understanding Neural Networks"
+---
+
+# Understanding Neural Networks
+
+<ConceptExplainer concept="neural-networks" />
+
+Neural networks are inspired by how our brains work...
+
+<InteractiveQuiz questionId="nn-101" />
+
+## Real-World Applications
+
+<CodeExample language="python" title="Simple Neural Network" />
+```
+
+Para que MDX funcione sin problemas en Next.js 15, usamos `@next/mdx` y lo configuramos en nuestro `next.config.js`:
+
+```javascript
+// next.config.js
+import createMDX from '@next/mdx';
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [
+      // Our custom plugins for syntax highlighting, TOC generation, etc.
+    ],
+    rehypePlugins: []
+  }
+});
+
+export default withMDX({
+  pageExtensions: ['ts', 'tsx', 'mdx']
+});
+```
+
+## Submódulos de Git para contenido desacoplado 🔗
+
+Aquí hay una decisión arquitectónica inteligente: **nuestro contenido se encuentra en repositorios de git separados**, incorporados a la aplicación principal como submódulos de git.
+
+¿Por qué? Porque permite:
+
+- **Flujos de trabajo asincrónicos**: los creadores de contenido pueden trabajar independientemente de los desarrolladores
+- **Separación clara de preocupaciones**: el repositorio de la aplicación permanece centrado en el código, los repositorios de contenido en el contenido
+- **Escalado paralelo**: Podemos tener diferentes equipos manteniendo contenido en diferentes idiomas
+- **Beneficios del control de versiones**: los cambios de contenido se rastrean por separado de los cambios de código, lo que hace que las reversiones y el seguimiento del historial sean más limpios.
+
+Nuestra estructura de directorios se ve así:
+
+```
+ai-educademy/
+├── content/ (git submodule)
+│   ├── blog/
+│   │   ├── en/
+│   │   ├── es/
+│   │   └── fr/
+│   ├── programs/
+│   │   └── [course content]
+│   └── lab/
+│       └── [interactive exercises]
+├── app/
+├── package.json
+└── .gitmodules
+```
+
+Cuando necesitamos actualizar contenido, nosotros:
+
+```bash
+# Pull latest content
+git submodule update --remote
+
+# Or content authors can PR directly to the content repo
+```
+
+Este desacoplamiento ha cambiado las reglas del juego para nuestra velocidad. El contenido se puede actualizar sin desencadenar reconstrucciones de aplicaciones (gracias a ISR), y quienes no sean ingenieros pueden agregar nuevos programas.
+
+## Compatibilidad con aplicaciones web progresivas (PWA) 📱
+
+La educación ocurre en todos los dispositivos, incluidos los entornos con poco ancho de banda. Creamos AI Educademy como una PWA para que los estudiantes puedan:
+
+- **Trabajar sin conexión**: descargue lecciones y complete el trabajo sin conectividad constante
+- **Instalar como una aplicación**: agréguela a la pantalla de inicio en el dispositivo móvil para disfrutar de una experiencia similar a la de una aplicación
+- **Reducir el uso de datos**: el almacenamiento en caché inteligente significa que los usuarios que regresan no vuelven a descargar contenido
+
+```typescript
+// next.config.js includes PWA configuration
+import withPWA from 'next-pwa';
+
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development'
+});
+```
+
+Nuestra estrategia de Service Worker es sencilla:
+
+- **Caché primero para recursos**: CSS, JavaScript, fuentes: no cambian con frecuencia
+- **Primero la red para el contenido**: las publicaciones de blog y los materiales del curso deben mantenerse actualizados
+- **Obsoleto mientras se revalidan datos de API**: muestra datos almacenados en caché mientras se obtienen datos nuevos en segundo plano
+
+## Implementación en Vercel 🚀
+
+Implementamos en Vercel porque la integración con Next.js es perfecta. Cada impulso a nuestra rama principal desencadena compilaciones e implementaciones automáticas. Más importante aún:
+
+- **La revalidación automática de ISR** ocurre en la red perimetral de Vercel
+- **Implementaciones preliminares** para solicitudes de extracción nos permiten revisar los cambios antes de fusionarlas.
+- **CDN global** garantiza que nuestro contenido se cargue rápidamente independientemente de la geografía
+- **Funciones de borde** nos permiten manejar la lógica dinámica (como la detección de idioma) en el borde
+
+Nuestro proceso de implementación se ve así:
+
+```
+Git Push → GitHub → Vercel Build → CDN Distribution → Global Users
+```
+
+Para actualizaciones de contenido específicamente, hemos configurado webhooks para que cuando se actualice nuestro submódulo de contenido, Vercel reconstruya automáticamente el sitio con contenido nuevo.
+
+## Métricas de rendimiento que importan 📊
+
+Toda esta arquitectura funciona en conjunto para crear una plataforma que funciona al más alto nivel. Nuestras métricas del mundo real:
+
+- **Core Web Vitals**: Todo verde (LCP < 2,5 s, FID < 100 ms, CLS < 0,1)
+- **Primera pintura con contenido**: promedio de 1,2 segundos a nivel mundial
+- **Puntuación Lighthouse**: 98/100 (rendimiento)
+- **Tiempo de interacción**: 2,1 segundos
+
+Estas no son métricas vanidosas: sitios más rápidos significan que más estudiantes pueden acceder a nuestro contenido, especialmente aquellos en redes móviles o en regiones con infraestructura limitada.
+
+## Principios del código abierto 💚
+
+Todo el código base es de código abierto. Si desea ver cómo funcionan todas estas piezas juntas, puede explorar el repositorio, contribuir con mejoras o bifurcarlo para su propia plataforma educativa.
+
+La arquitectura que hemos descrito aquí no es propietaria: está construida sobre herramientas de código abierto sólidas y ampliamente adoptadas. La comunidad se beneficia de nuestros aprendizajes y nosotros nos beneficiamos de las contribuciones de la comunidad.
+
+## Conclusiones clave
+
+Ya sea que esté creando una plataforma educativa o cualquier aplicación con mucho contenido, considere:
+
+1. **Elija marcos alineados con su caso de uso**: Next.js 15 App Router para sitios de contenido
+2. **Invierta en i18n desde el principio**: es más difícil modernizarlo que construirlo
+3. **Desacoplar el contenido del código**: los submódulos de Git permiten flujos de trabajo paralelos
+4. **Mejoras progresivas**: el soporte de PWA llega a los usuarios donde están
+5. **Mida lo que importa**: Core Web Vitals impacta los resultados educativos
+
+AI Educademy representa nuestro compromiso con una infraestructura tecnológica accesible, eficaz y mantenible para la educación. Si está interesado en alguna de estas tecnologías o desea contribuir, [nuestro código es de código abierto y está esperando su colaboración](https://github.com/aieducademy).
+
+---
+
+**¿Quieres probar nuestra plataforma?** [Explora nuestros programas](/programs) | [Visita el laboratorio](/lab) | [Leer más sobre nuestra misión](/about)

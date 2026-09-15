@@ -1,0 +1,186 @@
+---
+title: "行列とグリッドの問題 - グリッドと島のカウントに関する BFS"
+description: "BFS、DFS、フラッド フィル、マルチソース BFS、スパイラル トラバーサル、グリッド上での動的プログラミングを使用した 2D グリッド トラバーサルをマスターします。"
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+machineTranslated: true
+---
+## グリッドとしての 2D 配列
+
+マトリックスは単なる 2D 配列ですが、インタビューでは、地図、ボード、迷路などの **グリッド** を表すことがよくあります。各セル `grid[r][c]` はノードであり、その隣のセルは隣接セルです。
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+行`r`、列`c`、寸法`m × n`。シンプルですが、その上に構築されたパターンは強力です。
+
+## 方向性配列
+
+4 つの個別の if ステートメントを記述する代わりに、**方向配列** を使用します。
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+これは、グリッド問題の中で最も再利用可能なスニペットです。
+
+<FunFact>方向配列のトリックは「デルタ エンコーディング」と呼ばれることもあります。これは、ゲーム開発、画像処理、競技プログラミングなど、グリッドが使用されるあらゆる場面で使用されます。</FunFact>
+
+## グリッド上の BFS - 迷路の最短経路
+
+BFS は、重み付けされていないグリッドで **最短パス** を見つけます。ソースから開始して、距離 1 にあるすべての近傍を探索し、次に距離 2 というように探索します。
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS は格子状の迷路全体にレベルごとに拡張します" caption="BFS はセルをレベルごとに探索し、最短パスを保証します。" />
+
+## グリッド上の DFS - 塗りつぶしと島の数
+
+**塗りつぶし** (ペイント バケツ ツールと同様): 開始セルから、同じ色の接続されているすべてのセルを変更します。 DFS または BFS は両方とも機能します。
+
+**島の数:** グリッドをスキャンします。 `1` を見つけたら、DFS/BFS を実行して島全体を訪問済みとしてマークし、カウントを増やします。
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="「島の数」で、DFS 中にセルを訪問済みとしてマークするのはなぜですか?" options="正確にするために 2 回数えるため|同じ島を複数回カウントしないようにするには|島を並べ替えるには|一番大きな島を探すには" answer="1" explanation="訪問済みのセルをマークすると、外側のループが同じアイランド上で新しい DFS を開始し、オーバーカウントになるのを防ぎます。" />
+
+## 腐ったオレンジ - マルチソース BFS
+
+最初に腐ったオレンジはすべてソースになります。それらをすべて時間 0 でキューにプッシュし、次に BFS にプッシュします。各レベルは 1 分です。列が空になったら、新鮮なオレンジが残っているかどうかを確認します。
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    All reachable oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+重要な洞察: **マルチソース BFS** は、1 つのノードではなく複数のノードから同時に開始されます。
+
+<Quiz question="「Rotting Oranges」と標準の BFS の違いは何ですか?" options="代わりに DFS を使用します|複数の開始点が同時にキューに入れられます|ダイクストラのアルゴリズムが必要です|グリッドには重み付けされたエッジがあります" answer="1" explanation="マルチソース BFS は、すべての腐ったオレンジを開始「フロンティア」として一度にキューに入れるため、腐敗はすべてのソースから並行して広がります。" />
+
+## スパイラル行列トラバーサル
+
+右→下→左→上という螺旋の順序でマトリックスを歩き、パスごとに境界を縮小します。
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## マトリックスの回転 (90°)
+
+N×N 行列をその場で時計回りに回転します。**転置** (`[r][c]` を `[c][r]` と交換)、**各行を反転します**。
+
+```
+Original → Transpose → Reverse rows
+1 2 3     1 4 7       7 4 1
+4 5 6  →  2 5 8   →   8 5 2
+7 8 9     3 6 9       9 6 3
+```
+
+<ThinkAboutIt>反時計回りに回転するには、最初に行を反転してから転置しますか、それとも転置してから列を反転しますか?紙に書いてみてください。</ThinkAboutIt>
+
+## ソートされた 2D マトリックスでの検索
+
+2 つの一般的なバリエーション:
+- **行と列は個別にソート** - 右上隅から開始します。ターゲットが小さい場合は左に移動します。大きい場合は下に移動します。 O(m + n)。
+- **完全にソート** (各行は前の行の終了位置から始まります) - フラットにソートされた配列および二分検索として処理されます。 O(log(m × n))。
+
+## グリッド上の動的プログラミング
+
+**一意のパス:** 左上から右下まで、右または下にのみ移動するパスをカウントします。 `dp[r][c] = dp[r-1][c] + dp[r][c-1]`。
+
+**最小パス合計:** 同じ考え方ですが、最小の受信パスを選択します。
+
+これらは、多くの場合、2D 動的プログラミングへの最も穏やかな入門書となります。
+
+<Quiz question="Unique Paths 問題では、任意の列 c の dp[0][c] は何ですか?" options="0|1|c|c+1" answer="1" explanation="最初の行には右に移動することによってのみ到達できるため、最初の行のすべてのセルへのパスは 1 つだけです。 dp[0][c] = 1。" />
+
+## グリッド パターンのチートシート
+
+|パターン |テクニック |重要な問題 |
+|----------|-----------|---------------|
+|最短パス (重み付けなし) | BFS |迷路の最短経路 |
+|接続されたコンポーネント | DFS / BFS |島の数 |
+|マルチソースの広がり |マルチソース BFS |腐ったオレンジ
+|走査順序 |境界ポインタ |スパイラルマトリックス |
+|インプレース変換 |トランスポーズ + リバース |画像を回転 |
+|パスを数える | DP |ユニークなパス |
+|並べ替えられたグリッドで検索 |階段/二分探索 | 2D マトリックスを検索 |
+
+<ThinkAboutIt>多くのグリッド問題は、実際には偽装されたグラフ問題です。グリッド上で BFS よりも DFS を好むのはどのような場合ですか?</ThinkAboutIt>
+
+---
+
+## 📚 続きを読む
+
+- [NeetCode - 2D 動的プログラミング](https://neetcode.io/roadmap) - 視覚的な説明付きのグリッド DP 問題
+- [技術面接ハンドブック - マトリックス](https://www.techinterviewhandbook.org/algorithms/matrix/) - 一般的なパターンとテクニック
+- [LeetCode Matrix タグ](https://leetcode.com/tag/matrix/)] - 数百の練習問題
