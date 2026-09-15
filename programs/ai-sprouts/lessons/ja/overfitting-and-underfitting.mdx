@@ -1,0 +1,224 @@
+---
+title: "過学習と過小学習: ML モデルが失敗する理由"
+description: "明確な例とそれらを修正する方法を使用して、2 つの最も一般的な機械学習の失敗モードである過学習と過小学習を理解します。"
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# 過学習と過小学習: ML モデルが失敗する理由
+
+最初の機械学習モデルのトレーニングが完了しました。トレーニング データに対して優れたパフォーマンスを発揮します。精度は 98% です。新しいデータでテストすると、精度は 61% とばらばらになりました。何が間違っていたのでしょうか?
+
+ほぼ確実に、モデルには**過剰適合**があります。これは機械学習で最も一般的な 2 つの故障モードのうちの 1 つであり、これを理解することは、その反対の **過小学習** と並んで、現実世界で実際に機能するモデルを構築するために不可欠です。
+
+## 📐 バイアスと分散のトレードオフ
+
+例に入る前に、これらの概念の背後にある理論的枠組み、**バイアスと分散のトレードオフ**を理解するのに役立ちます。
+
+どのモデルも予測エラーを起こします。これらのエラーは、次の 3 つの部分に分解できます。
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**バイアス**は、モデル内の誤った仮定による誤差です。高バイアス モデルは単純すぎるため、データ内の真のパターンを体系的に見逃しています。
+
+**分散** は、トレーニング データの小さな変動に対する感度から生じる誤差です。高分散モデルは複雑すぎるため、基礎となるパターンを学習するのではなく、ノイズを含むトレーニング データを記憶します。
+
+**還元不可能なノイズ** は、どのモデルも除去できないデータ内の自然なランダム性です。
+
+トレードオフ: バイアスを減らすと分散が増加する傾向があり、その逆も同様です。機械学習実践者としてのあなたの仕事は、スイートスポットを見つけることです。
+
+## 📈 過小適合: 単純すぎて学ぶことができない
+
+**アンダーフィッティング**は、モデルが単純すぎてデータ内の真のパターンを捉えることができない場合に発生します。トレーニング データと新しいデータの「両方」でパフォーマンスが低下します。
+
+### 視覚的な例
+
+サイズに基づいて住宅価格を示すデータがあると想像してください。実際の関係はほぼ緩やかな曲線です。価格はサイズに応じて上昇しますが、最高値ではある程度の頭打ちになります。
+
+このデータに直線の水平線を当てはめると、次のようになります。
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+このモデルは、住宅のサイズと価格の実際の関係を無視しています。トレーニング データを表示するか新しいデータを表示するかは関係ありません。どちらにしても間違っています。
+
+### アンダーフィッティングの兆候
+- 高いトレーニング エラーと高いテスト エラー
+- モデルの予測は入力に関係なく平均値付近に集中します
+- 学習曲線は、トレーニングと検証の両方のエラーが高く、互いに近いことを示しています
+
+### アンダーフィッティングの原因
+- データの複雑さに対してモデルが単純すぎる (例: 非線形データに対する線形モデル)
+- トレーニング エポックが少なすぎます (モデルに学習時間がありません)
+- あまりにも積極的な正則化 (以下を参照)
+- 重要な機能が入力に欠落しています
+
+## 📉 過学習: 複雑すぎる、記憶ノイズ
+
+**過学習**は、モデルがノイズやランダムな変動を含むトレーニング データを *学習しすぎて*、新しい例に一般化できない場合に発生します。
+
+### 視覚的な例
+
+15 次の多項式を使用して同じ住宅価格データを近似します。
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+多項式は、ノイズの多い外れ値を含むすべてのトレーニング ポイントを通過するために、それ自体をねじって結び目になっています。基礎となるパターンを学習するのではなく、トレーニングセットを記憶してしまいました。目に見えないデータでは役に立ちません。
+
+<FunFact>すべてのトレーニング データを完全に記憶するモデルは、「世界で最悪のモデル」と呼ばれることもあります。これは 100% のトレーニング精度を備えていますが、まったく一般化できず、実際の目的にはまったく役に立たないものです。</FunFact>
+
+### 過学習の兆候
+- トレーニング誤差は非常に低いが、テスト誤差ははるかに大きい (**一般化ギャップ**が大きい)
+- 新しいデータではモデルのパフォーマンスが大幅に低下します
+- モデルは入力の小さな変化に驚くほど敏感です
+
+## 🔀 トレーニング / 検証 / テストの分割
+
+過学習を検出するための基本的なツールは、データを 3 つのセットに分割することです。
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **トレーニング セット**: モデルが学習する内容
+- **検証セット**: *開発中に*ハイパーパラメーターを調整し、過学習を検出するために使用するもの
+- **テスト セット**: 最終的な保留された評価 — 最後の最後に 1 回だけ触れます
+
+検証セットは早期警告システムです。トレーニングの精度は向上し続けているが、検証の精度が頭打ちまたは低下している場合は、過剰適合しています。
+
+<ThinkAboutIt>テスト セットを完全に分離し、一度だけ使用することが重要なのはなぜですか?テストセットで繰り返し評価し、それに基づいて調整を行った場合、何が問題になる可能性がありますか?</ThinkAboutIt>
+
+## 🛡️ 過学習の修正
+
+### 1. 正則化
+
+正則化により、モデルが過度に複雑なパターンを学習するのを妨げるペナルティが損失関数に追加されます。
+
+**L2 正則化 (リッジ)** は、大きな重みにペナルティを与えます。
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**L1 正則化 (Lasso)** は、一部の重みをゼロまで駆動して、特徴選択を実行できます。
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. ドロップアウト (ニューラル ネットワーク)
+
+トレーニング中に、一部のニューロンをランダムに「ドロップアウト」(ゼロに設定)します。
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+これにより、ニューロンの同時適応が妨げられ、ネットワークはより堅牢な分散表現を学習することになります。
+
+### 3. 早期停止
+
+トレーニング中に検証損失を監視し、増加し始めたら停止します。
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. さらなるトレーニング データ
+
+データが増えると、モデルがノイズを記憶することが難しくなります。正確に当てはめるには多すぎるのです。データ収集にコストがかかる場合は、**データ拡張** (既存の例の変更されたコピーの作成) が役立ちます。
+
+### 5. よりシンプルなアーキテクチャ
+
+場合によっては、問題に対して単純に複雑でないモデルを選択することが正しい解決策となる場合があります。
+
+## 🔄 相互検証
+
+データセットが小さい場合、単一の train/val 分割はランダム性により誤解を招く可能性があります。 **K 分割相互検証** により、より信頼性の高い推定値が得られます。
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+データは 5 つに分割されます。モデルは 4 でトレーニングし、1 で検証し、毎回ローテーションします。最終的なスコアは 5 つすべての平均であり、単一の分割よりもはるかに信頼性が高くなります。
+
+<Quiz question="モデルはトレーニング データでは 99% の精度を達成しますが、テスト データでは 62% にすぎません。これは何を示しているのでしょうか?" options="モデルは適合不足です - 単純すぎます|モデルは完全に調整されています|モデルは過学習しています。一般化するのではなく、トレーニング データを記憶しています。|テスト データセットが壊れている必要があります" answer="2" explanation="トレーニング精度 (99%) とテスト精度 (62%) の間に大きなギャップがあるのは、過剰学習の典型的な兆候です。モデルはノイズを含むトレーニング データを記憶しており、新しい例に一般化できません。" />
+
+## 重要なポイント
+
+- **アンダーフィッティング** (高バイアス): モデルが単純すぎます。トレーニング データとテスト データの「両方」でパフォーマンスが低下します。より複雑なモデルを使用するか、機能を追加することで修正します。
+- **過学習** (高分散): モデルが複雑すぎます。トレーニング データでは優れたパフォーマンスを発揮しますが、テスト データではパフォーマンスが低下します。モデルの正規化、データの追加、または単純化によって修正します。
+- **バイアスと分散のトレードオフ**は基本的な緊張関係です。一方を減らすと他方が増加する傾向があります。あなたの目標はスイートスポットを見つけることです
+- データを常に **トレーニング/検証/テスト** セットに分割します。テスト セットは最後に 1 回だけ操作する必要があります。
+- **オーバーフィッティングに対する主な修正**: L1/L2 正則化、ドロップアウト、早期停止、より多くのデータ、よりシンプルなアーキテクチャ
+- **相互検証**は、複数のトレーニング/検証分割にわたる結果を平均することにより、データが限られている場合に、より信頼性の高いパフォーマンス推定値を提供します。

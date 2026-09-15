@@ -1,0 +1,186 @@
+---
+title: "矩阵和网格问题 - 网格和岛屿计数上的 BFS"
+description: "掌握 BFS、DFS、洪水填充、多源 BFS、螺旋遍历和网格动态规划的 2D 网格遍历。"
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+machineTranslated: true
+---
+## 二维数组作为网格
+
+矩阵只是一个二维数组，但在面试中它通常代表一个**网格** - 地图、棋盘或迷宫。每个单元格`grid[r][c]`是一个节点，它的邻居是相邻单元格。
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+行`r`，列`c`，尺寸`m × n`。简单 - 但构建在其之上的模式非常强大。
+
+## 定向数组
+
+不要编写四个单独的 if 语句，而是使用 **方向数组**：
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+这是网格问题中最可重用的片段。
+
+<FunFact>方向数组技巧有时称为“增量编码”。它出现在游戏开发、图像处理和竞技编程中——任何使用网格的地方。</FunFact>
+
+## 网格上的 BFS - 迷宫中的最短路径
+
+BFS 在未加权网格中找到**最短路径**。从源开始，探索距离 1 处的所有邻居，然后探索距离 2 处的所有邻居，依此类推。
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS 在网格迷宫中逐级扩展" caption="BFS逐层探索细胞，保证最短路径。" />
+
+## 网格上的 DFS - 洪水填充和岛屿数量
+
+**洪水填充**（如油漆桶工具）：从起始单元格开始，更改所有连接的相同颜色的单元格。 DFS 或 BFS 都可以。
+
+**岛屿数量：** 扫描网格；当您找到 `1` 时，运行 DFS/BFS 将整个岛屿标记为已访问，然后增加计数。
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="在”岛屿数量”中，为什么我们将单元格标记为 DFS 期间访问过的单元格？" options="数两次以确保准确性|避免多次计算同一个岛屿|对岛屿进行排序|寻找最大的岛屿" answer="1" explanation="标记访问过的单元可以防止外循环在同一岛上启动新的 DFS，否则会导致计数过多。" />
+
+## Rotting Oranges - 多源 BFS
+
+所有最初腐烂的橙子都是来源。在时间0将它们全部推入队列，然后进行BFS。每个级别一分钟。当队列清空时，检查是否还有新鲜的橙子。
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    All reachable oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+关键见解：**多源 BFS** 同时从多个节点启动，而不是从一个节点启动。
+
+<Quiz question="”Rotting Oranges”与标准 BFS 有何不同？" options="它使用DFS代替|多个起点同时入队|需要Dijkstra算法|网格具有加权边缘" answer="1" explanation="多源 BFS 将所有腐烂的橙子作为起始”边界”立即排队，因此腐烂从每个源并行传播。" />
+
+## 螺旋矩阵遍历
+
+按螺旋顺序遍历矩阵：右→下→左→上，每次通过后缩小边界。
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## 矩阵旋转（90°）
+
+原地顺时针旋转 N×N 矩阵：**转置**（将 `[r][c]` 与 `[c][r]` 交换），然后 **反转每一行**。
+
+```
+Original → Transpose → Reverse rows
+1 2 3     1 4 7       7 4 1
+4 5 6  →  2 5 8   →   8 5 2
+7 8 9     3 6 9       9 6 3
+```
+
+<ThinkAboutIt>要逆时针旋转，是先反转行然后转置，还是转置然后反转列？在纸上尝试一下。</ThinkAboutIt>
+
+## 在排序的二维矩阵中搜索
+
+两种常见的变体：
+- **行和列独立排序** - 从右上角开始。如果目标较小，则向左移动；如果较大，则向下移动。 O(m+n)。
+- **完全排序**（每行从前一行结束的位置开始）- 视为平面排序数组和二分搜索。 O(log(m × n))。
+
+## 网格动态规划
+
+**唯一路径：**计算从左上角到右下角仅向右或向下移动的路径。 `dp[r][c] = dp[r-1][c] + dp[r][c-1]`。
+
+**最小路径总和：**相同的想法，但选择最小传入路径。
+
+这些通常是对 2D 动态规划最温和的介绍。
+
+<Quiz question="在唯一路径问题中，任意列 c 的 dp[0][c] 是多少？" options="0|1|c|c + 1" answer="1" explanation="第一行只能通过向右移动才能到达，因此到达第一行中的每个单元格都只有一条路径。 dp[0][c] = 1。" />
+
+## 网格图案备忘单
+
+|图案|技术|关键问题|
+|--------|------------|-------------|
+|最短路径（未加权）| BFS |迷宫最短路径|
+|连接组件| DFS / BFS |岛屿数量 |
+|多源传播|多源BFS |腐烂的橙子|
+|遍历顺序 |边界指针|螺旋矩阵|
+|就地变换 |转置 + 反转 |旋转图像 |
+|计算路径 | DP |独特的路径|
+|在排序网格中搜索 |楼梯/二分查找 |搜索二维矩阵 |
+
+<ThinkAboutIt>许多网格问题实际上是变相的图形问题。在网格上什么时候你更喜欢 DFS 而不是 BFS，反之亦然？</ThinkAboutIt>
+
+---
+
+## 📚 进一步阅读
+
+- 【NeetCode - 2D动态规划](https://neetcode.io/roadmap) - 网格DP问题可视化解释
+- [技术面试手册 - Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) - 常见模式和技巧
+- [LeetCode Matrix标签](https://leetcode.com/tag/matrix/) - 数百道练习题

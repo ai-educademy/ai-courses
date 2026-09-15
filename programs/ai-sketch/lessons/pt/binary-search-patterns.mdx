@@ -1,0 +1,144 @@
+---
+title: "Padrões de pesquisa binária – além de matrizes classificadas"
+description: "Aprenda a mentalidade da pesquisa binária: espaços de pesquisa, pesquisa binária na resposta e padrões que aparecem em dezenas de problemas de entrevista."
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+machineTranslated: true
+---
+## Pesquisa binária clássica – uma revisão rápida
+
+A pesquisa binária divide o espaço de pesquisa pela metade em cada etapa. Em uma matriz classificada de n elementos, ele encontra um alvo em **O(log n)** tempo.
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+Simples - mas o verdadeiro poder da pesquisa binária vai muito além de arrays ordenados.
+
+## O conceito de espaço de pesquisa
+
+A pesquisa binária funciona sempre que você tem uma **condição monotônica** em um intervalo. A "matriz" nem precisa existir - você só precisa de um intervalo `[lo, hi]` e uma função que mude de `False` para `True` (ou vice-versa) em algum limite.
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>A pesquisa binária foi publicada pela primeira vez em 1946, mas a primeira versão livre de erros só foi escrita em 1962 - 16 anos de erros isolados!</FunFact>
+
+## Pesquisa binária na resposta
+
+Em vez de pesquisar em um array, pesquise no **espaço de resposta**. Pergunte: “Posso alcançar o resultado X?” Se sim, tente menor; se não, tente maior.
+
+### Exemplo: Koko comendo bananas
+
+Koko tem `n` pilhas de bananas e `h` horas. Encontre a **velocidade mínima de alimentação** para que ela termine a tempo.
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+O espaço de resposta é `[1, max(piles)]` e a condição é monotônica – maior velocidade sempre significa menos horas.
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="Pesquisa binária restringindo o espaço de resposta para velocidade mínima de alimentação" caption="Pesquisa binária na resposta: reduza a faixa de velocidade viável a cada iteração." />
+
+## Matriz classificada girada
+
+Uma matriz classificada girada em algum pivô: `[4, 5, 6, 7, 0, 1, 2]`. Metade está sempre classificada. Compare `mid` com `lo` para decidir qual metade e, em seguida, verifique se o alvo se enquadra na metade classificada.
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="Em uma matriz classificada girada [3,4,5,1,2], qual metade é classificada quando mid = 2 (valor 5)?" options="Metade direita [1,2]|Metade esquerda [3,4,5]|Nem metade|Ambas as metades" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, então a metade esquerda [3,4,5] é classificada. Verificamos se o alvo está nesse intervalo; se não, pesquisamos direito." />
+
+## Primeira e Última Ocorrência
+
+Para encontrar a **primeira** ocorrência, quando você atingir o alvo, não pare - defina `hi = mid` e continue procurando para a esquerda. Para o **último**, defina `lo = mid + 1` e pesquise à direita.
+
+Este par de pesquisas também fornece a **contagem** de um alvo: `last - first + 1`.
+
+## Elemento de Pico
+
+Um elemento maior que ambos os vizinhos. Mesmo em uma matriz não classificada, a pesquisa binária funciona: se `nums[mid] < nums[mid + 1]`, o pico está à direita; caso contrário, é para a esquerda. O(log n).
+
+<ThinkAboutIt>Por que a localização de pico funciona com a pesquisa binária mesmo que a matriz não esteja classificada? Qual propriedade substitui a ordem classificada aqui?</ThinkAboutIt>
+
+## Pesquise em uma matriz 2D
+
+Se as linhas forem classificadas e o primeiro elemento de cada linha for maior que o último da anterior, trate a matriz como uma única matriz classificada de `m × n` elementos. Mapeie o índice `k` para a linha `k // n`, coluna `k % n`.
+
+## Raiz quadrada sem biblioteca
+
+Encontre o maior número inteiro `x` onde `x * x ≤ n`. Espaço de pesquisa: `[0, n]`. Pesquisa binária clássica na resposta.
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## O padrão "Minimizar o máximo"
+
+Problemas como "maior soma da matriz dividida" ou "capacidade de enviar pacotes em D dias" solicitam que você **minimize o pior caso**. A resposta é monotônica: se a capacidade C funciona, C+1 também funciona. Pesquisa binária em C.
+
+<Quiz question="Para 'Capacidade de envio de pacotes em dias D', qual é o espaço de busca para busca binária?" options="[0, peso total]|[peso único máximo, peso total]|[1, número de pacotes]|[D, peso total]" answer="1" explanation="A capacidade mínima possível é o pacote único mais pesado (caso contrário, não poderá ser enviado). O máximo é o peso total (enviar tudo em um dia)." />
+
+## O modelo universal
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+Ajuste `hi = mid` vs `lo = mid` dependendo se você busca o **primeiro Verdadeiro** ou o **último Verdadeiro**.
+
+<Quiz question="Qual é a complexidade de tempo da pesquisa binária em um espaço de resposta de tamanho S com uma verificação de viabilidade O(n)?" options="Sobre)|O(log S)|O (n log S)|O (n × S)" answer="2" explanation="Você executa O(log S) iterações de pesquisa binária, cada uma executando uma verificação O(n), fornecendo O(n log S) total." />
+
+<ThinkAboutIt>Quando você vê a frase "mínimo máximo possível" ou "máximo mínimo possível" na definição de um problema, o que deve vir imediatamente à mente?</ThinkAboutIt>
+
+---
+
+## 📚 Leitura adicional
+
+- [NeetCode - Lista de reprodução de pesquisa binária](https://neetcode.io/roadmap) - problemas selecionados de fáceis a difíceis
+- [Manual de entrevista técnica - Pesquisa binária](https://www.techinterviewhandbook.org/algorithms/binary-search/) - padrões, dicas e armadilhas
+- [Plano de estudo LeetCode Binary Search](https://leetcode.com/studyplan/binary-search/) - conjunto de problemas progressivos

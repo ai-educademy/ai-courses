@@ -1,0 +1,256 @@
+---
+title: "我们如何使用 Next.js 和 MDX 构建多语言人工智能教育平台"
+description: "探索 AI Educademy 背后的技术架构：Next.js 15 App Router、next-intl for i18n、MDX 内容管道、git 子模块、PWA 支持和 Vercel 部署。"
+date: "2026-03-06"
+author: "AI Educademy Team"
+tags:
+  - nextjs
+  - open-source
+  - architecture
+  - webdev
+published: true
+image: "/images/blog/placeholder.png"
+machineTranslated: true
+---
+构建 AI Educademy 提出了一项独特的技术挑战：创建一个可供全世界学习者使用、易于维护且可扩展以服务数百万用户的平台，同时保持代码库整洁且对开发人员友好。
+
+在本次深入探讨中，我们将详细介绍塑造我们平台的架构决策，从我们选择 Next.js 15 到我们如何使用 git 子模块管理多语言内容。无论您是要构建教育平台、文档网站还是任何内容丰富的应用程序，您都可以在这里找到实用的见解。
+
+## 为什么选择 Next.js 15 应用程序路由器？ 🏗️
+
+当我们开始构建 AI Educademy 时，Next.js 14 是标准。当我们发布时，Next.js 15 已经发布，对 App Router 进行了重大改进。我们之所以能够实现这一跨越，是因为有几个因素与我们的目标完美契合：
+
+**默认服务器组件**：Next.js 15 App Router 默认使用服务器组件，这意味着我们可以直接在组件中获取数据，无需额外的 API 路由来进行简单操作。这降低了复杂性并提高了开箱即用的性能。
+
+**增量静态再生（ISR）**：教育内容不会不断变化，但它确实会变化。 ISR 允许我们在构建时预渲染页面，然后按计划重新验证它们。这意味着我们的博客文章、教程和课程材料始终是新鲜的，不会因按需渲染而影响性能。
+
+**内置优化**：自动处理图像优化、字体加载和代码分割。我们不必花费周期来构建或配置这些功能 - 它们只是工作。
+
+**基于文件的路由**：App Router 直观的文件结构使页面和 API 路由所在的位置一目了然。新的贡献者可以立即进入代码库并了解其结构。
+
+```typescript
+// Our routing structure is intuitive and scalable
+app/
+├── [locale]/
+│   ├── page.tsx
+│   ├── programs/
+│   │   ├── page.tsx
+│   │   └── [slug]/
+│   │       └── page.tsx
+│   └── blog/
+│       ├── page.tsx
+│       └── [slug]/
+│           └── page.tsx
+├── api/
+└── layout.tsx
+```
+
+## next-intl 的多语言支持 🌍
+
+AI Educademy 是为全球社区打造的。提供多种语言的内容不仅是可有可无，而且对于实现我们为所有人提供免费人工智能教育的使命至关重要。
+
+我们选择 `next-intl` 因为它：
+
+- **与App Router无缝集成**，无需复杂的中间件配置
+- **提供类型安全翻译**，因此我们可以在编译时捕获丢失的翻译键
+- **支持嵌套语言环境结构**（我们可以在同一页面组件中使用 `/en/programs` 和 `/es/programas`）
+- **根据区域设置自动处理日期/数字格式**
+- **与服务器和客户端组件一起使用**无摩擦
+
+以下是我们构建 i18n 设置的方式：
+
+```typescript
+// middleware.ts - Detects user locale and routes accordingly
+import { createMiddleware } from 'next-intl/middleware';
+
+export default createMiddleware({
+  locales: ['en', 'es', 'fr', 'de', 'zh'],
+  defaultLocale: 'en'
+});
+
+export const config = {
+  matcher: ['/((?!api|_next|.*\\..*).*)']
+};
+```
+
+我们的翻译文件按区域设置和功能组织：
+
+```
+messages/
+├── en/
+│   ├── common.json
+│   ├── programs.json
+│   └── blog.json
+├── es/
+│   ├── common.json
+│   └── ...
+└── fr/
+    └── ...
+```
+
+这种方法可以很好地扩展。添加新语言意味着添加包含 JSON 文件的新文件夹 - 无需更改代码。
+
+## MDX：内容与组件的结合📝
+
+这就是事情变得有趣的地方。我们本来可以使用传统的无头 CMS，但我们选择了 MDX，因为它为我们提供了两全其美的功能：与我们的代码一起进行版本控制的内容管理，以及将交互式 React 组件直接嵌入到我们的教育内容中的能力。
+
+当您阅读有关 AI Educademy 的博客文章或教程时，您不仅仅是在阅读静态 HTML。您可能正在与以下人员互动：
+
+- **交互式代码示例**并排显示输入和输出
+- **嵌入式测验**检查您的理解情况
+- **解释复杂概念的可视化图表**
+- **标注框**突出显示重要信息
+
+所有这一切都是可能的，因为我们使用 MDX。我们的内容作者可以用 Markdown 编写，但开发人员可以传入自定义组件：
+
+```mdx
+---
+title: "Understanding Neural Networks"
+---
+
+# Understanding Neural Networks
+
+<ConceptExplainer concept="neural-networks" />
+
+Neural networks are inspired by how our brains work...
+
+<InteractiveQuiz questionId="nn-101" />
+
+## Real-World Applications
+
+<CodeExample language="python" title="Simple Neural Network" />
+```
+
+为了使 MDX 在 Next.js 15 中顺利工作，我们使用 `@next/mdx` 并在 `next.config.js` 中配置它：
+
+```javascript
+// next.config.js
+import createMDX from '@next/mdx';
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [
+      // Our custom plugins for syntax highlighting, TOC generation, etc.
+    ],
+    rehypePlugins: []
+  }
+});
+
+export default withMDX({
+  pageExtensions: ['ts', 'tsx', 'mdx']
+});
+```
+
+## 用于解耦内容的 Git 子模块 🔗
+
+这是一个聪明的架构决策：**我们的内容位于单独的 git 存储库中**，作为 git 子模块拉入主应用程序。
+
+为什么？因为它可以：
+
+- **异步工作流程**：内容创建者可以独立于开发人员工作
+- **清晰的关注点分离**：应用程序存储库专注于代码，内容存储库专注于内容
+- **并行扩展**：我们可以让不同的团队以不同的语言维护内容
+- **版本控制的好处**：内容更改与代码更改分开跟踪，使回滚和历史记录跟踪更清晰
+
+我们的目录结构如下所示：
+
+```
+ai-educademy/
+├── content/ (git submodule)
+│   ├── blog/
+│   │   ├── en/
+│   │   ├── es/
+│   │   └── fr/
+│   ├── programs/
+│   │   └── [course content]
+│   └── lab/
+│       └── [interactive exercises]
+├── app/
+├── package.json
+└── .gitmodules
+```
+
+当我们需要更新内容时，我们：
+
+```bash
+# Pull latest content
+git submodule update --remote
+
+# Or content authors can PR directly to the content repo
+```
+
+这种解耦改变了我们的速度。内容可以在不触发应用程序重建的情况下进行更新（感谢 ISR），并且非工程师也可以添加新程序。
+
+## 渐进式 Web 应用程序 (PWA) 支持 📱
+
+教育可以在所有设备上进行，包括低带宽环境。我们将 AI Educademy 打造为 PWA，以便学习者能够：
+
+- **离线工作**：下载课程并完成工作，无需持续连接
+- **像应用程序一样安装**：添加到移动设备上的主屏幕以获得类似应用程序的体验
+- **减少数据使用**：智能缓存意味着返回的用户不会重新下载内容
+
+```typescript
+// next.config.js includes PWA configuration
+import withPWA from 'next-pwa';
+
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development'
+});
+```
+
+我们的 Service Worker 策略很简单：
+
+- **资源缓存优先**：CSS、JavaScript、字体 - 这些不会经常更改
+- **内容网络优先**：博客文章和课程材料应保持新鲜
+- **API 数据重新验证时过时**：在后台获取新数据时显示缓存数据
+
+## 在 Vercel 上部署 🚀
+
+我们在 Vercel 上进行部署，因为与 Next.js 的集成是无缝的。每次推送到我们的主分支都会触发自动构建和部署。更重要的是：
+
+- **自动 ISR 重新验证**发生在 Vercel 的边缘网络上
+- **预览拉取请求的部署**让我们在合并之前检查更改
+- **全球 CDN** 确保我们的内容快速加载，无论地理位置如何
+- **边缘函数**让我们在边缘处理动态逻辑（如语言检测）
+
+我们的部署管道如下所示：
+
+```
+Git Push → GitHub → Vercel Build → CDN Distribution → Global Users
+```
+
+特别是对于内容更新，我们设置了 Webhooks，以便当我们的内容子模块更新时，Vercel 会自动使用新内容重建网站。
+
+## 重要的性能指标 📊
+
+所有这些架构一起工作，创建一个在顶层执行的平台。我们的实际指标：
+
+- **核心网络生命**：全绿色（LCP < 2.5s，FID < 100ms，CLS < 0.1）
+- **首次内容绘制**：全球平均 1.2 秒
+- **灯塔得分**：98/100（性能）
+- **交互时间**：2.1 秒
+
+这些不是虚荣指标 - 更快的网站意味着更多的学习者可以访问我们的内容，特别是那些在移动网络上或基础设施有限的地区的学习者。
+
+## 开源原则 💚
+
+整个代码库是开源的。如果您想了解所有这些部分如何协同工作，您可以探索存储库，做出改进，或将其分叉到您自己的教育平台。
+
+我们在这里描述的架构不是专有的 - 它是建立在可靠的、广泛采用的开源工具之上的。社区从我们的学习中受益，我们也从社区的贡献中受益。
+
+## 要点
+
+无论您是构建教育平台还是任何内容丰富的应用程序，请考虑：
+
+1. **选择与您的用例相符的框架**：适用于内容网站的 Next.js 15 App Router
+2. **从一开始就投资国际化**：改造比内置更难
+3. **将内容与代码解耦**：Git 子模块支持并行工作流程
+4. **渐进式增强有效**：PWA 支持到达用户所在位置
+5. **衡量重要因素**：核心网络生命影响教育成果
+
+AI Educademy 代表了我们对可访问、高性能和可维护的教育技术基础设施的承诺。如果您对这些技术感兴趣或想做出贡献，[我们的代码是开源的，等待您的协作](https://github.com/aieducademy)。
+
+---
+
+**想尝试我们的平台吗？** [探索我们的项目](/programs) | [参观实验室](/lab) | [阅读更多关于我们的使命](/about)

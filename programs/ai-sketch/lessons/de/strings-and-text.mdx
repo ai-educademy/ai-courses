@@ -1,0 +1,168 @@
+---
+title: "Strings und Textverarbeitung – Wie KI Text liest und versteht"
+description: "Entdecken Sie, wie KI-Systeme Text mithilfe von Zeichenfolgenoperationen und Mustervergleichen aufschlüsseln, durchsuchen und manipulieren."
+order: 2
+difficulty: "intermediate"
+duration: 15
+icon: "📝"
+published: true
+machineTranslated: true
+---
+## Text ist überall in der KI
+
+Bevor eine KI Ihre Frage verstehen, einen Aufsatz schreiben oder einen Satz übersetzen kann, muss sie Rohtext verarbeiten. Jeder Chatbot, jede Suchmaschine und jedes Sprachmodell beginnt mit **Strings** – Zeichenfolgen, die die menschliche Sprache darstellen.
+
+Wenn man versteht, wie Strings funktionieren, öffnet sich die Tür zur Verarbeitung natürlicher Sprache, einem der spannendsten Bereiche der künstlichen Intelligenz.
+
+## String-Grundlagen
+
+Eine Zeichenfolge ist einfach eine Folge von Zeichen – Buchstaben, Ziffern, Leerzeichen und Symbolen –, die in der richtigen Reihenfolge gespeichert sind.
+
+```
+message = "Hello, World!"
+```
+
+Jedes Zeichen hat eine Position (Index), genau wie ein Array:
+
+```
+index:  0  1  2  3  4  5  6  7  8  9  10  11  12
+char:   H  e  l  l  o  ,     W  o  r   l   d   !
+```
+
+<Illustration src="/images/lessons/strings-and-text.svg" alt="Eine in einzelne Zeichen unterteilte Zeichenfolge mit darunter angezeigten Indexpositionen" caption="Unter der Haube ist ein String ein Array von Zeichen – jedes mit seinem eigenen Index." />
+
+### Teilzeichenfolgen
+
+Ein **Teilstring** ist ein Teil eines Strings. Aus „Hallo Welt!“ Sie könnten „World“ (Indizes 7 bis 11) extrahieren. KI-Systeme extrahieren ständig Teilzeichenfolgen – indem sie Namen aus Sätzen herausziehen, Hashtags aus Tweets isolieren oder URLs von Webseiten abrufen.
+
+### Unveränderlichkeit
+
+In den meisten Sprachen sind Zeichenfolgen **unveränderlich** – Sie können ein Zeichen nicht direkt ändern. Stattdessen erstellen Sie eine neue Zeichenfolge. Dies ist wichtig für die Leistung: Wenn Ihre KI-Pipeline Text millionenfach ändert, kann die Erstellung jedes Mal neuer Zeichenfolgen zu einer Verlangsamung führen.
+
+<FunFact>Das gesamte Werk Shakespeares umfasst etwa 900.000 Wörter. GPT-4 wurde an tausendmal größeren Textdatensätzen trainiert – Hunderte Milliarden Wörter, die alle als Zeichenfolgen verarbeitet wurden, bevor sie in Zahlen umgewandelt wurden.
+</FunFact>
+
+## Wie ChatGPT Text liest: Tokenisierung
+
+KI-Modelle lesen Wörter nicht so wie Menschen. Sie verwenden **Tokenisierung** – das Aufteilen von Text in kleinere Teile, sogenannte Token.
+
+```
+Input:  "unhappiness"
+Tokens: ["un", "happiness"]
+
+Input:  "ChatGPT is brilliant"
+Tokens: ["Chat", "G", "PT", " is", " brilliant"]
+```
+
+Die Tokenisierung liegt zwischen der Verarbeitung auf Zeichenebene und der Verarbeitung auf Wortebene. Es behandelt seltene Wörter, indem es sie in bekannte Unterteile zerlegt und so den Wortschatz überschaubar hält.
+
+<ThinkAboutIt>Wenn Sie ein langes, ungewöhnliches Wort wie „antidisestablishmentarianism“ in ChatGPT eingeben, zerlegt das Modell es in bekannte Unterwort-Token. Warum ist dies möglicherweise besser, als jedes mögliche englische Wort als separates Token zu speichern?
+</ThinkAboutIt>
+
+### Warum Tokenisierung wichtig ist
+
+- Ein typisches Sprachmodell hat ein Vokabular von 50.000–100.000 Token.
+- Jeder Token ist einer Nummer (seiner ID) zugeordnet, die das Modell tatsächlich verarbeitet.
+– Die Art und Weise, wie Text tokenisiert wird, wirkt sich auf die Kosten aus – mehr Token bedeuten mehr Rechenaufwand und höhere API-Gebühren.
+
+## Mustervergleich – Nadeln im Heuhaufen finden
+
+Eine Kern-String-Operation ist die Suche nach einem Muster innerhalb eines größeren Textes. Enthält diese E-Mail das Wort „dringend“? Enthält dieser Code eine Sicherheitslücke?
+
+### Der einfache Ansatz
+
+Schieben Sie das Muster über den Text und prüfen Sie dabei Zeichen für Zeichen:
+
+```
+text:    "the cat sat on the mat"
+pattern: "cat"
+
+Position 0: "the" → no match
+Position 1: "he " → no match
+Position 4: "cat" → match found at index 4!
+```
+
+Dies ist im schlimmsten Fall **O(n × m)**, wobei n die Textlänge und m die Musterlänge ist. Für kurze Muster ist es in Ordnung. Für das Scannen von Millionen von Dokumenten brauchen wir intelligentere Ansätze.
+
+<Quiz question="Warum ist der naive Mustervergleich bei sehr großen Texten langsam?" options="Es verbraucht zu viel Speicher|Es überprüft jede mögliche Startposition und vergleicht Zeichen für Zeichen|Es funktioniert nur mit alphabetischen Zeichen|Dazu muss der Text zuerst sortiert werden" answer="1" explanation="Der naive Ansatz verschiebt das Muster über jede Position im Text und vergleicht bis zu m Zeichen an jeder Position – was eine Zeitkomplexität von O(n × m) ergibt." />
+
+## Klassische String-Herausforderungen
+
+### String-Umkehr
+
+Das Umkehren einer Zeichenfolge ist einfach, verrät aber, wie Sie über Daten denken:
+
+```
+reverse("hello") → "olleh"
+```
+
+KI verwendet die Umkehrung in Sequenz-zu-Sequenz-Modellen – einige frühe Übersetzungsmodelle haben beispielsweise den Eingabesatz umgekehrt, um die Genauigkeit zu verbessern.
+
+### Palindrom-Erkennung
+
+Ein Palindrom liest vorwärts und rückwärts dasselbe: „Rennwagen“, „Madam“, „Level“.
+
+```
+is_palindrome(text):
+    return text == reverse(text)
+```
+
+### Anagrammerkennung
+
+Zwei Wörter sind Anagramme, wenn sie dieselben Zeichen in unterschiedlicher Reihenfolge enthalten: „zuhören“ und „still“.
+
+Die elegante Lösung? Zählen Sie die Zeichenhäufigkeit mithilfe einer Hash-Map:
+
+```
+are_anagrams(word1, word2):
+    return character_counts(word1) == character_counts(word2)
+```
+
+Dies knüpft direkt an das Häufigkeitszählmuster aus der vorherigen Lektion an – Hash-Maps ergeben O(n).
+
+<Quiz question="Welcher Ansatz prüft am effizientesten, ob zwei Wörter Anagramme sind?" options="Sortieren Sie beide Wörter und vergleichen Sie sie|Vergleichen Sie jedes Zeichen in Wort1 mit jedem Zeichen in Wort2|Zählen Sie die Zeichenhäufigkeiten in jedem Wort mithilfe einer Hash-Map und vergleichen Sie sie|Drehen Sie ein Wort um und prüfen Sie, ob es mit dem anderen übereinstimmt" answer="2" explanation="Das Zählen der Zeichenhäufigkeiten mit einer Hash-Map ist O(n) – ein Durchgang durch jedes Wort. Die Sortierung funktioniert auch bei O(n log n), aber der Hash-Map-Ansatz ist für große Strings schneller." />
+
+## Reguläre Ausdrücke – Mustervergleich bei Steroiden
+
+Mit regulären Ausdrücken (Regex) können Sie Muster anstelle von exaktem Text beschreiben:
+
+| Muster | Übereinstimmungen | Anwendungsfall |
+|---------|---------|----------|
+| `\d+` | Eine oder mehrere Ziffern | Zahlen aus Text extrahieren |
+| `[A-Z][a-z]+` | Ein großgeschriebenes Wort | Eigennamen finden |
+| `\b\w+@\w+\.\w+\b` | E-Mail-Adressen | Datenextraktion |
+| `(cat\|dog\|bird)` | Jedes von drei Wörtern | Klassifizierungsschlüsselwörter |
+
+KI-Datenpipelines verwenden Regex häufig zur **Datenbereinigung** – zum Entfernen von HTML-Tags, zum Extrahieren von Daten, zum Standardisieren von Telefonnummern und zum Herausfiltern unerwünschter Zeichen vor dem Training.
+
+<Callout>Reguläre Ausdrücke sind leistungsstark, können aber schwierig sein. Eine schlecht geschriebene Regex kann bei bestimmten Eingaben exponentiell lange dauern – ein Problem, das als „katastrophales Backtracking“ bekannt ist. Testen Sie Ihre Muster immer an Randfällen.
+</Callout>
+
+## Reale KI-Textverarbeitungspipeline
+
+Hier ist eine vereinfachte Ansicht, wie eine KI Text verarbeitet:
+
+1. **Rohtext** → „Das WLAN des Cafés funktioniert nicht!!!“
+2. **Kleinschreibung** → „Das WLAN im Café funktioniert nicht!!!“
+3. **Satzzeichen entfernen** → „Das WLAN im Café funktioniert nicht“
+4. **Tokenisierung** → [„the“, „café“, „s“, „wi“, „fi“, „isn“, „t“, „working“]
+5. **Token-IDs** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
+6. **Ins Modell** → Zahlen, die die KI tatsächlich verarbeiten kann
+
+Jeder Schritt umfasst String-Operationen – Schneiden, Suchen, Ersetzen und Teilen.
+
+<ThinkAboutIt>Wenn Sie eine Nachricht an einen Chatbot in einer Sprache senden, die keine Leerzeichen zwischen Wörtern verwendet (wie Chinesisch oder Japanisch), wie könnte die Tokenisierung anders funktionieren? Welche zusätzlichen Herausforderungen entstehen dadurch?
+</ThinkAboutIt>
+
+<FunFact>Der Tokenisierer von OpenAI teilt die „Tokenisierung“ in [„Token“, „isierung“] – zwei Token. Aber die amerikanische Schreibweise „tokenization“ wird zu [„token“, „ization“]. Das gleiche Konzept kostet je nach Schreibweise unterschiedliche Beträge!
+</FunFact>
+
+<Quiz question="Warum wird in einer Textverarbeitungspipeline eine Tokenisierung durchgeführt, bevor der Text einem KI-Modell zugeführt wird?" options="Damit der Text schöner aussieht|Um von Menschen lesbaren Text in numerische Token-IDs umzuwandeln, die das Modell mathematisch verarbeiten kann|Zur Überprüfung auf Rechtschreibfehler|Um den Text zu komprimieren und Speicherplatz zu sparen" answer="1" explanation="KI-Modelle arbeiten mit Zahlen, nicht mit Buchstaben. Die Tokenisierung wandelt Text in Token-IDs um – numerische Darstellungen, die in mathematische Operationen wie die Matrixmultiplikation innerhalb des Modells eingespeist werden können." />
+
+## Wichtige Erkenntnisse
+
+- Strings sind Zeichenfolgen – das Rohmaterial für alle textbasierten KI.
+- **Tokenisierung** verbindet menschliche Sprache und maschinelles Lernen, indem es Text in verarbeitbare Teile aufteilt.
+- Mustervergleich und Regex sind wesentliche Werkzeuge zum Bereinigen und Extrahieren von Daten.
+- Klassische String-Aufgaben (Umkehrung, Palindrome, Anagramme) fördern die Denkfähigkeiten, die für die KI-Textverarbeitung erforderlich sind.
+– Jede Nachricht, die Sie an ChatGPT senden, durchläuft eine Pipeline von Zeichenfolgenoperationen, bevor das Modell sie sieht.

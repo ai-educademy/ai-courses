@@ -1,0 +1,252 @@
+---
+title: "Ingeniería de funciones: enseñar a las máquinas lo que importa"
+description: "Descubra cómo la ingeniería de funciones transforma los datos sin procesar en poderosas entradas de aprendizaje automático: la habilidad que separa los buenos modelos de los excelentes."
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# Ingeniería de funciones: enseñar a las máquinas lo que importa
+
+Hay un dicho en el aprendizaje automático: **entra basura, sale basura**. Puedes tener el algoritmo más sofisticado del mundo, pero si lo alimentas con datos mal preparados, los resultados serán pobres. Por el contrario, un algoritmo simple con datos excelentes y cuidadosamente preparados puede superar a un algoritmo complejo con datos sin procesar y desordenados.
+
+La ingeniería de características es el arte de transformar datos sin procesar en representaciones de las que los algoritmos de aprendizaje automático puedan aprender de manera efectiva. Podría decirse que es la habilidad más impactante en el aprendizaje automático aplicado, y es donde el conocimiento profundo del dominio se encuentra con la ciencia de datos.
+
+## 🧩 ¿Qué son las funciones?
+
+En el aprendizaje automático, una **característica** es cualquier propiedad o atributo medible de lo que estás intentando predecir. Las características son las entradas a su modelo; la **etiqueta** (u objetivo) es la salida.
+
+Para un modelo de predicción del precio de la vivienda:
+- Características: pies cuadrados, número de dormitorios, código postal, año de construcción, distancia a la escuela más cercana
+- Etiqueta: precio de venta
+
+Para un clasificador de spam de correo electrónico:
+- Características: frecuencia de palabras, dominio del remitente, presencia de ciertas frases, longitud del correo electrónico
+- Etiqueta: spam (1) o no spam (0)
+
+La calidad, cantidad y relevancia de sus funciones suelen ser más importantes que el algoritmo que elija.
+
+## 🗃️ Por qué los datos sin procesar rara vez están listos para el modelo
+
+Los datos del mundo real son confusos. Los algoritmos de aprendizaje automático tienen requisitos específicos que los datos sin procesar casi nunca satisfacen:
+
+- **Solo numérico**: la mayoría de los algoritmos no pueden procesar directamente texto, categorías o fechas
+- **No faltan valores**: la mayoría de los algoritmos no pueden manejar valores NaN o nulos
+- **Escalas similares**: características con rangos de valores muy diferentes pueden distorsionar el aprendizaje basado en gradientes
+- **Representación significativa**: las marcas de tiempo sin procesar o los códigos postales no codifican los patrones que importan (¿es fin de semana? ¿Es una zona rica?)
+
+La ingeniería de características es el proceso de cerrar la brecha entre los datos sin procesar y las entradas listas para el modelo.
+
+## 📏 Normalización y Estandarización
+
+Cuando las características tienen escalas muy diferentes, los modelos pueden ser engañosos. Una característica con valores de miles puede dominar una característica con valores entre 0 y 1.
+
+### Normalización mín-máx (escalando a [0, 1])
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### Estandarización (puntuación Z, media=0, estándar=1)
+
+Más robusto a los valores atípicos que el escalado mínimo-máximo:
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**Regla general**: utilice la estandarización de forma predeterminada. Utilice min-max cuando necesite valores en un rango acotado específico (por ejemplo, entradas de redes neuronales).
+
+## 🏷️ Codificación de variables categóricas
+
+Categorías como "rojo/verde/azul" o "Londres/Manchester/Birmingham" no tienen un orden numérico natural. Debe codificarlos antes de alimentarlos a la mayoría de los algoritmos.
+
+### Codificación en caliente
+
+Crea una columna binaria para cada categoría. Mejor cuando las categorías no tienen un orden inherente:
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### Codificación de etiquetas
+
+Asigna cada categoría a un número entero. Úselo únicamente cuando las categorías tengan un orden natural:
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>Un error común de los principiantes es codificar con etiquetas los nombres de las ciudades, diciéndole accidentalmente al modelo que Tokio es "más que" Londres, lo que lleva a predicciones extrañas. Utilice siempre codificación one-hot para categorías desordenadas.</FunFact>
+
+## 🕳️ Manejo de valores faltantes
+
+Los datos faltantes son casi universales en los conjuntos de datos del mundo real. Tienes varias opciones:
+
+### Imputación
+
+Complete los valores faltantes con un sustituto calculado:
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### Agregar un indicador de faltante
+
+A veces, el hecho de que falten datos es en sí mismo informativo:
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### Cuándo abandonar
+
+Elimine una columna si tiene más de ~70-80% de valores faltantes (rara vez informativo). Elimine una fila solo si tiene muchos datos y la fila falta aleatoriamente (no sistemáticamente).
+
+## 🛠️ Creación de nuevas funciones
+
+Aquí es donde la ingeniería de funciones se convierte en un arte. Utiliza el conocimiento del dominio para crear funciones que capturen patrones que no son visibles en los datos sin procesar.
+
+### Descomposición de fecha/hora
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+Una marca de tiempo sin formato no le dice nada directamente al modelo; estas características derivadas exponen patrones como "picos de fraude a las 3 a.m." o "picos de ventas los fines de semana".
+
+### Funciones de interacción
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### Funciones de texto
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>Si estuviera creando un modelo para predecir fallas en las inspecciones sanitarias de restaurantes, ¿a qué datos sin procesar podría tener acceso y qué nuevas características podría diseñar a partir de él que serían más útiles que los datos sin procesar por sí solos?</ThinkAboutIt>
+
+## 📊 Importancia de la característica
+
+Una vez que haya creado un modelo, puede medir qué características le resultaron más útiles. Esto es valioso tanto para comprender su modelo como para decidir qué características conservar o eliminar:
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+Las características con una importancia cercana a cero generalmente se pueden eliminar sin afectar el rendimiento, y eliminarlas simplifica el modelo, reduce el tiempo de entrenamiento y puede mejorar la generalización.
+
+## 🗜️ Reducción de dimensionalidad: una breve introducción
+
+Cuando tienes cientos o miles de características, los modelos pueden tener dificultades; esto se llama la **maldición de la dimensionalidad**. Las técnicas de reducción de dimensionalidad comprimen características preservando los patrones más importantes:
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA (Análisis de Componentes Principales) es el enfoque más común, pero otros incluyen t-SNE (para visualización) y UMAP (para preservar la estructura local).
+
+<Quiz question="Tiene un conjunto de datos con una columna de ”ciudad” que contiene 50 nombres de ciudades diferentes. ¿Qué enfoque de codificación debería utilizar?" options="Codificación de etiquetas: asigne a cada ciudad un número entero del 0 al 49|Codificación one-hot: cree una columna binaria para cada ciudad|Déjelo como texto: la mayoría de los modelos manejan cadenas|Convierta todas las ciudades al PIB de su país." answer="1" explanation="Los nombres de las ciudades no tienen un orden natural, por lo que la codificación de etiquetas implicaría incorrectamente una jerarquía (Ciudad 49 > Ciudad 0). La codificación one-hot crea una columna binaria para cada ciudad, representándolas correctamente como categorías distintas y desordenadas." />
+
+## Conclusiones clave
+
+- **Características** son las entradas a tu modelo; La calidad de las características a menudo importa más que la elección del algoritmo.
+- Los datos sin procesar casi nunca están listos para el modelo: necesitan limpieza, transformación y enriquecimiento.
+- **Normalización/estandarización** coloca las características en escalas comparables; utilizar la estandarización por defecto
+- **Codificación one-hot** es correcta para variables categóricas desordenadas; **codificación de etiquetas** solo para las solicitadas
+- **Los valores faltantes** se pueden manejar mediante imputación (mediana/media/moda) y agregando un indicador de faltante
+- **Crear nuevas características** a partir del conocimiento del dominio (descomposición de tiempo, proporciones, interacciones) a menudo produce las mayores ganancias de rendimiento.
+- Las puntuaciones de **Importancia de la característica** lo ayudan a comprender en qué entradas se basa su modelo y cuáles se pueden eliminar.
+- **Reducción de dimensionalidad** (p. ej., PCA) comprime datos de alta dimensión preservando al mismo tiempo la mayor parte de la variación útil

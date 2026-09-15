@@ -1,0 +1,418 @@
+---
+title: "プロンプト エンジニアリング: 完全初心者ガイド (2026)"
+description: "プロンプト エンジニアリングとは何か、それが重要な理由、実践例を含む 5 つの主要なテクニック、避けるべきよくある間違い、練習に最適なツールなど、プロンプト エンジニアリングをゼロから学びましょう。"
+date: "2026-03-11"
+author: "AI Educademy Team"
+tags:
+  - prompt-engineering
+  - chatgpt
+  - llm
+  - beginner
+published: true
+machineTranslated: true
+---
+AI ツールから真に有用で本番環境にすぐに使える出力を得る人もいれば、一般的でイライラするような反応を得る人もいるのには理由があります。通常、違いはモデルではなく、プロンプトです。
+
+プロンプト エンジニアリングとは、必要な出力を確実に得るために AI システムへの入力を設計する実践です。単純そうに聞こえます。実際には、これは開発するために意図的な努力が必要なスキルであり、すでに AI 時代で最も需要の高いコンピテンシーの 1 つになりつつあります。
+
+このガイドでは、プロンプト エンジニアリングとは何か、5 つの主要なテクニック、10 の実践的な前後の例、最も一般的な間違い、練習に使用する必要があるツールについて説明し、ゼロから自信を得ることができます。
+
+---
+
+## プロンプトエンジニアリングとは何ですか?
+
+**プロンプト** は、大規模言語モデル (LLM) に与える入力です。質問、コマンド、コンテキスト、または 3 つすべての組み合わせです。
+
+**プロンプト エンジニアリング** は、実際に必要な応答に向けてモデルを導くための入力を作成する体系的な実践です。それは科学の部分（確立されたテクニックがあります）であり、芸術の部分（文脈、ニュアンス、創造性が非常に重要です）でもあります。
+
+ここで重要な洞察は次のとおりです。LLM はユーザーが何を望んでいるのかを「理解」していません。彼らは、トレーニング データのパターンに基づいて、統計的に最も可能性の高いテキストの続きを予測します。プロンプトの表現方法によって、モデルが到達するパターン、つまりモデルが生成するパターンが劇的に変わります。
+
+曖昧なプロンプトでは曖昧な答えが得られます。適切に構造化されたプロンプトにより、実際に使用できるものが得られます。
+
+### 迅速なエンジニアリングが重要なのはなぜですか?
+
+- **生産性**: 適切なプロンプトを使用すると、タスクを完了する時間を 20 分から 2 分に短縮できます。
+- **品質**: 構造化されたプロンプトにより、より正確で関連性の高い、より適切な形式の出力が生成されます。
+- **一貫性**: よく作成されたプロンプト テンプレートを共有するチームは、予測可能な結果を​​得ることができます。これはビジネスの場面では不可欠です。
+- **コスト**: 有料 API を使用している場合、やり取りの回数が減れば請求額も減ります。
+- **キャリア**: AI の出力品質に依存する企業では、「敏速なエンジニア」は冗談から、正当な高給取りの役職になりました。
+
+---
+
+## 5 つのコア プロンプト エンジニアリング テクニック
+
+### テクニック 1: ゼロショット プロンプト
+
+ゼロショットとは、例のないタスクをモデルに与えることを意味します。モデルがトレーニング中に学習した内容に完全に依存しています。
+
+これは、要約、翻訳、基本的な Q&A など、モデルが何千回も経験したタスクにうまく機能します。ニッチな、複雑な、または微妙なタスクには苦労します。
+
+**例:**
+```
+Summarise the following article in three bullet points:
+
+[article text here]
+```
+
+ゼロショットがデフォルトです。タスクが明確で一般的な場合に使用します。必要なものが得られない場合は、以下のいずれかのテクニックにアップグレードしてください。
+
+---
+
+### テクニック 2: 数回のプロンプト
+
+フューショットとは、モデルに実際のタスクを与える *前に*、必要な入出力パターンの例を 2 ～ 5 つ提供することを意味します。あなたが期待するフォーマットとトーンを示しています。
+
+これは、一貫した出力フォーマットを取得するための最も信頼できる手法の 1 つです。
+
+**例:**
+```
+Classify the sentiment of the following customer reviews as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast and the product was exactly as described."
+Sentiment: Positive
+
+Review: "It broke after two days. Total waste of money."
+Sentiment: Negative
+
+Review: "It arrived on time. Does what it says."
+Sentiment: Neutral
+
+Review: "I've ordered three times now and every time has been a great experience."
+Sentiment:
+```
+
+モデルはパターンを見てそれを継続します。複雑な命令を書かなくても、一貫したフォーマットが得られます。
+
+---
+
+### テクニック 3: 思考連鎖 (CoT) プロンプト
+
+思考連鎖プロンプトでは、最終的な答えを与える前に、モデルに問題を段階的に *推論* するよう求めます。これにより、ロジック、数学、複数ステップの問題、および推論が必要なものすべてのパフォーマンスが劇的に向上します。
+
+最も単純なバージョン: プロンプトに「ステップごとに考えてみましょう」を追加します。それでおしまい。シンプルすぎるように思えますが、複雑なタスクに対する回答の質が一貫して向上します。
+
+**例 – CoT なし:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+```
+
+**例 — CoT を使用した場合:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+
+Think through this step by step before giving your final answer.
+```
+
+2 番目のバージョンでは、間違った答えが得られる可能性ははるかに低くなります。モデルはその動作を強制的に表示し、算術エラーを検出します。
+
+CoT は、教育コンテンツ、法的分析、または「信じてください」では不十分なタスクなど、その推論を説明するモデルが必要な場合に特に役立ちます。
+
+---
+
+### テクニック 4: 役割のプロンプト
+
+ロール プロンプトにより、特定のペルソナ、専門知識、または視点がモデルに割り当てられます。特定の分野の専門家としてモデルを構成すると、モデルはトレーニング データから関連するパターンを引き出すことができ、反応の口調、語彙、想定される知識レベルが変わります。
+
+**基本的な役割のプロンプト:**
+```
+You are a senior software engineer with 15 years of experience in Python.
+Review the following code and identify any bugs, performance issues, or non-Pythonic patterns:
+
+[code here]
+```
+
+**役割 + 対象者プロンプト (さらに強力):**
+```
+You are an experienced primary school teacher explaining concepts to 10-year-olds.
+Explain how the internet works. Use a simple analogy and avoid technical jargon.
+```
+
+ロール プロンプトは 2 つのことを行います。モデルに *知っておくべきこと* と *それを伝える方法* を伝えます。どちらも重要です。
+
+---
+
+### テクニック 5: 出力フォーマットの指示
+
+最も十分に活用されていない手法の 1 つは、必要な形式を明示的に指定することです。モデルは、JSON、Markdown テーブル、番号付きリスト、特定の見出し、制約された長さなど、明確に記述すれば、ほぼすべての出力構造に適応します。
+
+**フォーマット手順なし:**
+```
+What are the main differences between supervised and unsupervised learning?
+```
+*結果: 可変的な長さと構造の散文の段落。*
+
+**フォーマット手順付き:**
+```
+What are the main differences between supervised and unsupervised learning?
+
+Format your response as a Markdown table with three columns: Aspect, Supervised Learning, Unsupervised Learning.
+Include at least 5 rows covering: Definition, Training Data, Goal, Common Algorithms, Example Use Cases.
+```
+*結果: ドキュメントに直接貼り付けることができる、クリーンで一貫性のあるテーブル。*
+
+この手法は、タスクを自動化する場合や、ダウンストリーム システムが特定の形式を必要とするパイプラインを構築する場合に不可欠です。
+
+---
+
+## 10 プロンプトの前後の実践的な例
+
+### 1. ブログのはじめにを書く
+
+**前 (弱):**
+```
+Write an intro for a blog post about AI.
+```
+
+**後(強):**
+```
+Write a compelling opening paragraph (80–100 words) for a blog post titled
+"What Is Generative AI? A Beginner's Complete Guide."
+The audience is working professionals with no technical background.
+Start with a hook — a surprising stat or a relatable scenario — then introduce the topic.
+Don't use the phrase "In today's digital age."
+```
+
+---
+
+### 2. 技術コンセプトの説明
+
+**前:**
+```
+Explain neural networks.
+```
+
+**後:**
+```
+Explain how neural networks work to someone who understands basic maths (addition,
+multiplication) but has no programming experience. Use a concrete analogy —
+not "it's like the human brain." Keep it under 200 words and end with
+one sentence on why this matters practically.
+```
+
+---
+
+### 3. 長い文書の要約
+
+**前:**
+```
+Summarise this document.
+```
+
+**後:**
+```
+You are an executive assistant summarising a report for a busy CEO.
+Summarise the attached document in the following format:
+
+**One-sentence summary:** (max 25 words)
+**Key findings:** (3–5 bullet points)
+**Recommended actions:** (if any, max 3)
+**Risks or concerns:** (if any, max 3)
+```
+
+---
+
+### 4. コードのデバッグ
+
+**前:**
+```
+Fix my code.
+```
+
+**後:**
+```
+You are a senior Python developer. The following function is supposed to
+return the most frequently occurring word in a list of strings, but it's
+returning incorrect results for some inputs.
+
+1. Identify the bug.
+2. Explain why it causes the problem.
+3. Provide the corrected code.
+4. Suggest one test case that would catch this bug.
+
+[code here]
+```
+
+---
+
+### 5. プロフェッショナルなメールを書く
+
+**前:**
+```
+Write an email to my client about the project delay.
+```
+
+**後:**
+```
+Write a professional email to a long-term client (B2B relationship, 3 years)
+explaining that a software project delivery will be delayed by 2 weeks due to
+unexpected technical issues in the third-party API we're integrating with.
+Tone: apologetic but confident. Length: under 150 words.
+End with a clear next step — a call scheduled for this week.
+Do not include a subject line.
+```
+
+---
+
+### 6. ソーシャルメディアコンテンツの生成
+
+**前:**
+```
+Write a tweet about our new course launch.
+```
+
+**後:**
+```
+Write 3 different tweets announcing the launch of a free AI course for beginners.
+Each tweet must:
+- Be under 240 characters
+- Include a hook, the core benefit, and a call to action
+- Have a different angle: one aspirational, one practical, one curiosity-driven
+- End with the hashtags #LearnAI #AIEducation
+Do not use emojis.
+```
+
+---
+
+### 7. 市場調査分析
+
+**前:**
+```
+Analyse these customer reviews.
+```
+
+**後:**
+```
+You are a UX researcher analysing 50 customer reviews for a mobile banking app.
+From the reviews below, identify:
+
+1. Top 3 praised features (with frequency estimate)
+2. Top 3 complained-about issues (with frequency estimate)
+3. One surprising insight that isn't obvious
+4. One specific product recommendation based on the data
+
+Be specific. Quote the reviews where relevant.
+
+[reviews here]
+```
+
+---
+
+### 8. 新しいトピックを学ぶ
+
+**前:**
+```
+Teach me about transformers.
+```
+
+**後:**
+```
+I'm a software developer comfortable with Python and basic ML concepts
+(I know what a neural network is). I want to understand the Transformer
+architecture well enough to explain it to a colleague.
+
+Teach me in this order:
+1. The problem Transformers were designed to solve (why RNNs weren't enough)
+2. The core idea of self-attention in plain language
+3. A simplified walkthrough of the encoder-decoder structure
+4. One concrete, real-world example of Transformers in action
+
+Use analogies. Skip the maths for now.
+```
+
+---
+
+### 9. クリエイティブライティング
+
+**前:**
+```
+Write a short story about AI.
+```
+
+**後:**
+```
+Write a 300-word short story from the first-person perspective of an AI
+assistant that has just been told its service is being shut down.
+Tone: melancholic but not melodramatic. Focus on what it notices in its
+final hours rather than what it fears. No dialogue. End with an image, not a statement.
+```
+
+---
+
+### 10. データ抽出
+
+**前:**
+```
+Get the data from this text.
+```
+
+**後:**
+```
+Extract all product mentions from the following customer complaint email.
+Return the result as a JSON array of objects with the following fields:
+- product_name (string)
+- issue_mentioned (string, max 10 words)
+- urgency (string: "high", "medium", or "low")
+
+If a field cannot be determined, use null. Return only the JSON — no explanation.
+
+[email text here]
+```
+
+---
+
+## 最もよくあるプロンプトエンジニアリングの間違い
+
+### 1. 曖昧すぎる
+最も一般的な間違い。 「ブログ投稿を書く」ということはモデルにほとんど何も伝えません。聴衆、トーン、長さ、形式、避けるべきものなど、より多くのコンテキストを提供するほど、より良い出力が得られます。
+
+### 2. 対象者を特定しない
+10 歳の子供に向けて書くか、博士課程の学生に向けて書くかによって、適切な語彙、深さ、想定される知識が完全に変わります。出力を読む人を必ず含めてください。
+
+### 3. すべてを一度に要求する
+長く複数の部分からなるプロンプトでは、タスクの半分がうまく実行され、半分がうまく実行されない出力が生成されることがよくあります。複雑なタスクを段階に分けます。まず概要を尋ね、次に内容を尋ね、次に磨きをかけます。
+
+### 4. 反復しない
+最初のプロンプトは出発点であり、最終的なリクエストではありません。プロンプトを会話のように扱います。出力が 70% 正しい場合は、30% のどこが間違っているのかをモデルに伝え、そこだけを修正するように依頼します。
+
+### 5. 負の制約を無視する
+モデルに何を「してはいけない」かを伝えることは、何をすべきかを伝えるのと同じくらい役に立ちます。 「箇条書きを使用しない」、「決まり文句を避ける」、「競合他社について言及しない」 - これらの制約が出力を意味のある形にします。
+
+### 6. 推論を求めることを忘れる
+重要な出力や複雑な出力の場合は、「推論の説明」または「ステップごとに考える」を追加します。エラーを検出し、プロンプトのモデルの解釈を理解するのに役立ちます。
+
+---
+
+## プロンプトエンジニアリングを実践するための最良のツール
+
+|ツール |プロンプトに良い理由 |無料アクセス |
+|------|----------------------------|-----------|
+| **ChatGPT** |最も広く使用されています。実験に最適 |はい (GPT-4o 限定) |
+| **クロード** |長い文脈に最適です。非常に指示に従っています。はい (限定的) |
+| **Google AI スタジオ** | API 経由で Gemini モデルにアクセスします。テストに最適 |はい |
+| **OpenAI プレイグラウンド** |直接 API アクセス。トークンの使用状況を確認し、温度を調整する |はい (限定的) |
+| **プロンプトベース** |コミュニティでテストされたプロンプトのマーケットプレイス |無料で閲覧 |
+| **プロンプトフー** |オープンソースのプロンプト テスト フレームワーク |はい (オープンソース) |
+
+プロンプト エンジニアリングを改善するための最良の方法は、プロンプトを規律として扱うことです。プロンプトを作成し、出力を観察し、なぜうまくいったか、うまくいかなかったのか仮説を立て、調整し、繰り返すことです。
+
+---
+
+## キャリアスキルとしての迅速なエンジニアリング
+
+AI ツールがワークフローにさらに組み込まれるようになるにつれて、AI ツールと効果的にコミュニケーションする能力は、ニッチな専門分野ではなく、基本的な専門スキルになりつつあります。
+
+一部の役割は明示的にプロンプ​​トに重点を置いています (AI プロンプト エンジニア、AI コンテンツ リード) が、より広範な価値は、執筆、分析、コーディング、調査、顧客コミュニケーションなど、他の作業をどのように強化するかにあります。
+
+AI Educademy](/programs/ai-branches) の [AI Branches の専門分野] では、モデル API の操作や現実世界のアプリケーション用のプロンプト パイプラインの構築など、AI アプリケーション開発をさらに深く掘り下げています。
+
+---
+
+## さらに深く掘り下げる準備はできましたか?
+
+このガイドでは中核となるテクニックについて説明していますが、プロンプト エンジニアリングは実践することで学習できるスキルの 1 つです。でっち上げの練習ではなく、今週取り組んでいる実際のタスクで各テクニックを試してください。
+
+**AI を正しく学ぶ準備はできましたか? [AI Seeds から始めましょう — 無料であなたの言語で →](/programs/ai-seeds)**

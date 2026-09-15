@@ -1,0 +1,135 @@
+---
+title: "Verlustfunktionen und Optimierer – Wie KI aus Fehlern lernt"
+description: "Entdecken Sie, wie Verlustfunktionen die Fehler eines Modells messen und wie Optimierer Gradienten nutzen, um diese systematisch zu reduzieren."
+order: 7
+difficulty: "intermediate"
+duration: 15
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Verlustfunktionen und Optimierer
+
+Backpropagation gibt uns Farbverläufe – aber Farbverläufe *von was*? Bevor Backprop ausgeführt werden kann, benötigen wir eine einzelne Zahl, die erfasst, wie falsch das Modell ist. Diese Zahl stammt aus einer **Verlustfunktion**. Sobald wir Farbverläufe haben, entscheidet ein **Optimierer**, wie die Gewichte aktualisiert werden. Zusammen bilden sie die Lernschleife.
+
+## Was ist eine Verlustfunktion?
+
+Eine Verlustfunktion (auch Kostenfunktion genannt) nimmt die Vorhersage des Modells und die wahre Antwort und gibt eine Zahl zurück, die „Falschheit“ misst. Ziel des Trainings ist es, diese Zahl zu **minimieren**.
+
+Stellen Sie sich das wie einen Punktestand beim Golf vor: Je niedriger, desto besser. Ein Verlust von 0 bedeutet eine perfekte Vorhersage.
+
+<Illustration src="/images/lessons/loss-functions-and-optimisers.svg" alt="Eine U-förmige Kurve, die den Verlust auf der y-Achse und den Gewichtswert auf der x-Achse zeigt, wobei eine Kugel in Richtung des Minimums rollt" caption="Beim Training ist es so, als würde man einen Ball in der Verlustlandschaft bergab rollen und nach dem tiefsten Punkt suchen." />
+
+## Verlustfunktionen für die Regression – MSE
+
+Bei der Vorhersage kontinuierlicher Werte (Hauspreise, Temperatur) verwenden wir **Mean Squared Error (MSE)**:
+
+```
+MSE = (1/n) × Σ(predicted - actual)²
+```
+
+Die Quadrierung bewirkt zwei Dinge: Sie macht alle Fehler positiv und bestraft große Fehler unverhältnismäßig. Sagen Sie eine Abweichung vom Hauspreis um 100.000 £ voraus, und der quadratische Fehler ist 100-mal schlimmer als bei einer Abweichung von 10.000 £.
+
+<FunFact>MSE geht auf Carl Friedrich Gauß im Jahr 1795 zurück – mehr als zwei Jahrhunderte vor neuronalen Netzen. Damit verfolgte er die Umlaufbahn des Asteroiden Ceres.
+</FunFact>
+
+## Verlustfunktionen für die Klassifizierung – Kreuzentropie
+
+Bei der Vorhersage von Kategorien (Spam oder nicht, Katze vs. Hund) verwenden wir **Kreuzentropieverlust**. Es misst, wie weit die vorhergesagten Wahrscheinlichkeiten des Modells von den wahren Bezeichnungen abweichen.
+
+Wenn die richtige Antwort „Katze“ lautet und das Modell 99 % Katze angibt, ist der Verlust gering. Wenn dort 10 % Katze steht, ist der Verlust enorm. Kreuzentropie hat eine nützliche Eigenschaft: Sie wird *unendlich* unglücklich, wenn das Modell sicher falsch ist, und erzeugt einen starken Gradienten, um den Fehler zu korrigieren.
+
+**Binäre Kreuzentropie** gilt für Zwei-Klassen-Probleme. **Kategoriale Kreuzentropie** verarbeitet mehrere Klassen durch den Vergleich von Wahrscheinlichkeitsverteilungen.
+
+<Quiz question="Warum ist MSE für Klassifizierungsaufgaben eine schlechte Wahl?" options="Die Berechnung ist zu langsam|Selbstbewusste falsche Antworten werden nicht hart genug bestraft|Es erfordert zu viel Speicher|Es funktioniert nur mit Bildern" answer="1" explanation="MSE betrachtet eine Wahrscheinlichkeit von 0,4 gegenüber 0,6 als kleinen Fehler, aber bei der Klassifizierung könnte dies bedeuten, dass die völlig falsche Klasse vorhergesagt wird. Kreuzentropie bestraft sichere falsche Vorhersagen viel stärker und führt zu stärkeren Lerngradienten." />
+
+## Gefälleabstieg – bergab rollen
+
+Wenn eine Verlustfunktion definiert ist, können wir die **Verlustlandschaft** visualisieren – eine Oberfläche, auf der jeder Punkt eine Reihe von Gewichten darstellt und die Höhe den Verlust darstellt. Training bedeutet, das tiefste Tal zu finden.
+
+**Gradientenabstieg** ist der Algorithmus, der uns dorthin bringt:
+
+1. Berechnen Sie die Steigung (Steigung) an der aktuellen Position.
+2. Machen Sie einen Schritt in die entgegengesetzte Richtung (bergab).
+3. Wiederholen.
+
+Die Größe jedes Schritts wird durch die **Lernrate** gesteuert – der wohl wichtigste Hyperparameter beim Deep Learning.
+
+### Das Lernraten-Dilemma
+
+- **Zu hoch:** Sie schießen über das Tal hinaus, springen hin und her oder divergieren vollständig.
+- **Zu niedrig:** Sie schleichen sich quälend langsam voran und bleiben möglicherweise in einem flachen lokalen Minimum stecken.
+- **Genau richtig:** Sie nähern sich stetig einer guten Lösung.
+
+<ThinkAboutIt>Stellen Sie sich vor, Sie wandern einen nebligen Berg hinunter, wo Sie nur den Hang direkt unter Ihren Füßen spüren. Man steigt bergab, kann aber nicht die ganze Landschaft überblicken. Wie könnte es passieren, dass man in einer kleinen Senke landet, die nicht das tiefste Tal ist? Dies ist das lokale Minimumproblem.
+</ThinkAboutIt>
+
+## Geschmacksrichtungen mit Farbverlauf
+
+### Batch-Gradientenabstieg
+
+Berechnet den Gradienten anhand des **gesamten Datensatzes** vor jeder Aktualisierung. Präzise, ​​aber bei großen Datensätzen sehr langsam – stellen Sie sich vor, Sie würden jedes Buch in einer Bibliothek noch einmal lesen, bevor Sie einen einzigen Rechtschreibfehler korrigieren.
+
+### Stochastischer Gradientenabstieg (SGD)
+
+Aktualisiert die Gewichtungen nach jedem **einzelnen Beispiel**. Schnell, aber laut – der Weg schlängelt sich wild im Zickzack. Der Lärm kann tatsächlich dazu beitragen, lokale Minima zu umgehen, was ein überraschender Vorteil ist.
+
+### Mini-Batch-Gradientenabstieg
+
+Der praktische Sweet Spot. Berechnet Farbverläufe für einen kleinen **Stapel** (normalerweise 32–512 Beispiele). Bringt Geschwindigkeit und Stabilität ins Gleichgewicht und wird in praktisch allen modernen Trainings eingesetzt.
+
+## Moderne Optimierer
+
+Einfaches SGD hat Einschränkungen. Forscher haben intelligentere Optimierer entwickelt, die sich ständig anpassen.
+
+### SGD mit Momentum
+
+Wie ein schwerer Ball, der bergab rollt, steigert der Impuls die Geschwindigkeit in gleichmäßige Richtungen und dämpft Schwingungen. Wenn der Gradient weiterhin in die gleiche Richtung zeigt, beschleunigt sich der Impuls. Wenn es ständig die Richtung ändert, wird es durch den Impuls geglättet.
+
+### AdaGrad
+
+Passt die Lernrate **pro Parameter** an. Häufig aktualisierte Gewichtungen erhalten kleinere Schritte; Selten aktualisierte Gewichte erhalten größere Schritte. Ideal für spärliche Daten (wie Text), aber die Lernrate kann mit der Zeit auf Null sinken.
+
+### Adam (Adaptive Momentschätzung)
+
+Kombiniert Impuls *und* adaptive Raten pro Parameter. Es verwaltet laufende Mittelwerte sowohl des Gradienten (erster Moment) als auch des quadrierten Gradienten (zweiter Moment). Adam ist heute für die meisten Praktizierenden die **Standardwahl**.
+
+<Quiz question="Welchen Vorteil hat Adam gegenüber dem einfachen SGD?" options="Es findet immer das globale Minimum|Es passt die Lernraten pro Parameter an und nutzt Impulse|Es erfordert überhaupt keine Lernrate|Es verbraucht weniger Speicher" answer="1" explanation="Adam kombiniert Impuls (geglättete Gradientenrichtung) mit adaptiven Lernraten pro Parameter (aus quadratischen Gradientenschätzungen) und macht es so robust für eine Vielzahl von Problemen, ohne dass umfangreiche Optimierungen erforderlich sind." />
+
+## Lernratenpläne
+
+Anstatt die Lernrate festzulegen, **plant** modernes Training sie oft:
+
+- **Schrittweiser Zerfall:** Halbierung der Rate alle N Epochen.
+- **Kosinus-Glühen:** Sanfter Abfall entlang einer Kosinuskurve, manchmal mit Warmstarts.
+- **Aufwärmen:** Beginnen Sie mit einer kleinen Geschwindigkeit, steigern Sie sie allmählich und lassen Sie sie dann nach. Wird im Transformer-Training verwendet.
+
+Die Intuition: Machen Sie früh große Schritte, um die Sache umfassend zu erforschen, und machen Sie später kleine Schritte, um die Feinabstimmung vorzunehmen.
+
+## Farbverlaufsausschnitt – Sicherheitsgeländer
+
+Manchmal explodieren Farbverläufe (wie wir in der Backpropagation-Lektion gesehen haben). **Verlaufsbeschneidung** begrenzt die Verlaufsgröße vor dem Aktualisierungsschritt. Überschreitet der Gradient einen Schwellenwert, wird er proportional verkleinert. Dies ist die Standardpraxis beim Training von RNNs und Transformern.
+
+<Quiz question="Was verhindert das Beschneiden von Farbverläufen?" options="Verschwindende Farbverläufe|Überanpassung|Explodierende Farbverläufe führen zu instabilen Updates|Langsame Konvergenz" answer="2" explanation="Das Gradienten-Clipping begrenzt die Größe der Gradienten auf einen maximalen Schwellenwert und verhindert so die enormen Gewichtsänderungen, die zu Trainingsinstabilität führen – dem explodierenden Gradientenproblem." />
+
+<FunFact>Der Adam-Optimierer-Artikel (Kingma & Ba, 2014) hat über 150.000 Zitate und ist damit einer der am häufigsten zitierten Artikel in der gesamten Informatik.
+</FunFact>
+
+## Wichtige Erkenntnisse
+
+– **Verlustfunktionen** quantifizieren, wie falsch ein Modell ist – MSE für die Regression, Kreuzentropie für die Klassifizierung.
+- **Gradientenabstieg** minimiert den Verlust durch wiederholte Schritte entgegen dem Gradienten.
+- Die **Lernrate** steuert die Schrittgröße und ist entscheidend, um richtig zu machen.
+- **Adam** ist der Optimierer der Wahl, der Momentum- und adaptive Raten kombiniert.
+- **Lernratenpläne** und **Gradienten-Clipping** sind wesentliche Trainingsstabilisatoren.
+
+<ThinkAboutIt>Wenn Sie ein Modell trainieren und der Verlust nach einigen Epochen nicht mehr abnimmt, was würden Sie dann zuerst untersuchen – die Lernrate, die Verlustfunktion oder die Daten? Warum?
+</ThinkAboutIt>
+
+---
+
+## 📚 Weiterführende Literatur
+
+- [Andrej Karpathy – Ein Rezept für das Training neuronaler Netze](https://karpathy.github.io/2019/04/25/recipe/) – Praktische Weisheiten zum Verlust-Debugging und zur Auswahl von Optimierern
+- [3Blue1Brown – Gradient Descent](https://www.3blue1brown.com/lessons/gradient-descent) – Atemberaubende visuelle Intuition dafür, wie der Gradient Descent durch Verlustlandschaften navigiert
+- [Ein Überblick über Gradient Descent Optimization-Algorithmen (Ruder, 2016)](https://ruder.io/optimizing-gradient-descent/) – Umfassender Vergleich von SGD, Adam und Freunden

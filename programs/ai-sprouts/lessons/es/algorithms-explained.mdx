@@ -1,0 +1,128 @@
+---
+title: "Explicación de los algoritmos: las recetas detrás de cada sistema de IA"
+description: "Aprenda qué son los algoritmos, cómo funcionan con ejemplos cotidianos y por qué elegir el correcto es importante para la IA."
+order: 2
+difficulty: "beginner"
+duration: 15
+icon: "📝"
+published: true
+machineTranslated: true
+---
+# Algoritmos explicados
+
+En la lección anterior, aprendiste que los datos son el combustible de la IA. Pero el combustible por sí solo no mueve un automóvil: se necesita un motor. En IA, ese motor es un **algoritmo**. Cada vez que un sistema de inteligencia artificial hace una predicción, recomienda un video o detecta spam, un algoritmo hace el trabajo pesado entre bastidores.
+
+## ¿Qué es un algoritmo?
+
+Un algoritmo es simplemente un **conjunto de instrucciones paso a paso** para resolver un problema. Sigues algoritmos todos los días sin darte cuenta.
+
+- **Una receta** es un algoritmo: combina ingredientes en un orden específico para producir un pastel.
+- **Las instrucciones para muebles de paquete plano** son un algoritmo: sigue cada paso para construir una estantería.
+- **Las indicaciones para llegar en automóvil** son un algoritmo: gire a la izquierda, siga recto, gire a la derecha y llegue.
+
+La idea clave es que un algoritmo debe ser **preciso**, **ordenado** y **repetible**: cualquiera que siga los mismos pasos debería obtener el mismo resultado.
+
+<Illustration src="/images/lessons/algorithms-explained.svg" alt="Un diagrama de flujo que muestra un algoritmo de decisión simple: ¿Está lloviendo? En caso afirmativo, llévate un paraguas. Si no, use gafas de sol." caption="Un algoritmo es un conjunto claro de instrucciones, como un diagrama de flujo que le guía hacia una decisión." />
+
+<FunFact>La palabra "algoritmo" proviene del nombre de un matemático persa del siglo IX, Muhammad ibn Musa al-Khwarizmi, quien escribió uno de los primeros libros sobre resolución sistemática de problemas.
+</FunFact>
+
+## Ejemplos de algoritmos cotidianos
+
+Antes de sumergirnos en la IA, veamos dos algoritmos simples que ya comprende intuitivamente.
+
+### Clasificar una mano de cartas
+
+Cuando tomas una mano de naipes y las organizas en orden, estás ejecutando un **algoritmo de clasificación**:
+
+1. Mira las dos primeras cartas. Cámbielos si están fuera de servicio.
+2. Pase al siguiente par. Compara e intercambia nuevamente.
+3. Repita hasta que toda la mano esté ordenada.
+
+Básicamente, así es como funciona la **clasificación por burbujas**: uno de los algoritmos de clasificación más simples en informática.
+
+### Encontrar una palabra en un diccionario
+
+No comienzas en la página uno y lees cada palabra. En cambio, usted:
+
+1. Abra el diccionario aproximadamente por la mitad.
+2. Comprueba si la palabra que necesitas viene antes o después de esa página.
+3. Desecha la mitad que no necesitas y repite.
+
+Esto se llama **búsqueda binaria** y es increíblemente eficiente. Puede encontrar cualquier palabra entre un millón de entradas en unos 20 pasos.
+
+<Quiz question="¿Por qué la búsqueda binaria es más rápida que leer cada entrada desde el principio?" options="Utiliza un diccionario más grande.|Se salta entradas aleatoriamente.|Reduce a la mitad las opciones restantes en cada paso.|Sólo funciona con palabras cortas." answer="2" explanation="La búsqueda binaria elimina la mitad de las entradas restantes con cada comparación, lo que la hace mucho más rápida que verificar cada entrada en orden." />
+
+## Cómo los algoritmos impulsan la IA
+
+Los algoritmos de IA son más sofisticados que clasificar tarjetas, pero el principio es el mismo: seguir pasos estructurados para llegar a una respuesta. Aquí hay dos algoritmos fundamentales de IA.
+
+### Árboles de decisión
+
+Un árbol de decisiones plantea una serie de preguntas de sí o no para clasificar algo.
+
+**Ejemplo: ¿Este correo electrónico es spam?**
+
+1. ¿La línea de asunto contiene "DINERO GRATIS"? → En caso afirmativo, probablemente sea spam.
+2. ¿Está el remitente en tus contactos? → En caso afirmativo, probablemente no sea spam.
+3. ¿Contiene más de cinco enlaces? → En caso afirmativo, inclínese hacia el spam.
+
+Cada pregunta es una **rama** y cada respuesta final es una **hoja**. Los árboles de decisión son fáciles de entender, lo que los hace populares cuando los humanos necesitan explicar el razonamiento de la IA.
+
+### K-Vecinos más cercanos (KNN)
+
+KNN clasifica algo mirando los **ejemplos más cercanos** que ya ha visto.
+
+Imagine que se muda a un nuevo vecindario y quiere saber si una casa es cara o asequible. Miras las cinco casas más cercanas (tus "vecinos") y compruebas sus precios. Si la mayoría son caras, predices que la tuya también lo será.
+
+KNN funciona exactamente de la misma manera con puntos de datos: encuentra los K ejemplos más cercanos y realiza una votación.
+
+<ThinkAboutIt>Si le pidieras a tres amigos que te recomendaran una película y dos de ellos te sugirieran la misma película, probablemente la verías. Esa es la idea central detrás de KNN: la mayoría gobierna entre los vecinos más cercanos.
+</ThinkAboutIt>
+
+<Quiz question="En un algoritmo de K-vecinos más cercanos con K=5, ¿cómo hace el modelo su predicción?" options="Promedia todos los puntos de datos del conjunto de datos.|Elige el punto de datos más cercano|Se necesita una mayoría de votos de los 5 puntos de datos más cercanos|Selecciona aleatoriamente 5 puntos de datos." answer="2" explanation="KNN con K=5 encuentra los cinco puntos de datos más cercanos al nuevo ejemplo y utiliza una mayoría de votos entre ellos para decidir la clasificación." />
+
+## Notación Big O: algoritmos rápidos versus lentos
+
+No todos los algoritmos son igualmente rápidos. Los informáticos utilizan la **notación O grande** para describir cómo cambia la velocidad de un algoritmo a medida que crecen los datos.
+
+| Notación | Nombre | Ejemplo | Velocidad |
+|----------|------|---------|-------|
+| O(1) | Constante | Buscando un valor por índice | ⚡ Instantáneo |
+| O(log n) | Logarítmico | Búsqueda binaria | 🚀 Muy rápido |
+| O(n) | Lineal | Leer cada elemento de una lista | 🏃 Decente |
+| O(n²) | Cuadrático | Comparando cada artículo entre sí | 🐢 Lento |
+
+No es necesario memorizar las matemáticas. La idea clave es la siguiente: **a medida que su conjunto de datos crece, un algoritmo mal elegido puede pasar de rápido a increíblemente lento**.
+
+<FunFact>Google procesa más de 8.500 millones de búsquedas al día. Si su algoritmo de búsqueda fuera O(n²) en lugar de altamente optimizado, una única búsqueda podría llevar horas en lugar de milisegundos.
+</FunFact>
+
+<Callout>La notación O grande no se trata de la velocidad exacta, se trata de cómo la velocidad *escala*. Un algoritmo O(n) puede ser lento con datos pequeños, pero siempre superará a un algoritmo O(n²) a medida que el conjunto de datos crece.
+</Callout>
+
+## Por qué es importante elegir el algoritmo adecuado
+
+No existe un único "mejor" algoritmo. La elección correcta depende de:
+
+- **El tipo de problema** - ¿Estás clasificando imágenes o prediciendo números?
+- **El tamaño de los datos** - Algunos algoritmos luchan con millones de filas.
+- **Necesidades de explicabilidad** - ¿Puedes usar una caja negra o debes explicar cada decisión?
+- **Requisitos de velocidad** - ¿La respuesta debe llegar en milisegundos o puede tardar minutos?
+
+Un árbol de decisiones podría ser perfecto para un sistema sencillo de aprobación de préstamos donde se requiere transparencia. Pero para reconocer objetos en una fotografía, necesitarías una red neuronal, que exploraremos en la siguiente lección.
+
+<ThinkAboutIt>Un hospital necesita una IA para ayudar a diagnosticar a los pacientes. ¿Deberían elegir un algoritmo que sea muy preciso pero imposible de explicar, o uno que sea un poco menos preciso pero que muestre claramente su razonamiento? ¿Cuáles son las compensaciones?
+</ThinkAboutIt>
+
+<Quiz question="¿Qué factor es MENOS importante a la hora de elegir un algoritmo de IA?" options="El tamaño del conjunto de datos.|Si el modelo necesita explicar sus decisiones.|El color de la interfaz de usuario.|La velocidad a la que se necesitan predicciones" answer="2" explanation="El color de la interfaz de usuario no tiene nada que ver con la selección del algoritmo. El tamaño del conjunto de datos, la explicabilidad y la velocidad de predicción son factores críticos." />
+
+## Conclusiones clave
+
+- Un **algoritmo** es un conjunto de instrucciones paso a paso para resolver un problema.
+- **Árboles de decisión** clasifican haciendo preguntas secuenciales de sí/no.
+- **K-Vecinos más cercanos** clasifica observando los ejemplos conocidos más cercanos.
+- **Notación O grande** nos dice cómo la velocidad de un algoritmo aumenta con el tamaño de los datos.
+- La elección del algoritmo correcto depende del problema, los datos y las limitaciones.
+
+A continuación, veremos la familia de algoritmos más poderosa de la IA moderna: las **redes neuronales**.

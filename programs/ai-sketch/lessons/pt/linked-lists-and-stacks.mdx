@@ -1,0 +1,142 @@
+---
+title: "Listas e pilhas vinculadas – as estruturas dinâmicas por trás da IA"
+description: "Entenda como listas vinculadas, pilhas e filas lidam com dados dinâmicos em sistemas de IA e muito mais."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+machineTranslated: true
+---
+## Além de matrizes - dados dinâmicos
+
+Matrizes são brilhantes quando você sabe antecipadamente o tamanho dos seus dados. Mas o que acontece quando os dados chegam de forma imprevisível – um fluxo de leituras de sensores, uma fila de tarefas para uma IA processar ou um histórico de conversas que cresce a cada mensagem? Você precisa de estruturas que cresçam e encolham graciosamente.
+
+Entre em **listas vinculadas**, **pilhas** e **filas** - o trio dinâmico.
+
+## Listas vinculadas - nós e ponteiros
+
+Uma lista vinculada armazena itens como uma cadeia de **nós**. Cada nó contém duas coisas: os próprios dados e um ponteiro (referência) para o próximo nó da cadeia.
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Ao contrário dos arrays, os nós da lista vinculada não ficam lado a lado na memória. Eles podem estar espalhados em qualquer lugar - o ponteiro simplesmente informa onde encontrar o próximo.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="Uma lista vinculada com três nós conectados por setas, comparada a uma matriz com blocos contíguos" caption="Os nós da lista vinculada são conectados por ponteiros, ao contrário dos elementos da matriz que ficam lado a lado." />
+
+### Listas vinculadas versus matrizes
+
+| Operação | Matriz | Lista vinculada |
+|-----------|-------|------------|
+| Acesso por índice | O(1)⚡ | O(n) 🐢 |
+| Inserir no início | O(n) 🐢 | O(1)⚡ |
+| Inserir no meio | O(n) 🐢 | O(1)* ⚡ |
+| Excluir do meio | O(n) 🐢 | O(1)* ⚡ |
+| Uso de memória | Compacto | Extra (ponteiros) |
+
+*Depois de encontrar a posição - encontrá-la ainda é O(n).
+
+### Quando as listas vinculadas vencem
+
+- **Inserções e exclusões frequentes**: se você adiciona e remove itens constantemente do meio de uma coleção, as listas vinculadas evitam a mudança dispendiosa que as matrizes exigem.
+- **Tamanho desconhecido**: quando você não sabe quantos itens armazenará, as listas vinculadas aumentam um nó por vez sem a necessidade de redimensionamento.
+- **Construindo outras estruturas**: Pilhas, filas e estruturas mais complexas são frequentemente construídas sobre listas vinculadas.
+
+<ThinkAboutIt>A barra de guias do seu navegador permite abrir, fechar e reorganizar as guias livremente. Uma matriz ou uma lista vinculada seria mais adequada para gerenciar a lista de guias abertas? Considere o que acontece quando você fecha uma guia no meio.
+</ThinkAboutIt>
+
+## Pilhas - Último a entrar, primeiro a sair (LIFO)
+
+Uma **pilha** funciona exatamente como uma pilha de pratos: você adiciona no topo e remove do topo. O último item colocado na pilha é o primeiro retirado.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+Duas operações definem uma pilha:
+- **Push**: Adicione um item ao topo.
+- **Pop**: Remova o item do topo.
+
+Ambos são **O(1)** - instantâneos, independentemente do tamanho da pilha.
+
+### Pilhas no mundo real
+
+- **Desfazer/Refazer**: Todo editor de texto mantém uma pilha de ações. Pressione Ctrl+Z e a ação mais recente será cancelada e revertida.
+- **Botão Voltar do navegador**: seu histórico de navegação é uma pilha. Cada nova página é enviada; clicar em "voltar" abre a página atual.
+- **Pilhas de chamadas**: quando seu código chama uma função, essa função é colocada na pilha de chamadas. Quando terminar, ele estourou. É assim que os programas controlam onde estão.
+
+<FunFact>Quando você vê um erro de "estouro de pilha", significa literalmente que a pilha de chamadas ficou sem espaço - geralmente porque uma função continua chamando a si mesma sem parar (recursão infinita). O famoso site de perguntas e respostas do desenvolvedor, Stack Overflow, recebeu o nome desse mesmo erro.
+</FunFact>
+
+### Pilhas em IA
+
+- **Avaliação de expressões**: compiladores e interpretadores de IA usam pilhas para avaliar expressões matemáticas em gráficos de computação de redes neurais.
+- **Algoritmos de retrocesso**: quando uma IA explora soluções possíveis (como resolver um labirinto), ela usa uma pilha para lembrar onde esteve e poder voltar atrás.
+- **Pesquisa em profundidade**: percorrer árvores e gráficos em profundidade naturalmente usa uma pilha - exploraremos isso na próxima lição.
+
+<Quiz question="Você está implementando um recurso de 'desfazer' para um aplicativo de desenho. Qual estrutura de dados modela melhor o histórico de ações?" options="Uma matriz classificada por carimbo de data/hora|Um mapa hash de IDs de ação|Uma pilha – a ação mais recente deve ser desfeita primeiro|Uma fila – a ação mais antiga deve ser desfeita primeiro" answer="2" explanation="Desfazer precisa do comportamento Last In, First Out (LIFO) - você sempre desfaz a ação mais recente primeiro. Uma pilha fornece exatamente isso com operações push e pop O(1)." />
+
+## Filas - Primeiro a entrar, primeiro a sair (FIFO)
+
+Uma **fila** funciona como uma fila de uma loja: a primeira pessoa a entrar é a primeira a ser atendida. Os itens são adicionados na parte de trás e removidos na frente.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+Duas operações definem uma fila:
+- **Enfileirar**: Adicione um item ao final.
+- **Desenfileirar**: Remova o item da frente.
+
+### Filas no mundo real
+
+- **Filas de impressão**: os documentos são impressos na ordem em que são enviados.
+- **Agendamento de tarefas**: os sistemas operacionais usam filas para gerenciar quais processos serão executados em seguida.
+- **Filas de mensagens**: aplicativos Web usam filas (como RabbitMQ ou Kafka) para lidar com milhares de solicitações sem descartar nenhuma.
+
+### Filas em IA
+
+- **Pesquisa ampla (BFS)**: explorar um gráfico nível por nível usa uma fila - veremos isso na lição de árvores e gráficos.
+- **Pipelines de dados de treinamento**: os dados de treinamento são carregados em filas para que a GPU sempre tenha o próximo lote pronto, evitando tempo ocioso.
+- **Tratamento de solicitações**: quando milhares de usuários consultam uma API de IA simultaneamente, as solicitações entram em uma fila e são processadas em ordem.
+
+<Quiz question="Uma API AI recebe 10.000 solicitações por segundo. Qual estrutura garante que as solicitações sejam processadas na ordem em que chegam?" options="Uma pilha – processe primeiro a solicitação mais recente|Um mapa hash – procure cada solicitação por ID|Uma fila – primeira solicitação que entra, primeira solicitação que sai|Uma matriz - armazena todas as solicitações e processa aleatoriamente" answer="2" explanation="O comportamento FIFO (Primeiro a Entrar, Primeiro a Sair) de uma fila garante justiça - as solicitações são tratadas na ordem de chegada, evitando a inanição, onde as solicitações iniciais nunca são processadas." />
+
+<Callout>Há também uma **fila de prioridade**, onde os itens são retirados da fila com base na prioridade e não na ordem de chegada. Os sistemas de IA utilizam filas prioritárias para processar primeiro as tarefas urgentes - por exemplo, um carro autónomo pode dar prioridade à deteção de obstáculos em detrimento do planeamento de rotas.
+</Callout>
+
+## Uso real de IA: processamento de sequência e gerenciamento de memória
+
+### Processamento de sequência
+
+Os modelos de linguagem processam texto como sequências. Nos bastidores, estruturas como PyTorch e TensorFlow usam estruturas semelhantes a listas vinculadas para construir **gráficos de computação** – cadeias de operações onde cada etapa aponta para a próxima.
+
+### Gerenciamento de memória em estruturas de ML
+
+Ao treinar uma rede neural, a memória é constantemente alocada e liberada à medida que tensores (matrizes multidimensionais) são criados e destruídos. Os alocadores de memória geralmente usam listas vinculadas de blocos de memória livres, encontrando espaços adequados para novos tensores.
+
+<ThinkAboutIt>Um chatbot precisa lembrar as últimas 10 mensagens de uma conversa, mas descartar as mais antigas. Você usaria uma pilha, uma fila ou algo mais? O que acontece quando a 11ª mensagem chega?
+</ThinkAboutIt>
+
+<Quiz question="Qual afirmação sobre listas vinculadas é FALSA?" options="Listas vinculadas permitem inserção O(1) no início|Listas vinculadas usam memória extra para ponteiros|Listas vinculadas fornecem acesso O(1) a qualquer elemento por índice|As listas vinculadas podem crescer dinamicamente sem redimensionar" answer="2" explanation="Acessar um elemento por índice em uma lista vinculada requer percorrer o tempo inicial - O(n). Ao contrário dos arrays, não há como pular diretamente para a posição k." />
+
+<FunFact>O histórico de desfazer na maioria dos aplicativos tem um limite – normalmente de 100 a 1.000 ações. Sem esse limite, a pilha consumiria memória cada vez maior. Alguns sistemas avançados usam uma combinação de pilha e fila (um "deque") para manter as ações mais recentes enquanto descartam as mais antigas.
+</FunFact>
+
+## Principais conclusões
+
+- **Listas vinculadas** se destacam em dados dinâmicos com inserções e exclusões frequentes, mas sacrificam o acesso direto ao índice.
+- **Stacks** (LIFO) alimenta sistemas de desfazer, retrocesso e travessia em profundidade.
+- **Filas** (FIFO) garantem uma ordem justa no agendamento de tarefas, BFS e tratamento de solicitações.
+- Essas estruturas geralmente funcionam nos bastidores de estruturas de IA, gerenciando memória e sequências de processamento.
+- A escolha entre arrays e estruturas vinculadas depende de seus padrões de acesso - o acesso aleatório favorece os arrays, a modificação dinâmica favorece as listas vinculadas.

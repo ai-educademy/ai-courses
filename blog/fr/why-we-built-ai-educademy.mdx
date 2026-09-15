@@ -1,0 +1,99 @@
+---
+title: "Pourquoi nous avons créé l'Académie de l'IA"
+description: "L'histoire d'une plateforme éducative gratuite et open source sur l'IA qui enseigne l'intelligence artificielle en 11 langues, des débutants absolus aux praticiens avancés."
+date: "2026-03-12"
+author: "Ramesh Reddy Adutla"
+tags: ["ai-education", "open-source", "launch", "multilingual"]
+published: true
+image: "/images/blog/why-we-built-ai-educademy.png"
+machineTranslated: true
+---
+# Pourquoi nous avons créé l'IA Education
+
+L'IA est en train de remodeler tous les secteurs, mais la plupart des formations en IA sont verrouillées derrière des murs payants, écrites uniquement en anglais et supposent que vous savez déjà coder. Nous avons décidé de changer cela.
+
+## Le problème
+
+Lorsque j’ai commencé à apprendre l’IA, j’ai remarqué trois obstacles qui maintenaient la majeure partie du monde à l’écart :
+
+1. **Langue** — Presque tous les cours d'IA de qualité sont en anglais. Cela exclut des milliards d’apprenants.
+2. **Coût** — Les cours d'IA premium vont de 50 $ à 500 $ et plus. Pour les étudiants des économies en développement, cela n’est pas une solution.
+3. **Prérequis** — La plupart des cours commencent par « d'abord, installez Python... » — ce qui aliéne immédiatement toute personne sans formation technique.
+
+Ce ne sont pas de petites lacunes. Ce sont des murs qui maintiennent la maîtrise de l’IA concentrée dans une poignée de communautés riches et anglophones.
+
+## Notre solution
+
+AI Educademy est une **plateforme open source** gratuite qui enseigne l'IA à partir de zéro absolu, dans votre langue. Aucun codage requis pour démarrer. Aucune carte de crédit requise. Jamais.
+
+### Qu'est-ce qui le rend différent
+
+- **11 langues** : anglais, français, néerlandais, hindi, telugu, espagnol, portugais, allemand, chinois, japonais et arabe. Plus à venir.
+- **Deux parcours d'apprentissage** — Le *Parcours d'apprentissage IA* (🌱 Graines → 🌲 Forêt) pour la compréhension conceptuelle, et le *Parcours d'ingénierie artisanale* (✏️ Croquis → 🏆 Chef-d'œuvre) pour la construction pratique.
+- **10 programmes structurés** — Chacun avec des leçons MDX soigneusement séquencées, des éléments interactifs et un suivi des progrès.
+- **Laboratoire interactif** — Sept expériences, dont un terrain de jeu de réseau neuronal, un laboratoire d'invites et un analyseur de sentiments — toutes exécutées dans le navigateur.
+- **Fonctionnalités basées sur l'IA** — Edu, notre chatbot intégré, répond aux questions sur n'importe quel programme. Le simulateur Mock Interview réalise des entretiens réalistes selon la méthode STAR avec commentaires.
+- **Certificats d'achèvement** — Terminez toutes les leçons d'un programme et téléchargez un certificat PDF personnalisé.
+
+## L'architecture
+
+Nous avons construit AI Educademy comme une plateforme moderne et composable :
+
+```
+┌─────────────────────────────────────────────┐
+│              aieducademy.org                 │
+│         Next.js 16 + React 19               │
+│      ┌──────────┐  ┌──────────────┐         │
+│      │  MDX      │  │  Interactive │         │
+│      │  Lessons  │  │  Lab         │         │
+│      └────┬─────┘  └──────┬───────┘         │
+│           │               │                  │
+│      ┌────▼───────────────▼──────┐           │
+│      │     Content Layer         │           │
+│      │  (Git Submodules per      │           │
+│      │   program — own repos)    │           │
+│      └───────────────────────────┘           │
+│                                              │
+│      ┌─────────┐  ┌──────────┐  ┌────────┐  │
+│      │ Auth    │  │ Progress │  │ AI Chat│  │
+│      │ NextAuth│  │ Neon PG  │  │ Gemini │  │
+│      └─────────┘  └──────────┘  └────────┘  │
+└──────────────────────────────────────────────┘
+```
+
+Chaque cours réside dans son propre référentiel GitHub, intégré à la plateforme en tant que sous-module git. Cela signifie:
+
+- Les **auteurs de contenu** peuvent écrire des leçons sans toucher au code de la plateforme.
+- Les **Traducteurs** peuvent ajouter une langue en créant un dossier dans n'importe quel référentiel de cours.
+- **La plateforme se reconstruit automatiquement** lorsqu'un dépôt de contenu envoie des modifications.
+
+La pile technologique : Next.js 16 avec App Router + Turbopack, TypeScript en mode strict, Tailwind CSS 4, next-intl pour i18n, NextAuth v5 pour l'authentification et Neon Postgres pour la persistance. Le système de conception est un [package npm séparé](https://www.npmjs.com/package/@aieducademy/ai-ui-library) avec un [Storybook](https://aieducademy.github.io/ai-ui-library/) publié.
+
+## Open Source par défaut
+
+Chaque ligne de code de plate-forme est sous licence MIT et disponible sur [GitHub](https://github.com/ai-educademy). Nous pensons que les infrastructures éducatives devraient être un bien public.
+
+Vous pouvez :
+- **Auto-hébergez** l'intégralité de la plateforme pour votre école ou organisation.
+- **Fork** un dépôt de cours et adaptez-le à votre programme.
+- **Contribuer** aux traductions, leçons, corrections de bugs ou fonctionnalités.
+
+## Quelle est la prochaine étape
+
+Nous ne faisons que commencer. Sur notre feuille de route :
+
+- 🌍 **Plus de langues** — un portail de traduction communautaire bientôt disponible.
+- 🔌 **Intégration LMS** — Prise en charge LTI pour les universités et les écoles.
+- 🧪 **Exercices de code interactifs** — Codage dans le navigateur avec retour instantané.
+- 📱 **Application mobile** — Mettre l'enseignement de l'IA hors ligne.
+- 🎯 **Parcours d'apprentissage personnalisés** — Recommandations basées sur l'IA en fonction de vos progrès.
+
+## Essayez-le
+
+Rendez-vous sur [aieducademy.org](https://aieducademy.org) et commencez avec **AI Seeds** — notre piste pour débutants conçue pour les personnes n'ayant aucune formation technique. Il faut environ 10 minutes pour terminer votre première leçon.
+
+Si vous le trouvez utile, [mettez en vedette le dépôt sur GitHub](https://github.com/ai-educademy/ai-platform) ⭐ — cela aide davantage de personnes à nous découvrir.
+
+---
+
+*AI Educademy est construit et maintenu par [Ramesh Reddy Adutla](https://github.com/rameshreddy-adutla) et la communauté open source.*

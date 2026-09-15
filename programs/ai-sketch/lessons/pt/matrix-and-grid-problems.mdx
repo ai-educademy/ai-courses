@@ -1,0 +1,186 @@
+---
+title: "Problemas de Matrizes e Grades - BFS em Grades e Contagem de Ilhas"
+description: "Domine a travessia de grade 2D com BFS, DFS, preenchimento de inundação, BFS de múltiplas fontes, travessia em espiral e programação dinâmica em grades."
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+machineTranslated: true
+---
+## Matrizes 2D como grades
+
+Uma matriz é apenas uma matriz 2D, mas em entrevistas ela geralmente representa uma **grade** - um mapa, um quadro ou um labirinto. Cada célula `grid[r][c]` é um nó e seus vizinhos são células adjacentes.
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Linha `r`, coluna `c`, dimensões `m × n`. Simples – mas os padrões construídos em cima são poderosos.
+
+## Matrizes direcionais
+
+Em vez de escrever quatro instruções if separadas, use um **matriz de direção**:
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+Este é o trecho mais reutilizável em problemas de grade.
+
+<FunFact>O truque da matriz de direção às vezes é chamado de “codificação delta”. Ele aparece no desenvolvimento de jogos, no processamento de imagens e na programação competitiva - em qualquer lugar que as grades sejam usadas.</FunFact>
+
+## BFS em uma grade - caminho mais curto em um labirinto
+
+O BFS encontra o **caminho mais curto** em uma grade não ponderada. Comece pela fonte, explore todos os vizinhos na distância 1, depois na distância 2 e assim por diante.
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS expandindo nível por nível em um labirinto de grade" caption="O BFS explora as células nível por nível, garantindo o caminho mais curto." />
+
+## DFS em uma grade - Preenchimento de inundação e número de ilhas
+
+**Preenchimento de inundação** (como a ferramenta balde de tinta): a partir de uma célula inicial, altere todas as células conectadas da mesma cor. DFS ou BFS funcionam.
+
+**Número de ilhas:** escaneie a grade; quando você encontrar um `1`, execute DFS/BFS para marcar toda a ilha como visitada e aumente sua contagem.
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="Em 'Número de ilhas', por que marcamos as células como visitadas durante o DFS?" options="Para contá-los duas vezes para precisão|Para evitar contar a mesma ilha várias vezes|Para classificar as ilhas|Para encontrar a maior ilha" answer="1" explanation="Marcar as células visitadas evita que o loop externo inicie um novo DFS na mesma ilha, o que causaria excesso de contagem." />
+
+## Laranjas podres - BFS multifonte
+
+Todas as laranjas inicialmente podres são fontes. Coloque todos eles na fila no tempo 0 e depois no BFS. Cada nível dura um minuto. Quando a fila esvaziar, verifique se sobrou alguma laranja fresca.
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    All reachable oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+O principal insight: **BFS de múltiplas fontes** começa em vários nós simultaneamente, não em um.
+
+<Quiz question="O que torna 'Rotting Oranges' diferente do BFS padrão?" options="Em vez disso, ele usa DFS|Vários pontos de partida são enfileirados simultaneamente|Requer o algoritmo de Dijkstra|A grade tem bordas ponderadas" answer="1" explanation="O BFS de múltiplas fontes enfileira todas as laranjas podres de uma só vez como a 'fronteira' inicial, de modo que o apodrecimento se espalha de todas as fontes em paralelo." />
+
+## Travessia da Matriz Espiral
+
+Percorra a matriz em ordem espiral: direita → baixo → esquerda → cima, diminuindo os limites após cada passagem.
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Rotação da Matriz (90°)
+
+Gire uma matriz N×N no sentido horário no local: **transponha** (troque `[r][c]` por `[c][r]`) e, em seguida, **inverta cada linha**.
+
+```
+Original → Transpose → Reverse rows
+1 2 3     1 4 7       7 4 1
+4 5 6  →  2 5 8   →   8 5 2
+7 8 9     3 6 9       9 6 3
+```
+
+<ThinkAboutIt>Para girar no sentido anti-horário, você inverteria as linhas primeiro e depois transporia, ou transporia e depois inverteria as colunas? Experimente no papel.</ThinkAboutIt>
+
+## Pesquise em uma matriz 2D classificada
+
+Duas variantes comuns:
+- **Linhas e colunas classificadas de forma independente** - comece no canto superior direito. Se o alvo for menor, mova para a esquerda; se for maior, desça. O(m + n).
+- **Totalmente classificado** (cada linha começa onde a anterior termina) - trata como uma matriz ordenada simples e pesquisa binária. O(log(m × n)).
+
+## Programação Dinâmica em Grids
+
+**Caminhos exclusivos:** conte os caminhos do canto superior esquerdo ao canto inferior direito, movendo apenas para a direita ou para baixo. `dp[r][c] = dp[r-1][c] + dp[r][c-1]`.
+
+**Soma Mínima do Caminho:** mesma ideia, mas escolha o caminho mínimo de entrada.
+
+Estas são muitas vezes a introdução mais suave à programação dinâmica 2D.
+
+<Quiz question="No problema dos Caminhos Únicos, o que é dp[0][c] para qualquer coluna c?" options="0|1|c|c + 1" answer="1" explanation="A primeira linha só pode ser alcançada movendo-se para a direita, portanto há exatamente um caminho para cada célula da primeira linha. dp[0][c] = 1." />
+
+## Folha de referências de padrões de grade
+
+| Padrão | Técnica | Problema-chave |
+|--------|-----------|-------------|
+| Caminho mais curto (sem ponderação) | BFS | Caminho mais curto do labirinto |
+| Componentes conectados | DFS/BFS | Número de ilhas |
+| Propagação de múltiplas fontes | BFS de múltiplas fontes | Laranjas podres |
+| Ordem de passagem | Ponteiros de limite | Matriz Espiral |
+| Transformação no local | Transpor + reverter | Girar imagem |
+| Contando caminhos | PD | Caminhos Únicos |
+| Pesquisa na grade ordenada | Escadaria / pesquisa binária | Pesquisar Matriz 2D |
+
+<ThinkAboutIt>Muitos problemas de grade são, na verdade, problemas de gráficos disfarçados. Quando você preferiria DFS a BFS em uma grade e vice-versa?</ThinkAboutIt>
+
+---
+
+## 📚 Leitura adicional
+
+- [NeetCode - Programação Dinâmica 2D](https://neetcode.io/roadmap) - problemas de grade DP com explicações visuais
+- [Manual de entrevista técnica - Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) - padrões e técnicas comuns
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) - centenas de problemas práticos

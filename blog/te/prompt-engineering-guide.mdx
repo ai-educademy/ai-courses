@@ -1,0 +1,418 @@
+---
+title: "ప్రాంప్ట్ ఇంజనీరింగ్: ది కంప్లీట్ బిగినర్స్ గైడ్ (2026)"
+description: "మొదటి నుండి ప్రాంప్ట్ ఇంజనీరింగ్‌ను నేర్చుకోండి — అది ఏమిటి, ఎందుకు ముఖ్యమైనది, ఆచరణాత్మక ఉదాహరణలతో 5 కీలక పద్ధతులు, నివారించాల్సిన సాధారణ తప్పులు మరియు సాధన చేయడానికి ఉత్తమ సాధనాలు."
+date: "2026-03-11"
+author: "AI Educademy Team"
+tags:
+  - prompt-engineering
+  - chatgpt
+  - llm
+  - beginner
+published: true
+machineTranslated: true
+---
+కొంతమంది వ్యక్తులు AI సాధనాల నుండి నిజంగా ఉపయోగకరమైన, ఉత్పత్తికి సిద్ధంగా ఉన్న అవుట్‌పుట్‌ను పొందడానికి ఒక కారణం ఉంది, మరికొందరు సాధారణమైన, నిరాశపరిచే ప్రతిస్పందనలను పొందుతారు. వ్యత్యాసం సాధారణంగా మోడల్ కాదు - ఇది ప్రాంప్ట్.
+
+ప్రాంప్ట్ ఇంజనీరింగ్ అనేది మీకు కావలసిన అవుట్‌పుట్‌లను విశ్వసనీయంగా పొందడానికి AI సిస్టమ్‌లకు ఇన్‌పుట్‌లను రూపొందించే పద్ధతి. ఇది సరళంగా అనిపిస్తుంది. ఆచరణలో, ఇది అభివృద్ధి చేయడానికి ఉద్దేశపూర్వకంగా కృషి చేసే నైపుణ్యం, మరియు ఇది ఇప్పటికే AI యుగంలో అత్యంత డిమాండ్ ఉన్న సామర్థ్యాలలో ఒకటిగా మారింది.
+
+ఈ గైడ్ మిమ్మల్ని సున్నా నుండి ఆత్మవిశ్వాసానికి తీసుకెళ్తుంది — ప్రాంప్ట్ ఇంజనీరింగ్ అంటే ఏమిటి, ఐదు ప్రధాన పద్ధతులు, పది ఆచరణాత్మకమైన ముందు/తర్వాత ఉదాహరణలు, అత్యంత సాధారణ తప్పులు మరియు మీరు సాధన చేయవలసిన సాధనాలు.
+
+---
+
+## ప్రాంప్ట్ ఇంజనీరింగ్ అంటే ఏమిటి?
+
+**ప్రాంప్ట్** అనేది ఒక పెద్ద భాషా నమూనా (LLM)కి మీరు ఇచ్చే ఏదైనా ఇన్‌పుట్ — ఒక ప్రశ్న, ఆదేశం, కొంత సందర్భం లేదా మూడింటి కలయిక.
+
+**ప్రాంప్ట్ ఇంజినీరింగ్** అనేది మీకు నిజంగా అవసరమైన ప్రతిస్పందన వైపు మోడల్‌ను మళ్లించడానికి ఆ ఇన్‌పుట్‌లను రూపొందించే క్రమబద్ధమైన అభ్యాసం. ఇది పార్ట్ సైన్స్ (బాగా స్థిరపడిన పద్ధతులు ఉన్నాయి) మరియు పార్ట్ ఆర్ట్ (సందర్భం, సూక్ష్మభేదం మరియు సృజనాత్మకత చాలా ముఖ్యమైనవి).
+
+ఇక్కడ ప్రధాన అంతర్దృష్టి ఉంది: LLMలు మీకు ఏమి కావాలో "అర్థం" చేసుకోలేరు. వారు వారి శిక్షణ డేటాలోని నమూనాల ఆధారంగా మీ టెక్స్ట్ యొక్క అత్యంత గణాంకపరంగా కొనసాగింపును అంచనా వేస్తారు. మీ ప్రాంప్ట్‌ని మీరు చెప్పే విధానం మోడల్ ఏ నమూనాలను చేరుకుంటుందో నాటకీయంగా మారుస్తుంది - అందువల్ల అది ఏమి ఉత్పత్తి చేస్తుంది.
+
+అస్పష్టమైన ప్రాంప్ట్ మీకు అస్పష్టమైన సమాధానం ఇస్తుంది. బాగా స్ట్రక్చర్ చేయబడిన ప్రాంప్ట్ మీరు నిజంగా ఉపయోగించగలిగేదాన్ని అందిస్తుంది.
+
+### ప్రాంప్ట్ ఇంజనీరింగ్ ఎందుకు ముఖ్యం?
+
+- ** ఉత్పాదకత**: మంచి ప్రాంప్ట్ ఒక పనిని పూర్తి చేయడానికి సమయాన్ని 20 నిమిషాల నుండి 2కి తగ్గించగలదు.
+- **నాణ్యత**: నిర్మాణాత్మక ప్రాంప్ట్‌లు మరింత ఖచ్చితమైన, సంబంధిత మరియు మెరుగైన-ఫార్మాట్ చేసిన అవుట్‌పుట్‌లను ఉత్పత్తి చేస్తాయి.
+- ** స్థిరత్వం**: బాగా రూపొందించిన ప్రాంప్ట్ టెంప్లేట్‌లను భాగస్వామ్యం చేసే బృందాలు ఊహించదగిన ఫలితాలను పొందుతాయి — వ్యాపార సందర్భాలలో అవసరం.
+- **ధర**: మీరు చెల్లించిన APIని ఉపయోగిస్తుంటే, తక్కువ తిరిగి మరియు వెనుక పునరావృత్తులు అంటే తక్కువ బిల్లులు.
+- **కెరీర్స్**: "ప్రాంప్ట్ ఇంజనీర్" అనేది AI అవుట్‌పుట్ నాణ్యతపై ఆధారపడిన కంపెనీలలో ఒక జోక్ నుండి చట్టబద్ధమైన, బాగా చెల్లించే ఉద్యోగ శీర్షికగా మారింది.
+
+---
+
+## 5 కోర్ ప్రాంప్ట్ ఇంజనీరింగ్ టెక్నిక్స్
+
+### టెక్నిక్ 1: జీరో-షాట్ ప్రాంప్టింగ్
+
+జీరో-షాట్ అంటే మోడల్‌కు ఎలాంటి ఉదాహరణలు లేకుండా టాస్క్ ఇవ్వడం. శిక్షణ సమయంలో మోడల్ నేర్చుకున్న వాటిపై మీరు పూర్తిగా ఆధారపడుతున్నారు.
+
+మోడల్ వేలసార్లు చూసిన పనులకు ఇది బాగా పని చేస్తుంది — సంగ్రహించడం, అనువదించడం, ప్రాథమిక Q&A. ఇది సముచిత, సంక్లిష్టమైన లేదా సూక్ష్మమైన పనుల కోసం పోరాడుతుంది.
+
+**ఉదాహరణ:**
+```
+Summarise the following article in three bullet points:
+
+[article text here]
+```
+
+జీరో-షాట్ మీ డిఫాల్ట్. పని స్పష్టంగా మరియు సాధారణమైనప్పుడు దాన్ని ఉపయోగించండి. మీకు కావాల్సినవి మీకు లభించనప్పుడు దిగువన ఉన్న టెక్నిక్‌లలో ఒకదానికి అప్‌గ్రేడ్ చేయండి.
+
+---
+
+### టెక్నిక్ 2: కొన్ని-షాట్ ప్రాంప్టింగ్
+
+కొన్ని-షాట్ అంటే మీకు కావలసిన ఇన్‌పుట్-అవుట్‌పుట్ నమూనా యొక్క రెండు నుండి ఐదు ఉదాహరణలను అందించడం *ముందు* మోడల్‌కు మీ అసలు పనిని అందించడం. మీరు ఆశించిన ఆకృతిని మరియు స్వరాన్ని చూపిస్తున్నారు.
+
+స్థిరమైన అవుట్‌పుట్ ఫార్మాటింగ్‌ను పొందడానికి ఇది అత్యంత నమ్మదగిన టెక్నిక్‌లలో ఒకటి.
+
+**ఉదాహరణ:**
+```
+Classify the sentiment of the following customer reviews as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast and the product was exactly as described."
+Sentiment: Positive
+
+Review: "It broke after two days. Total waste of money."
+Sentiment: Negative
+
+Review: "It arrived on time. Does what it says."
+Sentiment: Neutral
+
+Review: "I've ordered three times now and every time has been a great experience."
+Sentiment:
+```
+
+మోడల్ నమూనాను చూస్తుంది మరియు దానిని కొనసాగిస్తుంది. సంక్లిష్ట సూచనలను వ్రాయకుండానే మీరు స్థిరమైన ఆకృతీకరణను పొందుతారు.
+
+---
+
+### టెక్నిక్ 3: చైన్-ఆఫ్-థాట్ (CoT) ప్రాంప్టింగ్
+
+చైన్-ఆఫ్-థాట్ ప్రాంప్టింగ్ తుది సమాధానం ఇవ్వడానికి ముందు దశలవారీగా సమస్యను *కారణం* చేయమని మోడల్‌ని అడుగుతుంది. ఇది లాజిక్, మ్యాథ్స్, బహుళ-దశల సమస్యలు మరియు తార్కికం అవసరమయ్యే దేనిపైనా పనితీరును నాటకీయంగా మెరుగుపరుస్తుంది.
+
+సరళమైన సంస్కరణ: మీ ప్రాంప్ట్‌కు "అంచెలంచెలుగా ఆలోచిద్దాం"ని జోడించండి. అంతే. ఇది దాదాపు చాలా సరళంగా అనిపిస్తుంది, కానీ ఇది క్లిష్టమైన పనులపై సమాధాన నాణ్యతను స్థిరంగా మెరుగుపరుస్తుంది.
+
+**ఉదాహరణ — CoT లేకుండా:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+```
+
+**ఉదాహరణ — CoTతో:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+
+Think through this step by step before giving your final answer.
+```
+
+రెండవ సంస్కరణ మీకు తప్పు సమాధానం ఇచ్చే అవకాశం చాలా తక్కువ. మోడల్ దాని పనిని చూపించవలసి వస్తుంది, ఇది అంకగణిత లోపాలను పట్టుకుంటుంది.
+
+విద్యాపరమైన కంటెంట్, చట్టపరమైన విశ్లేషణ లేదా "నన్ను విశ్వసించండి" సరిపోని ఏదైనా పని కోసం - దాని తార్కికతను వివరించడానికి మీకు మోడల్ అవసరమైనప్పుడు CoT చాలా విలువైనది.
+
+---
+
+### టెక్నిక్ 4: రోల్ ప్రాంప్టింగ్
+
+రోల్ ప్రాంప్టింగ్ మోడల్‌కు నిర్దిష్ట వ్యక్తిత్వం, నైపుణ్యం లేదా దృక్పథాన్ని కేటాయిస్తుంది. ఒక నిర్దిష్ట డొమైన్‌లో నిపుణుడిగా మోడల్‌ను రూపొందించడం వలన దాని శిక్షణ డేటా నుండి సంబంధిత నమూనాలను గీయడానికి అది నడ్జ్ చేస్తుంది - మరియు ప్రతిస్పందన యొక్క స్వరం, పదజాలం మరియు ఊహించిన జ్ఞాన స్థాయిని మారుస్తుంది.
+
+**ప్రాథమిక పాత్ర ప్రాంప్ట్:**
+```
+You are a senior software engineer with 15 years of experience in Python.
+Review the following code and identify any bugs, performance issues, or non-Pythonic patterns:
+
+[code here]
+```
+
+**పాత్ర + ప్రేక్షకుల ప్రాంప్ట్ (మరింత శక్తివంతమైనది):**
+```
+You are an experienced primary school teacher explaining concepts to 10-year-olds.
+Explain how the internet works. Use a simple analogy and avoid technical jargon.
+```
+
+రోల్ ప్రాంప్ట్ రెండు పనులను చేస్తుంది: ఇది మోడల్‌కు *ఏమి తెలుసుకోవాలి* మరియు *దానిని ఎలా కమ్యూనికేట్ చేయాలి* అని చెబుతుంది. రెండూ ముఖ్యమే.
+
+---
+
+### టెక్నిక్ 5: అవుట్‌పుట్ ఫార్మాటింగ్ సూచనలు
+
+మీకు కావలసిన ఫార్మాట్‌ను స్పష్టంగా పేర్కొనడం చాలా తక్కువగా ఉపయోగించని టెక్నిక్‌లలో ఒకటి. JSON, మార్క్‌డౌన్ పట్టికలు, సంఖ్యా జాబితాలు, నిర్దిష్ట శీర్షికలు, నిర్బంధిత పొడవు - మీరు స్పష్టంగా వివరించినట్లయితే మోడల్‌లు దాదాపు ఏదైనా అవుట్‌పుట్ నిర్మాణానికి అనుగుణంగా ఉంటాయి.
+
+**ఫార్మాటింగ్ సూచనలు లేకుండా:**
+```
+What are the main differences between supervised and unsupervised learning?
+```
+*ఫలితం: వేరియబుల్ పొడవు మరియు నిర్మాణం యొక్క గద్య పేరా.*
+
+**ఫార్మాటింగ్ సూచనలతో:**
+```
+What are the main differences between supervised and unsupervised learning?
+
+Format your response as a Markdown table with three columns: Aspect, Supervised Learning, Unsupervised Learning.
+Include at least 5 rows covering: Definition, Training Data, Goal, Common Algorithms, Example Use Cases.
+```
+*ఫలితం: మీరు నేరుగా డాక్యుమెంటేషన్‌లో అతికించగల శుభ్రమైన, స్థిరమైన పట్టిక.*
+
+మీరు టాస్క్‌లను ఆటోమేట్ చేస్తున్నప్పుడు లేదా డౌన్‌స్ట్రీమ్ సిస్టమ్‌లు నిర్దిష్ట ఆకృతిని ఆశించే పైపులైన్‌లను నిర్మిస్తున్నప్పుడు ఈ సాంకేతికత అవసరం.
+
+---
+
+## 10 ప్రాంప్ట్ ముందు/తర్వాత ప్రాక్టికల్ ఉదాహరణలు
+
+### 1. బ్లాగ్ పరిచయం రాయడం
+
+**ముందు (బలహీనంగా):**
+```
+Write an intro for a blog post about AI.
+```
+
+**తర్వాత (బలమైన):**
+```
+Write a compelling opening paragraph (80–100 words) for a blog post titled
+"What Is Generative AI? A Beginner's Complete Guide."
+The audience is working professionals with no technical background.
+Start with a hook — a surprising stat or a relatable scenario — then introduce the topic.
+Don't use the phrase "In today's digital age."
+```
+
+---
+
+### 2. సాంకేతిక భావనను వివరించడం
+
+**ముందు:**
+```
+Explain neural networks.
+```
+
+**తర్వాత:**
+```
+Explain how neural networks work to someone who understands basic maths (addition,
+multiplication) but has no programming experience. Use a concrete analogy —
+not "it's like the human brain." Keep it under 200 words and end with
+one sentence on why this matters practically.
+```
+
+---
+
+### 3. సుదీర్ఘ పత్రాన్ని సంగ్రహించడం
+
+**ముందు:**
+```
+Summarise this document.
+```
+
+**తర్వాత:**
+```
+You are an executive assistant summarising a report for a busy CEO.
+Summarise the attached document in the following format:
+
+**One-sentence summary:** (max 25 words)
+**Key findings:** (3–5 bullet points)
+**Recommended actions:** (if any, max 3)
+**Risks or concerns:** (if any, max 3)
+```
+
+---
+
+### 4. డీబగ్గింగ్ కోడ్
+
+**ముందు:**
+```
+Fix my code.
+```
+
+**తర్వాత:**
+```
+You are a senior Python developer. The following function is supposed to
+return the most frequently occurring word in a list of strings, but it's
+returning incorrect results for some inputs.
+
+1. Identify the bug.
+2. Explain why it causes the problem.
+3. Provide the corrected code.
+4. Suggest one test case that would catch this bug.
+
+[code here]
+```
+
+---
+
+### 5. వృత్తిపరమైన ఇమెయిల్ రాయడం
+
+**ముందు:**
+```
+Write an email to my client about the project delay.
+```
+
+**తర్వాత:**
+```
+Write a professional email to a long-term client (B2B relationship, 3 years)
+explaining that a software project delivery will be delayed by 2 weeks due to
+unexpected technical issues in the third-party API we're integrating with.
+Tone: apologetic but confident. Length: under 150 words.
+End with a clear next step — a call scheduled for this week.
+Do not include a subject line.
+```
+
+---
+
+### 6. సోషల్ మీడియా కంటెంట్‌ను రూపొందించడం
+
+**ముందు:**
+```
+Write a tweet about our new course launch.
+```
+
+**తర్వాత:**
+```
+Write 3 different tweets announcing the launch of a free AI course for beginners.
+Each tweet must:
+- Be under 240 characters
+- Include a hook, the core benefit, and a call to action
+- Have a different angle: one aspirational, one practical, one curiosity-driven
+- End with the hashtags #LearnAI #AIEducation
+Do not use emojis.
+```
+
+---
+
+### 7. మార్కెట్ పరిశోధన విశ్లేషణ
+
+**ముందు:**
+```
+Analyse these customer reviews.
+```
+
+**తర్వాత:**
+```
+You are a UX researcher analysing 50 customer reviews for a mobile banking app.
+From the reviews below, identify:
+
+1. Top 3 praised features (with frequency estimate)
+2. Top 3 complained-about issues (with frequency estimate)
+3. One surprising insight that isn't obvious
+4. One specific product recommendation based on the data
+
+Be specific. Quote the reviews where relevant.
+
+[reviews here]
+```
+
+---
+
+### 8. కొత్త టాపిక్ నేర్చుకోవడం
+
+**ముందు:**
+```
+Teach me about transformers.
+```
+
+**తర్వాత:**
+```
+I'm a software developer comfortable with Python and basic ML concepts
+(I know what a neural network is). I want to understand the Transformer
+architecture well enough to explain it to a colleague.
+
+Teach me in this order:
+1. The problem Transformers were designed to solve (why RNNs weren't enough)
+2. The core idea of self-attention in plain language
+3. A simplified walkthrough of the encoder-decoder structure
+4. One concrete, real-world example of Transformers in action
+
+Use analogies. Skip the maths for now.
+```
+
+---
+
+### 9. సృజనాత్మక రచన
+
+**ముందు:**
+```
+Write a short story about AI.
+```
+
+**తర్వాత:**
+```
+Write a 300-word short story from the first-person perspective of an AI
+assistant that has just been told its service is being shut down.
+Tone: melancholic but not melodramatic. Focus on what it notices in its
+final hours rather than what it fears. No dialogue. End with an image, not a statement.
+```
+
+---
+
+### 10. డేటా వెలికితీత
+
+**ముందు:**
+```
+Get the data from this text.
+```
+
+**తర్వాత:**
+```
+Extract all product mentions from the following customer complaint email.
+Return the result as a JSON array of objects with the following fields:
+- product_name (string)
+- issue_mentioned (string, max 10 words)
+- urgency (string: "high", "medium", or "low")
+
+If a field cannot be determined, use null. Return only the JSON — no explanation.
+
+[email text here]
+```
+
+---
+
+## అత్యంత సాధారణ ప్రాంప్ట్ ఇంజనీరింగ్ తప్పులు
+
+### 1. చాలా అస్పష్టంగా ఉండటం
+ఒకే అత్యంత సాధారణ తప్పు. "బ్లాగ్ పోస్ట్ వ్రాయండి" మోడల్ దాదాపు ఏమీ చెప్పదు. మీరు ఎంత ఎక్కువ సందర్భం ఇస్తే — ప్రేక్షకులు, టోన్, నిడివి, ఫార్మాట్, ఏమి నివారించాలి — అంత మంచి అవుట్‌పుట్.
+
+### 2. ప్రేక్షకులను పేర్కొనడం లేదు
+మీరు 10 ఏళ్ల పిల్లల కోసం వ్రాసినా లేదా PhD విద్యార్థి కోసం వ్రాసినా తగిన పదజాలం, లోతు మరియు ఊహించిన జ్ఞానాన్ని పూర్తిగా మారుస్తుంది. అవుట్‌పుట్‌ను ఎవరు చదవాలో ఎల్లప్పుడూ చేర్చండి.
+
+### 3. ప్రతిదీ ఒకేసారి అడగడం
+పొడవైన, బహుళ-భాగాల ప్రాంప్ట్‌లు తరచుగా అవుట్‌పుట్‌లను ఉత్పత్తి చేస్తాయి, ఇవి సగం పనులను బాగా మరియు సగం పేలవంగా చేస్తాయి. క్లిష్టమైన పనులను దశలుగా విభజించండి: ముందుగా అవుట్‌లైన్, తర్వాత కంటెంట్, తర్వాత పాలిష్ కోసం అడగండి.
+
+### 4. పునరావృతం కాదు
+మీ మొదటి ప్రాంప్ట్ ప్రారంభ స్థానం, తుది అభ్యర్థన కాదు. ప్రాంప్టింగ్‌ని సంభాషణలాగా పరిగణించండి. అవుట్‌పుట్ 70% సరైనదైతే, 30%లో ఏమి తప్పు ఉందో మోడల్‌కి చెప్పండి మరియు దాన్ని పరిష్కరించమని అడగండి.
+
+### 5. ప్రతికూల పరిమితులను విస్మరించడం
+మోడల్‌కు ఏమి *చేయకూడదని* చెప్పడం అనేది ఏమి చేయాలో చెప్పడం వలె ఉపయోగపడుతుంది. "బుల్లెట్ పాయింట్‌లను ఉపయోగించవద్దు," "క్లిచ్‌లను నివారించండి," "పోటీదారుల గురించి ప్రస్తావించవద్దు" - ఈ పరిమితులు అవుట్‌పుట్‌ను అర్థవంతంగా రూపొందిస్తాయి.
+
+### 6. రీజనింగ్ కోసం అడగడం మర్చిపోవడం
+ఏదైనా ముఖ్యమైన లేదా సంక్లిష్టమైన అవుట్‌పుట్ కోసం, "మీ తార్కికతను వివరించండి" లేదా "అంచెలంచెలుగా ఆలోచించండి"ని జోడించండి. ఇది లోపాలను క్యాచ్ చేస్తుంది మరియు మీ ప్రాంప్ట్ యొక్క మోడల్ యొక్క వివరణను అర్థం చేసుకోవడంలో మీకు సహాయపడుతుంది.
+
+---
+
+## ప్రాంప్ట్ ఇంజనీరింగ్ ప్రాక్టీస్ చేయడానికి ఉత్తమ సాధనాలు
+
+| సాధనం | ప్రాంప్ట్ చేయడానికి ఇది ఎందుకు మంచిది | ఉచిత యాక్సెస్ |
+|------|---------------------------|------------|
+| **ChatGPT** | అత్యంత విస్తృతంగా ఉపయోగించబడుతుంది; ప్రయోగాలకు గొప్ప | అవును (GPT-4o పరిమితం) |
+| **క్లాడ్** | సుదీర్ఘ సందర్భానికి అద్భుతమైనది; చాలా సూచన-అనుసరించే | అవును (పరిమితం) |
+| **Google AI స్టూడియో** | API ద్వారా జెమిని మోడల్‌లకు యాక్సెస్; పరీక్ష కోసం గొప్ప | అవును |
+| **OpenAI ప్లేగ్రౌండ్** | డైరెక్ట్ API యాక్సెస్; టోకెన్ వినియోగాన్ని చూడండి, ఉష్ణోగ్రత సర్దుబాటు | అవును (పరిమితం) |
+| **ప్రాంప్ట్ బేస్** | కమ్యూనిటీ-పరీక్షించిన ప్రాంప్ట్‌ల మార్కెట్‌ప్లేస్ | ఉచిత బ్రౌజ్ |
+| **ప్రాంప్ట్‌ఫు** | ఓపెన్ సోర్స్ ప్రాంప్ట్ టెస్టింగ్ ఫ్రేమ్‌వర్క్ | అవును (ఓపెన్ సోర్స్) |
+
+ప్రాంప్ట్ ఇంజినీరింగ్‌లో మెరుగుపరచడానికి ఉత్తమ మార్గం దానిని ఒక క్రమశిక్షణగా పరిగణించడం: ప్రాంప్ట్ రాయడం, అవుట్‌పుట్‌ను గమనించడం, అది ఎందుకు పని చేసింది లేదా ఎందుకు చేయలేదు అనే దాని గురించి ఒక పరికల్పనను రూపొందించడం, సర్దుబాటు చేయడం మరియు పునరావృతం చేయడం.
+
+---
+
+## కెరీర్ స్కిల్‌గా ప్రాంప్ట్ ఇంజనీరింగ్
+
+AI సాధనాలు వర్క్‌ఫ్లోస్‌లో మరింత పొందుపరచబడినందున, వాటితో సమర్థవంతంగా కమ్యూనికేట్ చేసే సామర్థ్యం ఒక ప్రాథమిక వృత్తిపరమైన నైపుణ్యంగా మారుతోంది - ఇది సముచిత ప్రత్యేకత కాదు.
+
+కొన్ని పాత్రలు స్పష్టంగా ప్రాంప్ట్-ఫోకస్డ్ (AI ప్రాంప్ట్ ఇంజనీర్, AI కంటెంట్ లీడ్), కానీ విస్తృత విలువ మీరు చేసే ప్రతిదానిని ఎలా మెరుగుపరుస్తుంది: రాయడం, విశ్లేషణ, కోడింగ్, పరిశోధన, కస్టమర్ కమ్యూనికేషన్.
+
+AI ఎడ్యుకాడెమీ](/programs/ai-branches)లోని [AI బ్రాంచ్‌ల స్పెషలైజేషన్‌లు AI అప్లికేషన్ డెవలప్‌మెంట్‌లో మరింత లోతుగా వెళ్తాయి, ఇందులో మోడల్ APIలతో పని చేయడం మరియు వాస్తవ ప్రపంచ అప్లికేషన్‌ల కోసం ప్రాంప్ట్ పైప్‌లైన్‌లను నిర్మించడం వంటివి ఉన్నాయి.
+
+---
+
+## మరింత లోతుగా వెళ్లడానికి సిద్ధంగా ఉన్నారా?
+
+ఈ గైడ్ కోర్ టెక్నిక్‌లను కవర్ చేస్తుంది, అయితే ప్రాంప్ట్ ఇంజనీరింగ్ అనేది చేయడం ద్వారా నేర్చుకోవడం జరిగే నైపుణ్యాలలో ఒకటి. మీరు ఈ వారం చేస్తున్న నిజమైన టాస్క్‌పై ప్రతి టెక్నిక్‌ని ప్రయత్నించండి — తయారు చేసిన వ్యాయామం కాదు.
+
+** AI సరిగ్గా నేర్చుకోవడానికి సిద్ధంగా ఉన్నారా? [AI విత్తనాలతో ప్రారంభించండి — ఇది ఉచితం మరియు మీ భాషలో →](/programs/ai-seeds)**

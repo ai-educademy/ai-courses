@@ -1,0 +1,178 @@
+---
+title: "Große Sprachmodelle verstehen"
+description: "Wie GPT, Claude und andere LLMs unter der Haube funktionieren"
+order: 11
+difficulty: "intermediate"
+duration: 15
+icon: "🔤"
+published: true
+machineTranslated: true
+---
+# Große Sprachmodelle verstehen 🔤
+
+ChatGPT, Claude, Zwillinge, Lama – sie sind überall. Aber was machen diese Dinge eigentlich, wenn sie auf Ihre Nachrichten antworten? Die Antwort ist einfacher und umwerfender, als Sie vielleicht erwarten.
+
+Im Kern tun Large Language Models (LLMs) eine Sache: **das nächste Token vorhersagen**. Immer und immer wieder. Das ist es. Und doch entsteht aus diesem einfachen Prozess die Fähigkeit, Code zu schreiben, Quantenphysik zu erklären, Gedichte zu verfassen und überraschend zusammenhängende Gespräche zu führen.
+
+Packen wir mal aus, wie.
+
+---
+
+## 🔡 Erstens: Was ist ein Token?
+
+Bevor wir zum Modell selbst kommen, müssen wir **Tokens** verstehen – die Spracheinheit, mit der LLMs arbeiten.
+
+Ein Token ist nicht unbedingt ein Wort. Es handelt sich eher um einen **Textblock**, der in der Sprache häufig genug vorkommt, um als Einheit behandelt zu werden. Im Englischen sind gebräuchliche Wörter wie „the“, „and“ und „is“ einzelne Zeichen. Längere, seltenere Wörter könnten aufgeteilt werden: „außergewöhnlich“ könnte zu „extra“ + „gewöhnlich“ werden. Zahlen und Satzzeichen sind oft ihre eigenen Zeichen.
+
+Eine grobe Faustregel: **1 Token ≈ 0,75 Wörter** auf Englisch.
+
+Warum nicht einfach Worte verwenden? Weil die Tokenisierung Folgendes behandelt:
+- Mehrere Sprachen mit unterschiedlichen Wortstrukturen
+- Code (wobei Leerzeichen und Symbole unterschiedlich wichtig sind)
+- Neue Wörter, Namen und Fachbegriffe
+- Mathematische Ausdrücke
+
+Wenn Sie eine Nachricht in ein LLM eingeben, wird diese sofort in eine Folge von Token-IDs umgewandelt – Zahlen in einem Vokabular von typischerweise 30.000 bis 100.000 Token.
+
+<FunFact>GPT-4 verfügt über ein Vokabular von rund 100.000 Token. In der gesamten englischen Sprache werden rund 170.000 Wörter gebräuchlich, aber das Token-Vokabular eines LLM deckt auch viele Sprachen, Codesyntax, Emojis und Fachterminologie gleichzeitig ab.
+</FunFact>
+
+---
+
+## 🎯 Die Kernaufgabe: Vorhersagen, was als nächstes kommt
+
+Hier ist das grundlegende Trainingsziel für jedes LLM:
+
+> **Prognostizieren Sie bei einer gegebenen Folge von Token die Wahrscheinlichkeit jedes möglichen nächsten Tokens**.
+
+Während des Trainings werden dem Modell Milliarden von Beispielen gezeigt, wie zum Beispiel:
+- „Die Katze saß auf dem ___“ → (wahrscheinlich: Matte, Boden, Sofa, Dach...)
+- „def berechne_sum(a, b):\n return ___“ → (wahrscheinlich: a + b)
+- „Die Hauptstadt Frankreichs ist ___“ → (mit ziemlicher Sicherheit: Paris)
+
+Indem es genügend Beispiele sieht, lernt das Modell die statistischen Muster der Sprache – nicht nur Wort für Wort, sondern auch die tiefen Strukturen von Bedeutung, Kausalität und Kontext.
+
+Beim Generieren von Text gilt für das Modell Folgendes:
+1. Schaut sich alle vorherigen Token an
+2. Gibt eine Wahrscheinlichkeitsverteilung über das gesamte Vokabular aus
+3. Stichproben eines Tokens aus dieser Verteilung (mit einer gewissen Zufälligkeit, die durch „Temperatur“ gesteuert wird)
+4. Hängt dieses Token an die Sequenz an
+5. Wiederholungen
+
+Jedes Wort, das Sie in der Antwort eines LLM lesen, wurde jeweils als Token generiert, wobei jedes Wort durch alles, was davor kam, informiert wurde.
+
+---
+
+## 🔄 Die Transformer-Architektur
+
+Die Architektur, die moderne LLMs ermöglichte, wird **Transformer** genannt und von Google-Forschern in einem bahnbrechenden Artikel aus dem Jahr 2017 mit dem Titel „Attention is All You Need“ vorgestellt.
+
+Vor Transformers verarbeiteten Sprachmodelle Text sequentiell – Wort für Wort, so als würde man einen Satz langsam lesen, wobei der Finger unter jedem Wort liegt. Dies war langsam und machte es schwierig, weit voneinander entfernte Wörter in einem Satz zu verbinden.
+
+Transformer verarbeiten **alle Token gleichzeitig** und lassen jeden Token direkt mit jedem anderen Token interagieren. Dies wird als **Parallelverarbeitung** bezeichnet und ist einer der Gründe, warum sie so leistungsstark sind.
+
+Aber die wahre Magie liegt im **Aufmerksamkeitsmechanismus**.
+
+---
+
+## 👁️ Achtung: Wie das Model fokussiert
+
+Stellen Sie sich vor, Sie lesen diesen Satz:
+
+> *„Der Pokal passte nicht in den Koffer, weil er zu groß war.“*
+
+Worauf bezieht sich „es“? Die Trophäe. Das wussten Sie, weil Sie bei der Interpretation von „es“ schnell zurückgeblättert und „Trophäe“ besonders gewichtet haben.
+
+Mit dem **Aufmerksamkeitsmechanismus** kann das Modell genau dies tun – es berechnet für jeden Token, wie viel „Aufmerksamkeit“ jedem anderen Token im Kontext geschenkt werden muss. Es fragt:
+
+> *„Um dieses Wort zu verstehen, welche anderen Wörter in der Sequenz sind am relevantesten?“*
+
+Diese Aufmerksamkeitsgewichte werden während des Trainings erlernt. Das Modell lernt, dass bei der Verarbeitung eines Pronomens den Substantiven weiter oben im Satz große Aufmerksamkeit gebührt. Bei der Verarbeitung eines Verbs verdient das Subjekt große Aufmerksamkeit.
+
+### Mehrköpfige Aufmerksamkeit
+
+Moderne Transformer nutzen **Multi-Head-Aufmerksamkeit** – sie führen viele Aufmerksamkeitsberechnungen parallel durch, wobei jede nach unterschiedlichen Arten von Beziehungen sucht:
+- Ein „Kopf“ könnte grammatikalische Beziehungen verfolgen (Subjekt-Verb-Übereinstimmung)
+- Ein anderer könnte die Koreferenz verfolgen (worauf sich Pronomen beziehen)
+- Ein anderer könnte semantische Ähnlichkeit verfolgen (welche Wörter ähnliche Dinge bedeuten)
+
+Die Ergebnisse aller Köpfe werden kombiniert, um ein umfassendes, mehrdimensionales Verständnis der Beziehung jedes Tokens zum gesamten Kontext zu schaffen.
+
+<FunFact>GPT-3 hat 96 Aufmerksamkeitsköpfe auf 96 Ebenen. Das bedeutet, dass auf jeder Verarbeitungsebene 96 verschiedene „Perspektiven“ auf die Beziehungen zwischen Wörtern gleichzeitig berechnet werden. Niemand versteht vollständig, was jeder Kopf gelernt hat – es ist eines der vielen Geheimnisse großer neuronaler Netze.
+</FunFact>
+
+---
+
+## 📏 Kontextfenster: Wie viel kann es sich merken?
+
+Das **Kontextfenster** ist die maximale Anzahl an Token, die ein LLM gleichzeitig berücksichtigen kann. Betrachten Sie es als das Arbeitsgedächtnis des Modells.
+
+Frühe GPT-Modelle hatten Kontextfenster von 2.048 Token (~1.500 Wörter). Moderne Modelle wie GPT-4o, Claude 3 und Gemini 1.5 Pro verfügen über Kontextfenster von 128.000 Token oder mehr – genug, um einen ganzen Roman aufzunehmen.
+
+Alles innerhalb des Kontextfensters ist für jeden Aufmerksamkeitskopf auf jeder Ebene zugänglich. Alles außerhalb davon ist für das Modell einfach unsichtbar. Es gibt kein verschwommenes „verblassendes Gedächtnis“ wie beim Menschen – es ist eine harte Grenze.
+
+Aus diesem Grund können Gespräche mit LLMs schief gehen, wenn sie sehr lang werden: Schließlich fallen die ersten Teile des Gesprächs aus dem Kontextfenster.
+
+---
+
+## 🏋️ Training: Maßstab ist alles
+
+LLMs werden auf wirklich atemberaubende Textmengen geschult:
+- **GPT-3** wurde auf ca. 300 Milliarden Token trainiert – etwa 570 GB Text
+- **GPT-4**-Trainingsdetails sind geheim, aber Schätzungen gehen von Billionen von Token aus
+- **Llama 3** wurde mit über 15 Billionen Text-Tokens trainiert
+
+Die Trainingsdaten stammen aus Webcrawls (Common Crawl), Büchern, Wikipedia, Code-Repositories, wissenschaftlichen Arbeiten und vielem mehr – im Wesentlichen einem erheblichen Teil des geschriebenen Textes im Internet.
+
+Die Rechenkosten für das Training sind enorm: Das Training von GPT-3 kostete allein für die Rechenleistung schätzungsweise 4,6 Millionen US-Dollar. GPT-4 soll über 100 Millionen US-Dollar gekostet haben.
+
+### Neue Fähigkeiten: Die Überraschung
+
+Wenn Modelle größer werden, passiert etwas Seltsames: Sie entwickeln **neue Fähigkeiten** – Fähigkeiten, die nicht explizit trainiert wurden, in kleineren Modellen nicht auftauchten und im Maßstab plötzlich aufzutreten scheinen.
+
+GPT-2 (2019) konnte kaum zusammenhängende Absätze schreiben. GPT-3 (2020) konnte Aufsätze schreiben, Logikrätsel lösen und Sprachen übersetzen, die es kaum kannte. GPT-4 kann medizinische und juristische Prüfungen bestehen.
+
+Diese wurden nicht explizit programmiert. Sie entstanden aus der Skala.
+
+<ThinkAboutIt>Ein LLM hat noch nie etwas „erlebt“. Es hat noch nie einen Sonnenaufgang gesehen, sich noch nie kalt angefühlt oder ein Gespräch in Echtzeit geführt. Dennoch kann es überzeugend über diese Dinge schreiben, weil es Millionen menschlicher Beschreibungen davon verarbeitet hat. Bedeutet das, dass das Modell diese Erfahrungen „versteht“ oder macht es etwas grundlegend anderes?
+</ThinkAboutIt>
+
+---
+
+## 🎛️ Von der Vorhersagemaschine zum hilfreichen Assistenten
+
+Eine reine Vorhersage des nächsten Tokens würde etwas erzeugen, das jeden Text, den Sie ihm geben, fortsetzt – nützlich für die Vervollständigung, aber nicht für Konversationen.
+
+Um LLMs zu hilfreichen Assistenten zu machen, durchlaufen sie eine zweite Trainingsphase namens **RLHF (Reinforcement Learning from Human Feedback)**:
+
+1. Das Modell generiert viele mögliche Antworten auf Eingabeaufforderungen
+2. Menschliche Bewerter ordnen die Antworten vom besten zum schlechtesten
+3. Ein „Belohnungsmodell“ lernt, menschliche Präferenzen vorherzusagen
+4. Das LLM ist so abgestimmt, dass es Antworten liefert, die das Belohnungsmodell hoch bewertet
+
+Auf diese Weise wird aus einem rohen Sprachmodell der ChatGPT oder Claude, mit dem Sie interagieren – hilfreich, harmlos und relativ ehrlich.
+
+---
+
+## 🔬 Was LLMs können und was nicht
+
+**LLMs sind bemerkenswert gut in:**
+- Fließende, kontextbezogene Texte verfassen
+- Übersetzen zwischen Sprachen
+- Code schreiben und erklären
+- Zusammenfassen langer Dokumente
+- Befolgen komplexer Anweisungen
+- Kreative Aufgaben: Geschichten, Gedichte, Brainstorming
+
+**LLMs haben immer noch Probleme mit:**
+- Präzises Rechnen (es sind keine Taschenrechner)
+- Zuverlässig wissen, was sie nicht wissen (Halluzination)
+- Bleiben Sie über die Ereignisse nach der Trainingsunterbrechung auf dem Laufenden
+- Langes mehrstufiges Denken ohne Fehler
+- Echtes Kausaldenken vs. statistische Korrelation
+
+Das Verständnis dieser Einschränkungen ist kein Pessimismus – es geht darum, wie Sie LLMs effektiv nutzen und Systeme aufbauen, die ihre Stärken ausspielen und gleichzeitig ihre Schwächen ausgleichen.
+
+<Quiz question="Was ist das Kerntrainingsziel eines Large Language Model?" options={["Sich den gesamten Text merken, den es trainiert hat", "Um die Wahrscheinlichkeit des nächsten Tokens vorherzusagen, wenn alle vorherigen Token vorhanden sind", "Die Bedeutung der menschlichen Sprache verstehen", "Zum Übersetzen zwischen Programmiersprachen"]} correct={1} explanation="LLMs werden auf die Vorhersage des nächsten Tokens trainiert: Sagen Sie anhand einer Folge von Token den wahrscheinlichsten nächsten Token voraus. Indem das Modell dies milliardenfach an riesigen Textmengen durchführt, lernt es tiefgreifende statistische Sprachmuster – was zu offensichtlichem Verständnis und logischem Denken führt." />
+
+<Quiz question="Was ermöglicht der „Aufmerksamkeitsmechanismus” in Transformers einem Modell?" options={["Verarbeiten Sie Token schneller als frühere Architekturen", "Speichern Sie Informationen über ihr Kontextfenster hinaus", "Wägen Sie bei der Verarbeitung jedes Tokens die Bedeutung der verschiedenen Token in der Reihenfolge ab", "Übersetzen Sie zwischen verschiedenen Tokenisierungsformaten"]} correct={2} explanation="Der Aufmerksamkeitsmechanismus ermöglicht es jedem Token, sich um jeden anderen Token zu kümmern und die Relevanzgewichte dynamisch zu berechnen. Auf diese Weise löst das Modell Pronomenreferenzen auf, sorgt für die Subjekt-Verb-Übereinstimmung über lange Sätze hinweg und baut ein kontextuelles Verständnis auf – indem es Informationen verbindet, die im Text möglicherweise weit voneinander entfernt liegen." />

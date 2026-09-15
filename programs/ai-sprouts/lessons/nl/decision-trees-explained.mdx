@@ -1,0 +1,102 @@
+---
+title: "Beslissingsbomen: het algoritme dat u op papier kunt tekenen"
+description: "Ontdek hoe beslissingsbomen werken, waarom ze een van de meest intuïtieve ML-algoritmen zijn en wanneer u ze kunt gebruiken."
+order: 15
+difficulty: "intermediate"
+duration: 25
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+# Beslissingsbomen: het algoritme dat u op papier kunt tekenen 🌳
+
+De meeste machine learning-algoritmen zijn zwarte dozen: je voert gegevens in, er gebeurt iets wiskundigs binnenin en er komt een voorspelling uit. Beslisbomen zijn verschillend. Ze zijn een van de weinige algoritmen die je volledig kunt uitleggen aan een niet-technische collega, op een whiteboard kunt tekenen en er toch op kunt vertrouwen dat ze nauwkeurige voorspellingen doen.
+
+---
+
+## 🎮 De analogie met 20 vragen
+
+Je hebt waarschijnlijk 20 Vragen gespeeld: één persoon bedenkt iets, en anderen stellen ja/nee-vragen om het te verfijnen. "Leeft hij? Is hij groter dan een auto? Leeft hij in het water?" Elk antwoord elimineert een groot aantal mogelijkheden totdat het antwoord duidelijk wordt.
+
+Een beslisboom werkt precies zo. Gegeven een nieuw datapunt om te classificeren, stelt de boom een ​​reeks vragen over de kenmerken ervan, waarbij hij de takken volgt die bij elk antwoord passen, totdat hij een blad bereikt: een definitieve voorspelling.
+
+<Illustration src="/images/lessons/decision-trees-explained.svg" alt="Een beslisboom voor het classificeren van dieren: eerst gesplitst op 'heeft vleugels?', dan op 'leeft in water?', leidend tot bladknopen met diernamen" caption="Een beslissingsboom stelt een reeks vragen over kenmerken, die zich beperken tot een voorspelling bij elk bladknooppunt." />
+
+---
+
+## 🌿 Anatomie van een boom
+
+Voordat we ingaan op de manier waarop bomen leren, laten we de onderdelen een naam geven:
+
+- **Rootknooppunt** — de belangrijkste vraag; het belangrijkste kenmerk
+- **Interne knooppunten** — vragen op elk vertakkingspunt
+- **Takken** — de gevolgde paden op basis van ja/nee-antwoorden (of waardenbereik).
+- **Bladknooppunten** — de eindpunten; elk bevat een definitieve voorspelling
+
+Eén enkel datapunt reist van wortel naar blad en beantwoordt bij elk knooppunt één vraag, totdat het tot een voorspelling komt.
+
+---
+
+## 📐 Hoe een beslisboom leert
+
+Het slimme deel: hoe beslist het algoritme *welke* vraag het op elk knooppunt moet stellen? Het probeert elke mogelijke splitsing van elke functie en kiest degene die de gegevens het beste scheidt.
+
+### Informatiewinst en Gini-onzuiverheid
+
+Twee veel voorkomende maatstaven voor "beste scheiding":
+
+**Gini-onzuiverheid** meet hoe gemengd een groep is. Een perfect zuiver knooppunt – alle voorbeelden behoren tot één klasse – heeft een Gini-onzuiverheid van 0. Een volledig gemengd knooppunt heeft de maximale onzuiverheid. Het algoritme geeft de voorkeur aan splitsingen die de zuiverste onderliggende knooppunten opleveren.
+
+**Informatiewinst** is vergelijkbaar: het meet hoeveel een splitsing de onzekerheid (entropie) over het klassenlabel vermindert. Hogere informatiewinst = betere splitsing.
+
+Bij beide metingen wordt dezelfde onderliggende vraag gesteld: *Hoeveel zekerder ben ik na het splitsen van deze functie over de klas?*
+
+<FunFact>Het CART-algoritme (Classification and Regression Trees), geïntroduceerd in 1984 door Breiman, Friedman, Olshen en Stone, vormt de basis van de meeste moderne implementaties van beslissingsbomen. Ondanks dat het 40 jaar oud is, blijft het een van de meest gebruikte ML-algoritmen.
+</FunFact>
+
+---
+
+## ✂️ Overfitting en snoeien
+
+Als er geen beperkingen worden opgelegd, zal een beslissingsboom groeien totdat elk trainingsvoorbeeld zijn eigen blad heeft – waarbij 100% nauwkeurigheid wordt bereikt op het gebied van trainingsgegevens, maar volledig faalt op het gebied van nieuwe gegevens. Dit is **overmatig**.
+
+Stel je voor dat je elke examenvraag uit het verleden woord voor woord uit je hoofd leert in plaats van het onderwerp te begrijpen. Je haalt de eerdere papieren, maar zakt voor het echte examen.
+
+Twee belangrijke remedies:
+
+1. **Voorsnoeien (vroeg stoppen)** — stel limieten in tijdens de training: maximale diepte, minimale monsters per blad, minimale drempel voor informatiewinst. De boom stopt met groeien als hij deze grenzen bereikt.
+
+2. **Nasnoei** — laat de volledige boom groeien en snoei vervolgens takken terug die de prestaties niet verbeteren op een validatieset.
+
+<ThinkAboutIt>Een beslissingsboom met diepte 1 (een enkele vraag) wordt een "beslissingsstronk" genoemd. Het is uiterst eenvoudig – vrijwel zeker ondermaats. Een boom met een diepte van 100 met één monster per blad is overfitting. Hoe zou jij beslissen waar je wilt stoppen?
+</ThinkAboutIt>
+
+---
+
+## 🌲 Van bomen tot bossen
+
+Eén enkele beslissingsboom is krachtig maar broos: kleine veranderingen in trainingsgegevens kunnen heel verschillende bomen opleveren. De oplossing: honderden bomen laten groeien, elk getraind op een willekeurige subset van de gegevens en kenmerken, en vervolgens **het gemiddelde nemen van hun voorspellingen**.
+
+Dit is een **Random Forest**: een van de meest betrouwbare en meest gebruikte algoritmen op het gebied van machinaal leren. In een latere les ga je hier dieper op in. Onthoud voorlopig: individuele bomen zijn interpreteerbaar, bossen zijn robuust.
+
+---
+
+## ✅ Sterke en ⚠️ zwakke punten
+
+| Sterke punten | Zwakke punten |
+|---|---|
+| Volledig interpreteerbaar – kan worden gevisualiseerd | Gevoelig voor overfitting zonder snoeien |
+| Het is niet nodig om functies te normaliseren of te schalen | Kleine gegevensveranderingen = heel verschillende bomen |
+| Behandelt zowel numerieke als categorische kenmerken | Voorkeur voor kenmerken met meer waarden |
+| Werkt zonder feature-engineering | Niet goed in het vastleggen van lineaire relaties |
+| Snel te trainen en te voorspellen | Afzonderlijke bomen presteren vaak slechter dan ensembles |
+
+---
+
+<Quiz question="Wat vertegenwoordigt een bladknooppunt in een beslisboom?" options={["Een vraag over een functie", "De definitieve voorspelling nadat alle vragen zijn beantwoord", "De trainingsgegevensset", "Een maatstaf voor de nauwkeurigheid van het model"]} correct={1} explanation="Bladknooppunten zijn de eindpunten van een beslisboom. Wanneer een datapunt alle takken van wortel tot blad heeft gevolgd, bevat het bladknooppunt de uiteindelijke voorspelling: een klassenlabel voor classificatietaken, of een waarde voor regressie." />
+
+<Quiz question="Wat meet 'Gini-onzuiverheid' in een beslisboom?" options={["Hoe groot de boom is geworden", "Hoe gemengd een reeks klassenlabels ook is: lager betekent zuiverder", "De rekenkosten voor het trainen van de boom", "Hoeveel functies bevinden zich in de gegevensset"]} correct={1} explanation="Gini-onzuiverheid meet de waarschijnlijkheid dat een willekeurig gekozen element onjuist wordt geclassificeerd als het wordt gelabeld volgens de verdeling van labels in een knooppunt. Een Gini van 0 betekent dat alle voorbeelden in het knooppunt tot dezelfde klasse behoren: perfecte zuiverheid." />
+
+<Quiz question="Wat is overfitting in de context van beslisbomen?" options={["Als de boom te ondiep is om iets nuttigs te leren", "Wanneer de boom trainingsgegevens perfect onthoudt, maar er niet in slaagt te generaliseren naar nieuwe gegevens", "Wanneer het te lang duurt om de boom te trainen", "Wanneer de boom te veel functies gebruikt"]} correct={1} explanation="Een overfitte beslisboom is zo diep gegroeid dat er voor elk trainingsvoorbeeld een uniek pad ontstaat. Het bereikt een bijna perfecte trainingsnauwkeurigheid, maar presteert slecht op onzichtbare gegevens omdat het ruis heeft onthouden in plaats van echte patronen te hebben geleerd." />
+
+<Quiz question="Wat is een willekeurig bos?" options={["Een dataset met afbeeldingen van bossen die wordt gebruikt om visiemodellen te trainen", "Een ensemble van vele beslissingsbomen, elk getraind op willekeurige subsets van gegevens en kenmerken, met gemiddelde voorspellingen", "Eén enkele zeer diepe beslisboom", "Een snoeitechniek voor het verwijderen van onbelangrijke takken"]} correct={1} explanation="Een Random Forest combineert honderden beslissingsbomen, elk opgebouwd uit een willekeurige steekproef van trainingsgegevens en een willekeurige subset van functies. Het middelen van hun voorspellingen vermindert de variantie en maakt het ensemble veel robuuster dan welke individuele boom dan ook." />

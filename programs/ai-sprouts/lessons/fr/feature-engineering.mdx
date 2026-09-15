@@ -1,0 +1,252 @@
+---
+title: "Ingénierie des fonctionnalités : enseigner aux machines ce qui compte"
+description: "Découvrez comment l'ingénierie des fonctionnalités transforme les données brutes en puissantes entrées d'apprentissage automatique : la compétence qui distingue les bons modèles des excellents."
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# Ingénierie des fonctionnalités : enseigner aux machines ce qui compte
+
+Il y a un dicton en apprentissage automatique : **garbage in, garbage out**. Vous pouvez avoir l’algorithme le plus sophistiqué au monde, mais si vous lui fournissez des données mal préparées, les résultats seront médiocres. À l’inverse, un algorithme simple basé sur des données excellentes et soigneusement préparées peut surpasser un algorithme complexe basé sur des données brutes et désordonnées.
+
+L’ingénierie des fonctionnalités consiste à transformer des données brutes en représentations dont les algorithmes d’apprentissage automatique peuvent apprendre efficacement. Il s'agit sans doute de la compétence la plus importante en matière d'apprentissage automatique appliqué, et c'est là que la connaissance approfondie du domaine rencontre la science des données.
+
+## 🧩 Que sont les fonctionnalités ?
+
+Dans le machine learning, une **caractéristique** est toute propriété ou attribut mesurable de la chose que vous essayez de prédire. Les fonctionnalités sont les entrées de votre modèle ; le **étiquette** (ou cible) est la sortie.
+
+Pour un modèle de prévision des prix de l’immobilier :
+- Caractéristiques : superficie en pieds carrés, nombre de chambres, code postal, année de construction, distance à l'école la plus proche
+- Etiquette : prix de vente
+
+Pour un classificateur de courrier indésirable :
+- Caractéristiques : fréquences des mots, domaine de l'expéditeur, présence de certaines phrases, longueur des e-mails
+- Libellé : spam (1) ou non spam (0)
+
+La qualité, la quantité et la pertinence de vos fonctionnalités sont souvent plus importantes que l'algorithme que vous choisissez.
+
+## 🗃️ Pourquoi les données brutes sont rarement prêtes à être modélisées
+
+Les données du monde réel sont compliquées. Les algorithmes de machine learning ont des exigences spécifiques auxquelles les données brutes ne satisfont presque jamais :
+
+- **Numérique uniquement** : la plupart des algorithmes ne peuvent pas traiter directement le texte, les catégories ou les dates.
+- **Aucune valeur manquante** : la plupart des algorithmes ne peuvent pas gérer les valeurs NaN ou nulles
+- **Échelles similaires** : des fonctionnalités avec des plages de valeurs très différentes peuvent fausser l'apprentissage basé sur le gradient
+- **Représentation significative** : les horodatages bruts ou les codes postaux n'encodent pas les modèles qui comptent (est-ce un week-end ? est-ce une région riche ?)
+
+L'ingénierie des fonctionnalités est le processus permettant de combler le fossé entre les données brutes et les entrées prêtes pour le modèle.
+
+## 📏 Normalisation et standardisation
+
+Lorsque les entités ont des échelles très différentes, les modèles peuvent être induits en erreur. Une entité avec des valeurs en milliers peut dominer une entité avec des valeurs comprises entre 0 et 1.
+
+### Normalisation Min-Max (Mise à l'échelle à [0, 1])
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### Standardisation (z-score, moyenne=0, std=1)
+
+Plus robuste aux valeurs aberrantes que la mise à l'échelle min-max :
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**Règle générale** : utilisez la standardisation par défaut. Utilisez min-max lorsque vous avez besoin de valeurs dans une plage délimitée spécifique (par exemple, entrées de réseau neuronal).
+
+## 🏷️ Encodage des variables catégorielles
+
+Les catégories telles que « rouge/vert/bleu » ou « Londres/Manchester/Birmingham » n'ont pas d'ordre numérique naturel. Vous devez les coder avant de les transmettre à la plupart des algorithmes.
+
+### Encodage à chaud
+
+Crée une colonne binaire pour chaque catégorie. Idéal lorsque les catégories n'ont pas d'ordre inhérent :
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### Encodage des étiquettes
+
+Mappe chaque catégorie à un entier. À utiliser uniquement lorsque les catégories ont un ordre naturel :
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>Une erreur courante du débutant consiste à coder les noms de villes avec des étiquettes, indiquant accidentellement au modèle que Tokyo est « plus que » Londres, ce qui conduit à des prédictions bizarres. Utilisez toujours l'encodage à chaud pour les catégories non ordonnées.</FunFact>
+
+## 🕳️ Gestion des valeurs manquantes
+
+Les données manquantes sont presque universelles dans les ensembles de données du monde réel. Vous avez plusieurs options :
+
+###Imputation
+
+Remplissez les valeurs manquantes avec un substitut calculé :
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### Ajout d'un indicateur d'absence
+
+Parfois, le fait que des données manquent est en soi informatif :
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### Quand abandonner
+
+Supprimez une colonne si elle contient plus de 70 à 80 % de valeurs manquantes (rarement informatif). Supprimez une ligne uniquement si vous disposez de beaucoup de données et que la ligne est manquante au hasard (pas systématiquement).
+
+## 🛠️ Création de nouvelles fonctionnalités
+
+C’est là que l’ingénierie des fonctionnalités devient un art. Vous utilisez la connaissance du domaine pour créer des fonctionnalités qui capturent des modèles non visibles dans les données brutes.
+
+### Décomposition date/heure
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+Un horodatage brut ne dit rien directement au modèle ; ces caractéristiques dérivées exposent des modèles tels que « des pics de fraude à 3 heures du matin » ou des « pics de ventes le week-end ».
+
+### Fonctionnalités d'interaction
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### Fonctionnalités de texte
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>Si vous construisiez un modèle pour prédire les échecs des inspections sanitaires des restaurants, à quelles données brutes pourriez-vous avoir accès et quelles nouvelles fonctionnalités pourriez-vous en tirer qui seraient plus utiles que les données brutes seules ?</ThinkAboutIt>
+
+## 📊 Importance des fonctionnalités
+
+Une fois que vous avez créé un modèle, vous pouvez mesurer les fonctionnalités qu'il a trouvées les plus utiles. Ceci est précieux à la fois pour comprendre votre modèle et pour décider quelles fonctionnalités conserver ou supprimer :
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+Les fonctionnalités d'importance proche de zéro peuvent généralement être supprimées sans affecter les performances - et leur suppression simplifie le modèle, réduit le temps de formation et peut améliorer la généralisation.
+
+## 🗜️ Réduction de dimensionnalité : une brève introduction
+
+Lorsque vous disposez de centaines ou de milliers de fonctionnalités, les modèles peuvent avoir des difficultés – c'est ce qu'on appelle la **malédiction de la dimensionnalité**. Les techniques de réduction de dimensionnalité compressent les fonctionnalités tout en préservant les modèles les plus importants :
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+L'ACP (Analyse en Composantes Principales) est l'approche la plus courante, mais d'autres incluent le t-SNE (pour la visualisation) et l'UMAP (pour la préservation de la structure locale).
+
+<Quiz question="Vous disposez d'un ensemble de données avec une colonne « ville » contenant 50 noms de villes différents. Quelle approche d’encodage devriez-vous utiliser ?" options="Encodage des étiquettes : attribuez à chaque ville un nombre entier de 0 à 49|Encodage à chaud : créez une colonne binaire pour chaque ville|Laissez-le sous forme de texte – la plupart des modèles gèrent les chaînes|Convertir toutes les villes au PIB de leur pays" answer="1" explanation="Les noms de villes n'ont pas d'ordre naturel, donc le codage des étiquettes impliquerait à tort une hiérarchie (Ville 49 > Ville 0). Le codage à chaud crée une colonne binaire pour chaque ville, les représentant correctement comme des catégories non ordonnées distinctes." />
+
+## Points clés à retenir
+
+- Les **Fonctionnalités** sont les entrées de votre modèle ; la qualité des fonctionnalités compte souvent plus que le choix de l'algorithme
+- Les données brutes ne sont presque jamais prêtes à être modélisées : elles doivent être nettoyées, transformées et enrichies.
+- La **normalisation/standardisation** place les fonctionnalités à des échelles comparables ; utiliser la normalisation par défaut
+- **L'encodage à chaud** est correct pour les variables catégorielles non ordonnées ; **encodage des étiquettes** uniquement pour ceux commandés
+- Les **valeurs manquantes** peuvent être traitées par imputation (médiane/moyenne/mode) et en ajoutant un indicateur d'absence
+- **Créer de nouvelles fonctionnalités** à partir de la connaissance du domaine (décomposition temporelle, ratios, interactions) produit souvent les gains de performances les plus importants.
+- Les scores **Importance des fonctionnalités** vous aident à comprendre sur quelles entrées repose votre modèle et lesquelles peuvent être supprimées.
+- La **réduction de dimensionnalité** (par exemple, PCA) compresse les données de grande dimension tout en préservant la majeure partie de la variance utile

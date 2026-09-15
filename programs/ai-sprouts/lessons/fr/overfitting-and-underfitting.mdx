@@ -1,0 +1,224 @@
+---
+title: "Surajustement et sous-ajustement : pourquoi les modèles ML échouent"
+description: "Comprenez les deux modes d'échec du machine learning les plus courants (surapprentissage et sous-apprentissage) avec des exemples clairs et comment les résoudre."
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Surajustement et sous-ajustement : pourquoi les modèles ML échouent
+
+Vous avez formé votre premier modèle d’apprentissage automatique. Il fonctionne à merveille sur vos données d'entraînement : précision de 98 % ! Vous le testez sur de nouvelles données et il s'effondre : 61 % de précision. Qu'est-ce qui n'a pas fonctionné ?
+
+Il est presque certain que votre modèle a un **surajustement**. Il s'agit de l'un des deux modes de défaillance les plus courants dans l'apprentissage automatique, et sa compréhension, aux côtés de son contraire, le **sous-ajustement**, est essentielle pour créer des modèles qui fonctionnent réellement dans le monde réel.
+
+## 📐 Le compromis biais-variance
+
+Avant de plonger dans des exemples, il est utile de comprendre le cadre théorique derrière ces concepts : le **compromis biais-variance**.
+
+Chaque modèle fait des erreurs de prédiction. Ces erreurs peuvent être décomposées en trois parties :
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+Le **biais** est l'erreur résultant d'hypothèses erronées dans le modèle. Un modèle à biais élevé est trop simple : il passe systématiquement à côté de la véritable tendance des données.
+
+**La variance** est l'erreur de sensibilité aux petites fluctuations des données d'entraînement. Un modèle à variance élevée est trop complexe : il mémorise les données d'entraînement, y compris leur bruit, plutôt que d'apprendre le modèle sous-jacent.
+
+Le **bruit irréductible** est le caractère aléatoire naturel des données qu'aucun modèle ne peut éliminer.
+
+Le compromis : réduire le biais a tendance à augmenter la variance, et vice versa. Votre travail en tant que praticien de l'apprentissage automatique consiste à trouver le point idéal.
+
+## 📈 Sous-ajustement : trop simple à apprendre
+
+Le **sous-ajustement** se produit lorsque votre modèle est trop simple pour capturer le véritable modèle dans les données. Il fonctionne mal sur *à la fois* les données d'entraînement et les nouvelles données.
+
+### Un exemple visuel
+
+Imaginez que vous disposiez de données indiquant les prix des logements en fonction de la taille. La véritable relation est en gros une courbe douce : les prix augmentent avec la taille, mais avec un certain plateau au sommet.
+
+Si vous ajustez une ligne horizontale droite à ces données :
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+Le modèle ne tient pas compte de la relation réelle entre la taille de la maison et le prix. Peu importe que vous lui montriez des données d'entraînement ou de nouvelles données, c'est faux dans les deux cas.
+
+### Signes de sous-ajustement
+- Erreur de formation élevée ET erreur de test élevée
+- Les prédictions du modèle se regroupent autour d'une moyenne quelle que soit l'entrée
+- Les courbes d'apprentissage montrent que les erreurs de formation et de validation sont élevées et proches l'une de l'autre
+
+### Causes du sous-ajustement
+- Le modèle est trop simple pour la complexité des données (par exemple, modèle linéaire pour les données non linéaires)
+- Trop peu d'époques de formation (le modèle n'a pas eu le temps d'apprendre)
+- Régularisation trop agressive (voir ci-dessous)
+- Des fonctionnalités importantes manquent dans l'entrée
+
+## 📉 Surapprentissage : trop complexe, mémorisation du bruit
+
+Le **surajustement** se produit lorsque votre modèle apprend *trop bien* les données d'entraînement, y compris leur bruit et leurs variations aléatoires, et ne parvient pas à les généraliser à de nouveaux exemples.
+
+### Un exemple visuel
+
+Utilisation d'un polynôme de 15 degrés pour ajuster les mêmes données sur les prix de l'immobilier :
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+Le polynôme s'est tordu en nœuds pour passer par tous les points d'entraînement, y compris les valeurs aberrantes bruyantes. Il a mémorisé l’ensemble de formation plutôt que d’apprendre le modèle sous-jacent. Sur des données invisibles, cela ne sert à rien.
+
+<FunFact>Un modèle qui mémorise parfaitement toutes ses données d'entraînement est parfois appelé « le pire modèle au monde » : il a une précision d'entraînement de 100 % mais ne peut pas du tout généraliser, ce qui le rend complètement inutile pour son objectif réel.</FunFact>
+
+### Signes de surapprentissage
+- Erreur de formation très faible, mais erreur de test beaucoup plus élevée (un grand **écart de généralisation**)
+- Les performances du modèle se dégradent considérablement sur toute nouvelle donnée
+- Le modèle est étonnamment sensible aux petits changements d'entrée
+
+## 🔀 Entraînement / Validation / Test Split
+
+Un outil fondamental pour détecter le surapprentissage consiste à diviser vos données en trois ensembles :
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **Ensemble de formation** : ce que le modèle apprend
+- **Ensemble de validation** : ce que vous utilisez pour régler les hyperparamètres et détecter le surajustement *pendant le développement*
+- **Ensemble de test** : l'évaluation finale, tenue en attente – touchez-la une seule fois, à la toute fin
+
+L'ensemble de validation est votre système d'alerte précoce. Si la précision de l’entraînement continue de s’améliorer mais que la précision de la validation stagne ou diminue, vous faites du surajustement.
+
+<ThinkAboutIt>Pourquoi est-il important de garder votre ensemble de test complètement séparé et de ne l’utiliser qu’une seule fois ? Qu'est-ce qui pourrait mal se passer si vous évaluiez à plusieurs reprises l'ensemble de test et effectuiez des ajustements en fonction de celui-ci ?</ThinkAboutIt>
+
+## 🛡️ Corrections pour le surajustement
+
+### 1. Régularisation
+
+La régularisation ajoute une pénalité à la fonction de perte qui décourage le modèle d'apprendre des modèles trop complexes.
+
+**La régularisation L2 (Ridge)** pénalise les poids importants :
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+La **régularisation L1 (Lasso)** peut amener certains poids jusqu'à zéro, en effectuant une sélection de fonctionnalités :
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Abandon (réseaux de neurones)
+
+Pendant l'entraînement, « abandonnez » de manière aléatoire (mise à zéro) une proportion de neurones :
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+Cela empêche les neurones de s'adapter et oblige le réseau à apprendre des représentations distribuées plus robustes.
+
+### 3. Arrêt anticipé
+
+Surveillez la perte de validation pendant l’entraînement et arrêtez-vous lorsqu’elle commence à augmenter :
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. Plus de données de formation
+
+Plus de données rendent plus difficile la mémorisation du bruit par le modèle : il y en a tout simplement trop pour s'adapter exactement. Lorsque la collecte de données coûte cher, l'**augmentation des données** (création de copies modifiées d'exemples existants) peut s'avérer utile.
+
+### 5. Architecture plus simple
+
+Parfois, la bonne solution consiste simplement à choisir un modèle moins complexe pour le problème.
+
+## 🔄 Validation croisée
+
+Avec de petits ensembles de données, une seule répartition train/val peut être trompeuse en raison du caractère aléatoire. **La validation croisée K-fold** donne une estimation plus fiable :
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+Les données sont divisées en 5 volets ; le modèle s'entraîne sur 4 et valide sur 1, en tournant à chaque fois. Le score final est la moyenne des 5 – beaucoup plus fiable qu’une seule répartition.
+
+<Quiz question="Un modèle atteint une précision de 99 % sur les données d'entraînement, mais seulement 62 % sur les données de test. Qu'est-ce que cela indique ?" options="Le modèle est sous-équipé – c'est trop simple|Le modèle est parfaitement calibré|Le modèle est surajusté : il a mémorisé les données d'entraînement plutôt que de généraliser|L'ensemble de données de test doit être brisé" answer="2" explanation="Un écart important entre la précision de l’entraînement (99 %) et la précision des tests (62 %) est la signature classique du surapprentissage. Le modèle a mémorisé les données d'entraînement, y compris leur bruit, et ne parvient pas à se généraliser à de nouveaux exemples." />
+
+## Points clés à retenir
+
+- **Sous-ajustement** (biais élevé) : le modèle est trop simple ; il fonctionne mal sur *à la fois* les données d'entraînement et de test - corrigez en utilisant un modèle plus complexe ou en ajoutant des fonctionnalités
+- **Surajustement** (variance élevée) : le modèle est trop complexe ; il fonctionne très bien sur les données d'entraînement mais mal sur les données de test - corrigez-le en régularisant, en ajoutant des données ou en simplifiant le modèle
+- Le **compromis biais-variance** est la tension fondamentale : réduire l'un tend à augmenter l'autre ; votre objectif est de trouver le juste milieu
+- Divisez toujours les données en ensembles **train / validation / test** — l'ensemble de test ne doit être touché qu'une seule fois, à la fin
+- **Corrections clés pour le surajustement** : régularisation L1/L2, abandon, arrêt anticipé, plus de données, architecture plus simple
+- La **validation croisée** donne une estimation des performances plus fiable lorsque les données sont limitées, en faisant la moyenne des résultats sur plusieurs répartitions entraînement/validation

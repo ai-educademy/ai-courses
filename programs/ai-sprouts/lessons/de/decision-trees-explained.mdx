@@ -1,0 +1,102 @@
+---
+title: "Entscheidungsbäume: Der Algorithmus, den Sie auf Papier zeichnen können"
+description: "Erfahren Sie, wie Entscheidungsbäume funktionieren, warum sie zu den intuitivsten ML-Algorithmen gehören und wann Sie sie verwenden."
+order: 15
+difficulty: "intermediate"
+duration: 25
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+# Entscheidungsbäume: Der Algorithmus, den Sie auf Papier zeichnen können 🌳
+
+Die meisten Algorithmen für maschinelles Lernen sind Black Boxes – Sie geben Daten ein, etwas Mathematisches passiert darin und es kommt eine Vorhersage heraus. Entscheidungsbäume sind unterschiedlich. Sie gehören zu den wenigen Algorithmen, die Sie einem technisch nicht versierten Kollegen vollständig erklären, auf einem Whiteboard zeichnen und dennoch darauf vertrauen können, dass Sie genaue Vorhersagen treffen.
+
+---
+
+## 🎮 Die 20-Fragen-Analogie
+
+Sie haben wahrscheinlich 20 Fragen gespielt: Eine Person denkt über etwas nach und andere stellen Ja/Nein-Fragen, um es einzugrenzen. „Ist es lebendig? Ist es größer als ein Auto? Lebt es im Wasser?“ Jede Antwort eliminiert eine Vielzahl von Möglichkeiten, bis die Antwort offensichtlich wird.
+
+Ein Entscheidungsbaum funktioniert genau so. Wenn ein neuer Datenpunkt zur Klassifizierung vorliegt, stellt der Baum eine Reihe von Fragen zu seinen Merkmalen und folgt dabei den Zweigen, die mit jeder Antwort übereinstimmen, bis er ein Blatt erreicht – eine endgültige Vorhersage.
+
+<Illustration src="/images/lessons/decision-trees-explained.svg" alt="Ein Entscheidungsbaum zur Klassifizierung von Tieren: Zuerst aufgeteilt in „hat Flügel?”, dann „lebt im Wasser?”, was zu Blattknoten mit Tiernamen führt" caption="Ein Entscheidungsbaum stellt eine Reihe von Fragen zu Merkmalen und beschränkt sich auf eine Vorhersage an jedem Blattknoten." />
+
+---
+
+## 🌿 Anatomie eines Baumes
+
+Bevor wir uns damit befassen, wie Bäume lernen, benennen wir die Teile:
+
+- **Wurzelknoten** – die oberste Frage; das wichtigste Merkmal
+- **Interne Knoten** – Fragen an jedem Verzweigungspunkt
+- **Zweige** – die Pfade, die basierend auf Ja/Nein-Antworten (oder Wertebereichsantworten) eingeschlagen wurden
+- **Blattknoten** – die Endpunkte; Jeder enthält eine endgültige Vorhersage
+
+Ein einzelner Datenpunkt wandert von der Wurzel zum Blatt und beantwortet an jedem Knoten eine Frage, bis er eine Vorhersage erreicht.
+
+---
+
+## 📐 Wie ein Entscheidungsbaum lernt
+
+Der clevere Teil: Wie entscheidet der Algorithmus, *welche* Frage an jedem Knoten gestellt werden soll? Es probiert jede mögliche Aufteilung für jedes Feature aus und wählt diejenige aus, die die Daten am besten trennt.
+
+### Informationsgewinn und Gini-Unreinheit
+
+Zwei gängige Maße für die „beste Trennung“:
+
+**Gini-Unreinheit** misst, wie gemischt eine Gruppe ist. Ein vollkommen reiner Knoten – alle Beispiele gehören zu einer Klasse – hat eine Gini-Verunreinigung von 0. Ein vollständig gemischter Knoten hat die maximale Verunreinigung. Der Algorithmus bevorzugt Teilungen, die die reinsten untergeordneten Knoten erzeugen.
+
+Der **Informationsgewinn** ist ähnlich: Er misst, um wie viel eine Aufteilung die Unsicherheit (Entropie) über die Klassenbezeichnung verringert. Höherer Informationsgewinn = bessere Aufteilung.
+
+Beide Maßnahmen stellen die gleiche zugrunde liegende Frage: *Wie viel sicherer bin ich mir nach der Aufteilung dieser Funktion in Bezug auf die Klasse?*
+
+<FunFact>Der 1984 von Breiman, Friedman, Olshen und Stone eingeführte CART-Algorithmus (Classification and Regression Trees) ist die Grundlage der meisten modernen Entscheidungsbaumimplementierungen. Obwohl er schon 40 Jahre alt ist, ist er nach wie vor einer der am weitesten verbreiteten ML-Algorithmen.
+</FunFact>
+
+---
+
+## ✂️ Überanpassung und Beschneidung
+
+Ohne Einschränkungen wächst ein Entscheidungsbaum, bis jedes Trainingsbeispiel ein eigenes Blatt hat – wobei bei Trainingsdaten eine Genauigkeit von 100 % erreicht wird, bei neuen Daten jedoch völlig versagt. Das ist **Überanpassung**.
+
+Stellen Sie sich vor, Sie würden sich jede einzelne Prüfungsfrage Wort für Wort merken, anstatt das Thema zu verstehen. Sie würden in den vorherigen Prüfungen mit Bravour bestehen, aber bei der eigentlichen Prüfung durchfallen.
+
+Zwei Hauptmittel:
+
+1. **Vorbeschneiden (frühzeitiges Stoppen)** – Legen Sie während des Trainings Grenzen fest: maximale Tiefe, minimale Proben pro Blatt, minimaler Informationsgewinnschwellenwert. Der Baum hört auf zu wachsen, wenn er diese Grenzen erreicht.
+
+2. **Nach dem Beschneiden** – den gesamten Baum wachsen lassen und dann Zweige zurückschneiden, die die Leistung eines Validierungssatzes nicht verbessern.
+
+<ThinkAboutIt>Ein Entscheidungsbaum mit Tiefe 1 (eine einzelne Frage) wird als „Entscheidungsstumpf“ bezeichnet. Es ist extrem einfach – mit ziemlicher Sicherheit unzureichend. Ein Baum der Tiefe 100 mit einer Stichprobe pro Blatt ist überpassend. Wie würden Sie entscheiden, wo Sie anhalten möchten?
+</ThinkAboutIt>
+
+---
+
+## 🌲 Von Bäumen zu Wäldern
+
+Ein einzelner Entscheidungsbaum ist leistungsstark, aber brüchig – kleine Änderungen in den Trainingsdaten können zu sehr unterschiedlichen Bäumen führen. Die Lösung: Hunderte von Bäumen züchten, die jeweils auf einer zufälligen Teilmenge der Daten und Merkmale trainiert werden, und dann **die Vorhersagen mitteln**.
+
+Dies ist ein **Random Forest** – einer der zuverlässigsten und am weitesten verbreiteten Algorithmen im gesamten maschinellen Lernen. Sie werden in einer späteren Lektion ausführlicher darauf eingehen. Denken Sie vorerst daran: Einzelne Bäume sind interpretierbar, Wälder sind robust.
+
+---
+
+## ✅ Stärken und ⚠️ Schwächen
+
+| Stärken | Schwächen |
+|---|---|
+| Vollständig interpretierbar – visualisierbar | Anfällig für Überanpassung ohne Beschneiden |
+| Keine Notwendigkeit, Features zu normalisieren oder zu skalieren | Kleine Datenänderungen = sehr unterschiedliche Bäume |
+| Verarbeitet sowohl numerische als auch kategoriale Merkmale | Voreingenommen auf Features mit mehr Werten |
+| Funktioniert ohne Feature-Engineering | Nicht gut darin, lineare Beziehungen zu erfassen |
+| Schnell zu trainieren und vorherzusagen | Einzelne Bäume sind oft schlechter als Ensembles |
+
+---
+
+<Quiz question="Was stellt ein Blattknoten in einem Entscheidungsbaum dar?" options={["Eine Frage zu einer Funktion", "Die endgültige Vorhersage, nachdem alle Fragen beantwortet wurden", "Der Trainingsdatensatz", "Ein Maß für die Modellgenauigkeit"]} correct={1} explanation="Blattknoten sind die Endpunkte eines Entscheidungsbaums. Wenn ein Datenpunkt alle Zweige von der Wurzel bis zum Blatt durchlaufen hat, enthält der Blattknoten die endgültige Vorhersage – eine Klassenbezeichnung für Klassifizierungsaufgaben oder einen Wert für die Regression." />
+
+<Quiz question="Was misst „Gini-Unreinheit” in einem Entscheidungsbaum?" options={["Wie groß ist der Baum geworden?", "Wie gemischt eine Reihe von Klassenbezeichnungen ist – niedriger bedeutet reiner", "Der Rechenaufwand für das Training des Baums", "Wie viele Features sind im Datensatz enthalten?"]} correct={1} explanation="Die Gini-Verunreinigung misst die Wahrscheinlichkeit, ein zufällig ausgewähltes Element falsch zu klassifizieren, wenn es entsprechend der Verteilung der Etiketten in einem Knoten gekennzeichnet wäre. Ein Gini von 0 bedeutet, dass alle Beispiele im Knoten derselben Klasse angehören – perfekte Reinheit." />
+
+<Quiz question="Was ist Überanpassung im Kontext von Entscheidungsbäumen?" options={["Wenn der Baum zu flach ist, um etwas Nützliches zu lernen", "Wenn der Baum Trainingsdaten perfekt speichert, aber nicht auf neue Daten verallgemeinern kann", "Wenn das Training des Baumes zu lange dauert", "Wenn der Baum zu viele Funktionen verwendet"]} correct={1} explanation="Ein überangepasster Entscheidungsbaum ist so tief gewachsen, dass für jedes Trainingsbeispiel ein einzigartiger Pfad entsteht. Es erreicht eine nahezu perfekte Trainingsgenauigkeit, schneidet jedoch bei unsichtbaren Daten schlecht ab, da es Rauschen gespeichert hat, anstatt echte Muster zu lernen." />
+
+<Quiz question="Was ist ein Zufallswald?" options={["Ein Datensatz mit Bildern von Wäldern, der zum Trainieren von Sehmodellen verwendet wird", "Ein Ensemble aus vielen Entscheidungsbäumen, die jeweils auf zufälligen Teilmengen von Daten und Merkmalen trainiert werden und deren Vorhersagen gemittelt werden", "Ein einzelner, sehr tiefer Entscheidungsbaum", "Eine Schnitttechnik zum Entfernen unwichtiger Äste"]} correct={1} explanation="Ein Random Forest kombiniert Hunderte von Entscheidungsbäumen, die jeweils aus einer zufälligen Stichprobe von Trainingsdaten und einer zufälligen Teilmenge von Merkmalen erstellt werden. Die Mittelung ihrer Vorhersagen verringert die Varianz und macht das Ensemble weitaus robuster als jeder einzelne Baum." />

@@ -1,0 +1,168 @@
+---
+title: "Strings e processamento de texto - como a IA lê e entende texto"
+description: "Explore como os sistemas de IA dividem, pesquisam e manipulam texto usando operações de string e correspondência de padrões."
+order: 2
+difficulty: "intermediate"
+duration: 15
+icon: "📝"
+published: true
+machineTranslated: true
+---
+## O texto está em toda parte na IA
+
+Antes que uma IA possa entender sua pergunta, escrever um ensaio ou traduzir uma frase, ela deve processar o texto bruto. Cada chatbot, mecanismo de pesquisa e modelo de linguagem começa com **strings** – sequências de caracteres que representam a linguagem humana.
+
+Compreender como as strings funcionam abre as portas para o processamento de linguagem natural, uma das áreas mais interessantes da inteligência artificial.
+
+## Noções básicas de strings
+
+Uma string é simplesmente uma sequência de caracteres – letras, dígitos, espaços e símbolos – armazenados em ordem.
+
+```
+message = "Hello, World!"
+```
+
+Cada caractere possui uma posição (índice), assim como um array:
+
+```
+index:  0  1  2  3  4  5  6  7  8  9  10  11  12
+char:   H  e  l  l  o  ,     W  o  r   l   d   !
+```
+
+<Illustration src="/images/lessons/strings-and-text.svg" alt="Uma string dividida em caracteres individuais com posições de índice mostradas abaixo de cada um" caption="Nos bastidores, uma string é uma matriz de caracteres - cada um com seu próprio índice." />
+
+### Substrings
+
+Uma **substring** é uma fatia de uma string. De "Olá, mundo!" você poderia extrair "World" (índices 7 a 11). Os sistemas de IA extraem constantemente substrings – retirando nomes de frases, isolando hashtags de tweets ou obtendo URLs de páginas da web.
+
+### Imutabilidade
+
+Na maioria dos idiomas, as strings são **imutáveis** - você não pode alterar um caractere no lugar. Em vez disso, você cria uma nova string. Isso é importante para o desempenho: se o seu pipeline de IA modifica o texto milhões de vezes, a criação de novas strings a cada vez pode tornar as coisas mais lentas.
+
+<FunFact>Todas as obras de Shakespeare contêm cerca de 900.000 palavras. O GPT-4 foi treinado em conjuntos de dados de texto milhares de vezes maiores – centenas de bilhões de palavras, todas processadas como strings antes de serem convertidas em números.
+</FunFact>
+
+## Como o ChatGPT lê texto: tokenização
+
+Os modelos de IA não leem palavras como os humanos. Eles usam **tokenização** – divisão do texto em pedaços menores chamados tokens.
+
+```
+Input:  "unhappiness"
+Tokens: ["un", "happiness"]
+
+Input:  "ChatGPT is brilliant"
+Tokens: ["Chat", "G", "PT", " is", " brilliant"]
+```
+
+A tokenização fica entre o processamento em nível de caractere e em nível de palavra. Ele lida com palavras raras, dividindo-as em subpeças conhecidas, mantendo o vocabulário gerenciável.
+
+<ThinkAboutIt>Quando você digita uma palavra longa e incomum como “antidesestabelecimento” no ChatGPT, o modelo a divide em tokens de subpalavras familiares. Por que isso seria melhor do que armazenar todas as palavras possíveis em inglês como um token separado?
+</ThinkAboutIt>
+
+### Por que a tokenização é importante
+
+- Um modelo de linguagem típico tem um vocabulário de 50.000 a 100.000 tokens.
+- Cada token é mapeado para um número (seu ID), que o modelo realmente processa.
+- A forma como o texto é tokenizado afeta o custo - mais tokens significam mais computação e taxas de API mais altas.
+
+## Correspondência de padrões - Encontrando agulhas em palheiros
+
+Uma operação de string principal está procurando um padrão em um texto maior. Este e-mail contém a palavra "urgente"? Este código contém uma vulnerabilidade de segurança?
+
+### A abordagem simples
+
+Deslize o padrão ao longo do texto, verificando caractere por caractere:
+
+```
+text:    "the cat sat on the mat"
+pattern: "cat"
+
+Position 0: "the" → no match
+Position 1: "he " → no match
+Position 4: "cat" → match found at index 4!
+```
+
+Isso é **O(n × m)** no pior caso, onde n é o comprimento do texto e m é o comprimento do padrão. Para padrões curtos, tudo bem. Para digitalizar milhões de documentos, precisamos de abordagens mais inteligentes.
+
+<Quiz question="Por que a correspondência ingênua de padrões é lenta para textos muito grandes?" options="Ele usa muita memória|Ele verifica todas as posições iniciais possíveis e compara caractere por caractere|Só funciona com caracteres alfabéticos|Requer que o texto seja classificado primeiro" answer="1" explanation="A abordagem ingênua desliza o padrão em todas as posições do texto, comparando até m caracteres em cada posição - resultando em complexidade de tempo O(n × m)." />
+
+## Desafios clássicos de cordas
+
+### Reversão de String
+
+Reverter uma string é simples, mas revela como você pensa sobre os dados:
+
+```
+reverse("hello") → "olleh"
+```
+
+A IA usa reversão em modelos sequência a sequência - por exemplo, alguns modelos de tradução iniciais inverteram a frase de entrada para melhorar a precisão.
+
+### Detecção de Palíndromo
+
+Um palíndromo lê a mesma coisa de frente para trás: "carro de corrida", "madame", "nível".
+
+```
+is_palindrome(text):
+    return text == reverse(text)
+```
+
+### Detecção de Anagramas
+
+Duas palavras são anagramas se contiverem os mesmos caracteres em uma ordem diferente: “ouvir” e “silencioso”.
+
+A solução elegante? Conte as frequências dos caracteres usando um mapa hash:
+
+```
+are_anagrams(word1, word2):
+    return character_counts(word1) == character_counts(word2)
+```
+
+Isso se conecta diretamente ao padrão de contagem de frequência da lição anterior - os mapas hash tornam-no O(n).
+
+<Quiz question="Qual abordagem verifica com mais eficiência se duas palavras são anagramas?" options="Classifique as duas palavras e compare-as|Compare todos os caracteres do Word1 com todos os caracteres do Word2|Conte as frequências de caracteres em cada palavra usando um mapa hash e compare|Inverta uma palavra e verifique se é igual à outra" answer="2" explanation="Contar frequências de caracteres com um mapa hash é O(n) - uma passagem por cada palavra. A classificação também funciona em O (n log n), mas a abordagem do mapa hash é mais rápida para strings grandes." />
+
+## Expressões regulares - correspondência de padrões em esteróides
+
+Expressões regulares (regex) permitem descrever padrões em vez de texto exato:
+
+| Padrão | Partidas | Caso de uso |
+|--------|---------|----------|
+| `\d+` | Um ou mais dígitos | Extraindo números de texto |
+| `[A-Z][a-z]+` | Uma palavra em maiúscula | Encontrando nomes próprios |
+| `\b\w+@\w+\.\w+\b` | Endereços de e-mail | Extração de dados |
+| `(cat\|dog\|bird)` | Qualquer uma das três palavras | Palavras-chave de classificação |
+
+Os pipelines de dados de IA usam regex extensivamente para **limpeza de dados**: remoção de tags HTML, extração de datas, padronização de números de telefone e filtragem de caracteres indesejados antes do treinamento.
+
+<Callout>Expressões regulares são poderosas, mas podem ser complicadas. Um regex mal escrito pode demorar exponencialmente em determinadas entradas - um problema conhecido como "retrocesso catastrófico". Sempre teste seus padrões em casos extremos.
+</Callout>
+
+## Pipeline de processamento de texto de IA do mundo real
+
+Aqui está uma visão simplificada de como uma IA processa texto:
+
+1. **Texto bruto** → "O Wi-Fi do café não está funcionando!!!"
+2. **Em minúsculas** → "o wi-fi do café não está funcionando!!!"
+3. **Removendo pontuação** → "o wifi do café não está funcionando"
+4. **Tokenização** → ["o", "café", "s", "wi", "fi", "isn", "t", "working"]
+5. **IDs de token** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
+6. **No modelo** → Números que a IA pode realmente processar
+
+Cada etapa envolve operações de string – fatiar, pesquisar, substituir e dividir.
+
+<ThinkAboutIt>Quando você envia uma mensagem para um chatbot em um idioma que não usa espaços entre palavras (como chinês ou japonês), como a tokenização pode funcionar de maneira diferente? Que desafios extras isso cria?
+</ThinkAboutIt>
+
+<FunFact>O tokenizador da OpenAI divide a "tokenização" em ["token", "ização"] - dois tokens. Mas a grafia americana "tokenização" passa a ser ["token", "ização"]. O mesmo conceito custa valores diferentes dependendo de como você o escreve!
+</FunFact>
+
+<Quiz question="Em um pipeline de processamento de texto, por que a tokenização é realizada antes de alimentar o texto em um modelo de IA?" options="Para deixar o texto mais bonito|Para converter texto legível em IDs de token numérico que o modelo pode processar matematicamente|Para verificar erros ortográficos|Para compactar o texto e economizar espaço de armazenamento" answer="1" explanation="Os modelos de IA funcionam com números, não com letras. A tokenização converte texto em IDs de token – representações numéricas que podem ser inseridas em operações matemáticas, como multiplicação de matrizes dentro do modelo." />
+
+## Principais conclusões
+
+- Strings são sequências de caracteres – a matéria-prima para toda IA ​​baseada em texto.
+- **Tokenização** une a linguagem humana e o aprendizado de máquina, dividindo o texto em partes processáveis.
+- A correspondência de padrões e regex são ferramentas essenciais para limpeza e extração de dados.
+- Problemas clássicos de cordas (reversão, palíndromos, anagramas) desenvolvem as habilidades de pensamento necessárias para o processamento de texto por IA.
+- Cada mensagem que você envia para ChatGPT passa por um pipeline de operações de string antes que o modelo a veja.

@@ -1,0 +1,186 @@
+---
+title: "Problemas de matrices y redes: BFS sobre redes y conteo de islas"
+description: "Domine el recorrido de cuadrícula 2D con BFS, DFS, relleno por inundación, BFS de múltiples fuentes, recorrido en espiral y programación dinámica en cuadrículas."
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+machineTranslated: true
+---
+## Matrices 2D como cuadrículas
+
+Una matriz es solo una matriz 2D, pero en las entrevistas a menudo representa una **cuadrícula**: un mapa, un tablero o un laberinto. Cada celda `grid[r][c]` es un nodo y sus vecinas son celdas adyacentes.
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Fila `r`, columna `c`, dimensiones `m × n`. Simple, pero los patrones construidos encima son poderosos.
+
+## Matrices direccionales
+
+En lugar de escribir cuatro declaraciones if separadas, use una **matriz de direcciones**:
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+Este es el fragmento más reutilizable en problemas de cuadrícula.
+
+<FunFact>El truco de la matriz de direcciones a veces se denomina "codificación delta". Aparece en el desarrollo de juegos, procesamiento de imágenes y programación competitiva, en cualquier lugar donde se utilicen cuadrículas.</FunFact>
+
+## BFS en una cuadrícula: el camino más corto en un laberinto
+
+BFS encuentra la **ruta más corta** en una cuadrícula no ponderada. Comience desde la fuente, explore todos los vecinos a la distancia 1, luego a la distancia 2, y así sucesivamente.
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS expandiéndose nivel por nivel a través de un laberinto de cuadrícula" caption="BFS explora las celdas nivel por nivel, garantizando el camino más corto." />
+
+## DFS en una cuadrícula: relleno de inundación y número de islas
+
+**Relleno de inundación** (como la herramienta Bote de pintura): desde una celda inicial, cambia todas las celdas conectadas del mismo color. Tanto DFS como BFS funcionan.
+
+**Número de islas:** escanea la cuadrícula; cuando encuentre un `1`, ejecute DFS/BFS para marcar toda la isla como visitada, luego incremente su recuento.
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="En 'Número de islas', ¿por qué marcamos las celdas como visitadas durante DFS?" options="Para contarlos dos veces para mayor precisión.|Para evitar contar la misma isla varias veces|Para ordenar las islas|Para encontrar la isla más grande." answer="1" explanation="Marcar las celdas visitadas evita que el bucle externo inicie un nuevo DFS en la misma isla, lo que haría un conteo excesivo." />
+
+## Naranjas podridas - BFS de múltiples fuentes
+
+Todas las naranjas inicialmente podridas son fuentes. Empújelos a todos a la cola en el momento 0, luego a BFS. Cada nivel es de un minuto. Cuando la cola se agote, comprueba si quedan naranjas frescas.
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    All reachable oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+La idea clave: **BFS de múltiples fuentes** comienza desde múltiples nodos simultáneamente, no desde uno.
+
+<Quiz question="¿Qué diferencia a 'Rotting Oranges' del BFS estándar?" options="Utiliza DFS en su lugar|Se ponen en cola varios puntos de partida simultáneamente|Requiere el algoritmo de Dijkstra.|La rejilla tiene bordes ponderados." answer="1" explanation="BFS de múltiples fuentes pone en cola todas las naranjas podridas a la vez como la ”frontera” inicial, por lo que la descomposición se propaga desde cada fuente en paralelo." />
+
+## Recorrido de matriz en espiral
+
+Recorra la matriz en orden espiral: derecha → abajo → izquierda → arriba, reduciendo los límites después de cada pasada.
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Rotación de matriz (90°)
+
+Gire una matriz N×N en el sentido de las agujas del reloj: **transponer** (intercambiar `[r][c]` con `[c][r]`), luego **invertir cada fila**.
+
+```
+Original → Transpose → Reverse rows
+1 2 3     1 4 7       7 4 1
+4 5 6  →  2 5 8   →   8 5 2
+7 8 9     3 6 9       9 6 3
+```
+
+<ThinkAboutIt>Para rotar en sentido antihorario, ¿invertiría primero las filas y luego las transpondría, o transpondría y luego invertiría las columnas? Pruébelo en papel.</ThinkAboutIt>
+
+## Buscar en una matriz 2D ordenada
+
+Dos variantes comunes:
+- **Filas y columnas ordenadas de forma independiente**: comienza desde la esquina superior derecha. Si el objetivo es más pequeño, muévete hacia la izquierda; si es más grande, baje. O(metro + norte).
+- **Completamente ordenado** (cada fila comienza donde termina la anterior): trátela como una matriz ordenada plana y búsqueda binaria. O(log(m × n)).
+
+## Programación dinámica en Grids
+
+**Rutas únicas:** cuenta las rutas desde arriba a la izquierda hasta abajo a la derecha moviéndose solo hacia la derecha o hacia abajo. `dp[r][c] = dp[r-1][c] + dp[r][c-1]`.
+
+**Suma mínima de ruta:** la misma idea pero elija la ruta entrante mínima.
+
+Suelen ser la introducción más sencilla a la programación dinámica 2D.
+
+<Quiz question="En el problema de rutas únicas, ¿cuál es dp[0][c] para cualquier columna c?" options="0|1|do|c + 1" answer="1" explanation="Solo se puede llegar a la primera fila moviéndose hacia la derecha, por lo que hay exactamente una ruta para cada celda de la primera fila. dp[0][c] = 1." />
+
+## Hoja de referencia de patrones de cuadrícula
+
+| Patrón | Técnica | Problema clave |
+|---------|-----------|-------------|
+| Ruta más corta (no ponderada) | BFS | Laberinto camino más corto |
+| Componentes conectados | DFS/BFS | Número de islas |
+| Difusión de fuentes múltiples | BFS de múltiples fuentes | Naranjas podridas |
+| Orden transversal | Indicadores de límites | Matriz espiral |
+| Transformación in situ | Transponer + invertir | Girar imagen |
+| Contando caminos | DP | Caminos Únicos |
+| Buscar en cuadrícula ordenada | Escalera/búsqueda binaria | Buscar matriz 2D |
+
+<ThinkAboutIt>Muchos problemas de cuadrícula son en realidad problemas de gráficos disfrazados. ¿Cuándo preferirías DFS a BFS en una grilla y viceversa?</ThinkAboutIt>
+
+---
+
+## 📚 Lecturas adicionales
+
+- [NeetCode - Programación dinámica 2D](https://neetcode.io/roadmap) - problemas de DP de cuadrícula con explicaciones visuales
+- [Manual de entrevistas técnicas - Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) - patrones y técnicas comunes
+- [LeetCode Matrix tag](https://leetcode.com/tag/matrix/) - cientos de problemas de práctica

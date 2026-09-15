@@ -1,0 +1,132 @@
+---
+title: "Montes e filas prioritárias – O canivete suíço das entrevistas"
+description: "Heaps mestres, a abstração da fila de prioridade e padrões clássicos como os principais problemas e a mesclagem de listas classificadas."
+order: 6
+difficulty: "intermediate"
+duration: 18
+icon: "⛰️"
+published: true
+machineTranslated: true
+---
+## O que é uma pilha?
+
+Um **heap** é uma árvore binária completa onde cada pai satisfaz a **propriedade heap** - seja sempre menor (heap mínimo) ou sempre maior (heap máximo) que seus filhos. "Completo" significa que todos os níveis estão cheios, exceto possivelmente o último, que é preenchido da esquerda para a direita.
+
+```
+       1            Min-heap
+      / \
+     3   5
+    / \
+   7   4
+```
+
+Por estar completo, nós o armazenamos em um **flat array** - sem necessidade de ponteiros. Para índice `i`: filho esquerdo = `2i + 1`, filho direito = `2i + 2`, pai = `(i - 1) // 2`.
+
+## Min-Heap vs Max-Heap
+
+| Propriedade | Heap mínimo | Heap máximo |
+|----------|----------|----------|
+| Raiz | Elemento menor | Maior elemento |
+| Pai ≤ Filhos? | ✅ Sim | ❌ Não (≥) |
+| Extrato dá | Mínimo | Máximo |
+
+O `heapq` do Python é um **min-heap** por padrão. Para um heap máximo, negue os valores na inserção e negue novamente na extração.
+
+## Inserir e Extrair - Passo a Passo
+
+**Inserir** - pressione até o final e, em seguida, **aumente a bolha** (troque com o pai enquanto menor):
+
+```python
+import heapq
+h = [1, 3, 5, 7]
+heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
+```
+
+**Extrair min** - troque a raiz com o último elemento, pop por último e **peneire** (troque com o filho menor):
+
+```python
+smallest = heapq.heappop(h)  # returns 1
+```
+
+Ambas as operações são executadas em **O(log n)** porque a altura da árvore é log n.
+
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Diagrama mostrando a bolha de inserção e a peneiração de extração em um heap mínimo" caption="Insira as bolhas; extract-min é peneirado." />
+
+## Heapify - Construindo um Heap em O(n)
+
+Chamar `heapq.heapify(arr)` converte uma lista em um heap **no local** em O(n), não em O(n log n). Ele funciona de baixo para cima, analisando cada nó que não é folha. Este é um dos resultados de complexidade mais surpreendentes em CS.
+
+<FunFact>Construir um heap é O(n), não O(n log n). A maioria dos nós está perto do fundo e quase não precisa ser peneirada - a matemática resulta em tempo linear.</FunFact>
+
+## A abstração da fila prioritária
+
+Uma **fila de prioridade** permite que você sempre acesse primeiro o item de maior prioridade. Heaps são a implementação ideal porque tanto a inserção quanto a extração são O (log n). Use um sempre que precisar "dê-me o melhor item até agora".
+
+## Padrão: Principais problemas
+
+> "Encontre os K maiores elementos em uma matriz não classificada."
+
+Mantenha um **min-heap de tamanho K**. Para cada elemento, empurre-o; se o heap exceder K, coloque o menor. O que resta são os K maiores.
+
+```python
+import heapq
+def top_k(nums, k):
+    return heapq.nlargest(k, nums)
+```
+
+Tempo: **O(n log k)** - muito melhor do que classificar quando k ≪ n.
+
+<Quiz question="Você precisa das 5 maiores pontuações de 1 milhão de entradas. Qual tipo e tamanho de heap?" options="Heap máximo de tamanho 1.000.000|Heap mínimo de tamanho 5|Heap máximo de tamanho 5|Heap mínimo de tamanho 1.000.000" answer="1" explanation="Um min-heap de tamanho 5 mantém os 5 maiores vistos até agora. A raiz (mínimo de 5) é o porteiro - qualquer coisa menor é rejeitada." />
+
+## Padrão: Mesclar K Listas Classificadas
+
+Empurre o cabeçalho de cada lista para um heap mínimo. Abra o menor e, em seguida, pressione o próximo elemento da mesma lista. Repita até que todas as listas se esgotem. Tempo: **O(N log K)** onde N é o total de elementos.
+
+## Padrão: mediana do fluxo de dados
+
+Mantenha dois heaps: um **max-heap** para a metade inferior e um **min-heap** para a metade superior. Equilibre seus tamanhos para que difiram no máximo 1. A mediana está sempre em uma ou ambas as raízes.
+
+```
+Lower half (max-heap): [1, 2, 3]  ← max = 3
+Upper half (min-heap): [4, 5, 6]  ← min = 4
+Median = (3 + 4) / 2 = 3.5
+```
+
+<Quiz question="Na abordagem mediana de dois heaps, para onde vai primeiro um novo elemento?" options="Sempre o min-heap|Sempre o heap máximo|Qualquer pilha que seja menor|Compare primeiro com a raiz do heap máximo e depois reequilibre" answer="3" explanation="Empurre primeiro para o heap máximo (metade inferior), depois mova sua raiz para o heap mínimo, se necessário, e reequilibre os tamanhos. Isso garante que a propriedade do heap seja mantida." />
+
+## Problemas de agendamento
+
+Muitos brilham no agendamento: salas de reunião (monitorar o horário de término mais cedo), agendamento de tarefas com resfriamento ou filas de tarefas da CPU. O principal insight é que um heap rastreia com eficiência “o que termina em seguida”.
+
+<ThinkAboutIt>Se você precisar do mínimo E do máximo com eficiência, um único heap não servirá. Que combinação de estrutura de dados você usaria?</ThinkAboutIt>
+
+## Quando usar Heap vs Sorted Array vs BST
+
+| Necessidade | Melhor escolha | Por que |
+|------|-------------|-----|
+| Extração min/máx repetida | Pilha | O(log n) inserir + extrair |
+| Dados estáticos, classificação única | Matriz ordenada | O(n log n) uma vez, acesso O(1) |
+| Consultas de intervalo + estatísticas de pedidos | BST balanceado | O(log n) para tudo |
+| Top-K de uma transmissão | Monte de tamanho K | O(n log k) total |
+
+<Quiz question="Qual operação é O(1) em um min-heap?" options="Encontre o mínimo|Excluir mínimo|Encontre o máximo|Encontrar mediana" answer="0" explanation="O mínimo fica na raiz (índice 0) de um heap mínimo, então espiar é O(1). Excluí-lo é O (log n) porque você deve peneirar." />
+
+## Folha de dicas de complexidade
+
+| Operação | Tempo |
+|-----------|------|
+| Inserir | O(logn) |
+| Extrair mín/máx | O(logn) |
+| Espiar mín/máx | O(1) |
+| Heapificar | Sobre(n) |
+| Top-K de n itens | O(n log k) |
+
+<ThinkAboutIt>Por que você não pode fazer pesquisa binária em um heap, mesmo que esteja armazenado em um array? Pense na ordem de classificação que a propriedade heap realmente garante.</ThinkAboutIt>
+
+---
+
+## 📚 Leitura adicional
+
+- [NeetCode - Heap / Priority Queue](https://neetcode.io/roadmap) - roteiro visual de problemas com problemas de heap agrupados
+- [Manual de entrevista técnica - Heap](https://www.techinterviewhandbook.org/algorithms/heap/) - padrões e dicas concisos
+- [Python heapq docs](https://docs.python.org/3/library/heapq.html) - referência oficial do módulo com exemplos

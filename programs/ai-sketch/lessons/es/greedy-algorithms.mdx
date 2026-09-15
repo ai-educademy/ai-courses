@@ -1,0 +1,133 @@
+---
+title: "Algoritmos codiciosos: cuando las elecciones locales conducen a soluciones globales"
+description: "Aprenda cuándo hacer la elección localmente óptima en cada paso realmente produce el resultado globalmente óptimo y cuándo no."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+machineTranslated: true
+---
+## ¿Qué hace que un algoritmo sea codicioso?
+
+Un algoritmo codicioso crea una solución **paso a paso**, eligiendo siempre la opción que luce mejor **en este momento**, sin reconsiderar elecciones pasadas. Sin retroceder, sin mirar hacia adelante.
+
+Funciona cuando se cumplen dos propiedades:
+1. **Propiedad de elección codiciosa**: una elección óptima localmente conduce a una solución óptima global.
+2. **Subestructura óptima**: el problema restante después de cada elección es una instancia más pequeña del mismo problema.
+
+## Selección de actividad: el ejemplo clásico
+
+Dado un conjunto de actividades con horas de inicio y finalización, seleccione el **número máximo** de actividades que no se superpongan.
+
+**Estrategia codiciosa:** ordenar por hora de finalización, elija siempre la actividad que finalice antes.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+¿Por qué funciona esto? Elegir la actividad que termine más temprano deja más espacio para actividades futuras. Ninguna otra opción puede hacerlo mejor.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Línea de tiempo que muestra la selección de actividades según la hora de finalización más temprana" caption="Seleccionar por hora de finalización más temprana maximiza el número de actividades que no se superponen." />
+
+## Codificación Huffman - Concepto
+
+Cree un código binario óptimo sin prefijos fusionando repetidamente los **dos símbolos de menor frecuencia**. Esto es codicioso: en cada paso, fusiona el par más barato. El resultado es un árbol donde los símbolos frecuentes obtienen códigos cortos.
+
+<FunFact>La codificación Huffman se utiliza en la compresión JPEG, MP3 y ZIP. David Huffman lo inventó cuando era estudiante en 1952: ¡era una tarea!</FunFact>
+
+## Juego de salto
+
+Dada una matriz donde `nums[i]` es la longitud máxima de salto desde el índice `i`, determine si puede alcanzar el último índice.
+
+**Enfoque codicioso:** realiza un seguimiento del índice más lejano alcanzable hasta el momento. Escanee de izquierda a derecha; si alguna vez se queda atrás, devuelva falso.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="En el juego de salto, ¿qué representa la variable codiciosa ”más lejos”?" options="La posición actual|El número de saltos realizados.|El índice máximo alcanzable desde cualquier posición visitada.|La longitud del salto más largo." answer="2" explanation="'más lejano' rastrea el índice más a la derecha accesible desde cualquier posición visitada hasta el momento. Si su índice actual lo excede, está estancado." />
+
+## Gasolinera
+
+Recorre una ruta circular con gasolineras. En la estación `i` ganas `gas[i]` de combustible y gastas `cost[i]` para llegar a la siguiente estación. Encuentra la estación inicial que te permita completar el circuito, o regresa −1.
+
+**Visión codiciosa:** si el gas total ≥ el costo total, existe una solución. Realizar un seguimiento de un superávit actual; cada vez que cae por debajo de cero, la respuesta debe comenzar **después** de ese punto.
+
+## Programador de tareas
+
+Programe tareas con un tiempo de reutilización de `n` entre tareas idénticas. **Codicioso:** elige siempre la tarea restante más frecuente. La respuesta depende de la frecuencia máxima y de cuántas tareas la comparten.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>En el programador de tareas, ¿por qué elegir primero la tarea más frecuente minimiza los espacios inactivos? ¿Qué saldría mal si eligieras primero el menos frecuente?</ThinkAboutIt>
+
+## Mochila fraccionaria frente a mochila 0/1
+
+**Mochila fraccionaria:** puedes llevar fracciones de artículos. Trabajos codiciosos: ordene por valor por peso, tome primero la mejor proporción.
+
+**0/1 mochila:** los artículos son de todo o nada. Greedy **falla** aquí porque saltarse un artículo pesado pero valioso podría ser peor que tomar dos más livianos. Esto requiere programación dinámica.
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): takes item 1 (w=3, v=4) → 1 remaining → can't fit rest → value = 4
+Optimal: takes items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fails!
+```
+
+<Quiz question="¿Por qué el enfoque codicioso falla en el problema de la mochila 0/1?" options="Los elementos no se pueden dividir, por lo que el elemento con la mejor proporción podría desperdiciar capacidad|Los artículos no están ordenados.|Hay demasiados artículos|Los algoritmos codiciosos nunca funcionan para los problemas de mochila" answer="0" explanation="Cuando debe tomar artículos enteros, elegir primero la mejor proporción puede dejar capacidad sin utilizar que los artículos más pequeños podrían haber llenado de manera más rentable." />
+
+## ¿Cuándo funciona la avaricia?
+
+✅ **Funciona** cuando puedes demostrar la propiedad de elección codiciosa:
+- Programación de intervalos, codificación Huffman, árboles de expansión mínima, algoritmo de Dijkstra, cambio de monedas con denominaciones estándar
+
+❌ **Falla** cuando los óptimos locales no se combinan en óptimos globales:
+- 0/1 mochila, camino más largo en gráficos generales, viajante de comercio
+
+## Demostrando la codiciosa corrección: argumento de intercambio
+
+La técnica estándar: asumir una solución óptima que **no** utiliza la elección codiciosa. Demuestre que puede **intercambiar** una de sus opciones por la opción codiciosa sin empeorar la solución. Esto demuestra que la avaricia es al menos igual de buena.
+
+<Quiz question="¿Para qué se utiliza el 'argumento de intercambio'?" options="Intercambiar dos elementos en una matriz|Demostrar que un algoritmo codicioso produce una solución óptima|Convertir recursividad en iteración|Optimización de la complejidad del tiempo" answer="1" explanation="El argumento del intercambio demuestra que es correcto al mostrar que cualquier solución óptima puede transformarse para igualar la solución codiciosa sin pérdida de calidad." />
+
+## Programación codiciosa versus dinámica
+
+| Aspecto | Codicioso | Programación dinámica |
+|--------|--------|---------------------|
+| Opciones | Una mejor opción por paso | Explora todos los subproblemas |
+| ¿Revisita el pasado? | Nunca | Sí: almacena subresultados |
+| Velocidad | Generalmente más rápido | Depende del espacio de estados |
+| Corrección | Sólo si es demostrable | Siempre (si se formula correctamente) |
+
+En caso de duda, comience con la avaricia; si no puede demostrar que funciona, cambie a DP.
+
+<FunFact>El algoritmo de ruta más corta de Dijkstra es codicioso: siempre procesa el nodo no visitado más cercano. Funciona porque los pesos de los bordes no son negativos, lo que garantiza que la elección codiciosa sea segura.</FunFact>
+
+<ThinkAboutIt>Te dan denominaciones de monedas [1, 3, 4] y necesitas hacer cambio por 6. El enfoque codicioso elige 4+1+1=3 monedas, pero lo óptimo es 3+3=2 monedas. ¿Qué pasa con estas denominaciones que rompe la propiedad de elección codiciosa?</ThinkAboutIt>
+
+---
+
+## 📚 Lecturas adicionales
+
+- [NeetCode - Lista de reproducción codiciosa](https://neetcode.io/roadmap) - problemas codiciosos seleccionados con explicaciones
+- [Manual de entrevistas técnicas - Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) - cuándo usar patrones comunes y codiciosos
+- [Algoritmos CP - Algoritmos codiciosos](https://cp-algorithms.com/) - teoría y pruebas más profundas

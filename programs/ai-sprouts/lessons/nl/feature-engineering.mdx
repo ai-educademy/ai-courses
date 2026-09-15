@@ -1,0 +1,252 @@
+---
+title: "Feature Engineering: Machines leren wat belangrijk is"
+description: "Ontdek hoe feature-engineering ruwe data omzet in krachtige machine learning-inputs: de vaardigheid die goede modellen van geweldige modellen onderscheidt."
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# Feature Engineering: machines leren wat belangrijk is
+
+Er is een gezegde in machine learning: **garbage in, garbage out**. Je kunt het meest geavanceerde algoritme ter wereld hebben, maar als je het slecht voorbereide gegevens invoert, zullen de resultaten slecht zijn. Omgekeerd kan een eenvoudig algoritme op basis van uitstekende, zorgvuldig voorbereide gegevens beter presteren dan een complex algoritme op basis van ruwe, rommelige gegevens.
+
+Feature engineering is het vak waarbij ruwe data worden omgezet in representaties waar machine learning-algoritmen effectief van kunnen leren. Het is misschien wel de meest impactvolle vaardigheid in toegepast machinaal leren – en het is waar diepgaande domeinkennis datawetenschap ontmoet.
+
+## 🧩 Wat zijn functies?
+
+Bij machinaal leren is een **kenmerk** elke meetbare eigenschap of attribuut van het ding dat u probeert te voorspellen. Functies zijn de invoer voor uw model; het **label** (of doel) is de uitvoer.
+
+Voor een huizenprijsvoorspellingsmodel:
+- Kenmerken: vierkante meters, aantal slaapkamers, postcode, bouwjaar, afstand tot dichtstbijzijnde school
+- Etiket: verkoopprijs
+
+Voor een e-mailspamclassificator:
+- Kenmerken: woordfrequenties, afzenderdomein, aanwezigheid van bepaalde zinnen, e-maillengte
+- Label: spam (1) of geen spam (0)
+
+De kwaliteit, kwantiteit en relevantie van uw functies zijn vaak belangrijker dan welk algoritme u kiest.
+
+## 🗃️ Waarom ruwe data zelden modelklaar zijn
+
+Gegevens uit de echte wereld zijn rommelig. Machine learning-algoritmen stellen specifieke eisen waaraan ruwe data vrijwel nooit voldoen:
+
+- **Alleen numeriek**: de meeste algoritmen kunnen tekst, categorieën of datums niet rechtstreeks verwerken
+- **Geen ontbrekende waarden**: de meeste algoritmen kunnen geen NaN- of nulwaarden verwerken
+- **Vergelijkbare schalen**: functies met zeer verschillende waardebereiken kunnen het op gradiënten gebaseerde leren verstoren
+- **Betekenisvolle weergave**: onbewerkte tijdstempels of postcodes coderen niet de patronen die er toe doen (is het een weekend? is het een welvarend gebied?)
+
+Feature engineering is het proces waarbij de kloof wordt overbrugd tussen onbewerkte gegevens en modelklare invoer.
+
+## 📏 Normalisatie en standaardisatie
+
+Wanneer kenmerken zeer verschillende schalen hebben, kunnen modellen worden misleid. Een object met waarden in de duizenden kan een object met waarden tussen 0 en 1 domineren.
+
+### Min-Max Normalisatie (Schaal naar [0, 1])
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### Standaardisatie (Z-score, gemiddelde=0, std=1)
+
+Robuuster voor uitschieters dan min-max-schaling:
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**Vuistregel**: gebruik standaard standaardisatie. Gebruik min-max wanneer u waarden nodig hebt in een specifiek begrensd bereik (bijvoorbeeld neurale netwerkinvoer).
+
+## 🏷️ Categorische variabelen coderen
+
+Categorieën als 'rood/groen/blauw' of 'Londen/Manchester/Birmingham' hebben geen natuurlijke numerieke volgorde. U moet ze coderen voordat u ze aan de meeste algoritmen kunt doorgeven.
+
+### One-Hot-codering
+
+Creëert een binaire kolom voor elke categorie. Het beste als categorieën geen inherente volgorde hebben:
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### Labelcodering
+
+Wijst elke categorie toe aan een geheel getal. Alleen gebruiken als de categorieën een natuurlijke volgorde hebben:
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>Een veel voorkomende beginnersfout is het coderen van stadsnamen, waardoor het model per ongeluk wordt verteld dat Tokio "meer dan" Londen is, wat tot bizarre voorspellingen leidt. Gebruik altijd one-hot-codering voor ongeordende categorieën.</FunFact>
+
+## 🕳️ Ontbrekende waarden verwerken
+
+Ontbrekende gegevens zijn vrijwel universeel in datasets uit de echte wereld. Je hebt verschillende opties:
+
+### Toerekening
+
+Vul ontbrekende waarden in met een berekende vervanging:
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### Een ontbrekende indicator toevoegen
+
+Soms is het feit dat gegevens ontbreken op zichzelf al informatief:
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### Wanneer te laten vallen
+
+Verwijder een kolom als deze meer dan ~70-80% ontbrekende waarden bevat (zelden informatief). Laat een rij alleen vallen als u over voldoende gegevens beschikt en de rij willekeurig ontbreekt (niet systematisch).
+
+## 🛠️ Nieuwe functies creëren
+
+Dit is waar feature-engineering een kunst wordt. U gebruikt domeinkennis om functies te creëren die patronen vastleggen die niet zichtbaar zijn in de onbewerkte gegevens.
+
+### Datum/tijd-ontleding
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+Een onbewerkte tijdstempel vertelt het model niets direct; deze afgeleide kenmerken leggen patronen bloot zoals "fraudepieken om 3 uur 's nachts" of "verkooppiek in het weekend".
+
+### Interactiefuncties
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### Tekstfuncties
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>Als u een model zou bouwen om mislukkingen van de gezondheidsinspecties van restaurants te voorspellen, tot welke ruwe gegevens zou u dan toegang hebben, en welke nieuwe functies zou u daaruit kunnen ontwikkelen die nuttiger zouden zijn dan alleen de ruwe gegevens?</ThinkAboutIt>
+
+## 📊 Functiebelang
+
+Nadat u een model heeft gebouwd, kunt u meten welke functies het meest nuttig zijn gebleken. Dit is waardevol, zowel voor het begrijpen van uw model als voor het beslissen welke functies u wilt behouden of laten vallen:
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+Functies die bijna niet belangrijk zijn, kunnen meestal worden verwijderd zonder dat dit de prestaties beïnvloedt. Het verwijderen ervan vereenvoudigt het model, verkort de trainingstijd en kan de generalisatie verbeteren.
+
+## 🗜️ Dimensionaliteitsreductie: een korte introductie
+
+Als je honderden of duizenden functies hebt, kunnen modellen het moeilijk hebben - dit wordt de **vloek van de dimensionaliteit** genoemd. Dimensionaliteitsreductietechnieken comprimeren kenmerken terwijl de belangrijkste patronen behouden blijven:
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA (Principal Component Analysis) is de meest gebruikelijke aanpak, maar andere omvatten t-SNE (voor visualisatie) en UMAP (voor het behoud van de lokale structuur).
+
+<Quiz question="Je hebt een dataset met een kolom 'stad' die 50 verschillende stadsnamen bevat. Welke coderingsaanpak moet u gebruiken?" options="Labelcodering: wijs aan elke stad een geheel getal van 0 tot 49 toe|One-hot-codering: maak een binaire kolom voor elke stad|Laat het als tekst staan; de meeste modellen verwerken strings|Converteer alle steden naar het bbp van hun land" answer="1" explanation="Stadsnamen hebben geen natuurlijke volgorde, dus labelcodering zou ten onrechte een hiërarchie impliceren (Stad 49 > Stad 0). One-hot-codering creëert een binaire kolom voor elke stad, waardoor deze correct wordt weergegeven als afzonderlijke, ongeordende categorieën." />
+
+## Belangrijkste afhaalrestaurants
+
+- **Kenmerken** zijn de ingangen voor uw model; De kwaliteit van de features is vaak belangrijker dan de keuze van het algoritme
+- Ruwe data zijn vrijwel nooit modelklaar; ze moeten worden opgeschoond, getransformeerd en verrijkt
+- **Normalisatie/standaardisatie** plaatst kenmerken op vergelijkbare schaal; standaardisatie gebruiken
+- **One-hot-codering** is correct voor ongeordende categorische variabelen; **labelcodering** alleen voor bestelde exemplaren
+- **Ontbrekende waarden** kunnen worden afgehandeld door imputatie (mediaan/gemiddelde/modus) en door een indicatorvlag voor ontbrekende waarden toe te voegen
+- **Het creëren van nieuwe functies** op basis van domeinkennis (tijddecompositie, verhoudingen, interacties) levert vaak de grootste prestatiewinst op
+- **Functiebelangrijkheid**-scores helpen u te begrijpen op welke invoer uw model vertrouwt en welke kunnen worden verwijderd
+- **Dimensionaliteitsreductie** (bijv. PCA) comprimeert hoog-dimensionale gegevens terwijl het grootste deel van de bruikbare variantie behouden blijft

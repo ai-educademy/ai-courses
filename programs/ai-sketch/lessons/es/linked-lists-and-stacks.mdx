@@ -1,0 +1,142 @@
+---
+title: "Listas y pilas vinculadas: las estructuras dinámicas detrás de la IA"
+description: "Comprenda cómo las listas, pilas y colas vinculadas manejan datos dinámicos en sistemas de inteligencia artificial y más allá."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+machineTranslated: true
+---
+## Más allá de las matrices: datos dinámicos
+
+Las matrices son brillantes cuando se conoce de antemano el tamaño de los datos. Pero, ¿qué sucede cuando los datos llegan de manera impredecible: un flujo de lecturas de sensores, una cola de tareas que una IA debe procesar o un historial de conversaciones que crece con cada mensaje? Necesita estructuras que crezcan y se encojan con gracia.
+
+Ingrese **listas vinculadas**, **pilas** y **colas**: el trío dinámico.
+
+## Listas enlazadas: nodos y punteros
+
+Una lista vinculada almacena elementos como una cadena de **nodos**. Cada nodo contiene dos cosas: los datos en sí y un puntero (referencia) al siguiente nodo de la cadena.
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+A diferencia de las matrices, los nodos de las listas enlazadas no se ubican uno al lado del otro en la memoria. Pueden estar dispersos en cualquier lugar; el puntero simplemente le indica dónde encontrar el siguiente.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="Una lista enlazada con tres nodos conectados por flechas, en comparación con una matriz con bloques contiguos" caption="Los nodos de la lista enlazada están conectados mediante punteros, a diferencia de los elementos de la matriz que se encuentran uno al lado del otro." />
+
+### Listas enlazadas frente a matrices
+
+| Operación | Matriz | Lista enlazada |
+|-----------|-------|-------------|
+| Acceso por índice | O(1) ⚡ | O(n) 🐢 |
+| Insertar al principio | O(n) 🐢 | O(1) ⚡ |
+| Insertar en el medio | O(n) 🐢 | O(1)* ⚡ |
+| Eliminar del medio | O(n) 🐢 | O(1)* ⚡ |
+| Uso de memoria | Compacto | Adicional (consejos) |
+
+*Una vez que haya encontrado la posición, encontrarla sigue siendo O(n).
+
+### Cuando ganan las listas enlazadas
+
+- **Inserciones y eliminaciones frecuentes**: si constantemente agregas y eliminas elementos del medio de una colección, las listas vinculadas evitan los costosos cambios que requieren las matrices.
+- **Tamaño desconocido**: cuando no sabes cuántos elementos almacenarás, las listas vinculadas crecen un nodo a la vez sin necesidad de cambiar el tamaño.
+- **Construir otras estructuras**: las pilas, colas y estructuras más complejas a menudo se crean sobre listas vinculadas.
+
+<ThinkAboutIt>La barra de pestañas de su navegador le permite abrir, cerrar y reorganizar pestañas libremente. ¿Una matriz o una lista vinculada sería mejor para administrar la lista de pestañas abiertas? Considere lo que sucede cuando cierra una pestaña en el medio.
+</ThinkAboutIt>
+
+## Pilas: último en entrar, primero en salir (LIFO)
+
+Una **pila** funciona exactamente como una pila de platos: se agrega desde arriba y se retira desde arriba. El último elemento colocado en la pila es el primero que se retira.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+Dos operaciones definen una pila:
+- **Empujar**: Agrega un elemento en la parte superior.
+- **Pop**: Elimina el elemento de la parte superior.
+
+Ambos son **O(1)** - instantáneos, independientemente del tamaño de la pila.
+
+### Pilas en el mundo real
+
+- **Deshacer/Rehacer**: Cada editor de texto mantiene una pila de acciones. Presione Ctrl+Z y la acción más reciente aparecerá y se revertirá.
+- **Botón Atrás del navegador**: tu historial de navegación es una pila. Se empuja cada nueva página; al hacer clic en "atrás" aparece la página actual.
+- **Pilas de llamadas**: cuando su código llama a una función, esa función se inserta en la pila de llamadas. Cuando termina, se desprende. Así es como los programas realizan un seguimiento de dónde se encuentran.
+
+<FunFact>Cuando ve un error de "desbordamiento de pila", significa literalmente que la pila de llamadas se ha quedado sin espacio, generalmente porque una función sigue llamándose a sí misma sin detenerse (recursión infinita). El famoso sitio de preguntas y respuestas para desarrolladores Stack Overflow lleva el nombre de este mismo error.
+</FunFact>
+
+### Pilas en IA
+
+- **Evaluación de expresiones**: los compiladores e intérpretes de IA utilizan pilas para evaluar expresiones matemáticas en gráficos de cálculo de redes neuronales.
+- **Algoritmos de retroceso**: cuando una IA explora posibles soluciones (como resolver un laberinto), utiliza una pila para recordar dónde ha estado y poder retroceder.
+- **Búsqueda en profundidad**: atravesar árboles y gráficos en profundidad utiliza naturalmente una pila; exploraremos esto en la próxima lección.
+
+<Quiz question="Estás implementando una función de ”deshacer” para una aplicación de dibujo. ¿Qué estructura de datos modela mejor el historial de acciones?" options="Una matriz ordenada por marca de tiempo|Un mapa hash de ID de acción|Una pila: la acción más reciente debe deshacerse primero|Una cola: la acción más antigua debe deshacerse primero" answer="2" explanation="Deshacer necesita el comportamiento Último en entrar, primero en salir (LIFO): siempre se deshace primero la acción más reciente. Una pila proporciona exactamente esto con operaciones push y pop O(1)." />
+
+## Colas: primero en entrar, primero en salir (FIFO)
+
+Una **cola** funciona como una cola en una tienda: la primera persona en unirse es la primera persona atendida. Los elementos se agregan en la parte posterior y se eliminan en el frente.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+Dos operaciones definen una cola:
+- **Encolar**: añade un elemento al final.
+- **Quitar de cola**: Elimina el artículo del frente.
+
+### Colas en el mundo real
+
+- **Colas de impresión**: los documentos se imprimen en el orden en que se envían.
+- **Programación de tareas**: los sistemas operativos utilizan colas para gestionar qué procesos se ejecutan a continuación.
+- **Colas de mensajes**: las aplicaciones web utilizan colas (como RabbitMQ o Kafka) para manejar miles de solicitudes sin descartar ninguna.
+
+### Colas en IA
+
+- **Búsqueda primero en amplitud (BFS)**: la exploración de un gráfico nivel por nivel utiliza una cola; veremos esto en la lección de árboles y gráficos.
+- **Canalizaciones de datos de entrenamiento**: los datos de entrenamiento se cargan en colas para que la GPU siempre tenga listo el siguiente lote, lo que evita el tiempo de inactividad.
+- **Manejo de solicitudes**: cuando miles de usuarios consultan una API de IA simultáneamente, las solicitudes ingresan a una cola y se procesan en orden.
+
+<Quiz question="Una API de IA recibe 10.000 solicitudes por segundo. ¿Qué estructura garantiza que las solicitudes se procesen en el orden en que llegan?" options="Una pila: procese primero la solicitud más reciente|Un mapa hash: busque cada solicitud por ID|Una cola: primera solicitud que entra, primera solicitud que sale|Una matriz: almacena todas las solicitudes y procesa aleatoriamente" answer="2" explanation="El comportamiento FIFO (primero en entrar, primero en salir) de una cola garantiza la equidad: las solicitudes se manejan en orden de llegada, lo que evita que las solicitudes tempranas nunca se procesen." />
+
+<Callout>También hay una **cola de prioridad**, donde los artículos se retiran de la cola según la prioridad en lugar del orden de llegada. Los sistemas de inteligencia artificial utilizan colas de prioridad para procesar primero las tareas urgentes; por ejemplo, un automóvil autónomo podría priorizar la detección de obstáculos sobre la planificación de rutas.
+</Callout>
+
+## Uso real de la IA: procesamiento de secuencias y gestión de la memoria
+
+### Procesamiento de secuencia
+
+Los modelos de lenguaje procesan el texto como secuencias. En el fondo, marcos como PyTorch y TensorFlow utilizan estructuras similares a listas vinculadas para crear **gráficos de cálculo**: cadenas de operaciones donde cada paso apunta al siguiente.
+
+### Gestión de memoria en marcos de aprendizaje automático
+
+Al entrenar una red neuronal, la memoria se asigna y libera constantemente a medida que se crean y destruyen tensores (matrices multidimensionales). Los asignadores de memoria suelen utilizar listas enlazadas de bloques de memoria libres, encontrando espacios adecuados para nuevos tensores.
+
+<ThinkAboutIt>Un chatbot necesita recordar los últimos 10 mensajes de una conversación pero descartar los más antiguos. ¿Usarías una pila, una cola o algo más? ¿Qué sucede cuando llega el undécimo mensaje?
+</ThinkAboutIt>
+
+<Quiz question="¿Qué afirmación sobre las listas enlazadas es FALSA?" options="Las listas enlazadas permiten la inserción O(1) al principio|Las listas enlazadas utilizan memoria adicional para punteros|Las listas enlazadas proporcionan acceso O(1) a cualquier elemento por índice|Las listas vinculadas pueden crecer dinámicamente sin cambiar de tamaño" answer="2" explanation="Acceder a un elemento por índice en una lista vinculada requiere atravesar desde el encabezado: tiempo O (n). A diferencia de las matrices, no hay forma de saltar directamente a la posición k." />
+
+<FunFact>El historial de deshacer en la mayoría de las aplicaciones tiene un límite: normalmente de 100 a 1000 acciones. Sin este límite, la pila consumiría una memoria cada vez mayor. Algunos sistemas avanzados utilizan una combinación de pila y cola (una "deque") para mantener las acciones más recientes y descartar las más antiguas.
+</FunFact>
+
+## Conclusiones clave
+
+- Las **listas vinculadas** destacan en datos dinámicos con inserciones y eliminaciones frecuentes, pero sacrifican el acceso directo al índice.
+- **Stacks** (LIFO) potencian los sistemas de deshacer, el retroceso y el recorrido en profundidad.
+- **Colas** (FIFO) garantizan un orden justo en la programación de tareas, BFS y manejo de solicitudes.
+- Estas estructuras a menudo funcionan detrás de escena en marcos de IA, administrando la memoria y procesando secuencias.
+- La elección entre matrices y estructuras vinculadas depende de sus patrones de acceso: el acceso aleatorio favorece las matrices, la modificación dinámica favorece las listas vinculadas.

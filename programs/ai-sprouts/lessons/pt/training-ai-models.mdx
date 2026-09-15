@@ -1,0 +1,129 @@
+---
+title: "Treinamento de modelos de IA - Ensinando máquinas a ficarem mais inteligentes"
+description: "Entenda o ciclo de treinamento, funções de perda, overfitting e como saber quando seu modelo de IA está pronto."
+order: 4
+difficulty: "beginner"
+duration: 15
+icon: "🏋️"
+published: true
+machineTranslated: true
+---
+# Treinamento de modelos de IA
+
+Agora você sabe que as redes neurais aprendem ajustando pesos e tendências. Mas como funciona realmente o processo completo de treinamento? Como saber quando um modelo aprendeu o suficiente – ou demais? Nesta lição, percorreremos a jornada de treinamento completa.
+
+## O ciclo de treinamento
+
+O treinamento de um modelo de IA segue um ciclo que se repete indefinidamente:
+
+1. **Prever** - Alimente os dados através do modelo e obtenha uma previsão.
+2. **Comparar** - Verifique a que distância a previsão está da resposta correta.
+3. **Ajustar** - Atualize os pesos para reduzir o erro.
+4. **Repetir** - Faça novamente com o próximo lote de dados.
+
+Esse loop é executado milhares ou até milhões de vezes. Cada repetição aproxima o modelo um pouco mais das respostas certas.
+
+<Illustration src="/images/lessons/training-ai-models.svg" alt="Um diagrama circular mostrando o ciclo de treinamento: Prever, Comparar, Ajustar, Repetir, com setas conectando cada etapa de um ciclo" caption="O ciclo de treinamento é o coração do aprendizado de IA – prever, comparar, ajustar e repetir." />
+
+<FunFact>O treinamento do GPT-4 custou mais de US$ 100 milhões apenas em poder de computação. O ciclo de treinamento percorreu milhares de chips especializados durante meses.
+</FunFact>
+
+## Funções de perda: quão errado está o modelo?
+
+Após cada previsão, precisamos de uma maneira de medir *quão errado* o modelo estava. Essa medida é chamada de **perda** (ou **custo**), e a fórmula que a calcula é a **função de perda**.
+
+- **Baixa perda** = a previsão estava próxima da resposta correta.
+- **Alta perda** = a previsão estava distante.
+
+Pense nisso como um alvo de dardos. O alvo é a resposta correta. A perda é a distância de onde seu dardo caiu até o alvo. O objetivo do treinamento é minimizar essa distância ao longo do tempo.
+
+Funções de perda comuns incluem:
+
+- **Erro Quadrático Médio (MSE)** - mede a distância quadrada média entre as previsões e os valores reais. Usado para prever números.
+- **Perda de entropia cruzada** - mede quão bem as probabilidades previstas correspondem às categorias verdadeiras. Usado para tarefas de classificação.
+
+<Quiz question="O que uma função de perda mede no treinamento de IA?" options="Quão rápido o modelo é executado|Quanta memória o modelo usa|A que distância as previsões do modelo estão das respostas corretas|Quantas camadas o modelo possui" answer="2" explanation="Uma função de perda quantifica a diferença entre o que o modelo previu e a resposta correta real. O processo de treinamento tenta minimizar esse valor." />
+
+## Épocas: quantas vezes através dos dados?
+
+Uma passagem completa por todo o conjunto de dados de treinamento é chamada de **época**. O treinamento normalmente envolve muitas épocas – o modelo vê os mesmos dados várias vezes, melhorando um pouco a cada rodada.
+
+- **Época 1:** O modelo comete muitos erros; a perda é alta.
+- **Época 10:** O modelo melhorou significativamente; a perda está caindo.
+- **Época 50:** As melhorias ficam mais lentas; o modelo está se aproximando do seu melhor.
+- **Época 200:** O modelo pode começar a memorizar - o que nos leva ao próximo tópico.
+
+<ThinkAboutIt>Revisar para um exame é como correr épocas. A primeira leitura é confusa, mas cada revisão constrói compreensão. No entanto, se você reler as mesmas notas centenas de vezes, poderá memorizar o texto exato sem compreender verdadeiramente os conceitos. A IA tem o mesmo problema.
+</ThinkAboutIt>
+
+## Overfitting: o aluno que memoriza
+
+**Overfitting** é um dos problemas mais comuns no treinamento de IA. Isso acontece quando o modelo aprende os dados de treinamento *muito bem* - incluindo seus ruídos e peculiaridades - e não consegue funcionar com dados novos e invisíveis.
+
+Imagine um aluno que memoriza cada prova anterior, palavra por palavra. Eles pontuam perfeitamente em testes antigos, mas têm dificuldade quando as questões mudam, mesmo que ligeiramente. O aluno não aprendeu a matéria - ele memorizou as respostas.
+
+Sinais de sobreajuste:
+
+- A precisão do treinamento é muito alta (por exemplo, 99%).
+- O desempenho em novos dados é muito pior (por exemplo, 75%).
+- O modelo basicamente memorizou os exemplos de treinamento.
+
+<Callout>O objetivo do treinamento não é obter uma pontuação perfeita nos dados que o modelo já viu. É ter um bom desempenho em dados que *nunca* foram vistos antes. Esse é o verdadeiro teste de aprendizagem.
+</Callout>
+
+## Underfitting: O aluno que não estuda
+
+O problema oposto é o **underfitting**. Isso acontece quando o modelo não aprendeu o suficiente com os dados. Ele tem um desempenho ruim em *ambos* dados de treinamento e novos dados.
+
+As causas do underfitting incluem:
+
+- O modelo é demasiado simples para a complexidade do problema.
+- O treino parou muito cedo (épocas insuficientes).
+- As características dos dados não são suficientemente informativas.
+
+Se o overfitting é como memorizar trabalhos anteriores, o underfitting é como entrar no exame mal abrindo o livro.
+
+<Quiz question="Um modelo obtém 98% de precisão nos dados de treinamento, mas apenas 60% nos novos dados. Qual é o problema mais provável?" options="Subajuste|Sobreajuste|Os dados são muito pequenos|O modelo é muito simples" answer="1" explanation="Uma grande lacuna entre o desempenho do treinamento (98%) e o desempenho em novos dados (60%) é o sinal clássico de overfitting – o modelo memorizou os dados de treinamento em vez de aprender padrões generalizáveis." />
+
+## Validação e conjuntos de testes
+
+Para detectar overfitting e underfitting, dividimos nossos dados em três partes:
+
+| Definir | Finalidade | Quando usado |
+|-----|---------|-----------|
+| **Conjunto de treinamento** | O modelo aprende com esses dados | Durante o treinamento |
+| **Conjunto de validação** | Usado para verificar o progresso e ajustar as configurações | Durante o treinamento |
+| **Conjunto de testes** | Avaliação final sobre dados completamente invisíveis | Após o treinamento |
+
+Uma divisão comum é 70% de treinamento, 15% de validação e 15% de teste. O modelo *nunca* vê o conjunto de testes até o final - é o exame final.
+
+<ThinkAboutIt>O conjunto de validação é como um teste prático que você faz entre as sessões de estudo. Ele informa o quão bem você está aprendendo, sem estragar o exame real. Se as pontuações dos seus testes práticos começarem a cair enquanto as pontuações das notas de estudo continuam aumentando, você sabe que algo está errado.
+</ThinkAboutIt>
+
+## Quando parar de treinar
+
+Saber quando parar é crucial. Treine muito pouco e o modelo ficará inadequado. Treine demais e isso superajusta. O ponto ideal é onde **a perda de validação para de melhorar**.
+
+Uma técnica chamada **parada antecipada** automatiza isso:
+
+1. Monitore a perda de validação após cada época.
+2. Se não tiver melhorado durante um determinado número de épocas (chamado **paciência**), pare de treinar.
+3. Volte para os pesos da melhor época.
+
+Isto evita que o modelo ultrapasse o ponto de aprendizagem útil e caia na memorização.
+
+<Quiz question="O que é ”parada antecipada” no treinamento de IA?" options="Interromper o treinamento antes que qualquer dado seja processado|Parando quando o computador fica sem memória|Interromper o treinamento quando o desempenho da validação parar de melhorar|Removendo neurônios que não estão contribuindo" answer="2" explanation="A parada antecipada monitora a perda de validação e interrompe o treinamento quando ele para de melhorar, evitando que o modelo se adapte demais ao treinar por muito tempo." />
+
+<FunFact>Algumas corridas de treinamento modernas usam uma técnica chamada programação de taxa de aprendizagem, que reduz gradualmente o quanto os pesos mudam a cada passo – como dar passos menores e mais cuidadosos ao se aproximar do cume de uma montanha.
+</FunFact>
+
+## Principais conclusões
+
+- O **loop de treinamento** se repete: prever → comparar → ajustar → repetir.
+- Uma **função de perda** mede o quão longe as previsões estão da verdade.
+- Uma **época** é uma passagem completa pelos dados de treinamento.
+- **Overfitting** significa memorizar dados; **underfitting** significa não aprender o suficiente.
+- Os dados são divididos em conjuntos de **treinamento**, **validação** e **teste**.
+- **Parada antecipada** evita que o treinamento vá longe demais.
+
+Na lição final, exploraremos as **dimensões éticas** da IA ​​– preconceito, justiça, privacidade e como é a IA responsável.

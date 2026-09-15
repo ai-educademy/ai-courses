@@ -1,0 +1,195 @@
+---
+title: "Árvores e gráficos visualizados - como a IA mapeia relacionamentos"
+description: "Veja como árvores e gráficos representam dados hierárquicos e interconectados que impulsionam a tomada de decisões e recomendações de IA."
+order: 5
+difficulty: "intermediate"
+duration: 18
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+## Dados com relacionamentos
+
+Até agora, examinamos os dados em linhas - matrizes, listas vinculadas, pilhas e filas, todos organizando itens em uma sequência. Mas o mundo real não é linear. As árvores genealógicas se ramificam. As redes sociais formam teias. Os mapas rodoviários criam rotas interligadas.
+
+**Árvores** e **gráficos** capturam essas relações e estão no centro de algumas das técnicas mais poderosas da IA.
+
+## Árvores - Dados Hierárquicos
+
+Uma **árvore** é uma estrutura onde cada item (chamado de **nó**) pode ter nós filhos, formando uma hierarquia. Há um nó especial no topo chamado **raiz**, e nós sem filhos são chamados de **folhas**.
+
+```
+         CEO
+        /    \
+      CTO    CFO
+     /   \      \
+   Dev1  Dev2   Accountant
+```
+
+<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="Uma estrutura de árvore com um nó raiz ramificando-se em nós filhos em três níveis, ao lado de um gráfico com nós interconectados" caption="As árvores fluem para baixo a partir de uma raiz; gráficos conectam nós em qualquer direção." />
+
+### Árvores estão por toda parte
+
+- **Sistemas de arquivos**: as pastas contêm subpastas que contêm arquivos - uma árvore.
+- **HTML/DOM**: toda página da web é uma árvore de elementos aninhados.
+- **Organogramas**: Os gerentes possuem relatórios que podem ter seus próprios relatórios.
+- **Dados JSON**: a estrutura aninhada do JSON é fundamentalmente uma árvore.
+
+### Árvores binárias
+
+Uma **árvore binária** restringe cada nó a no máximo dois filhos - um filho esquerdo e um filho direito. Essa restrição simples permite algoritmos poderosos.
+
+```
+        8
+       / \
+      3   10
+     / \    \
+    1   6    14
+```
+
+### Árvores de pesquisa binária (BSTs)
+
+Uma **árvore de pesquisa binária** adiciona uma regra: para cada nó, todos os valores na subárvore esquerda são menores e todos os valores na subárvore direita são maiores.
+
+Isso torna a pesquisa mais rápida - em cada nó, você sabe se deve ir para a esquerda ou para a direita:
+
+```
+Find 6 in the BST above:
+  Start at 8 → 6 < 8, go left
+  At 3 → 6 > 3, go right
+  At 6 → Found it!
+```
+
+**Complexidade de tempo**: O(log n) para uma árvore balanceada - a mesma mágica logarítmica da pesquisa binária em uma matriz classificada.
+
+<Quiz question="Em uma árvore de busca binária balanceada com 1.000.000 de nós, aproximadamente quantas comparações são necessárias para encontrar um valor?" options="1.000.000|500.000|Cerca de 20|Cerca de 100" answer="2" explanation="Um BST balanceado tem profundidade log₂(1.000.000) ≈ 20. Você faz uma comparação por nível, portanto, encontrar qualquer valor leva cerca de 20 etapas - idêntico à pesquisa binária em uma matriz classificada." />
+
+## Gráficos - Tudo Conectado
+
+Um **gráfico** generaliza árvores removendo a restrição de hierarquia. Consiste em **nós** (também chamados de vértices) e **arestas** (conexões entre nós). As bordas podem ser:
+
+- **Direcionado** (unidirecional: A → B) ou **não direcionado** (bidirecional: A ↔ B)
+- **Ponderado** (cada aresta tem um custo/distância) ou **não ponderado**
+
+```
+Social network (undirected):
+  Alice - Bob - Charlie
+    \       |
+     Diana - Eve
+
+Road map (weighted, directed):
+  London →(2h)→ Birmingham →(1.5h)→ Manchester
+```
+
+### Os gráficos estão por toda parte
+
+- **Redes sociais**: Pessoas são nós; amizades são limites.
+- **A Internet**: páginas da Web são nós; hiperlinks são bordas.
+- **Roteiros**: Interseções são nós; estradas são arestas com pesos de distância.
+- **Sistemas de recomendação**: Usuários e produtos são nós; interações são bordas.
+
+<FunFact>O gráfico social do Facebook contém mais de 3 bilhões de nós (usuários) e centenas de bilhões de arestas (amizades). Algoritmos gráficos determinam seu Feed de Notícias, sugestões de amigos e segmentação de anúncios - tudo executado em um dos maiores gráficos já construídos.
+</FunFact>
+
+## Como a IA usa árvores
+
+### Árvores de decisão
+
+Um dos modelos de IA mais interpretáveis ​​é a **árvore de decisão**. Ele faz uma série de perguntas sim/não para classificar os dados:
+
+```
+Is temperature > 30°C?
+├── Yes: Is humidity > 70%?
+│   ├── Yes: "Don't play tennis"
+│   └── No: "Play tennis"
+└── No: Is it windy?
+    ├── Yes: "Don't play tennis"
+    └── No: "Play tennis"
+```
+
+As árvores de decisão são populares porque os humanos podem lê-las e compreendê-las – algo crucial em saúde, finanças e IA jurídica, onde a explicabilidade é importante.
+
+<ThinkAboutIt>Um hospital usa uma IA para prever o risco do paciente. Os reguladores exigem que a IA explique as suas decisões. Por que uma árvore de decisão poderia ser preferida a uma rede neural profunda aqui, mesmo que a rede neural seja um pouco mais precisa?
+</ThinkAboutIt>
+
+### Florestas Aleatórias
+
+Uma **floresta aleatória** constrói centenas de árvores de decisão, cada uma treinada em um subconjunto ligeiramente diferente de dados, e então faz uma votação. Essa abordagem de conjunto é mais precisa e robusta do que uma única árvore – e ainda é uma das técnicas de IA mais utilizadas na indústria.
+
+## Como a IA usa gráficos
+
+### Gráficos de conhecimento
+
+Um **gráfico de conhecimento** armazena fatos como relacionamentos entre entidades:
+
+```
+(London) --[capital_of]--> (United Kingdom)
+(London) --[located_in]--> (England)
+(Big Ben) --[located_in]--> (London)
+```
+
+O Knowledge Graph do Google alimenta os painéis de informações que você vê nos resultados de pesquisa. Quando você pesquisa “Big Ben”, o gráfico o conecta a Londres, ao Reino Unido e a pontos de referência relacionados.
+
+### Gráficos de recomendação
+
+Netflix, Spotify e Amazon modelam usuários e itens como um gráfico. Se os usuários A e B gostaram dos itens X e Y, e o usuário A também gostou do item Z, o gráfico sugere Z ao usuário B. Esta é uma **filtragem colaborativa** alimentada pela estrutura do gráfico.
+
+<Quiz question="Por que os gráficos são melhores do que listas simples para modelar redes sociais?" options="Gráficos usam menos memória|Os gráficos podem representar relacionamentos complexos de muitos para muitos entre pessoas, não apenas sequências lineares|Os gráficos são sempre mais rápidos de pesquisar|Os gráficos classificam automaticamente os dados" answer="1" explanation="As redes sociais têm relacionamentos complexos de muitos para muitos – uma pessoa pode ter centenas de amigos, cada um com suas próprias conexões. Os gráficos modelam naturalmente essas relações interconectadas; listas não podem." />
+
+## Traversal - Caminhando por árvores e gráficos
+
+### Pesquisa em profundidade (DFS)
+
+O DFS explora o máximo possível ao longo de um caminho antes de retroceder. Pense nisso como explorar um labirinto, sempre virando à esquerda até chegar a um beco sem saída e depois voltando atrás.
+
+```
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+
+DFS order: A → B → D → E → C → F
+```
+
+O DFS usa uma **pilha** (naturalmente via recursão ou explicitamente). É ótimo para:
+- Resolvendo labirintos e quebra-cabeças
+- Detecção de ciclos em gráficos
+- Classificação topológica (ordenação de tarefas com dependências)
+
+### Pesquisa em amplitude (BFS)
+
+O BFS explora todos os vizinhos na profundidade atual antes de se aprofundar. Pense nisso como ondas se espalhando a partir de uma pedra jogada em um lago.
+
+```
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+
+BFS order: A → B → C → D → E → F
+```
+
+O BFS usa uma **fila**. É ótimo para:
+- Encontrar o caminho mais curto em um gráfico não ponderado
+- Análise de redes sociais (graus de separação)
+- Rastreamento da Web (visitando páginas nível por nível)
+
+<Callout>Observe como as pilhas e filas da lição anterior se conectam à travessia de árvores e gráficos? O DFS usa uma pilha; O BFS usa uma fila. As estruturas de dados se baseiam umas nas outras - é por isso que aprendê-las em ordem é importante.
+</Callout>
+
+<Quiz question="Você deseja encontrar a rota mais curta entre duas cidades em um mapa onde todas as estradas têm o mesmo comprimento. Qual travessia você deve usar?" options="Pesquisa em profundidade - explora primeiro caminhos mais profundos|Pesquisa em largura - encontra o caminho mais curto em gráficos não ponderados|Pesquisa binária – funciona em dados classificados|Pesquisa aleatória - tenta caminhos aleatoriamente" answer="1" explanation="O BFS explora os nós nível por nível, garantindo que na primeira vez que chega a um destino, encontrou o caminho mais curto (em termos de número de arestas). O DFS pode encontrar primeiro um caminho mais longo." />
+
+<ThinkAboutIt>As plataformas de mídia social medem “graus de separação” – quantos saltos entre amigos conectam duas pessoas. Qual algoritmo de travessia encontraria com eficiência o menor número de saltos entre dois usuários? Como isso se relaciona com a ideia dos “seis graus de separação”?
+</ThinkAboutIt>
+
+<FunFact>O algoritmo PageRank do Google – a descoberta original que tornou o Google dominante – modela a web como um gráfico. Cada página da web é um nó, cada hiperlink é uma borda direcionada e a importância de uma página é determinada por quantas páginas importantes estão vinculadas a ela. É essencialmente um passeio aleatório em um gráfico.
+</FunFact>
+
+## Principais conclusões
+
+- **Árvores** modelam dados hierárquicos - sistemas de arquivos, HTML e árvores de decisão de IA usam estruturas de árvore.
+- **Árvores de pesquisa binária** permitem pesquisas O(log n) mantendo uma hierarquia classificada.
+- **Gráficos** modelam dados interconectados: redes sociais, bases de conhecimento e mecanismos de recomendação.
+- **DFS** (baseado em pilha) se aprofunda; **BFS** (baseado em fila) é amplo - ambos potencializam algoritmos principais de IA, como PageRank e mecanismos de recomendação.

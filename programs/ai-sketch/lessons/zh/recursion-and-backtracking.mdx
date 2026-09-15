@@ -1,0 +1,160 @@
+---
+title: "递归和回溯 - 像计算机一样解决难题"
+description: "从调用堆栈开始理解递归，然后学习解决排列、N 皇后等问题的回溯模板。"
+order: 8
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+machineTranslated: true
+---
+## 递归基础知识
+
+递归函数用问题的**较小**版本调用自身，直到遇到停止链的**基本情况**。
+
+每个递归都需要两件事：
+1. **基本情况** - 最简单的输入，直接返回。
+2. **递归案例** - 将问题分解并调用自己。
+
+```python
+def factorial(n):
+    if n <= 1:        # base case
+        return 1
+    return n * factorial(n - 1)  # recursive case
+```
+
+## 调用堆栈 - 可视化
+
+每个递归调用都会将一个帧推送到调用堆栈上。当基本情况返回时，框架以相反的顺序弹出。
+
+```
+factorial(4)
+  → factorial(3)
+    → factorial(2)
+      → factorial(1) → returns 1
+    ← returns 2
+  ← returns 6
+← returns 24
+```
+
+如果没有基本情况，堆栈就会溢出。 Python 的默认递归限制是 1,000 帧。
+
+<FunFact>Python 的默认递归限制为 1,000，这是故意保守的。您可以使用 sys.setrecursionlimit() 来提高它，但深度递归通常首选迭代解决方案。</FunFact>
+
+## 斐波那契 - 经典陷阱
+
+朴素的递归斐波那契数列是 O(2ⁿ)，因为它重新计算相同的子问题。记忆化在 O(n) 时间和空间中解决了这个问题。
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+<Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="显示重复子问题的斐波那契递归树" caption="如果没有记忆，fib(5) 会进行 15 次调用。有了它，只有5个。" />
+
+## 回溯 - 尝试一切，然后撤消
+
+回溯是一种带有扭曲的递归：你**做出选择**，递归，然后**撤消选择**，然后再尝试下一个选项。把它想象成探索一个迷宫——向前走，遇到死胡同，向后走，尝试下一条路。
+
+### 回溯模板
+
+```python
+def backtrack(state, choices):
+    if is_solution(state):
+        result.append(state.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            state.add(choice)       # choose
+            backtrack(state, ...)   # explore
+            state.remove(choice)    # un-choose
+```
+
+这个三步模式 - **选择、探索、取消选择** - 是几乎每个回溯问题的支柱。
+
+<Quiz question="在回溯模板中，为什么我们要在递归调用之后撤销选择呢？" options="释放内存|重置以进行下一个探索分支|因为选择错了|避免堆栈溢出" answer="1" explanation="撤消选择会恢复状态，以便循环的下一次迭代可以从同一起点探索不同的分支。" />
+
+## 排列
+
+生成 `[1, 2, 3]` 的所有排序。在每个级别，选择一个未使用的数字，递归，然后取消选择。
+
+```
+         []
+      /   |   \
+    [1]  [2]  [3]
+    / \   ...
+ [1,2] [1,3]
+   |      |
+[1,2,3] [1,3,2]  ... (6 total)
+```
+
+有 **n!** 种排列，因此时间复杂度为 O(n × n!)。
+
+## 组合和子集
+
+**组合（n 选择 k）：** 在每个元素处，包含它或跳过它，但仅向前递归以避免重复。
+
+**子集：**相同的想法，没有大小限制 - 递归树中的每个节点都是有效的子集。有 **2ⁿ** 子集。
+
+<ThinkAboutIt>排列产生 n!结果，而子集产生 2ⁿ。对于 n=10，即 3,628,800 与 1,024，这是一个巨大的差异。为什么？</ThinkAboutIt>
+
+## N-Queens - 演练
+
+将 N 个皇后放在 N×N 的棋盘上，这样它们就不会互相攻击。对于 N=4：
+
+```
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**策略：**每行放置一个皇后。对于每一行，尝试每一列。检查列、主对角线和反对角线冲突。如果安全，则放置并递归到下一行。如果卡住了，就原路返回。
+
+轨道与三组冲突：`cols`、`diag`（行 - 列）和`anti_diag`（行 + 列）。
+
+<Quiz question="在N皇后问题中，我们如何有效地检查对角线冲突？" options="检查每个放置的皇后的位置|使用集跟踪（行-列）和（行+列）|每次扫描整个板|使用二维布尔矩阵" answer="1" explanation="同一对角线上的皇后共享相同的 (row-col) 值；相同的反对角份额（行+列）。集合提供 O(1) 查找。" />
+
+## 数独求解器 - 概念
+
+找到一个空单元格，尝试输入数字 1-9。对于每个数字，检查行、列和 3×3 框约束。如果有效，则放置并递归。如果没有数字有效，则撤消并回溯。尽管搜索空间巨大，但对约束的修剪使其易于处理。
+
+## 在网格中搜索单词
+
+给定一个 2D 字母板和一个目标单词，从每个单元格开始，在四个方向上进行 DFS，一次匹配一个字符。将单元格标记为在递归期间访问过，并**在回溯时取消标记**以允许其他路径。
+
+## 回溯的时间复杂度
+
+成本取决于**分支因子**（每个步骤的选择）和**深度**（解决方案的步骤）。对于 b 个分支和 d 深度：O(bᵈ)。
+
+|问题 |分支|深度 |复杂性 |
+|--------|---------|--------|------------|
+|排列| n, n−1, … | n | O(n!) |
+|子集| 2 | n | O(2ⁿ) |
+| N-皇后区 | 〜n | n |最坏情况 | O(n!)
+
+## 修剪优化
+
+**修剪**意味着跳过您知道会失败的分支。示例：
+- N-Queens：跳过已经占用的列。
+- 数独：跳过违反约束的数字。
+- 组合总和：如果剩余总和 < 0，则跳过。
+
+良好的修剪可以将不切实际的搜索变成快速搜索。
+
+<Quiz question="回溯算法中剪枝的作用是什么？" options="减少递归深度|消除无法得出有效解决方案的分支|将递归转换为迭代|在探索之前对选择进行排序" answer="1" explanation="修剪会尽早切断搜索树的某些部分，从而避免在肯定会失败的路径上浪费工作。" />
+
+<ThinkAboutIt>许多回溯问题也可以通过动态规划来解决。两者在方法上的主要区别是什么？</ThinkAboutIt>
+
+---
+
+## 📚 进一步阅读
+
+- [NeetCode - 回溯播放列表](https://neetcode.io/roadmap) - 策划的视频演练问题
+- [技术面试手册 - 递归](https://www.techinterviewhandbook.org/algorithms/recursion/) - 模式和常见陷阱
+- 【LeetCode Backtracking学习计划](https://leetcode.com/tag/backtracking/)-递进题集

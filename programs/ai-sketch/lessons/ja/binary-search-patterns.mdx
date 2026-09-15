@@ -1,0 +1,144 @@
+---
+title: "二分探索パターン - ソートされた配列を超えて"
+description: "二分探索の考え方、つまり検索スペース、回答の二分探索、および数十の面接の問題に現れるパターンを学びましょう。"
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+machineTranslated: true
+---
+## 古典的な二分探索 - 簡単なレビュー
+
+二分探索では、ステップごとに探索空間が半分になります。 n 要素のソートされた配列上で、**O(log n)** 時間でターゲットを見つけます。
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+シンプルですが、二分探索の真の力は、ソートされた配列をはるかに超えています。
+
+## 検索スペースのコンセプト
+
+二分探索は、範囲にわたって**単調条件**がある場合には常に機能します。 「配列」は存在する必要さえありません。範囲 `[lo, hi]` と、ある境界で `False` から `True` (またはその逆) を反転する関数が必要です。
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>二分探索は 1946 年に初めて公開されましたが、バグのない最初のバージョンが作成されたのは 1962 年でした - 16 年間オフバイワン エラーが発生しました!</FunFact>
+
+## 答えの二分探索
+
+配列を検索する代わりに、**回答スペース**を検索します。 「結果 X を達成できますか?」と尋ねます。 「はい」の場合は、より小さくしてみてください。いいえの場合は、より大きくしてみてください。
+
+### 例: バナナを食べるココ
+
+ココにはバナナが`n`山あり、あと`h`時間あります。彼女が時間内に食べ終わるように**最小の食事速度**を見つけてください。
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+回答スペースは `[1, max(piles)]` で、条件は単調です。速度が高いほど、常に時間が短くなります。
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="最小の食事速度の回答空間を狭める二分探索" caption="答えの二分探索: 反復ごとに実行可能な速度範囲を狭めます。" />
+
+## 回転ソートされた配列
+
+いくつかのピボットで回転されたソートされた配列: `[4, 5, 6, 7, 0, 1, 2]`。半分は常に並べ替えられます。 `mid` と `lo` を比較してどちらの半分かを決定し、ターゲットがソートされた半分に該当するかどうかを確認します。
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="回転ソート配列 [3,4,5,1,2] では、mid=2 (値 5) の場合、どちらの半分がソートされますか?" options="右半分 [1,2]|左半分 [3,4,5]|どちらも半分ではない|両方の半分" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5 なので、左半分 [3,4,5] がソートされます。ターゲットがその範囲内にあるかどうかを確認します。そうでない場合は、正しく検索します。" />
+
+## 最初と最後の出現
+
+**最初**の出現を見つけるには、ターゲットに到達したら止まらず、`hi = mid`を設定して左に検索し続けます。 **最後**については、`lo = mid + 1`を設定して右を検索します。
+
+このペアの検索では、ターゲットの **数** も得られます: `last - first + 1`。
+
+## ピーク要素
+
+隣接する両方の要素よりも大きい要素。ソートされていない配列でも二分探索は機能します。`nums[mid] < nums[mid + 1]`の場合、ピークは右側にあります。それ以外の場合は左側です。 O(log n)。
+
+<ThinkAboutIt>配列がソートされていないにもかかわらず、二分探索でピーク検出が機能するのはなぜですか?ここでソート順を置き換えるプロパティは何ですか?</ThinkAboutIt>
+
+## 2D マトリックスでの検索
+
+行が並べ替えられており、各行の最初の要素が前の要素の最後の要素より大きい場合、行列は `m × n` 要素の単一の並べ替えられた配列として扱われます。インデックス `k` を行 `k // n`、列 `k % n` にマップします。
+
+## ライブラリを使用しない平方根
+
+`x * x ≤ n` の中で最大の整数 `x` を見つけます。検索スペース: `[0, n]`。答えに対する古典的な二分探索。
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## 「最大値を最小化する」パターン
+
+「分割配列の最大合計」や「D 日以内に荷物を発送できる能力」などの問題では、**最悪のケースを最小限に抑える**ことが求められます。答えは単調です。容量 C が機能する場合、C+1 も機能します。 C の二分探索。
+
+<Quiz question="「D 日で荷物を発送できる容量」の場合、二分探索の検索空間はどれくらいですか?" options="[0、総重量]|[最大単体重量、総重量]|【1、梱包数】|[D、総重量]" answer="1" explanation="可能な最小容量は、単一のパッケージが最も重いものです (それ以外の場合は発送できません)。最大は総重量です（すべてを1日で発送します）。" />
+
+## ユニバーサル テンプレート
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+**最初の True** を求めるか **最後の True** を求めるかに応じて、`hi = mid` 対 `lo = mid` を調整します。
+
+<Quiz question="O(n) の実現可能性チェックを伴うサイズ S の応答空間での二分探索の時間計算量はどれくらいですか?" options="の上）|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="二分探索を O(log S) 回繰り返し、それぞれで O(n) チェックを実行し、合計 O(n log S) になります。" />
+
+<ThinkAboutIt>問題文で「可能な最小値」または「可能な最小値」というフレーズを見たとき、すぐに何を思い浮かべますか?</ThinkAboutIt>
+
+---
+
+## 📚 続きを読む
+
+- [NeetCode - 二分探索プレイリスト](https://neetcode.io/roadmap) - 簡単な問題から難しい問題まで厳選した問題
+- [技術面接ハンドブック - 二分探索](https://www.techinterviewhandbook.org/algorithms/binary-search/) - パターン、ヒント、落とし穴
+- [LeetCode Binary Search 学習計画](https://leetcode.com/studyplan/binary-search/) - 進歩的な問題集セット]

@@ -1,0 +1,224 @@
+---
+title: "Über- und Unteranpassung: Warum ML-Modelle scheitern"
+description: "Verstehen Sie die beiden häufigsten Fehlermodi beim maschinellen Lernen – Überanpassung und Unteranpassung – anhand klarer Beispiele und wie Sie sie beheben können."
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Über- und Unteranpassung: Warum ML-Modelle scheitern
+
+Sie haben Ihr erstes Modell für maschinelles Lernen trainiert. Es schneidet bei Ihren Trainingsdaten hervorragend ab – 98 % Genauigkeit! Sie testen es anhand neuer Daten und es fällt auseinander: 61 % Genauigkeit. Was ist schief gelaufen?
+
+Mit ziemlicher Sicherheit weist Ihr Modell eine **Überanpassung** auf. Dies ist einer der beiden häufigsten Fehlermodi beim maschinellen Lernen, und sein Verständnis – neben seinem Gegenteil, der **Unteranpassung** – ist für die Erstellung von Modellen, die tatsächlich in der realen Welt funktionieren, von entscheidender Bedeutung.
+
+## 📐 Der Bias-Varianz-Kompromiss
+
+Bevor wir uns mit Beispielen befassen, ist es hilfreich, den theoretischen Rahmen hinter diesen Konzepten zu verstehen: den **Bias-Varianz-Kompromiss**.
+
+Jedes Modell macht Vorhersagefehler. Diese Fehler können in drei Teile zerlegt werden:
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**Bias** ist der Fehler aufgrund falscher Annahmen im Modell. Ein Modell mit hoher Verzerrung ist zu einfach – es verfehlt systematisch das wahre Muster in den Daten.
+
+**Varianz** ist der Fehler der Empfindlichkeit gegenüber kleinen Schwankungen in den Trainingsdaten. Ein Modell mit hoher Varianz ist zu komplex – es merkt sich die Trainingsdaten, einschließlich ihres Rauschens, anstatt das zugrunde liegende Muster zu lernen.
+
+**Irreduzibles Rauschen** ist die natürliche Zufälligkeit in den Daten, die kein Modell beseitigen kann.
+
+Der Kompromiss: Eine Verringerung der Voreingenommenheit führt tendenziell zu einer Erhöhung der Varianz und umgekehrt. Ihre Aufgabe als Praktiker des maschinellen Lernens ist es, den Sweet Spot zu finden.
+
+## 📈 Unteranpassung: Zu einfach zu lernen
+
+**Eine Unteranpassung** tritt auf, wenn Ihr Modell zu einfach ist, um das wahre Muster in den Daten zu erfassen. Die Leistung ist *sowohl* bei Trainingsdaten als auch bei neuen Daten schlecht.
+
+### Ein visuelles Beispiel
+
+Stellen Sie sich vor, Sie verfügen über Daten, die die Immobilienpreise nach Größe zeigen. Die wahre Beziehung ist ungefähr eine sanfte Kurve – die Preise steigen mit der Größe, am oberen Ende gibt es jedoch ein gewisses Plateau.
+
+Wenn Sie eine gerade horizontale Linie an diese Daten anpassen:
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+Das Modell ignoriert den tatsächlichen Zusammenhang zwischen Hausgröße und Preis. Es spielt keine Rolle, ob Sie Trainingsdaten oder neue Daten anzeigen – es ist in jedem Fall falsch.
+
+### Anzeichen einer Unteranpassung
+- Hoher Trainingsfehler UND hoher Testfehler
+- Modellvorhersagen gruppieren sich unabhängig von der Eingabe um einen Mittelwert
+- Lernkurven zeigen, dass sowohl Trainings- als auch Validierungsfehler hoch sind und nahe beieinander liegen
+
+### Ursachen für Unteranpassung
+- Modell ist für die Komplexität der Daten zu einfach (z. B. lineares Modell für nichtlineare Daten)
+- Zu wenige Trainingsepochen (Modell hatte keine Zeit zum Lernen)
+- Zu aggressive Regularisierung (siehe unten)
+- Wichtige Funktionen fehlen in der Eingabe
+
+## 📉 Überanpassung: Zu komplex, Geräusche auswendig lernen
+
+**Überanpassung** tritt auf, wenn Ihr Modell die Trainingsdaten *zu gut* lernt – einschließlich ihres Rauschens und der zufälligen Variation – und es nicht schafft, sie auf neue Beispiele zu verallgemeinern.
+
+### Ein visuelles Beispiel
+
+Verwenden eines 15-Grad-Polynoms zur Anpassung derselben Hauspreisdaten:
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+Das Polynom hat sich zu Knoten verdreht, um jeden Trainingspunkt zu durchlaufen – einschließlich der verrauschten Ausreißer. Es hat sich den Trainingssatz gemerkt, anstatt das zugrunde liegende Muster zu lernen. Bei unsichtbaren Daten ist es nutzlos.
+
+<FunFact>Ein Modell, das alle seine Trainingsdaten perfekt speichert, wird manchmal als „das schlechteste Modell der Welt“ bezeichnet – es hat eine Trainingsgenauigkeit von 100 %, kann aber überhaupt nicht verallgemeinern, was es für seinen eigentlichen Zweck völlig unbrauchbar macht.</FunFact>
+
+### Anzeichen einer Überanpassung
+- Sehr geringer Trainingsfehler, aber viel höherer Testfehler (eine große **Generalisierungslücke**)
+- Die Modellleistung nimmt bei neuen Daten erheblich ab
+- Das Modell reagiert überraschend empfindlich auf kleine Eingabeänderungen
+
+## 🔀 Trainings-/Validierungs-/Testaufteilung
+
+Ein grundlegendes Werkzeug zum Erkennen einer Überanpassung ist die Aufteilung Ihrer Daten in drei Sätze:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **Trainingssatz**: woraus das Modell lernt
+- **Validierungssatz**: Was Sie verwenden, um Hyperparameter zu optimieren und Überanpassung *während der Entwicklung* zu erkennen
+- **Testsatz**: die endgültige, ausgehaltene Bewertung – berühren Sie sie nur einmal, ganz am Ende
+
+Das Validierungsset ist Ihr Frühwarnsystem. Wenn sich die Trainingsgenauigkeit weiter verbessert, die Validierungsgenauigkeit jedoch ein Plateau erreicht oder abnimmt, liegt eine Überanpassung vor.
+
+<ThinkAboutIt>Warum ist es wichtig, Ihr Testset vollständig getrennt aufzubewahren und nur einmal zu verwenden? Was könnte schief gehen, wenn Sie den Testsatz wiederholt evaluieren und darauf basierend Anpassungen vornehmen würden?</ThinkAboutIt>
+
+## 🛡️ Korrekturen für Überanpassung
+
+### 1. Regularisierung
+
+Die Regularisierung fügt der Verlustfunktion einen Nachteil hinzu, der das Modell davon abhält, übermäßig komplexe Muster zu lernen.
+
+**L2-Regularisierung (Ridge)** bestraft große Gewichte:
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**L1-Regularisierung (Lasso)** kann einige Gewichte bis auf Null bringen und eine Funktionsauswahl durchführen:
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Dropout (Neuronale Netze)
+
+Lassen Sie während des Trainings zufällig einen Teil der Neuronen „ausfallen“ (auf Null setzen):
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+Dies verhindert, dass sich Neuronen gemeinsam anpassen, und zwingt das Netzwerk dazu, robustere, verteilte Darstellungen zu lernen.
+
+### 3. Frühes Anhalten
+
+Überwachen Sie den Validierungsverlust während des Trainings und stoppen Sie, wenn er zuzunehmen beginnt:
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. Weitere Trainingsdaten
+
+Mehr Daten machen es für das Modell schwieriger, sich Rauschen zu merken – es sind einfach zu viele, um genau zu passen. Wenn die Datenerfassung kostspielig ist, kann die **Datenerweiterung** (Erstellung modifizierter Kopien vorhandener Beispiele) hilfreich sein.
+
+### 5. Einfachere Architektur
+
+Manchmal besteht die richtige Lösung einfach darin, ein weniger komplexes Modell für das Problem auszuwählen.
+
+## 🔄 Kreuzvalidierung
+
+Bei kleinen Datensätzen kann eine einzelne Zug-/Val-Aufteilung aufgrund der Zufälligkeit irreführend sein. **K-fache Kreuzvalidierung** liefert eine zuverlässigere Schätzung:
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+Die Daten sind in 5 Falten aufgeteilt; Das Modell trainiert auf 4 und validiert auf 1, wobei es sich jedes Mal dreht. Das Endergebnis ist der Durchschnitt aller 5 – viel zuverlässiger als eine einzelne Aufteilung.
+
+<Quiz question="Ein Modell erreicht bei Trainingsdaten eine Genauigkeit von 99 %, bei Testdaten jedoch nur 62 %. Was bedeutet das?" options="Das Modell ist unzureichend – es ist zu einfach|Das Modell ist perfekt kalibriert|Das Modell ist überangepasst – es hat die Trainingsdaten gespeichert, anstatt sie zu verallgemeinern|Der Testdatensatz muss beschädigt sein" answer="2" explanation="Eine große Lücke zwischen Trainingsgenauigkeit (99 %) und Testgenauigkeit (62 %) ist das klassische Anzeichen für Überanpassung. Das Modell hat die Trainingsdaten einschließlich ihres Rauschens gespeichert und ist nicht in der Lage, sie auf neue Beispiele zu verallgemeinern." />
+
+## Wichtige Erkenntnisse
+
+- **Unteranpassung** (hoher Bias): Das Modell ist zu einfach; Es schneidet *sowohl* bei Trainings- als auch bei Testdaten schlecht ab – beheben Sie das Problem, indem Sie ein komplexeres Modell verwenden oder Funktionen hinzufügen
+- **Überanpassung** (hohe Varianz): Das Modell ist zu komplex; Bei Trainingsdaten schneidet es gut ab, bei Testdaten jedoch schlecht – beheben Sie das Problem durch Regularisierung, Hinzufügen von Daten oder Vereinfachen des Modells
+- Der **Bias-Varianz-Kompromiss** ist die grundlegende Spannung: Eine Verringerung führt tendenziell zu einer Vergrößerung des anderen; Ihr Ziel ist es, den Sweet Spot zu finden
+- Teilen Sie die Daten immer in **Trainings-/Validierungs-/Testsätze** auf – der Testsatz sollte am Ende nur einmal berührt werden
+- **Wichtige Korrekturen für Überanpassung**: L1/L2-Regularisierung, Dropout, vorzeitiges Stoppen, mehr Daten, einfachere Architektur
+- **Kreuzvalidierung** liefert eine zuverlässigere Leistungsschätzung, wenn die Daten begrenzt sind, indem die Ergebnisse über mehrere Trainings-/Validierungsaufteilungen gemittelt werden

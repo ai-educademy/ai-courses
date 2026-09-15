@@ -1,0 +1,226 @@
+---
+title: "Apprentissage supervisé ou non supervisé : explication des principales différences"
+description: "Une comparaison claire de l'apprentissage automatique supervisé et non supervisé : quand utiliser chaque approche, avec des exemples et des algorithmes concrets."
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+machineTranslated: true
+---
+# Apprentissage supervisé ou non supervisé : explication des principales différences
+
+Lorsque vous commencez à apprendre l’apprentissage automatique, l’une des premières étapes du chemin est la suivante : quel type d’apprentissage faites-vous ? La réponse change tout : les algorithmes à votre disposition, les données dont vous avez besoin et ce que vous pouvez attendre de votre modèle.
+
+Les deux catégories fondamentales sont l'**apprentissage supervisé** et l'**apprentissage non supervisé**. Comprendre la différence n'est pas seulement académique : c'est la première décision que vous prendrez lorsque vous aborderez un nouveau problème de ML.
+
+## 🏷️ La distinction fondamentale : les labels
+
+La différence la plus fondamentale entre l'apprentissage supervisé et non supervisé réside dans **le fait que vos données d'entraînement incluent des étiquettes**.
+
+**Données étiquetées** signifie que chaque exemple de votre ensemble de données est accompagné de la « bonne réponse » : le résultat que vous souhaitez que le modèle prédise ou classifie :
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**Données non étiquetées** signifie que vous disposez des entrées mais pas de réponses prédéfinies — juste les observations brutes :
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+Les données étiquetées sont coûteuses et longues à produire : elles nécessitent que les humains annotent manuellement les exemples. Les données non étiquetées sont abondantes (la plupart des données dans le monde n’ont pas d’étiquette). Cette contrainte pratique détermine quelle approche est possible pour un problème donné.
+
+## ✅ Apprentissage supervisé
+
+Dans l'apprentissage supervisé, le modèle apprend une cartographie des entrées aux sorties en étudiant des exemples étiquetés. Le « superviseur » est constitué par les données étiquetées elles-mêmes : chaque exemple de formation indique au modèle quelle devrait être la sortie correcte.
+
+###Classement
+
+Lorsque la sortie est une **catégorie discrète**, il s'agit d'un problème de classification.
+
+**Exemples :**
+- Cet e-mail est-il du spam ou non ?
+- Cette image contient-elle un chat ou un chien ?
+- Ce demandeur de prêt fera-t-il défaut ? (Oui/Non)
+- Quel chiffre (0 à 9) représente ce numéro manuscrit ?
+
+**Algorithmes courants :**
+- Régression logistique
+- Arbres de décision et forêts aléatoires
+- Machines à vecteurs de support (SVM)
+- Réseaux de neurones
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### Régression
+
+Lorsque le résultat est un **nombre continu**, il s'agit d'un problème de régression.
+
+**Exemples :**
+- A quel prix cette maison va-t-elle se vendre ?
+- Quel sera le cours de cette action demain ?
+- Combien d'unités allons-nous vendre le mois prochain ?
+- Quelle sera la tension artérielle d'un patient dans six mois ?
+
+**Algorithmes courants :**
+- Régression linéaire
+- Régression Ridge / Lasso
+-Amplification du dégradé (XGBoost, LightGBM)
+- Réseaux de neurones
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>Les modèles de gradient boosting (XGBoost, LightGBM, CatBoost) ont remporté plus de concours d'apprentissage automatique Kaggle que toute autre catégorie d'algorithmes. Ils restent le choix incontournable pour les données structurées/tabulaires dans l'industrie.</FunFact>
+
+## 🔍 Apprentissage non supervisé
+
+Dans l'apprentissage non supervisé, le modèle explore la structure des données **sans aucune étiquette**. Plutôt que d’apprendre un mappage avec une sortie connue, il découvre par lui-même des modèles, des regroupements ou des représentations cachés.
+
+### Regroupement
+
+Les algorithmes de cluster regroupent des points de données similaires sans qu’on leur dise quels devraient être les groupes.
+
+**Exemples :**
+- Segmenter les clients par comportement d'achat (sans segments prédéfinis)
+- Regrouper les documents par sujet
+- Identifier les communautés dans un réseau social
+- Détecter les anomalies (points qui n'appartiennent à aucun cluster)
+
+**Algorithmes courants :**
+- Clustering K-Means
+- DBSCAN (basé sur la densité, gère les formes irrégulières)
+- Clustering hiérarchique
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### Réduction de la dimensionnalité
+
+Compressez les données de grande dimension en moins de dimensions tout en préservant autant de structure que possible. Utilisé pour la visualisation, le prétraitement et la suppression des informations redondantes.
+
+**Algorithmes courants :**
+- PCA (Analyse en Composantes Principales) — compression linéaire
+- t-SNE — non linéaire, excellent pour la visualisation
+- UMAP — rapide, préserve à la fois la structure locale et globale
+- Autoencodeurs – compression basée sur un réseau neuronal
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>Un détaillant dispose de données de transaction pour 10 millions de clients mais pas de segments de clientèle prédéfinis. Pourquoi un clustering non supervisé serait-il utile ici ? Quelles décisions commerciales les segments découverts pourraient-ils éclairer ?</ThinkAboutIt>
+
+## 🔄 Au-delà du binaire : d'autres paradigmes d'apprentissage
+
+La distinction supervisé/non supervisé est fondamentale, mais le paysage du ML est plus riche que ces deux catégories.
+
+### Apprentissage semi-supervisé
+
+Utilise une **petite quantité de données étiquetées** combinée à une **grande quantité de données non étiquetées**. C’est très pratique car l’étiquetage coûte cher.
+
+**Exemple** : Vous disposez de 1 000 analyses médicales étiquetées et de 100 000 analyses non étiquetées. L'apprentissage semi-supervisé vous permet de bénéficier des données non étiquetées pour améliorer les performances au-delà de ce que les 1 000 étiquettes seules pourraient réaliser.
+
+### Apprentissage auto-supervisé
+
+Un cas particulier où les **étiquettes sont générées automatiquement à partir des données elles-mêmes**. C'est ainsi que les grands modèles de langage modernes sont pré-entraînés.
+
+**Exemple** : prenez une phrase, masquez quelques mots et entraînez le modèle à prédire les mots manquants. Les « étiquettes » (les mots corrects) sont libres : elles proviennent directement du texte lui-même. C'est ainsi que BERT a été formé.
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+L’apprentissage auto-supervisé a été transformateur car il permet de s’entraîner sur des données à l’échelle Internet sans annotation humaine.
+
+### Apprentissage par renforcement
+
+Un agent apprend en effectuant des **actions** dans un **environnement** et en recevant des **récompenses** ou des **pénalités**. Il n’y a pas d’étiquettes – seulement des signaux de rétroaction sur les résultats.
+
+**Exemples** : Jouer aux échecs, entraîner un robot à marcher, optimiser le système de refroidissement d'un centre de données. Nous abordons cela en profondeur dans sa propre leçon.
+
+## 🗺️ Choisir la bonne approche
+
+Voici un cadre de décision pratique :
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="Vous disposez de 50 000 avis sur des produits, sans étoiles ni étiquettes de sentiment. Vous souhaitez les regrouper automatiquement par thème. Quelle approche d’apprentissage devriez-vous utiliser ?" options="Classification supervisée : entraînez un modèle pour classer les sujets|Clustering non supervisé : découvrez des groupes de sujets dans les données|Apprentissage par renforcement : laissez un agent lire et trier les avis|Régression – prédisez un score numérique de sujet pour chaque avis" answer="1" explanation="Sans étiquettes, l’apprentissage supervisé n’est pas possible. Le clustering non supervisé (par exemple, K-Means ou modélisation de sujet avec LDA) peut découvrir des regroupements naturels dans le texte de révision sans aucune catégorie prédéfinie." />
+
+## Points clés à retenir
+
+- **L'apprentissage supervisé** nécessite des données étiquetées ; le modèle apprend une cartographie des entrées vers les sorties connues - utilisée pour la classification (sortie discrète) et la régression (sortie continue)
+- **L'apprentissage non supervisé** fonctionne avec des données non étiquetées ; le modèle découvre une structure cachée – utilisée pour le clustering, la réduction de dimensionnalité et la détection d'anomalies
+- Le choix entre supervisé et non supervisé dépend principalement de **si vous avez étiqueté les données** et de la question à laquelle vous essayez de répondre.
+- **L'apprentissage semi-supervisé** comble le fossé, en utilisant une petite quantité de données étiquetées aux côtés de grandes quantités de données non étiquetées.
+- **L'apprentissage auto-supervisé** génère ses propres étiquettes à partir des données : c'est la technique derrière les LLM modernes comme BERT et GPT.
+- **L'apprentissage par renforcement** est distinct des deux : un agent apprend à partir des signaux de récompense en interagissant avec un environnement, sans étiquettes.
+- Utiliser le cadre de décision : étiqueté + sortie de catégorie → classification ; étiqueté + sortie continue → régression ; sans étiquette + rechercher des groupes → clustering

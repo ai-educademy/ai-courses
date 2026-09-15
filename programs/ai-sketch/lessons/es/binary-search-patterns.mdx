@@ -1,0 +1,144 @@
+---
+title: "Patrones de búsqueda binaria: más allá de las matrices ordenadas"
+description: "Aprenda la mentalidad de búsqueda binaria: espacios de búsqueda, búsqueda binaria de respuesta y patrones que aparecen en docenas de problemas de entrevistas."
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+machineTranslated: true
+---
+## Búsqueda binaria clásica: una revisión rápida
+
+La búsqueda binaria reduce a la mitad el espacio de búsqueda en cada paso. En una matriz ordenada de n elementos, encuentra un objetivo en tiempo **O(log n)**.
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+Simple, pero el verdadero poder de la búsqueda binaria va mucho más allá de las matrices ordenadas.
+
+## El concepto de espacio de búsqueda
+
+La búsqueda binaria funciona siempre que tenga una **condición monótona** en un rango. La "matriz" ni siquiera necesita existir; solo necesita un rango `[lo, hi]` y una función que cambie de `False` a `True` (o viceversa) en algún límite.
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>La búsqueda binaria se publicó por primera vez en 1946, pero la primera versión libre de errores no se escribió hasta 1962: ¡16 años de errores uno por uno!</FunFact>
+
+## Búsqueda binaria en respuesta
+
+En lugar de buscar en una matriz, busque en el **espacio de respuesta**. Pregunte: "¿Puedo lograr el resultado X?" En caso afirmativo, pruebe con uno más pequeño; Si no, prueba con uno más grande.
+
+### Ejemplo: Koko comiendo plátanos
+
+Koko tiene `n` montones de plátanos y `h` horas. Encuentra la **velocidad mínima para comer** para que termine a tiempo.
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+El espacio de respuesta es `[1, max(piles)]` y la condición es monótona: mayor velocidad siempre significa menos horas.
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="Búsqueda binaria que reduce el espacio de respuestas para una velocidad mínima de alimentación" caption="Búsqueda binaria de respuesta: reduzca el rango de velocidad factible en cada iteración." />
+
+## Matriz ordenada rotada
+
+Una matriz ordenada girada en algún pivote: `[4, 5, 6, 7, 0, 1, 2]`. La mitad siempre está ordenada. Compare `mid` con `lo` para decidir qué mitad, luego verifique si el objetivo cae en la mitad ordenada.
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="En una matriz ordenada rotada [3,4,5,1,2], ¿qué mitad se ordena cuando mid=2 (valor 5)?" options="Mitad derecha [1,2]|Mitad izquierda [3,4,5]|ni la mitad|ambas mitades" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, por lo que la mitad izquierda [3,4,5] está ordenada. Comprobamos si el objetivo se encuentra en ese rango; si no, buscamos bien." />
+
+## Primera y última aparición
+
+Para encontrar la **primera** ocurrencia, cuando alcances el objetivo, no te detengas: establece `hi = mid` y sigue buscando hacia la izquierda. Para el **último**, establezca `lo = mid + 1` y busque a la derecha.
+
+Este par de búsquedas también le proporciona el **recuento** de un objetivo: `last - first + 1`.
+
+## Elemento pico
+
+Un elemento más grande que ambos vecinos. Incluso en una matriz sin clasificar, la búsqueda binaria funciona: si `nums[mid] < nums[mid + 1]`, el pico está a la derecha; de lo contrario, está a la izquierda. O(log n).
+
+<ThinkAboutIt>¿Por qué la búsqueda de picos funciona con la búsqueda binaria aunque la matriz no esté ordenada? ¿Qué propiedad reemplaza el orden aquí?</ThinkAboutIt>
+
+## Buscar en una matriz 2D
+
+Si las filas están ordenadas y el primer elemento de cada fila es mayor que el último de la anterior, trate la matriz como una única matriz ordenada de `m × n` elementos. Asigne el índice `k` a la fila `k // n`, columna `k % n`.
+
+## Raíz cuadrada sin biblioteca
+
+Encuentra el entero más grande `x` donde `x * x ≤ n`. Espacio de búsqueda: `[0, n]`. Búsqueda binaria clásica por respuesta.
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## El patrón "Minimizar el máximo"
+
+Problemas como "suma más grande de matriz dividida" o "capacidad para enviar paquetes en D días" le piden **minimizar el peor de los casos**. La respuesta es monótona: si la capacidad C funciona, también lo hace C+1. Búsqueda binaria en C.
+
+<Quiz question="Para 'Capacidad para enviar paquetes en días D', ¿cuál es el espacio de búsqueda para la búsqueda binaria?" options="[0, peso total]|[peso único máximo, peso total]|[1, número de paquetes]|[D, peso total]" answer="1" explanation="La capacidad mínima posible es el paquete individual más pesado (de lo contrario no se puede enviar). El máximo es el peso total (envía todo en un día)." />
+
+## La plantilla universal
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+Ajuste `hi = mid` frente a `lo = mid` dependiendo de si busca el **primer Verdadero** o el **último Verdadero**.
+
+<Quiz question="¿Cuál es la complejidad temporal de la búsqueda binaria en un espacio de respuesta de tamaño S con una verificación de viabilidad O(n)?" options="En)|O(registro S)|O(n iniciar sesión S)|O(norte × S)" answer="2" explanation="Realiza O(log S) iteraciones de búsqueda binaria, cada una de las cuales ejecuta una verificación O(n), lo que da un total de O(n log S)." />
+
+<ThinkAboutIt>Cuando ves la frase "mínimo máximo posible" o "máximo mínimo posible" en el planteamiento de un problema, ¿qué te viene a la mente inmediatamente?</ThinkAboutIt>
+
+---
+
+## 📚 Lecturas adicionales
+
+- [NeetCode - Lista de reproducción de búsqueda binaria](https://neetcode.io/roadmap): problemas seleccionados, desde fáciles hasta difíciles
+- [Manual de entrevistas técnicas - Búsqueda binaria](https://www.techinterviewhandbook.org/algorithms/binary-search/) - patrones, consejos y trampas
+- [Plan de estudio de búsqueda binaria LeetCode](https://leetcode.com/studyplan/binary-search/) - conjunto de problemas progresivos

@@ -1,0 +1,127 @@
+---
+title: "Matrices y mapas hash: cómo la IA almacena y recupera datos"
+description: "Descubra cómo las matrices y los mapas hash impulsan todo, desde vectores de características hasta la incorporación de búsquedas en sistemas de inteligencia artificial."
+order: 1
+difficulty: "intermediate"
+duration: 15
+icon: "📦"
+published: true
+machineTranslated: true
+---
+## Por qué es importante el almacenamiento de datos en la IA
+
+Todo sistema de IA necesita almacenar y recuperar datos rápidamente. Ya sea una lista de valores de píxeles en una imagen, un vocabulario de 50.000 palabras o millones de preferencias de usuario, la elección de la estructura de datos determina qué tan rápido puede pensar su IA.
+
+Dominan dos estructuras: **matrices** y **mapas hash**. Si los domina, tendrá la base para casi todos los procesos de IA.
+
+## Matrices: listas ordenadas con acceso instantáneo
+
+Una matriz es simplemente una lista numerada de elementos almacenados uno al lado del otro en la memoria. Cada elemento tiene un **índice**: su posición en la lista, comenzando desde cero.
+
+```
+index:   0       1       2       3       4
+value: ["cat", "dog", "bird", "fish", "frog"]
+```
+
+Debido a que los elementos se encuentran uno al lado del otro, puedes saltar directamente a cualquier posición. ¿Quieres el artículo 3? Listo: no es necesario realizar ninguna búsqueda. Ese es el acceso **O(1)**, lo que significa que lleva el mismo tiempo si la matriz contiene 10 elementos o 10 millones.
+
+<Illustration src="/images/lessons/arrays-and-hashmaps.svg" alt="Una matriz de cinco elementos con índices del 0 al 4, que muestra acceso directo al índice 3" caption="Las matrices te permiten saltar directamente a cualquier posición usando su índice." />
+
+### Cuando las matrices brillan
+
+- **Vectores de características**: una imagen se puede representar como una matriz de 784 números (28×28 píxeles), cada uno con un valor de brillo.
+- **Incrustaciones**: los modelos de lenguaje almacenan el significado de las palabras como matrices de cientos de números de punto flotante.
+- **Procesamiento por lotes**: los datos de entrenamiento se cargan en matrices para que la GPU pueda procesar miles de ejemplos simultáneamente.
+
+### La captura
+
+Insertar o quitar elementos en el medio es costoso. Cada elemento después del cambio debe mezclarse. Eso es **O(n)**: cuantos más elementos, más tiempo lleva.
+
+<ThinkAboutIt>Si tuviera una lista de reproducción de 10,000 canciones y quisiera insertar una nueva pista en la posición 5, cada canción desde la posición 5 en adelante tendría que cambiar. ¿Cómo podría un servicio de streaming manejar esto sin disminuir la velocidad?
+</ThinkAboutIt>
+
+## Mapas hash: búsquedas instantáneas por nombre
+
+Un mapa hash (también llamado diccionario o tabla hash) almacena datos como **pares clave-valor**. En lugar de acceder a los elementos por número de índice, se accede a ellos mediante una clave significativa.
+
+```
+word_counts = {
+  "hello": 42,
+  "world": 37,
+  "AI": 156
+}
+```
+
+¿Necesita el recuento de "IA"? El mapa hash utiliza una **función hash** para convertir la clave en un índice detrás de escena. ¿El resultado? **O(1)** tiempo de búsqueda promedio, igual que las matrices, pero usando nombres en lugar de números.
+
+<FunFact>Los diccionarios de Python son mapas hash. Cuando ChatGPT cuenta la frecuencia de las palabras durante el entrenamiento, utiliza estructuras similares a mapas hash para rastrear miles de millones de apariciones de palabras en todo el texto de Internet.
+</FunFact>
+
+### Usos reales de la IA para mapas hash
+
+- **Mapeo de vocabulario**: convertir palabras como "brillante" en el token ID 8921 para un modelo de lenguaje.
+- **Recuento de frecuencia**: ¿Con qué frecuencia aparece cada palabra en un conjunto de datos? Los mapas hash responden a esto de una sola vez.
+- **Resultados del almacenamiento en caché**: si una IA ya ha calculado una predicción para la entrada X, guárdela para no volver a calcularla nunca.
+
+## Complejidad del tiempo simplificada
+
+| Operación | Matriz | Mapa hash |
+|-----------|-------|----------|
+| Acceso por índice | O(1) ⚡ | N/A |
+| Acceso por clave | O(n) 🐢 | O(1) ⚡ |
+| Insertar al final | O(1) ⚡ | O(1) ⚡ |
+| Insertar en el medio | O(n) 🐢 | N/A |
+| Buscar valor | O(n) 🐢 | O(1) ⚡ |
+
+Piense en **O(1)** como "instantáneo, sin importar el tamaño" y en **O(n)** como "más lento cuanto más grandes sean los datos".
+
+<Quiz question="Tienes 100.000 perfiles de usuario y necesitas encontrar un usuario por su nombre de usuario. ¿Qué estructura es más rápida?" options="Una matriz ordenada alfabéticamente|Un mapa hash con nombres de usuario como claves|Una matriz simple y sin clasificar|No importa, son todos iguales." answer="1" explanation="Un mapa hash proporciona una búsqueda promedio de O(1) por clave, lo que lo hace ideal para buscar elementos mediante un identificador único, como un nombre de usuario." />
+
+## Patrón común: conteo de frecuencia
+
+Uno de los patrones más útiles tanto en las entrevistas como en la IA es contar los sucesos. Aquí está la idea en pseudocódigo:
+
+```
+counts = {}
+for each word in text:
+    if word in counts:
+        counts[word] = counts[word] + 1
+    else:
+        counts[word] = 1
+```
+
+Este único paso por el texto le proporciona la frecuencia de cada palabra. Los modelos de lenguaje utilizan exactamente este enfoque (a gran escala) para comprender qué palabras son más importantes.
+
+## Patrón común: el problema de las dos sumas
+
+Dada una serie de números y un objetivo, encuentre dos números que sumen el objetivo. El enfoque ingenuo comprueba cada par: O(n²). El enfoque inteligente utiliza un mapa hash:
+
+```
+seen = {}
+for each number in array:
+    complement = target - number
+    if complement in seen:
+        return [seen[complement], current_index]
+    seen[number] = current_index
+```
+
+Una pasada, O(n) vez. El mapa hash recuerda lo que ya has visto.
+
+<Quiz question="¿Por qué el enfoque del mapa hash para dos sumas es más rápido que verificar cada par?" options="Los mapas hash usan menos memoria|Los mapas hash te permiten comprobar ”¿he visto este número?” en O(1) en lugar de escanear toda la matriz|Los mapas hash ordenan los datos automáticamente|Los mapas hash solo funcionan con matrices pequeñas" answer="1" explanation="Cada búsqueda en un mapa hash es O(1) en promedio, por lo que en lugar de comparar cada par (O(n²)), se realiza una sola pasada con búsquedas O(1), lo que da O(n) en total." />
+
+## Cuándo elegir cuál
+
+- **Utilice matrices** cuando el orden sea importante, acceda a elementos por posición o necesite procesar todo de forma secuencial (como los píxeles de una imagen).
+- **Utilice mapas hash** cuando necesite búsquedas rápidas mediante una clave, quiera contar ocurrencias o necesite verificar si algo existe rápidamente.
+
+<ThinkAboutIt>Un motor de recomendación debe comprobar si un usuario ya ha visto una película antes de sugerirla. ¿Almacenaría el historial de visualización del usuario en una matriz o en un mapa hash? ¿Qué compensaciones le vienen a la mente?
+</ThinkAboutIt>
+
+<Quiz question="Un modelo de IA almacena incrustaciones de palabras como matrices de 300 números cada una. ¿Por qué las matrices son una buena opción en este caso?" options="Las matrices permiten el acceso aleatorio basado en claves|Los arreglos almacenan datos numéricos ordenados y de tamaño fijo de manera eficiente y las GPU los procesan en paralelo|Las matrices ordenan automáticamente los números.|Las matrices utilizan menos memoria que cualquier otra estructura." answer="1" explanation="Las incrustaciones son secuencias de números de longitud fija donde el orden importa: la posición 0 podría representar ”género” y la posición 1, ”realeza”. Los arreglos los almacenan de forma compacta y las GPU están optimizadas para operaciones de arreglos." />
+
+## Conclusiones clave
+
+- **Las matrices** dan acceso O(1) por índice y son la columna vertebral de la IA numérica (imágenes, incrustaciones, tensores).
+- **Mapas hash** brindan acceso O(1) por clave y son esenciales para búsquedas, conteos y almacenamiento en caché.
+- Elegir la estructura correcta puede convertir un algoritmo O(n²) en uno O(n), una diferencia que importa al procesar millones de puntos de datos.
+- En la práctica, la mayoría de los canales de IA utilizan ambos: matrices para cálculo numérico y mapas hash para búsquedas de metadatos.

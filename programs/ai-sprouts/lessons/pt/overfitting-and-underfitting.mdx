@@ -1,0 +1,224 @@
+---
+title: "Overfitting e Underfitting: Por que os modelos de ML falham"
+description: "Entenda os dois modos de falha de aprendizado de máquina mais comuns — overfitting e underfitting — com exemplos claros e como corrigi-los."
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Overfitting e Underfitting: Por que os modelos de ML falham
+
+Você treinou seu primeiro modelo de aprendizado de máquina. Ele tem um desempenho brilhante em seus dados de treinamento – 98% de precisão! Você testa em novos dados e ele desmorona: 61% de precisão. O que deu errado?
+
+Quase certamente, seu modelo possui **overfit**. Este é um dos dois modos de falha mais comuns no aprendizado de máquina, e entendê-lo — junto com seu oposto, **underfitting** — é essencial para construir modelos que realmente funcionem no mundo real.
+
+## 📐 A compensação entre polarização e variância
+
+Antes de mergulhar nos exemplos, é útil compreender a estrutura teórica por trás desses conceitos: a **compensação entre viés e variância**.
+
+Todo modelo comete erros de previsão. Esses erros podem ser decompostos em três partes:
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**Viés** é o erro de suposições erradas no modelo. Um modelo de alto viés é muito simples – ele falha sistematicamente no verdadeiro padrão dos dados.
+
+**Variância** é o erro da sensibilidade a pequenas flutuações nos dados de treinamento. Um modelo de alta variância é muito complexo – ele memoriza os dados de treinamento, incluindo seu ruído, em vez de aprender o padrão subjacente.
+
+**Ruído irredutível** é a aleatoriedade natural nos dados que nenhum modelo pode eliminar.
+
+A desvantagem: reduzir o viés tende a aumentar a variância e vice-versa. Seu trabalho como profissional de aprendizado de máquina é encontrar o ponto ideal.
+
+## 📈 Underfitting: muito simples de aprender
+
+**O underfitting** ocorre quando seu modelo é muito simples para capturar o verdadeiro padrão nos dados. Ele tem um desempenho ruim em *ambos* dados de treinamento e novos dados.
+
+### Um exemplo visual
+
+Imagine que você tem dados que mostram os preços das casas com base no tamanho. A verdadeira relação é aproximadamente uma curva suave – os preços aumentam com o tamanho, mas com alguma estagnação no topo.
+
+Se você ajustar uma linha reta horizontal a esses dados:
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+O modelo ignora a relação real entre o tamanho da casa e o preço. Não importa se você mostra dados de treinamento ou novos dados - está errado de qualquer maneira.
+
+### Sinais de subajuste
+- Alto erro de treinamento E alto erro de teste
+- As previsões do modelo agrupam-se em torno de uma média, independentemente da entrada
+- As curvas de aprendizado mostram que os erros de treinamento e validação são altos e próximos.
+
+### Causas de subajuste
+- O modelo é muito simples para a complexidade dos dados (por exemplo, modelo linear para dados não lineares)
+- Poucas épocas de treinamento (o modelo não teve tempo para aprender)
+- Regularização muito agressiva (veja abaixo)
+- Faltam recursos importantes na entrada
+
+## 📉 Overfitting: muito complexo, ruído de memorização
+
+**Overfitting** ocorre quando seu modelo aprende os dados de treinamento *muito bem* — incluindo seu ruído e variação aleatória — e não consegue generalizar para novos exemplos.
+
+### Um exemplo visual
+
+Usando um polinômio de 15 graus para ajustar os mesmos dados de preços de casas:
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+O polinômio se torceu em nós para passar por todos os pontos de treinamento – incluindo os valores discrepantes barulhentos. Ele memorizou o conjunto de treinamento em vez de aprender o padrão subjacente. Em dados invisíveis, é inútil.
+
+<FunFact>Um modelo que memoriza perfeitamente todos os seus dados de treinamento é às vezes chamado de "o pior modelo do mundo" - ele tem 100% de precisão de treinamento, mas não pode generalizar, tornando-o completamente inútil para seu propósito real.</FunFact>
+
+### Sinais de sobreajuste
+- Erro de treinamento muito baixo, mas erro de teste muito maior (uma grande **lacuna de generalização**)
+- O desempenho do modelo diminui significativamente em quaisquer novos dados
+- O modelo é surpreendentemente sensível a pequenas mudanças nos dados de entrada
+
+## 🔀 Treinamento / Validação / Divisão de Teste
+
+Uma ferramenta fundamental para detectar overfitting é dividir seus dados em três conjuntos:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **Conjunto de treinamento**: o que o modelo aprende
+- **Conjunto de validação**: o que você usa para ajustar hiperparâmetros e detectar overfitting *durante o desenvolvimento*
+- **Conjunto de testes**: a avaliação final prolongada — toque apenas uma vez, bem no final
+
+O conjunto de validação é o seu sistema de alerta precoce. Se a precisão do treinamento continuar melhorando, mas a precisão da validação estagnar ou cair, você está se ajustando demais.
+
+<ThinkAboutIt>Por que é importante manter seu conjunto de testes completamente separado e usá-lo apenas uma vez? O que poderia dar errado se você avaliasse repetidamente o conjunto de testes e fizesse ajustes com base nele?</ThinkAboutIt>
+
+## 🛡️ Correções para overfitting
+
+### 1. Regularização
+
+A regularização adiciona uma penalidade à função de perda que desencoraja o modelo de aprender padrões excessivamente complexos.
+
+**Regularização L2 (Ridge)** penaliza pesos grandes:
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**Regularização L1 (Lasso)** pode levar alguns pesos até zero, realizando a seleção de recursos:
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Desistência (Redes Neurais)
+
+Durante o treinamento, "descarte" aleatoriamente (definido como zero) uma proporção de neurônios:
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+Isso evita que os neurônios se adaptem e força a rede a aprender representações distribuídas mais robustas.
+
+### 3. Parada antecipada
+
+Monitore a perda de validação durante o treinamento e pare quando ela começar a aumentar:
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. Mais dados de treinamento
+
+Mais dados tornam mais difícil para o modelo memorizar o ruído – simplesmente há muito para caber com exatidão. Quando a coleta de dados é cara, o **aumento de dados** (criação de cópias modificadas de exemplos existentes) pode ajudar.
+
+### 5. Arquitetura mais simples
+
+Às vezes, a solução certa é simplesmente escolher um modelo menos complexo para o problema.
+
+## 🔄 Validação cruzada
+
+Com conjuntos de dados pequenos, uma única divisão train/val pode ser enganosa devido à aleatoriedade. **A validação cruzada K-fold** fornece uma estimativa mais confiável:
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+Os dados são divididos em 5 partes; o modelo treina em 4 e valida em 1, girando a cada vez. A pontuação final é a média de todos os 5 – muito mais confiável do que uma única divisão.
+
+<Quiz question="Um modelo atinge 99% de precisão nos dados de treinamento, mas apenas 62% nos dados de teste. O que isso indica?" options="O modelo é inadequado - é muito simples|O modelo está perfeitamente calibrado|O modelo está superajustado – ele memorizou os dados de treinamento em vez de generalizar|O conjunto de dados de teste deve ser quebrado" answer="2" explanation="Uma grande lacuna entre a precisão do treinamento (99%) e a precisão do teste (62%) é a assinatura clássica do overfitting. O modelo memorizou os dados de treinamento, incluindo seu ruído, e não consegue generalizar para novos exemplos." />
+
+## Principais conclusões
+
+- **Underfitting** (alto viés): o modelo é muito simples; ele tem um desempenho ruim em *tanto* dados de treinamento quanto de teste — corrija usando um modelo mais complexo ou adicionando recursos
+- **Overfitting** (alta variância): o modelo é muito complexo; ele tem um ótimo desempenho em dados de treinamento, mas ruim em dados de teste – corrija regularizando, adicionando dados ou simplificando o modelo
+- A **compensação viés-variância** é a tensão fundamental: reduzir um tende a aumentar o outro; seu objetivo é encontrar o ponto ideal
+- Sempre divida os dados em conjuntos de **treinamento/validação/teste** — o conjunto de teste deve ser tocado apenas uma vez, no final
+- **Principais correções para overfitting**: regularização L1/L2, abandono, parada antecipada, mais dados, arquitetura mais simples
+- A **validação cruzada** fornece uma estimativa de desempenho mais confiável quando os dados são limitados, calculando a média dos resultados em várias divisões de treinamento/validação

@@ -1,0 +1,102 @@
+---
+title: "Árboles de decisión: el algoritmo que puedes dibujar en papel"
+description: "Descubra cómo funcionan los árboles de decisión, por qué son uno de los algoritmos de aprendizaje automático más intuitivos y cuándo utilizarlos."
+order: 15
+difficulty: "intermediate"
+duration: 25
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+# Árboles de decisión: el algoritmo que puedes dibujar en papel 🌳
+
+La mayoría de los algoritmos de aprendizaje automático son cajas negras: ingresas datos, sucede algo matemático en su interior y surge una predicción. Los árboles de decisión son diferentes. Son uno de los pocos algoritmos que puede explicar completamente a un colega sin conocimientos técnicos, dibujar en una pizarra y aún así confiar para hacer predicciones precisas.
+
+---
+
+## 🎮 La analogía de las 20 preguntas
+
+Probablemente hayas jugado 20 Preguntas: una persona piensa en algo y otras hacen preguntas de sí o no para reducirlo. "¿Está vivo? ¿Es más grande que un coche? ¿Vive en el agua?" Cada respuesta elimina una enorme franja de posibilidades hasta que la respuesta se vuelve obvia.
+
+Un árbol de decisiones funciona exactamente así. Dado un nuevo punto de datos para clasificar, el árbol hace una serie de preguntas sobre sus características, siguiendo las ramas que coinciden con cada respuesta, hasta llegar a una hoja: una predicción final.
+
+<Illustration src="/images/lessons/decision-trees-explained.svg" alt="Un árbol de decisiones para clasificar animales: primero se divide en ”¿tiene alas?”, luego ”¿vive en el agua?”, lo que lleva a nodos de hojas con nombres de animales." caption="Un árbol de decisión plantea una serie de preguntas sobre características, reduciéndose a una predicción en cada nodo de hoja." />
+
+---
+
+## 🌿 Anatomía de un árbol
+
+Antes de entrar en cómo aprenden los árboles, nombremos las partes:
+
+- **Nodo raíz**: la pregunta principal; la característica más importante
+- **Nodos internos**: preguntas en cada punto de sucursal
+- **Sucursales**: los caminos tomados según las respuestas de sí/no (o rango de valores)
+- **Nodos hoja**: los puntos finales; cada uno tiene una predicción final
+
+Un único punto de datos viaja de la raíz a la hoja, respondiendo una pregunta en cada nodo, hasta llegar a una predicción.
+
+---
+
+## 📐 Cómo aprende un árbol de decisiones
+
+La parte inteligente: ¿cómo decide el algoritmo *qué* pregunta hacer en cada nodo? Intenta todas las divisiones posibles en cada característica y elige la que mejor separa los datos.
+
+### Ganancia de información e impureza de Gini
+
+Dos medidas comunes de "mejor separación":
+
+La **impureza de Gini** mide qué tan mezclado está un grupo. Un nodo perfectamente puro (todos los ejemplos pertenecen a una clase) tiene una impureza de Gini de 0. Un nodo completamente mezclado tiene la impureza máxima. El algoritmo prefiere divisiones que produzcan los nodos secundarios más puros.
+
+La **ganancia de información** es similar: mide cuánto reduce una división la incertidumbre (entropía) sobre la etiqueta de clase. Mayor ganancia de información = mejor división.
+
+Ambas medidas plantean la misma pregunta subyacente: *después de dividirnos en esta característica, ¿cuánto más seguro estoy acerca de la clase?*
+
+<FunFact>El algoritmo CART (árboles de clasificación y regresión), introducido en 1984 por Breiman, Friedman, Olshen y Stone, es la base de la mayoría de las implementaciones modernas de árboles de decisión. A pesar de tener 40 años, sigue siendo uno de los algoritmos de aprendizaje automático más utilizados.
+</FunFact>
+
+---
+
+## ✂️ Sobreajuste y poda
+
+Si no se limita, un árbol de decisiones crecerá hasta que cada ejemplo de entrenamiento tenga su propia hoja, lo que logrará una precisión del 100 % en los datos de entrenamiento, pero fallará por completo en los datos nuevos. Esto es **sobreajuste**.
+
+Imagínese memorizar palabra por palabra cada pregunta de un examen anterior en lugar de comprender el tema. Aprobarías los exámenes anteriores pero reprobarías el examen real.
+
+Dos remedios principales:
+
+1. **Poda previa (detención anticipada)**: establezca límites durante el entrenamiento: profundidad máxima, muestras mínimas por hoja, umbral mínimo de ganancia de información. El árbol deja de crecer cuando alcanza estos límites.
+
+2. **Posada posterior**: haga crecer el árbol completo y luego recorte las ramas que no mejoren el rendimiento en un conjunto de validación.
+
+<ThinkAboutIt>Un árbol de decisión con profundidad 1 (una sola pregunta) se denomina "fragmento de decisión". Es extremadamente simple y casi con certeza no es adecuado. Un árbol de profundidad 100 con una muestra por hoja está sobreajustado. ¿Cómo decidirías dónde parar?
+</ThinkAboutIt>
+
+---
+
+## 🌲 De los árboles a los bosques
+
+Un único árbol de decisión es poderoso pero frágil: pequeños cambios en los datos de entrenamiento pueden producir árboles muy diferentes. La solución: cultivar cientos de árboles, cada uno de ellos entrenado en un subconjunto aleatorio de datos y características, y luego **promediar sus predicciones**.
+
+Este es un **Bosque Aleatorio**, uno de los algoritmos más confiables y más utilizados en todo el aprendizaje automático. Lo cubrirá en profundidad en una lección posterior. Por ahora, recuerde: los árboles individuales son interpretables, los bosques son robustos.
+
+---
+
+## ✅ Fortalezas y ⚠️ Debilidades
+
+| Fortalezas | Debilidades |
+|---|---|
+| Totalmente interpretable: se puede visualizar | Propenso a sobreadaptarse sin poda |
+| No es necesario normalizar ni escalar funciones | Pequeños cambios de datos = árboles muy diferentes |
+| Maneja características numéricas y categóricas | Sesgado hacia características con más valores |
+| Funciona sin ingeniería de funciones | No es bueno para capturar relaciones lineales |
+| Rápido para entrenar y predecir | Los árboles individuales a menudo tienen un rendimiento inferior al de los conjuntos |
+
+---
+
+<Quiz question="¿Qué representa un nodo hoja en un árbol de decisión?" options={["Una pregunta sobre una característica", "La predicción final después de que se hayan respondido todas las preguntas.", "El conjunto de datos de entrenamiento", "Una medida de la precisión del modelo."]} correct={1} explanation="Los nodos hoja son los puntos finales de un árbol de decisión. Cuando un punto de datos ha seguido todas las ramas desde la raíz hasta la hoja, el nodo hoja contiene la predicción final: una etiqueta de clase para tareas de clasificación o un valor para regresión." />
+
+<Quiz question="¿Qué mide la 'impureza de Gini' en un árbol de decisión?" options={["¿Qué tan grande ha crecido el árbol?", "Qué tan mixto es un conjunto de etiquetas de clases: más bajo significa más puro", "El coste informático de entrenar el árbol.", "¿Cuántas características hay en el conjunto de datos?"]} correct={1} explanation="La impureza de Gini mide la probabilidad de clasificar incorrectamente un elemento elegido al azar si estuviera etiquetado de acuerdo con la distribución de etiquetas en un nodo. Un Gini de 0 significa que todos los ejemplos del nodo pertenecen a la misma clase: pureza perfecta." />
+
+<Quiz question="¿Qué es el sobreajuste en el contexto de los árboles de decisión?" options={["Cuando el árbol es demasiado superficial para aprender algo útil", "Cuando el árbol memoriza perfectamente los datos de entrenamiento pero no logra generalizarlos a nuevos datos", "Cuando el árbol tarda demasiado en entrenarse", "Cuando el árbol usa demasiadas funciones"]} correct={1} explanation="Un árbol de decisiones sobreajustado ha crecido tanto que crea un camino único para cada ejemplo de entrenamiento. Logra una precisión de entrenamiento casi perfecta, pero funciona mal con datos invisibles porque ha memorizado ruido en lugar de aprender patrones genuinos." />
+
+<Quiz question="¿Qué es un bosque aleatorio?" options={["Un conjunto de datos de imágenes de bosques utilizados para entrenar modelos de visión.", "Un conjunto de muchos árboles de decisión, cada uno de ellos entrenado con subconjuntos aleatorios de datos y características, con predicciones promediadas.", "Un único árbol de decisión muy profundo", "Una técnica de poda para eliminar ramas sin importancia."]} correct={1} explanation="Un bosque aleatorio combina cientos de árboles de decisión, cada uno de ellos construido a partir de una muestra aleatoria de datos de entrenamiento y un subconjunto aleatorio de características. Promediar sus predicciones reduce la varianza y hace que el conjunto sea mucho más sólido que cualquier árbol individual." />

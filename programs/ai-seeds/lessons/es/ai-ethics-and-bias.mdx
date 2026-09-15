@@ -1,0 +1,134 @@
+---
+title: "Ética y sesgo de la IA: cuando las máquinas se equivocan"
+description: "Comprender el sesgo en los sistemas de IA y por qué es importante la IA ética"
+order: 12
+difficulty: "beginner"
+duration: 10
+icon: "⚖️"
+published: true
+machineTranslated: true
+---
+# Ética y sesgo de la IA: cuando las máquinas se equivocan ⚖️
+
+Los sistemas de IA están tomando decisiones que afectan la vida de las personas. ¿Quién obtiene un préstamo? Quién consigue una entrevista de trabajo. Si un análisis médico parece sospechoso. Si el rostro de alguien coincide con una base de datos criminal.
+
+Estas no son posibilidades abstractas. Están sucediendo ahora mismo y, a veces, se están equivocando gravemente.
+
+---
+
+## 🤔 ¿Qué es el sesgo de IA?
+
+El sesgo de la IA ocurre cuando un sistema de IA produce resultados que son sistemáticamente injustos para ciertos grupos de personas.
+
+La palabra importante es **sistemáticamente**. No estamos hablando de errores aleatorios, sino de patrones de errores que afectan desproporcionadamente a las mujeres, las personas de color, las personas de determinadas regiones u otros grupos.
+
+Y aquí está la incómoda verdad: **Los sistemas de inteligencia artificial aprenden sus prejuicios de nosotros**.
+
+<FunFact>Un estudio de 2019 encontró que un algoritmo de atención médica ampliamente utilizado en los Estados Unidos estaba sesgado en contra de los pacientes negros, asignándoles puntuaciones de riesgo más bajas que a los pacientes blancos igualmente enfermos, lo que significaba que recibían menos atención médica. El algoritmo no había sido entrenado directamente en la raza; utilizó el costo de la atención médica como indicador, lo que reflejaba las desigualdades existentes en el acceso a la atención médica.
+</FunFact>
+
+---
+
+## 📚 ¿De dónde viene el sesgo?
+
+El sesgo en la IA casi siempre comienza con los **datos de entrenamiento**. Así es como se infiltra:
+
+### Sesgo histórico: el pasado congelado en datos
+
+Si una IA está entrenada en decisiones de contratación históricas, y esas decisiones históricamente favorecieron a los hombres para roles técnicos, la IA aprende a replicar ese patrón. No entiende la discriminación; simplemente ve que "los solicitantes masculinos tendían a ser contratados" y actúa en consecuencia.
+
+Amazon creó un famoso algoritmo de contratación que rebajaba los CV de las mujeres. Se había formado a partir de 10 años de contrataciones exitosas, un período en el que la contratación de tecnología estaba fuertemente dominada por los hombres. El algoritmo fue descartado silenciosamente cuando se descubrió el sesgo.
+
+### Sesgo de representación: ¿quién falta en los datos?
+
+Si sus datos de entrenamiento no incluyen ejemplos diversos, la IA funciona mal en grupos que estaban subrepresentados.
+
+La tecnología de reconocimiento facial es un claro ejemplo. Se probaron varios sistemas ampliamente utilizados y se descubrió que:
+- Identifica rostros masculinos blancos con una precisión superior al 99%
+- Identificar rostros femeninos de piel más oscura con tasas de error de hasta el 34%
+
+¿La razón? Los conjuntos de datos de entrenamiento estaban muy sesgados hacia rostros de piel más clara. Los sistemas no fueron probados en poblaciones diversas antes de su implementación.
+
+### Sesgo de medición: lo que se mide da forma a lo que se obtiene
+
+Si mide el éxito de forma sesgada, su IA aprende a optimizar para obtener resultados sesgados. Utilizar la "graduación de una de las mejores universidades" como indicador de la inteligencia pone en desventaja a personas que nunca tuvieron la oportunidad de asistir a las mejores universidades, no por su inteligencia, sino por su origen socioeconómico.
+
+---
+
+## 🌍 Consecuencias del mundo real
+
+Esto no es académico. El sesgo de la IA causa un daño real:
+
+**Justicia penal** — COMPAS (Perfiles de gestión de delincuentes correccionales para sanciones alternativas) era una herramienta utilizada en los tribunales de EE. UU. para predecir la probabilidad de reincidencia. Una investigación de 2016 realizada por ProPublica encontró que etiquetaba a los acusados ​​negros como de "alto riesgo" en una tasa de casi el doble que los acusados ​​blancos, incluso cuando se controlaban los antecedentes penales.
+
+**Atención médica**: el algoritmo de atención médica mencionado anteriormente dirigió menos atención preventiva a los pacientes negros que estaban tan enfermos como los pacientes blancos que recibían más recursos.
+
+**Préstamos**: múltiples estudios han descubierto que las herramientas algorítmicas de préstamos aprueban préstamos para solicitantes blancos a tasas más altas que para solicitantes negros o hispanos igualmente solventes.
+
+**Empleo**: se ha descubierto que las herramientas de selección de CV de IA penalizan palabras como "de mujeres" (como en "club de ajedrez de mujeres") o filtran a los graduados de universidades históricamente negras.
+
+<ThinkAboutIt>Si un algoritmo toma miles de decisiones al día, un pequeño porcentaje de error se convierte en una enorme cantidad de personas reales afectadas. Una tasa de error del 5% en un sistema que procesa 10.000 solicitudes de préstamo significa que 500 personas obtienen un resultado que no merecen todos los días. ¿La escala cambia su visión de lo que es una tasa de error "aceptable"?
+</ThinkAboutIt>
+
+---
+
+## 🔬 ¿Por qué es difícil solucionar esto?
+
+Quizás esté pensando: "¿No podemos simplemente comprobar si hay sesgos y eliminarlos?" Si tan solo fuera así de simple.
+
+**El problema del proxy**: los sistemas de IA pueden discriminar sin utilizar características protegidas directamente. El código postal se correlaciona con la raza debido a la segregación histórica. Los hábitos de compra se correlacionan con los ingresos. Los patrones de voz se correlacionan con el acento y la región. Puedes eliminar la "raza" de los datos, pero el algoritmo aún puede aprender a discriminar.
+
+**Compensaciones entre métricas de equidad**: existen formas matemáticamente diferentes de definir "justo". Un sistema que tiene tasas de error iguales en todos los grupos producirá resultados generales diferentes que un sistema que ofrece tasas positivas iguales. Satisfacer todas las definiciones simultáneamente es a menudo matemáticamente imposible.
+
+**Ciclos de retroalimentación**: si una IA decide quién será vigilado más intensamente, esas comunidades tendrán más delitos registrados, lo que entrena a la siguiente IA para vigilarlos aún más: un ciclo que se refuerza a sí mismo.
+
+---
+
+## 🌟 Por qué es importante la diversidad en los equipos de IA
+
+Una de las formas más efectivas de detectar prejuicios antes de que causen daño es tener **equipos diversos** que construyan sistemas de inteligencia artificial.
+
+Los equipos homogéneos tienen puntos ciegos. Cuando todos en una sala comparten antecedentes, experiencias de vida y suposiciones similares, es menos probable que pregunten: "¿Pero cómo afectaría esto a alguien que no se parece a nosotros?"
+
+Es más probable que un equipo diverso:
+- Aviso cuando los datos de entrenamiento omiten grupos importantes
+- Cuestionar si una métrica de resultados es justa para todos.
+- Abogar por la realización de pruebas en poblaciones subrepresentadas
+- Anticipar consecuencias no deseadas
+
+<FunFact>Una investigación de McKinsey encontró que las empresas con equipos ejecutivos diversos tienen un 36% más de probabilidades de obtener mejores resultados en rentabilidad, y específicamente en las empresas de productos de IA, los equipos diversos son mejores a la hora de crear productos que funcionen para diversos usuarios.
+</FunFact>
+
+---
+
+## 🛡️ Construyendo una IA más ética
+
+La comunidad de investigación de IA está trabajando activamente en soluciones:
+
+**Auditoría algorítmica**: probar sistemáticamente sistemas de IA en diferentes grupos demográficos antes y después de la implementación para encontrar disparidades.
+
+**Conjuntos de datos diversos y representativos**: crear deliberadamente conjuntos de datos de capacitación que incluyan grupos subrepresentados y documentar quién está incluido y quién no.
+
+**Herramientas de explicabilidad**: técnicas que ayudan a los humanos a comprender por qué una IA tomó una decisión específica, lo que facilita la detección de patrones injustos.
+
+**Regulación y rendición de cuentas** — La Ley de IA de la UE y legislación similar están creando requisitos legales para que ciertos sistemas de IA de alto riesgo sean auditados para detectar sesgos.
+
+**Diseño participativo**: Involucrar a las comunidades que se verán más afectadas por un sistema de IA en su diseño y prueba.
+
+---
+
+## 🎯 Qué puedes hacer
+
+No es necesario ser un ingeniero de aprendizaje automático para contribuir a una IA ética:
+
+- **Hacer preguntas** cuando se implementen sistemas de IA en decisiones de alto riesgo que afectan a las personas.
+- **Exija transparencia**: ¿quién capacitó esto? ¿Sobre qué datos? ¿Se ha realizado una prueba de sesgo?
+- **Regulación de apoyo** que exige responsabilidad por los sistemas de IA
+- **Abogar por la diversidad** en los equipos de tecnología
+- **Mantén la curiosidad**: el campo está evolucionando rápidamente y los ciudadanos informados crean presión para mejorar los estándares.
+
+La IA es una herramienta. Como toda herramienta, se puede utilizar bien o mal. La cuestión de si se utiliza de forma ética no es una cuestión técnica: es una cuestión humana.
+
+<Quiz question="¿Qué es el ”sesgo de representación” en los datos de entrenamiento de IA?" options={["Cuando la IA es demasiado lenta para representar a todos los usuarios", "Cuando ciertos grupos están subrepresentados en los datos de entrenamiento, lo que hace que el modelo tenga un rendimiento deficiente para esos grupos", "Cuando la IA representa a todos los grupos por igual", "Cuando los datos de entrenamiento se almacenan en el formato incorrecto"]} correct={1} explanation="El sesgo de representación ocurre cuando algunos grupos demográficos aparecen con mucha menos frecuencia que otros en los datos de entrenamiento. La IA aprende principalmente de los grupos dominantes, lo que lleva a una menor precisión y a resultados injustos para las poblaciones subrepresentadas, como se ve con los sistemas de reconocimiento facial que funcionaron mal en rostros de piel más oscura." />
+
+<Quiz question="¿Por qué eliminar la ”raza” de los datos de entrenamiento de una IA no logra eliminar el sesgo racial?" options={["Porque los sistemas de IA siempre recuerdan los datos eliminados", "Porque la raza determina la inteligencia", "Porque otras variables como el código postal o los hábitos de compra pueden actuar como indicadores de la raza.", "Porque el sesgo racial sólo proviene del algoritmo, no de los datos"]} correct={2} explanation="Debido a la segregación histórica y la desigualdad sistémica, muchas variables aparentemente neutrales (código postal, asistencia a la escuela, costo de la atención médica) se correlacionan fuertemente con la raza. Una IA entrenada en estas variables proxy puede discriminar efectivamente por raza sin siquiera ver la raza en los datos; esto se llama problema de proxy." />

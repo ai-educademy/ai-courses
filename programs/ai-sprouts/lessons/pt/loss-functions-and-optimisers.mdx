@@ -1,0 +1,135 @@
+---
+title: "Funções de perda e otimizadores - como a IA aprende com os erros"
+description: "Descubra como as funções de perda medem os erros de um modelo e como os otimizadores usam gradientes para reduzi-los sistematicamente."
+order: 7
+difficulty: "intermediate"
+duration: 15
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Funções de perda e otimizadores
+
+A retropropagação nos dá gradientes - mas gradientes *de quê*? Antes que o backprop possa ser executado, precisamos de um único número que capture o quão errado o modelo está. Esse número vem de uma **função de perda**. Assim que tivermos gradientes, um **otimizador** decide como atualizar os pesos. Juntos, eles formam o ciclo de aprendizagem.
+
+## O que é uma função de perda?
+
+Uma função de perda (também chamada de função de custo) pega a previsão do modelo e a resposta verdadeira e retorna um número que mede o "erro". O objetivo do treinamento é **minimizar** esse número.
+
+Pense nisso como uma pontuação no golfe – quanto menor, melhor. Uma perda de 0 significa uma previsão perfeita.
+
+<Illustration src="/images/lessons/loss-functions-and-optimisers.svg" alt="Uma curva em forma de U mostrando a perda no eixo y e o valor do peso no eixo x, com uma bola rolando em direção ao mínimo" caption="Treinar é como rolar uma bola ladeira abaixo em um cenário de perdas, em busca do ponto mais baixo." />
+
+## Funções de perda para regressão - MSE
+
+Ao prever valores contínuos (preços de casas, temperatura), usamos **Erro Quadrático Médio (MSE)**:
+
+```
+MSE = (1/n) × Σ(predicted - actual)²
+```
+
+A quadratura faz duas coisas: torna todos os erros positivos e pune erros grandes de forma desproporcional. Preveja um desconto no preço de uma casa em £ 100 mil e o erro quadrático será 100 vezes pior do que um desconto em £ 10 mil.
+
+<FunFact>O MSE remonta a Carl Friedrich Gauss em 1795 – mais de dois séculos antes das redes neurais. Ele o usou para rastrear a órbita do asteroide Ceres.
+</FunFact>
+
+## Funções de perda para classificação - Entropia cruzada
+
+Ao prever categorias (spam ou não, gato vs cachorro), usamos **perda de entropia cruzada**. Ele mede a que distância as probabilidades previstas do modelo estão dos rótulos verdadeiros.
+
+Se a resposta correta for “gato” e o modelo disser 99% gato, a perda será pequena. Se estiver escrito 10% gato, a perda é enorme. A entropia cruzada tem uma propriedade útil: torna-se *infinitamente* infeliz quando o modelo está confiantemente errado, criando um forte gradiente para corrigir o erro.
+
+**Entropia cruzada binária** é para problemas de duas classes. **Entropia cruzada categórica** lida com múltiplas classes comparando distribuições de probabilidade.
+
+<Quiz question="Por que o MSE é uma escolha ruim para tarefas de classificação?" options="É muito lento para calcular|Não penaliza respostas erradas e confiantes com severidade suficiente|Requer muita memória|Só funciona com imagens" answer="1" explanation="O MSE trata uma probabilidade de 0,4 versus 0,6 como um pequeno erro, mas na classificação isso pode significar prever a classe totalmente errada. A entropia cruzada penaliza previsões erradas com muito mais severidade, criando gradientes mais fortes para a aprendizagem." />
+
+## Descida Gradiente - Rolando em declive
+
+Com uma função de perda definida, podemos visualizar a **paisagem de perdas** - uma superfície onde cada ponto representa um conjunto de pesos e a altura é a perda. Treinar significa encontrar o vale mais baixo.
+
+**Gradiente descendente** é o algoritmo que nos leva até lá:
+
+1. Calcule o gradiente (inclinação) na posição atual.
+2. Dê um passo na direção oposta (descendo).
+3. Repita.
+
+O tamanho de cada etapa é controlado pela **taxa de aprendizagem** – sem dúvida o hiperparâmetro mais importante na aprendizagem profunda.
+
+### O dilema da taxa de aprendizagem
+
+- **Muito alto:** Você ultrapassa o vale, saltando para frente e para trás ou divergindo totalmente.
+- **Muito baixo:** Você se arrasta dolorosamente devagar e pode ficar preso em um mínimo local raso.
+- **Perfeito:** Você converge continuamente para uma boa solução.
+
+<ThinkAboutIt>Imagine descer uma montanha enevoada onde você só consegue sentir a encosta diretamente sob seus pés. Você desce a colina, mas não consegue ver toda a paisagem. Como você pode acabar em uma pequena depressão que não é o vale mais profundo? Este é o problema de mínimo local.
+</ThinkAboutIt>
+
+## Sabores de gradiente descendente
+
+### Descida gradiente em lote
+
+Calcula o gradiente usando **conjunto de dados inteiro** antes de cada atualização. Preciso, mas dolorosamente lento para grandes conjuntos de dados – imagine reler todos os livros de uma biblioteca antes de corrigir um único erro ortográfico.
+
+### Descida Gradiente Estocástica (SGD)
+
+Atualiza os pesos após cada **exemplo único**. Rápido, mas barulhento - o caminho ziguezagueia descontroladamente. O ruído pode realmente ajudar a escapar dos mínimos locais, o que é um benefício surpreendente.
+
+### Descida gradiente de minilote
+
+O ponto ideal prático. Calcula gradientes em um pequeno **lote** (normalmente de 32 a 512 exemplos). Equilibra velocidade e estabilidade e é o que praticamente todos os treinamentos modernos usam.
+
+## Otimizadores modernos
+
+O SGD simples tem limitações. Os pesquisadores desenvolveram otimizadores mais inteligentes que se adaptam à medida que avançam.
+
+### SGD com impulso
+
+Como uma bola pesada rolando ladeira abaixo, o impulso acumula velocidade em direções consistentes e amortece as oscilações. Se o gradiente continuar apontando na mesma direção, o momento acelera. Se continuar mudando de direção, o impulso o suaviza.
+
+### AdaGrad
+
+Adapta a taxa de aprendizagem **por parâmetro**. Pesos atualizados com frequência obtêm passos menores; pesos raramente atualizados obtêm passos maiores. Ótimo para dados esparsos (como texto), mas a taxa de aprendizado pode diminuir para zero com o tempo.
+
+### Adam (estimativa de momento adaptativo)
+
+Combina taxas adaptativas de momentum *e* por parâmetro. Ele mantém médias contínuas do gradiente (primeiro momento) e do gradiente quadrático (segundo momento). Adam é a **escolha padrão** para a maioria dos profissionais hoje.
+
+<Quiz question="Que vantagem Adam tem sobre o SGD básico?" options="Sempre encontra o mínimo global|Adapta as taxas de aprendizagem por parâmetro e usa impulso|Não requer nenhuma taxa de aprendizagem|Ele usa menos memória" answer="1" explanation="Adam combina impulso (direção de gradiente suavizada) com taxas de aprendizado adaptativo por parâmetro (a partir de estimativas de gradiente quadrático), tornando-o robusto em uma ampla gama de problemas sem ajustes extensos." />
+
+## Cronogramas de taxas de aprendizagem
+
+Em vez de fixar a taxa de aprendizagem, o treinamento moderno muitas vezes a **programa**:
+
+- **Decaimento de etapas:** Reduza pela metade a taxa a cada N épocas.
+- **Recozimento de cosseno:** Diminui suavemente seguindo uma curva de cosseno, às vezes com reinicializações a quente.
+- **Aquecimento:** Comece com uma taxa pequena, aumente gradualmente e depois diminua. Usado no treinamento do Transformer.
+
+A intuição: dar grandes passos cedo para explorar de forma ampla, e depois pequenos passos para fazer o ajuste fino.
+
+## Recorte gradiente - Trilhos de segurança
+
+Às vezes, os gradientes explodem (como vimos na lição de retropropagação). **Recorte de gradiente** limita a magnitude do gradiente antes da etapa de atualização. Se o gradiente exceder um limite, ele será reduzido proporcionalmente. Esta é uma prática padrão ao treinar RNNs e Transformers.
+
+<Quiz question="O que o recorte gradiente evita?" options="Gradientes desaparecendo|Sobreajuste|Explosão de gradientes causando atualizações instáveis|Convergência lenta" answer="2" explanation="O recorte de gradiente limita a magnitude dos gradientes a um limite máximo, evitando as enormes atualizações de peso que causam instabilidade no treinamento - o problema da explosão do gradiente." />
+
+<FunFact>O artigo do otimizador Adam (Kingma & Ba, 2014) tem mais de 150.000 citações, tornando-o um dos artigos mais citados em toda a ciência da computação.
+</FunFact>
+
+## Principais conclusões
+
+- **Funções de perda** quantificam o quão errado um modelo está - MSE para regressão, entropia cruzada para classificação.
+- **A descida gradiente** minimiza a perda pisando repetidamente na direção oposta ao gradiente.
+- A **taxa de aprendizagem** controla o tamanho do passo e é fundamental para acertar.
+- **Adam** é o otimizador ideal, combinando impulso e taxas adaptativas.
+- **Cronogramas de taxa de aprendizagem** e **recorte de gradiente** são estabilizadores de treinamento essenciais.
+
+<ThinkAboutIt>Se você estivesse treinando um modelo e a perda parasse de diminuir após algumas épocas, o que você investigaria primeiro: a taxa de aprendizado, a função de perda ou os dados? Por que?
+</ThinkAboutIt>
+
+---
+
+## 📚 Leitura adicional
+
+- [Andrej Karpathy - Uma receita para treinar redes neurais](https://karpathy.github.io/2019/04/25/recipe/) - Sabedoria prática sobre depuração de perdas e seleção de otimizador
+- [3Blue1Brown - Gradient Descent](https://www.3blue1brown.com/lessons/gradient-descent) - Intuição visual impressionante sobre como a descida gradiente navega em paisagens de perda
+- [Uma visão geral dos algoritmos de otimização de gradiente descendente (Ruder, 2016)](https://ruder.io/optimizing-gradient-descent/) - Comparação abrangente de SGD, Adam e amigos

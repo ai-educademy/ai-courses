@@ -1,0 +1,142 @@
+---
+title: "Verknüpfte Listen und Stapel – Die dynamischen Strukturen hinter KI"
+description: "Verstehen Sie, wie verknüpfte Listen, Stapel und Warteschlangen dynamische Daten in KI-Systemen und darüber hinaus verarbeiten."
+order: 4
+difficulty: "intermediate"
+duration: 15
+icon: "🔗"
+published: true
+machineTranslated: true
+---
+## Jenseits von Arrays – Dynamische Daten
+
+Arrays sind brillant, wenn Sie die Größe Ihrer Daten im Voraus kennen. Aber was passiert, wenn Daten unvorhersehbar eintreffen – ein Strom von Sensormesswerten, eine Warteschlange von Aufgaben, die eine KI verarbeiten muss, oder ein Gesprächsverlauf, der mit jeder Nachricht wächst? Sie brauchen Strukturen, die elegant wachsen und schrumpfen.
+
+Geben Sie **verknüpfte Listen**, **Stacks** und **Warteschlangen** ein – das dynamische Trio.
+
+## Verknüpfte Listen – Knoten und Zeiger
+
+Eine verknüpfte Liste speichert Elemente als Kette von **Knoten**. Jeder Knoten enthält zwei Dinge: die Daten selbst und einen Zeiger (Referenz) auf den nächsten Knoten in der Kette.
+
+```
+[data: "A" | next: →] → [data: "B" | next: →] → [data: "C" | next: null]
+```
+
+Im Gegensatz zu Arrays liegen verknüpfte Listenknoten nicht nebeneinander im Speicher. Sie können überall verstreut sein – der Zeiger zeigt Ihnen einfach an, wo Sie das nächste finden.
+
+<Illustration src="/images/lessons/linked-lists-and-stacks.svg" alt="Eine verknüpfte Liste mit drei durch Pfeile verbundenen Knoten im Vergleich zu einem Array mit zusammenhängenden Blöcken" caption="Verknüpfte Listenknoten sind im Gegensatz zu Array-Elementen, die nebeneinander liegen, durch Zeiger verbunden." />
+
+### Verknüpfte Listen vs. Arrays
+
+| Betrieb | Array | Verlinkte Liste |
+|-----------|-------|-------------|
+| Zugriff per Index | O(1) ⚡ | O(n) 🐢 |
+| Am Anfang einfügen | O(n) 🐢 | O(1) ⚡ |
+| In der Mitte einsetzen | O(n) 🐢 | O(1)* ⚡ |
+| Aus der Mitte löschen | O(n) 🐢 | O(1)* ⚡ |
+| Speichernutzung | Kompakt | Extra (Zeiger) |
+
+*Sobald Sie die Position gefunden haben, ist das Finden immer noch O(n).
+
+### Wenn verknüpfte Listen gewinnen
+
+- **Häufiges Einfügen und Löschen**: Wenn Sie in der Mitte einer Sammlung ständig Elemente hinzufügen und daraus entfernen, vermeiden verknüpfte Listen das kostspielige Verschieben, das Arrays erfordern.
+- **Unbekannte Größe**: Wenn Sie nicht wissen, wie viele Elemente Sie speichern werden, wachsen verknüpfte Listen um einen Knoten nach dem anderen, ohne dass die Größe geändert werden muss.
+- **Aufbau anderer Strukturen**: Stapel, Warteschlangen und komplexere Strukturen werden oft auf verknüpften Listen aufgebaut.
+
+<ThinkAboutIt>Mit der Tab-Leiste Ihres Browsers können Sie Tabs frei öffnen, schließen und neu anordnen. Wäre ein Array oder eine verknüpfte Liste besser für die Verwaltung der Liste der geöffneten Tabs geeignet? Überlegen Sie, was passiert, wenn Sie einen Tab in der Mitte schließen.
+</ThinkAboutIt>
+
+## Stapel – Last In, First Out (LIFO)
+
+Ein **Stapel** funktioniert genau wie ein Stapel Teller: Man fügt oben etwas hinzu und nimmt es oben heraus. Der zuletzt auf den Stapel gelegte Gegenstand wird als erster abgenommen.
+
+```
+Push "A" → [A]
+Push "B" → [A, B]
+Push "C" → [A, B, C]
+Pop      → [A, B]  (removed "C")
+Pop      → [A]     (removed "B")
+```
+
+Zwei Operationen definieren einen Stapel:
+- **Push**: Fügen Sie ein Element oben hinzu.
+- **Pop**: Entfernen Sie den Gegenstand von oben.
+
+Beide sind **O(1)** – sofort, unabhängig von der Stapelgröße.
+
+### Stacks in der realen Welt
+
+- **Rückgängig/Wiederherstellen**: Jeder Texteditor verwaltet einen Stapel von Aktionen. Drücken Sie Strg+Z und die letzte Aktion wird ausgeblendet und rückgängig gemacht.
+- **Browser-Zurück-Schaltfläche**: Ihr Browserverlauf ist ein Stapel. Jede neue Seite wird gepusht; Wenn Sie auf „Zurück“ klicken, wird die aktuelle Seite angezeigt.
+- **Aufrufstapel**: Wenn Ihr Code eine Funktion aufruft, wird diese Funktion auf den Aufrufstapel verschoben. Wenn es fertig ist, wird es abgerissen. So behalten Programme den Überblick, wo sie sich befinden.
+
+<FunFact>Wenn Sie einen „Stapelüberlauf“-Fehler sehen, bedeutet das im wahrsten Sinne des Wortes, dass im Aufrufstapel nicht mehr genügend Speicherplatz vorhanden ist – normalerweise, weil eine Funktion sich ständig selbst aufruft, ohne anzuhalten (unendliche Rekursion). Die berühmte Entwickler-Q&A-Site Stack Overflow ist nach genau diesem Fehler benannt.
+</FunFact>
+
+### Stacks in der KI
+
+- **Ausdrucksauswertung**: KI-Compiler und -Interpreter verwenden Stapel, um mathematische Ausdrücke in Berechnungsdiagrammen neuronaler Netzwerke auszuwerten.
+- **Backtracking-Algorithmen**: Wenn eine KI mögliche Lösungen erforscht (z. B. das Lösen eines Labyrinths), verwendet sie einen Stapel, um sich zu merken, wo sie sich befunden hat, damit sie zurückverfolgen kann.
+- **Tiefensuche**: Beim Durchsuchen von Bäumen und Diagrammen mit der Tiefe zuerst wird natürlich ein Stapel verwendet – wir werden dies in der nächsten Lektion untersuchen.
+
+<Quiz question="Sie implementieren eine Funktion zum Rückgängigmachen für eine Zeichenanwendung. Welche Datenstruktur modelliert den Aktionsverlauf am besten?" options="Ein nach Zeitstempel sortiertes Array|Eine Hash-Map von Aktions-IDs|Ein Stapel – die letzte Aktion sollte zuerst rückgängig gemacht werden|Eine Warteschlange – die älteste Aktion sollte zuerst rückgängig gemacht werden" answer="2" explanation="Für das Rückgängigmachen ist das Verhalten „Last In, First Out” (LIFO) erforderlich – Sie machen immer zuerst die letzte Aktion rückgängig. Ein Stack bietet genau dies mit O(1) Push- und Pop-Operationen." />
+
+## Warteschlangen – First In, First Out (FIFO)
+
+Eine **Warteschlange** funktioniert wie eine Warteschlange in einem Geschäft: Die erste Person, die sich anschließt, ist die erste Person, die bedient wird. Elemente werden hinten hinzugefügt und vorne entfernt.
+
+```
+Enqueue "A" → [A]
+Enqueue "B" → [A, B]
+Enqueue "C" → [A, B, C]
+Dequeue     → [B, C]  (removed "A")
+Dequeue     → [C]     (removed "B")
+```
+
+Zwei Operationen definieren eine Warteschlange:
+- **In die Warteschlange stellen**: Fügen Sie einen Artikel hinten hinzu.
+- **Aus der Warteschlange entfernen**: Das Element von vorne entfernen.
+
+### Warteschlangen in der realen Welt
+
+- **Druckwarteschlangen**: Dokumente werden in der Reihenfolge gedruckt, in der sie übermittelt werden.
+- **Aufgabenplanung**: Betriebssysteme verwenden Warteschlangen, um zu verwalten, welche Prozesse als nächstes ausgeführt werden.
+- **Nachrichtenwarteschlangen**: Webanwendungen verwenden Warteschlangen (wie RabbitMQ oder Kafka), um Tausende von Anfragen zu verarbeiten, ohne welche zu verwerfen.
+
+### Warteschlangen in der KI
+
+- **Breitensuche (BFS)**: Beim Erkunden eines Diagramms Ebene für Ebene wird eine Warteschlange verwendet – wir werden dies in der Lektion „Bäume und Diagramme“ sehen.
+- **Trainingsdaten-Pipelines**: Trainingsdaten werden in Warteschlangen geladen, sodass die GPU immer den nächsten Stapel bereit hat, wodurch Leerlaufzeiten vermieden werden.
+- **Anfragebearbeitung**: Wenn Tausende von Benutzern gleichzeitig eine KI-API abfragen, gelangen Anfragen in eine Warteschlange und werden der Reihe nach verarbeitet.
+
+<Quiz question="Eine KI-API empfängt 10.000 Anfragen pro Sekunde. Welche Struktur stellt sicher, dass Anfragen in der Reihenfolge ihres Eintreffens bearbeitet werden?" options="Ein Stapel – verarbeitet zuerst die neueste Anfrage|Eine Hash-Map – suchen Sie jede Anfrage anhand ihrer ID|Eine Warteschlange – erste Anfrage rein, erste Anfrage raus|Ein Array – speichert alle Anfragen und verarbeitet sie nach dem Zufallsprinzip" answer="2" explanation="Das FIFO-Verhalten (First In, First Out) einer Warteschlange sorgt für Fairness – Anfragen werden in der Reihenfolge ihres Eintreffens bearbeitet, wodurch ein Hungern verhindert wird, bei dem frühe Anfragen nie verarbeitet werden." />
+
+<Callout>Es gibt auch eine **Prioritätswarteschlange**, in der Artikel nach Priorität und nicht nach Ankunftsreihenfolge aus der Warteschlange entfernt werden. KI-Systeme nutzen Prioritätswarteschlangen, um dringende Aufgaben zuerst zu bearbeiten – beispielsweise könnte ein selbstfahrendes Auto der Hinderniserkennung Vorrang vor der Routenplanung geben.
+</Callout>
+
+## Echte KI-Nutzung: Sequenzverarbeitung und Speicherverwaltung
+
+### Sequenzverarbeitung
+
+Sprachmodelle verarbeiten Text als Sequenzen. Unter der Haube verwenden Frameworks wie PyTorch und TensorFlow Strukturen, die einer verknüpften Liste ähneln, um **Berechnungsdiagramme** zu erstellen – Operationsketten, bei denen jeder Schritt auf den nächsten verweist.
+
+### Speicherverwaltung in ML-Frameworks
+
+Beim Training eines neuronalen Netzwerks wird Speicher ständig zugewiesen und freigegeben, wenn Tensoren (mehrdimensionale Arrays) erstellt und zerstört werden. Speicherzuweiser verwenden häufig verknüpfte Listen freier Speicherblöcke, um geeignete Plätze für neue Tensoren zu finden.
+
+<ThinkAboutIt>Ein Chatbot muss sich die letzten 10 Nachrichten einer Konversation merken, ältere jedoch verwerfen. Würden Sie einen Stapel, eine Warteschlange oder etwas anderes verwenden? Was passiert, wenn die 11. Nachricht eintrifft?
+</ThinkAboutIt>
+
+<Quiz question="Welche Aussage zu verknüpften Listen ist FALSCH?" options="Verknüpfte Listen ermöglichen das Einfügen von O(1) am Anfang|Verknüpfte Listen benötigen zusätzlichen Speicher für Zeiger|Verknüpfte Listen bieten O(1)-Zugriff auf jedes Element nach Index|Verknüpfte Listen können ohne Größenänderung dynamisch wachsen" answer="2" explanation="Der Zugriff auf ein Element über den Index in einer verknüpften Liste erfordert einen Durchlauf vom Kopf aus – O(n)-Zeit. Im Gegensatz zu Arrays gibt es keine Möglichkeit, direkt zur Position k zu springen." />
+
+<FunFact>Der Rückgängig-Verlauf ist in den meisten Anwendungen begrenzt – typischerweise 100 bis 1.000 Aktionen. Ohne diese Begrenzung würde der Stack immer mehr Speicher verbrauchen. Einige fortschrittliche Systeme verwenden eine Kombination aus einem Stapel und einer Warteschlange (eine „Deque“), um die neuesten Aktionen beizubehalten und die ältesten zu verwerfen.
+</FunFact>
+
+## Wichtige Erkenntnisse
+
+- **Verknüpfte Listen** zeichnen sich durch dynamische Daten mit häufigen Einfügungen und Löschungen aus, opfern jedoch den direkten Indexzugriff.
+- **Stacks** (LIFO) Power-Undo-Systeme, Backtracking und Tiefendurchquerung.
+- **Warteschlangen** (FIFO) sorgen für eine faire Reihenfolge bei der Aufgabenplanung, BFS und Anforderungsbearbeitung.
+– Diese Strukturen arbeiten oft hinter den Kulissen in KI-Frameworks und verwalten den Speicher und Verarbeitungssequenzen.
+- Die Wahl zwischen Arrays und verknüpften Strukturen hängt von Ihren Zugriffsmustern ab – wahlfreier Zugriff bevorzugt Arrays, dynamische Modifikation bevorzugt verknüpfte Listen.

@@ -1,0 +1,133 @@
+---
+title: "Tokenização – Como a IA lê texto"
+description: "Saiba como os modelos de linguagem dividem o texto em tokens usando BPE e outros algoritmos e por que a tokenização molda tudo, desde o custo até a capacidade."
+order: 8
+difficulty: "intermediate"
+duration: 14
+icon: "🔤"
+published: true
+machineTranslated: true
+---
+# Tokenização - Como a IA lê texto
+
+As redes neurais funcionam com números. Eles não conseguem ler a palavra “olá” como você. Antes que qualquer modelo de linguagem possa processar texto, ele deve ser dividido em pequenos pedaços numéricos chamados **tokens**. Este passo aparentemente simples tem consequências profundas na forma como a IA compreende – e interpreta mal – a linguagem.
+
+## Por que a IA não consegue apenas ler caracteres?
+
+A abordagem mais simples: trate cada personagem como um token. "Olá" torna-se `['H', 'e', 'l', 'l', 'o']` - cinco tokens.
+
+O problema? As palavras tornam-se sequências absurdamente longas. Um ensaio de 500 palavras pode se transformar em tokens de mais de 2.500 caracteres. Como os modelos do Transformer são dimensionados quadraticamente com o comprimento da sequência, isso é computacionalmente brutal. Pior ainda, os caracteres individuais quase não têm significado - o modelo deve aprender que 'c', 'a', 't' juntos significam um animal peludo.
+
+## Tokenização em nível de palavra
+
+O extremo oposto: cada palavra é um token. "O gato sentou" torna-se `['The', 'cat', 'sat']` - compacto e significativo.
+
+Mas isso cria um problema diferente: a **explosão de vocabulário**. Só o inglês tem centenas de milhares de palavras. Adicione erros ortográficos, jargão técnico e código e o vocabulário se tornará incontrolável. Qualquer palavra que não esteja no vocabulário torna-se um token `[UNK]` desconhecido - um beco sem saída para a compreensão.
+
+<ThinkAboutIt>Se um modelo que usa tokens de nível de palavra encontrar "ChatGPT" pela primeira vez e não estiver no vocabulário, ele se tornará `[UNK]`. Como isso pode afetar a capacidade do modelo de discutir novas tecnologias?
+</ThinkAboutIt>
+
+## O ponto ideal - Tokenização de subpalavras
+
+Os modelos de linguagem modernos usam **tokenização de subpalavras**, que fica entre caracteres e palavras. As palavras comuns permanecem inteiras ("o", "e"), enquanto as palavras raras são divididas em pedaços significativos ("un" + "acreditar" + "capaz").
+
+Isso nos dá um vocabulário gerenciável (normalmente de 32.000 a 100.000 tokens) ao lidar com qualquer texto - até mesmo palavras que o modelo nunca viu antes.
+
+<Illustration src="/images/lessons/tokenisation.svg" alt="A palavra 'inacreditável' é dividida em três tokens de subpalavra: 'un', 'acreditar' e 'capaz', com setas mostrando como eles se recombinam" caption="A tokenização de subpalavras divide palavras raras em pedaços reutilizáveis, mantendo as palavras comuns inteiras." />
+
+## Codificação de pares de bytes (BPE) - passo a passo
+
+**BPE** é o algoritmo por trás dos modelos GPT. Veja como ele constrói um vocabulário:
+
+1. **Comece** com caracteres individuais: `{'h', 'e', 'l', 'o', 'w', 'r', 'd', ' '}`.
+2. **Conte** quais pares de fichas adjacentes aparecem com mais frequência no texto de treinamento.
+3. **Mesclar** o par mais frequente em um novo token. Se 'l' + 'o' aparecer mais, crie 'lo'.
+4. **Repita** as etapas 2–3 até atingir o tamanho de vocabulário desejado.
+
+**Exemplo resolvido** com o texto "low lower lower":
+
+| Etapa | Par mais frequente | Novo token | Vocabulário cresce |
+|------|-------------------|-----------|-----------------|
+| 1 | eu + o | eis | ...lo... |
+| 2 | ei + w | baixo | ...baixo... |
+| 3 | e + r | eh | ... er... |
+| 4 | baixo + e | baixo | ...baixo... |
+
+Depois de mesclagens suficientes, palavras comuns e fragmentos de palavras emergem naturalmente dos dados.
+
+<FunFact>O BPE foi originalmente inventado em 1994 como um algoritmo de compressão de dados. Foi reaproveitado para PNL em 2015 por Sennrich et al. - um belo exemplo de ideias que cruzam disciplinas.
+</FunFact>
+
+## Outros métodos de tokenização
+
+### WordPiece
+
+Usado pelo BERT e modelos relacionados. Semelhante ao BPE, mas em vez de mesclar o par mais frequente, ele mescla o par que maximiza a **probabilidade** dos dados de treinamento. As partes das subpalavras são prefixadas com `##` (por exemplo, "tocando" → `['play', '##ing']`).
+
+### Frase
+
+Trata a entrada como um fluxo de bytes brutos - sem pré-tokenização por espaços. Isto é crucial para idiomas como o japonês e o chinês, que não utilizam espaços entre as palavras. GPT-4 e LLaMA usam abordagens no estilo SentencePiece.
+
+## Como o GPT-4 tokeniza o texto
+
+GPT-4 usa uma variante BPE chamada **cl100k_base** com aproximadamente 100.000 tokens em seu vocabulário. Alguns comportamentos surpreendentes:
+
+- "Olá, mundo" → 2 tokens (`Hello`, ` world` - observe que o espaço está anexado).
+- "indivisibilidade" → 4 tokens (`ind`, `iv`, `isibility` - divide palavras raras).
+- Um único emoji 🎉 → geralmente de 1 a 3 tokens.
+- Código Python `def hello():` → cada palavra-chave e símbolo normalmente é seu próprio token.
+
+<Quiz question="Por que os modelos de linguagem usam tokenização de subpalavras em vez de palavras inteiras?" options="Isso torna o modelo mais rápido na inferência|Mantém o vocabulário gerenciável enquanto lida com qualquer texto, incluindo palavras invisíveis|Melhora o reconhecimento de imagem|Reduz a necessidade de GPUs" answer="1" explanation="A tokenização de subpalavras equilibra o tamanho do vocabulário (mantendo-o prático entre 32 mil e 100 mil tokens) com a cobertura - palavras raras ou novas são decompostas em pedaços de subpalavras conhecidas, em vez de serem descartadas como desconhecidas." />
+
+## A compensação do tamanho do vocabulário
+
+| Tamanho do vocabulário | Prós | Contras |
+|----------------|------|------|
+| Pequeno (8k) | Modelo menor, menos incorporações | Sequências mais longas, processamento mais lento |
+| Grande (100k+) | Sequências mais curtas, tokens mais ricos | Mesa de incorporação maior, mais memória |
+
+Encontrar o equilíbrio certo é uma decisão de engenharia que afeta a velocidade, a memória e a capacidade do modelo.
+
+## Desafios multilíngues
+
+Tokenisers treinados principalmente em textos em inglês são **tendenciosos**. A mesma frase em hindi ou árabe pode exigir de 3 a 5 vezes mais tokens do que seu equivalente em inglês, porque esses scripts estavam sub-representados nos dados de treinamento. Isso significa:
+
+- Usuários que não falam inglês atingem os limites de contexto mais cedo.
+- Os custos da API são mais elevados por palavra para texto que não seja em inglês.
+- O modelo tem menos “espaço de pensamento” para raciocínios que não sejam do inglês.
+
+<Quiz question="Por que a mesma frase pode custar mais tokens de API em hindi do que em inglês?" options="Hindi tem mais letras|O tokeniser foi treinado em mais inglês, então as palavras em inglês são codificadas com mais eficiência|Hindi é uma língua mais difícil|Provedores de API cobram mais por hindi" answer="1" explanation="Os tokenizadores treinados em corpora com alto teor de inglês codificam palavras em inglês como tokens únicos, mas dividem as palavras em hindi em vários pedaços de subpalavras, inflando a contagem de tokens e, portanto, o custo." />
+
+## Contagem de tokens e implicações de custos
+
+Cada chamada de API para GPT-4, Claude ou Gemini é cobrada por token. Compreender a tokenização ajuda você a:
+
+- **Estime os custos** antes de executar trabalhos grandes.
+- **Otimizar prompts** - prompts mais curtos com o mesmo significado economizam dinheiro.
+- **Respeite as janelas de contexto** - GPT-4 Turbo aceita tokens de 128k; exceder isso trunca sua entrada silenciosamente.
+
+Uma regra geral para inglês: **1 token ≈ ¾ de uma palavra** ou cerca de 4 caracteres.
+
+<Quiz question="Aproximadamente quantos tokens equivale a um ensaio em inglês de 1.000 palavras?" options="500 fichas|750 fichas|1.333 fichas|3.000 fichas" answer="2" explanation="A aproximação comumente citada é 1 token por ¾ palavra para inglês, então 1.000 palavras ÷ 0,75 ≈ 1.333 tokens. A resposta mais próxima aqui é 1.333 tokens." />
+
+<FunFact>A biblioteca `tiktoken` de código aberto da OpenAI permite tokenizar texto localmente com exatamente o mesmo algoritmo que o GPT-4 usa. Experimente você mesmo escrevendo para ver quantos tokens suas mensagens realmente custam.
+</FunFact>
+
+<ThinkAboutIt>Se você estivesse construindo um modelo de linguagem para uma língua de poucos recursos como o galês, como abordaria a tokenização para garantir uma codificação justa e eficiente?
+</ThinkAboutIt>
+
+## Principais conclusões
+
+- A tokenização converte texto bruto em tokens numéricos que os modelos podem processar.
+- **BPE** constrói um vocabulário mesclando iterativamente os pares de caracteres mais frequentes.
+- A tokenização de subpalavras equilibra o tamanho do vocabulário com a capacidade de lidar com qualquer texto.
+- A parcialidade do Tokeniser prejudica os idiomas que não o inglês em termos de custo e capacidade.
+- Compreender os tokens ajuda a estimar custos e otimizar prompts.
+
+---
+
+## 📚 Leitura adicional
+
+- [Andrej Karpathy - nn-zero-to-hero (palestra Tokenizer)](https://karpathy.ai/zero-to-hero.html) - Construa um tokenizador BPE do zero junto com Karpathy
+- [OpenAI Tokenizer Tool](https://platform.openai.com/tokenizer) - Ferramenta interativa para ver como os modelos GPT tokenizam seu texto
+- [Hugging Face - Resumo de Tokenizers](https://huggingface.co/docs/transformers/tokenizer_summary) - Comparação clara de BPE, WordPiece e SentencePiece

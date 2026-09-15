@@ -1,0 +1,126 @@
+---
+title: "Cómo los datos impulsan la IA: el combustible detrás de cada sistema inteligente"
+description: "Descubra qué son los conjuntos de datos, por qué es importante la calidad de los datos y cómo los datos correctos enseñan a la IA a ser inteligente."
+order: 1
+difficulty: "beginner"
+duration: 12
+icon: "📊"
+published: true
+machineTranslated: true
+---
+# Cómo los datos impulsan la IA
+
+Ya sabes que la IA puede reconocer caras, traducir idiomas y recomendar canciones. Pero, ¿qué es lo que realmente impulsa todo eso? **Datos.** Sin datos, la IA es como un automóvil sin combustible: simplemente no puede ir a ninguna parte.
+
+En esta lección, exploraremos cómo son los conjuntos de datos, los diferentes tipos de datos que utiliza la IA y por qué la calidad de esos datos es tan importante.
+
+## ¿Qué es un conjunto de datos?
+
+Un conjunto de datos es una colección organizada de información de la que aprende un sistema de IA. Piense en ello como una hoja de cálculo gigante.
+
+- **Las filas** representan ejemplos individuales (por ejemplo, una foto de un gato, un registro de paciente).
+- **Las columnas** representan características: las características que se miden (por ejemplo, edad, color, tamaño).
+- **Las etiquetas** son las respuestas que queremos que la IA prediga (por ejemplo, "gato" o "perro").
+
+<Illustration src="/images/lessons/datasets-and-data.svg" alt="Una tabla de conjunto de datos simple que muestra filas de imágenes de animales con columnas para características como color y tamaño, y una columna de etiqueta que muestra un gato o un perro." caption="Un conjunto de datos es como una hoja de cálculo bien organizada donde cada fila es un ejemplo y cada columna es una característica." />
+
+<FunFact>El conjunto de datos de ImageNet contiene más de 14 millones de imágenes etiquetadas a mano en más de 20.000 categorías. Se necesitaron años de investigadores y miles de anotadores humanos para construirlo.
+</FunFact>
+
+## Tipos de datos
+
+La IA trabaja con dos amplias categorías de datos:
+
+### Datos estructurados
+
+Se trata de datos que encajan perfectamente en tablas con filas y columnas, como un registro de transacciones bancarias o el registro de un paciente de un hospital. Cada campo tiene un tipo claro (número, fecha, categoría).
+
+**Ejemplos:** cifras de ventas, lecturas de sensores, respuestas a encuestas.
+
+### Datos no estructurados
+
+Se trata de datos que no siguen un formato fijo. Incluye imágenes, videos, grabaciones de audio, correos electrónicos y publicaciones en redes sociales. Más del 80% de los datos del mundo no están estructurados.
+
+**Ejemplos:** fotos en tu teléfono, mensajes de voz, artículos de noticias.
+
+<Quiz question="¿Cuál de los siguientes es un ejemplo de datos no estructurados?" options="Una hoja de cálculo de las puntuaciones de los exámenes.|Una base de datos de direcciones de clientes.|Una colección de cartas escritas a mano.|Una tabla de precios de productos." answer="2" explanation="Las cartas escritas a mano no siguen un formato fijo de filas y columnas, lo que las convierte en datos no estructurados. Todas las demás opciones encajan perfectamente en las mesas." />
+
+## ¿Por qué la IA necesita tantos datos?
+
+Los humanos pueden aprender a reconocer a un perro después de ver unas pocas imágenes. La IA normalmente necesita miles, a veces millones, de ejemplos antes de poder hacer lo mismo. Esto se debe a que la IA no tiene una comprensión inherente del mundo. Todo conocimiento debe provenir de los datos.
+
+Cuanto más variados y representativos sean los datos, mejor se generalizará la IA a situaciones nuevas. Un modelo entrenado únicamente con fotografías de golden retrievers podría no reconocer a un caniche. La diversidad de datos conduce a la solidez de la IA.
+
+Esta es la razón por la que las empresas invierten mucho en recopilar, limpiar y curar grandes conjuntos de datos; a menudo es la parte más costosa y que requiere más tiempo de construir un sistema de IA.
+
+La buena noticia es que una vez que existe un conjunto de datos de alta calidad, se puede reutilizar y compartir, lo que acelera la investigación en todo el mundo.
+
+## Calidad de los datos: basura que entra, basura que sale
+
+La IA es tan buena como los datos de los que aprende. Si los datos son confusos, incompletos o incorrectos, la IA producirá resultados poco fiables. Este principio se conoce como **basura que entra, basura que sale (GIGO)**.
+
+Los problemas comunes de calidad de datos incluyen:
+
+- **Valores faltantes**: campos en blanco que dejan lagunas en lo que la IA puede aprender.
+- **Duplicados**: el mismo ejemplo aparece varias veces, lo que distorsiona el modelo.
+- **Etiquetas incorrectas**: una foto de un perro etiquetado como gato confunde el proceso de aprendizaje.
+- **Información desactualizada**: la capacitación sobre datos de 2005 no reflejará las tendencias de 2025.
+
+<ThinkAboutIt>Imagina que estás estudiando para un examen, pero faltan la mitad de las páginas de tu libro de texto y algunas respuestas al final son incorrectas. ¿Qué tan bien te desempeñarías? Eso es exactamente lo que sucede cuando la IA se entrena con datos de mala calidad.
+</ThinkAboutIt>
+
+## Conjuntos de datos del mundo real
+
+Algunos conjuntos de datos se han hecho famosos en la comunidad de IA:
+
+| Conjunto de datos | Qué contiene | Tamaño |
+|---------|-----------------|------|
+| **ImageNet** | Fotografías etiquetadas | Más de 14 millones de imágenes |
+| **Rastreo común** | Páginas web de todo Internet | Petabytes de texto |
+| **Wikipedia** | Artículos de enciclopedia | Más de 60 millones de artículos |
+| **MNIST** | Dígitos escritos a mano (0–9) | 70.000 imágenes |
+
+Estos conjuntos de datos están disponibles gratuitamente y se han utilizado para entrenar algunos de los modelos de IA más influyentes de la historia.
+
+<Quiz question="¿Qué contiene el conjunto de datos MNIST?" options="Imágenes de rayos X médicas|Imágenes de dígitos escritos a mano|Grabaciones de audio de discurso.|Fotografías satelitales" answer="1" explanation="MNIST es un conjunto de datos clásico de 70.000 imágenes de dígitos escritos a mano (0 a 9), ampliamente utilizado para enseñar a las máquinas a reconocer números." />
+
+## Etiquetado y anotación de datos
+
+Antes de que la IA pueda aprender de los datos, normalmente alguien necesita **etiquetarlos**. Esto significa decirle al sistema qué representa cada ejemplo.
+
+- Una foto se etiqueta como "gato" o "perro".
+- Una frase se marca como "sentimiento positivo" o "sentimiento negativo".
+- Un médico anota una exploración médica como "saludable" o "anormal".
+
+Este proceso se llama **anotación** y, a menudo, lo realizan seres humanos (a veces miles de ellos trabajando juntos).
+
+<FunFact>Muchas empresas de IA utilizan plataformas de crowdsourcing donde trabajadores de todo el mundo etiquetan datos por sólo unos pocos peniques por artículo. Es un esfuerzo global masivo que la mayoría de la gente nunca ve.
+</FunFact>
+
+## Sesgo de datos: cuando los datos se equivocan
+
+Los datos reflejan el mundo del que provienen, incluidos los prejuicios del mundo. Cuando un conjunto de datos sobrerrepresenta a un grupo o subrepresenta a otro, la IA entrenada en él heredará esos desequilibrios.
+
+**Ejemplos reales de sesgo de datos:**
+
+- Un algoritmo de contratación formado principalmente con CV masculinos aprendió a penalizar a las candidatas.
+- Los sistemas de reconocimiento facial entrenados principalmente en tonos de piel más claros funcionaron mal en tonos de piel más oscuros.
+- Una IA médica entrenada con datos de un país no detectó síntomas comunes en otras poblaciones.
+
+<Callout>El sesgo no es sólo un problema técnico: es social. Cada conjunto de datos conlleva las suposiciones y los puntos ciegos de las personas que lo crearon.
+</Callout>
+
+<ThinkAboutIt>Si entrenaras a una IA para que recomendara restaurantes pero solo le dieras datos de Londres, ¿daría buenas recomendaciones para alguien en Manchester? ¿Qué podría salir mal?
+</ThinkAboutIt>
+
+<Quiz question="¿Cuál es la consecuencia más probable de entrenar una IA con datos sesgados?" options="La IA funcionará más lentamente|La IA consumirá más electricidad|La IA producirá resultados injustos o inexactos|La IA se negará a hacer predicciones" answer="2" explanation="Los datos de capacitación sesgados conducen a modelos que reproducen y amplifican esos sesgos, produciendo resultados injustos o inexactos para los grupos subrepresentados." />
+
+## Conclusiones clave
+
+- Un **conjunto de datos** es una colección organizada de ejemplos de los que aprende la IA.
+- Los datos pueden ser **estructurados** (tablas) o **no estructurados** (imágenes, texto, audio).
+- **La calidad de los datos** determina directamente la calidad de la IA: basura que entra, basura que sale.
+- **Etiquetado** es el esfuerzo humano que le enseña a la IA lo que significa cada ejemplo.
+- El **sesgo** en los datos genera sesgos en la IA y tiene consecuencias en el mundo real.
+
+A continuación, veremos los **algoritmos** que realmente procesan todos estos datos y los convierten en inteligencia.

@@ -1,0 +1,99 @@
+---
+title: "Waarom we AI Educademy hebben gebouwd"
+description: "Het verhaal achter een gratis, open source AI-onderwijsplatform dat kunstmatige intelligentie leert in 11 talen – van absolute beginners tot gevorderden."
+date: "2026-03-12"
+author: "Ramesh Reddy Adutla"
+tags: ["ai-education", "open-source", "launch", "multilingual"]
+published: true
+image: "/images/blog/why-we-built-ai-educademy.png"
+machineTranslated: true
+---
+# Waarom we AI Educademy hebben gebouwd
+
+AI hervormt elke sector – maar het meeste AI-onderwijs zit achter betaalmuren, is alleen in het Engels geschreven en gaat ervan uit dat je al weet hoe je moet coderen. Wij wilden daar verandering in brengen.
+
+## Het probleem
+
+Toen ik AI begon te leren, merkte ik drie barrières op die het grootste deel van de wereld buiten de deur hielden:
+
+1. **Taal** — Bijna alle hoogwaardige AI-cursussen zijn in het Engels. Dat sluit miljarden leerlingen uit.
+2. **Kosten** — Premium AI-cursussen variëren van $50 tot $500+. Voor studenten in ontwikkelingslanden is dat een non-starter.
+3. **Vereisten** — De meeste cursussen beginnen met "eerst Python installeren..." — waardoor iedereen zonder technische achtergrond zich onmiddellijk vervreemdt.
+
+Dit zijn geen kleine gaten. Het zijn muren die de AI-geletterdheid geconcentreerd houden in een handvol rijke, Engelssprekende gemeenschappen.
+
+## Onze oplossing
+
+AI Educademy is een **gratis, open-sourceplatform** dat AI vanaf het absolute nulpunt leert, in uw taal. Geen codering vereist om te starten. Geen creditcard vereist. Ooit.
+
+### Wat maakt het anders
+
+- **11 talen** — Engels, Frans, Nederlands, Hindi, Telugu, Spaans, Portugees, Duits, Chinees, Japans en Arabisch. Er komt meer.
+- **Twee leertrajecten** — Het *AI-leerpad* (🌱 Seeds → 🌲 Forest) voor conceptueel begrip, en het *Craft Engineering Path* (✏️ Schets → 🏆 Meesterwerk) voor praktijkgericht bouwen.
+- **10 gestructureerde programma's** — Elk met zorgvuldig op elkaar afgestemde MDX-lessen, interactieve elementen en voortgangsregistratie.
+- **Interactief Lab** — Zeven experimenten, waaronder een Neural Network Playground, Prompt Lab en Sentiment Analyzer — allemaal uitgevoerd in de browser.
+- **AI-aangedreven functies** — Edu, onze ingebouwde chatbot, beantwoordt vragen over elk programma. De Mock Interview-simulator voert realistische STAR-methode interviews met feedback.
+- **Voltooiingscertificaten** — Voltooi alle lessen in een programma en download een persoonlijk PDF-certificaat.
+
+## De architectuur
+
+We hebben AI Educademy gebouwd als een modern, samenstelbaar platform:
+
+```
+┌─────────────────────────────────────────────┐
+│              aieducademy.org                 │
+│         Next.js 16 + React 19               │
+│      ┌──────────┐  ┌──────────────┐         │
+│      │  MDX      │  │  Interactive │         │
+│      │  Lessons  │  │  Lab         │         │
+│      └────┬─────┘  └──────┬───────┘         │
+│           │               │                  │
+│      ┌────▼───────────────▼──────┐           │
+│      │     Content Layer         │           │
+│      │  (Git Submodules per      │           │
+│      │   program — own repos)    │           │
+│      └───────────────────────────┘           │
+│                                              │
+│      ┌─────────┐  ┌──────────┐  ┌────────┐  │
+│      │ Auth    │  │ Progress │  │ AI Chat│  │
+│      │ NextAuth│  │ Neon PG  │  │ Gemini │  │
+│      └─────────┘  └──────────┘  └────────┘  │
+└──────────────────────────────────────────────┘
+```
+
+Elke cursus bevindt zich in zijn eigen GitHub-repository, die als een git-submodule in het platform wordt getrokken. Dit betekent:
+
+- **Inhoudauteurs** kunnen lessen schrijven zonder de platformcode aan te raken.
+- **Vertalers** kunnen een taal toevoegen door een map te maken in een cursusopslagplaats.
+- **Het platform wordt automatisch opnieuw opgebouwd** wanneer een inhoudsopslagplaats wijzigingen doorvoert.
+
+De tech-stack: Next.js 16 met App Router + Turbopack, TypeScript in strikte modus, Tailwind CSS 4, next-intl voor i18n, NextAuth v5 voor authenticatie en Neon Postgres voor persistentie. Het ontwerpsysteem is een [afzonderlijk npm-pakket](https://www.npmjs.com/package/@aieducademy/ai-ui-library) met een gepubliceerd [Verhalenboek](https://aieducademy.github.io/ai-ui-library/).
+
+## Standaard open source
+
+Elke regel platformcode heeft een MIT-licentie en is beschikbaar op [GitHub](https://github.com/ai-educademy). Wij zijn van mening dat de onderwijsinfrastructuur een publiek goed moet zijn.
+
+U kunt:
+- **Zelfhost** het volledige platform voor uw school of organisatie.
+- **Vorm** een cursusrepository en pas deze aan voor uw curriculum.
+- **Bijdragen** aan vertalingen, lessen, bugfixes of functies.
+
+## Wat is het volgende
+
+We zijn nog maar net begonnen. Op onze routekaart:
+
+- 🌍 **Meer talen** — binnenkort een door de gemeenschap aangestuurd vertaalportaal.
+- 🔌 **LMS-integratie** — LTI-ondersteuning voor universiteiten en scholen.
+- 🧪 **Interactieve codeoefeningen** — Coderen in de browser met directe feedback.
+- 📱 **Mobiele app** — AI-onderwijs offline brengen.
+- 🎯 **Gepersonaliseerde leertrajecten** — AI-aangedreven aanbevelingen op basis van uw voortgang.
+
+## Probeer het
+
+Ga naar [aieducademy.org](https://aieducademy.org) en begin met **AI Seeds** — ons beginnersparcours, ontworpen voor mensen zonder technische achtergrond. Het duurt ongeveer 10 minuten om uw eerste les te voltooien.
+
+Als je het nuttig vindt, [geef dan een ster aan de repository op GitHub](https://github.com/ai-educademy/ai-platform) ⭐ — het helpt meer mensen ons te ontdekken.
+
+---
+
+*AI Educademy is gebouwd en wordt onderhouden door [Ramesh Reddy Adutla](https://github.com/rameshreddy-adutla) en de open-sourcegemeenschap.*

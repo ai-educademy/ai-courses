@@ -1,0 +1,252 @@
+---
+title: "特征工程：教导机器什么是重要的"
+description: "了解特征工程如何将原始数据转换为强大的机器学习输入——这是区分优秀模型和优秀模型的技能。"
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# 特征工程：教会机器什么是重要的
+
+机器学习中有一句话：**垃圾输入，垃圾输出**。你可以拥有世界上最复杂的算法，但如果你向它提供准备不足的数据，结果将会很差。相反，如果给定优秀、精心准备的数据，简单算法的性能可能会优于给定原始、混乱数据的复杂算法。
+
+特征工程是将原始数据转换为机器学习算法可以有效学习的表示的技术。它可以说是应用机器学习中最有影响力的技能，也是深层领域知识与数据科学的结合。
+
+## 🧩 有什么特点？
+
+在机器学习中，**特征**是您尝试预测的事物的任何可测量的属性或属性。特征是模型的输入； **标签**（或目标）是输出。
+
+对于房价预测模型：
+-特征：平方英尺、卧室数量、邮政编码、建成年份、到最近学校的距离
+- 标签：销售价格
+
+对于电子邮件垃圾邮件分类器：
+- 特征：词频、发件人域、某些短语的存在、电子邮件长度
+- 标签：垃圾邮件 (1) 或非垃圾邮件 (0)
+
+特征的质量、数量和相关性通常比您选择的算法更重要。
+
+## 🗃️ 为什么原始数据很少适合模型
+
+现实世界的数据是混乱的。机器学习算法具有原始数据几乎无法满足的特定要求：
+
+- **仅限数字**：大多数算法无法直接处理文本、类别或日期
+- **无缺失值**：大多数算法无法处理 NaN 或空值
+- **相似的尺度**：具有截然不同的值范围的特征可能会扭曲基于梯度的学习
+- **有意义的表示**：原始时间戳或邮政编码不会编码重要的模式（是周末吗？是富裕地区吗？）
+
+特征工程是弥合原始数据和模型就绪输入之间差距的过程。
+
+## 📏 规范化和标准化
+
+当特征的尺度差异很大时，模型可能会被误导。值为数千的特征可以主导值为 0 到 1 之间的特征。
+
+### 最小-最大归一化（缩放至 [0, 1]）
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### 标准化（Z 分数，均值=0，std=1）
+
+比最小-最大缩放对异常值更稳健：
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**经验法则**：默认使用标准化。当您需要特定有限范围内的值（例如神经网络输入）时，请使用最小值-最大值。
+
+## 🏷️ 编码分类变量
+
+“红/绿/蓝”或“伦敦/曼彻斯特/伯明翰”等类别没有自然的数字顺序。在将它们提供给大多数算法之前，您需要对它们进行编码。
+
+### One-Hot 编码
+
+为每个类别创建一个二进制列。当类别没有固有顺序时最好：
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### 标签编码
+
+将每个类别映射到一个整数。仅当类别具有自然顺序时才使用：
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>初学者常见的一个错误是对城市名称进行标签编码，无意中告诉模型东京“比”伦敦“更重要”，这会导致奇怪的预测。对于无序类别始终使用 one-hot 编码。</FunFact>
+
+## 🕳️ 处理缺失值
+
+缺失数据在现实世界的数据集中几乎是普遍存在的。您有多种选择：
+
+### 插补
+
+用计算出的替代值填充缺失值：
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### 添加缺失指标
+
+有时，数据丢失这一事实本身就提供了信息：
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### 何时丢弃
+
+如果某列缺失值超过 70-80%（很少提供信息），则删除该列。仅当您有大量数据并且该行随机丢失（非系统性丢失）时才删除该行。
+
+## 🛠️ 创建新功能
+
+这就是特征工程成为一门艺术的地方。您可以使用领域知识来创建捕获原始数据中不可见模式的特征。
+
+### 日期/时间分解
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+原始时间戳不会直接告诉模型任何信息；这些派生特征揭示了诸如“凌晨 3 点欺诈高峰”或“周末销售高峰”等模式。
+
+### 互动功能
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### 文本特征
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>如果您正在构建一个模型来预测餐厅健康检查失败，您可以访问哪些原始数据，以及您可以从中设计哪些比单独使用原始数据更有用的新功能？</ThinkAboutIt>
+
+## 📊 特征重要性
+
+构建模型后，您可以衡量哪些功能最有用。这对于理解模型和决定保留或删除哪些功能都很有价值：
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+重要性接近于零的特征通常可以被删除而不影响性能——并且删除它们可以简化模型，减少训练时间，并可以提高泛化能力。
+
+## 🗜️ 降维：简介
+
+当你有成百上千个特征时，模型可能会陷入困境——这被称为**维数诅咒**。降维技术压缩特征，同时保留最重要的模式：
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA（主成分分析）是最常见的方法，但其他方法包括 t-SNE（用于可视化）和 UMAP（用于保留局部结构）。
+
+<Quiz question="您有一个数据集，其中”城市”列包含 50 个不同的城市名称。您应该使用什么编码方法？" options="标签编码 — 为每个城市分配一个 0 到 49 之间的整数|One-hot 编码 — 为每个城市创建一个二进制列|将其保留为文本 - 大多数模型都处理字符串|将所有城市换算为本国的 GDP" answer="1" explanation="城市名称没有自然顺序，因此标签编码会错误地暗示层次结构（城市 49 > 城市 0）。 One-hot 编码为每个城市创建一个二进制列，将它们正确表示为不同的无序类别。" />
+
+## 要点
+
+- **特征**是模型的输入；特征质量通常比算法选择更重要
+- 原始数据几乎从来都不是模型就绪的——它需要清理、转换和丰富
+- **标准化/标准化**将特征置于可比较的尺度上；默认使用标准化
+- **One-hot 编码**对于无序分类变量是正确的； **标签编码**仅适用于有序标签
+- **缺失值**可以通过插补（中位数/均值/众数）和添加缺失指示标志来处理
+- **从领域知识创建新功能** - 时间分解、比率、交互 - 通常会产生最大的性能提升
+- **特征重要性**分数可帮助您了解模型依赖哪些输入以及可以删除哪些输入
+- **降维**（例如，PCA）压缩高维数据，同时保留大部分有用的方差

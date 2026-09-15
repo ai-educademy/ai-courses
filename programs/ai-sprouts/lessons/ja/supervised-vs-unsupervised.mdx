@@ -1,0 +1,226 @@
+---
+title: "教師あり学習と教師なし学習: 主な違いの説明"
+description: "教師あり機械学習と教師なし機械学習を明確に比較し、各アプローチをいつ使用するかを、実際の例とアルゴリズムとともに示します。"
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+machineTranslated: true
+---
+# 教師あり学習と教師なし学習: 主な違いの説明
+
+機械学習の学習を始めるとき、最初の分かれ道の 1 つは、「どのような種類の学習を行っているのか?」ということです。答えによって、利用可能なアルゴリズム、必要なデータ、モデルの動作など、すべてが変わります。
+
+2 つの基本的なカテゴリは、**教師あり学習**と**教師なし学習**です。違いを理解することは単なる学術的なことではなく、新しい ML 問題に取り組むときに最初に行う決定です。
+
+## 🏷️ 主な特徴: ラベル
+
+教師あり学習と教師なし学習の最も基本的な違いは、**トレーニング データにラベルが含まれるかどうか**です。
+
+**ラベル付きデータ** は、データセット内の各例に「正しい答え」、つまりモデルに予測または分類してもらいたい結果が付属していることを意味します。
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**ラベルのないデータ** は、入力はあるが、事前定義された答えはなく、生の観察だけであることを意味します。
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+ラベル付きデータは作成に費用と時間がかかり、人間が手動で例に注釈を付ける必要があります。ラベルのないデータは豊富にあります (世界中のほとんどのデータにはラベルがありません)。この実際的な制約により、特定の問題に対してどのアプローチが可能であるかが決まります。
+
+## ✅ 教師あり学習
+
+教師あり学習では、モデルはラベル付きの例を学習することによって、入力から出力へのマッピングを学習します。 「スーパーバイザー」はラベル付けされたデータそのものであり、すべてのトレーニング例が正しい出力がどうあるべきかをモデルに伝えます。
+
+### 分類
+
+出力が **離散カテゴリ** の場合、それは分類の問題です。
+
+**例:**
+- このメールはスパムですか、それともスパムではありませんか?
+- この画像には猫や犬が含まれていますか?
+- このローン申請者は債務不履行になるでしょうか? (はい/いいえ)
+- この手書きの数字はどの数字 (0 ～ 9) を表しますか?
+
+**一般的なアルゴリズム:**
+- ロジスティック回帰
+- デシジョン ツリーとランダム フォレスト
+- サポート ベクター マシン (SVM)
+- ニューラルネットワーク
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### 回帰
+
+出力が **連続数値**の場合、それは回帰問題です。
+
+**例:**
+- この家は何で売れるのですか?
+- 明日のこの株価はどうなるでしょうか?
+- 来月は何台売れるでしょうか?
+- 6 か月後の患者の血圧はどうなるでしょうか?
+
+**一般的なアルゴリズム:**
+- 線形回帰
+- リッジ/なげなわ回帰
+- 勾配ブースティング (XGBoost、LightGBM)
+- ニューラルネットワーク
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>勾配ブースティング モデル (XGBoost、LightGBM、CatBoost) は、他のどのアルゴリズム カテゴリよりも多くの Kaggle 機械学習コンテストで優勝しています。これらは業界における構造化/表形式データの主な選択肢であり続けています。</FunFact>
+
+## 🔍 教師なし学習
+
+教師なし学習では、モデルは **ラベルなしで**データの構造を調査します。既知の出力へのマッピングを学習するのではなく、隠れたパターン、グループ化、または表現を独自に発見します。
+
+### クラスタリング
+
+クラスター アルゴリズムは、グループがどのようなものであるべきかを指示されることなく、類似したデータ ポイントをグループ化します。
+
+**例:**
+- 購買行動に応じて顧客をセグメント化します (セグメントを事前に定義することはありません)
+- ドキュメントをトピック別にグループ化する
+- ソーシャルネットワーク内のコミュニティを特定する
+- 異常（どのクラスターにも属さない点）の検出
+
+**一般的なアルゴリズム:**
+- K 平均法クラスタリング
+- DBSCAN (密度ベース、不規則な形状を処理)
+- 階層的クラスタリング
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### 次元削減
+
+可能な限り多くの構造を維持しながら、高次元データをより少ない次元に圧縮します。視覚化、前処理、および冗長な情報の削除に使用されます。
+
+**一般的なアルゴリズム:**
+- PCA (主成分分析) — 線形圧縮
+- t-SNE — 非線形で視覚化に優れています
+- UMAP — 高速で、ローカル構造とグローバル構造の両方を保持します
+- オートエンコーダー — ニューラルネットワークベースの圧縮
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>ある小売業者は 1,000 万人の顧客の取引データを持っていますが、事前に定義された顧客セグメントはありません。ここで教師なしクラスタリングが役立つのはなぜでしょうか?発見されたセグメントからどのようなビジネス上の意思決定が得られるでしょうか?</ThinkAboutIt>
+
+## 🔄 二項対立を超えて: 他の学習パラダイム
+
+教師あり/教師なしの区別は基本ですが、ML 環境はこれら 2 つのカテゴリだけよりも豊富です。
+
+### 半教師あり学習
+
+**少量のラベル付きデータ**と**大量のラベルなしデータ**を組み合わせて使用​​します。ラベル付けにはコストがかかるため、これは非常に実用的です。
+
+**例**: ラベル付きの医療スキャンが 1,000 件、ラベルのない医療スキャンが 100,000 件あるとします。半教師あり学習では、ラベルなしデータの利点を活用して、1,000 個のラベルだけで達成できるパフォーマンスを超えてパフォーマンスを向上させることができます。
+
+### 自己教師あり学習
+
+**ラベルがデータ自体から自動的に生成される**という特殊なケース。これは、最新の大規模言語モデルが事前トレーニングされる方法です。
+
+**例**: 文を取り出し、いくつかの単語を非表示にし、欠落している単語を予測するようにモデルをトレーニングします。 「ラベル」（正しい単語）は無料です。テキスト自体から直接取得されます。これが BERT のトレーニング方法です。
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+自己教師あり学習は、人間による注釈なしでインターネット規模のデータでトレーニングできるため、変革をもたらしました。
+
+### 強化学習
+
+エージェントは、*環境**で**アクション**を行い、**報酬**または**ペナルティ**を受け取ることで学習します。ラベルはなく、結果からのフィードバック信号のみです。
+
+**例**: チェスをする、ロボットの歩行を訓練する、データセンターの冷却システムを最適化する。これについては、独自のレッスンで詳しく説明します。
+
+## 🗺️ 正しいアプローチを選択する
+
+実践的な意思決定のフレームワークは次のとおりです。
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="星による評価やセンチメント ラベルのない製品レビューが 50,000 件あります。トピックごとに自動的にグループ化したいと考えています。どの学習アプローチを使用する必要がありますか?" options="教師あり分類 — トピックを分類するためにモデルをトレーニングする|教師なしクラスタリング — データ内のトピック グループを検出します|強化学習 — エージェントにレビューを読んで並べ替えてもらいます|回帰 — 各レビューのトピックスコアの数値を予測します。" answer="1" explanation="ラベルがなければ教師あり学習は不可能です。教師なしクラスタリング (K 平均法や LDA を使用したトピック モデリングなど) は、事前定義されたカテゴリなしでレビュー テキスト内の自然なグループ化を発見できます。" />
+
+## 重要なポイント
+
+- **教師あり学習**にはラベル付きデータが必要です。モデルは入力から既知の出力へのマッピングを学習します。分類 (離散出力) と回帰 (連続出力) に使用されます。
+- **教師なし学習**は、ラベルのないデータを処理します。モデルは隠れた構造を発見します。クラスタリング、次元削減、異常検出に使用されます。
+- 教師ありと教師なしの選択は、主に**データにラベルを付けているかどうか**と、どのような質問に答えようとしているかによって決まります。
+- **半教師あり学習**は、大量のラベルなしデータと並行して少量のラベル付きデータを使用してギャップを埋める
+- **自己教師あり学習** はデータから独自のラベルを生成します。これは、BERT や GPT などの最新の LLM の背後にある技術です
+- **強化学習**は両方とは異なります。エージェントはラベルなしで、環境とのインタラクションを通じて報酬シグナルから学習します。
+- 意思決定フレームワークを使用します: ラベル付け + カテゴリ出力 → 分類。ラベル付き + 連続出力 → 回帰;ラベルなし + グループの検索 → クラスタリング

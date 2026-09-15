@@ -1,0 +1,195 @@
+---
+title: "Visualisierte Bäume und Diagramme – Wie KI Beziehungen abbildet"
+description: "Sehen Sie, wie Bäume und Diagramme hierarchische und miteinander verbundene Daten darstellen, die die Entscheidungsfindung und Empfehlungen der KI unterstützen."
+order: 5
+difficulty: "intermediate"
+duration: 18
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+## Daten mit Beziehungen
+
+Bisher haben wir uns Daten in Zeilen angesehen – Arrays, verknüpfte Listen, Stapel und Warteschlangen ordnen Elemente in einer Reihenfolge an. Aber die reale Welt ist nicht linear. Stammbäume verzweigen sich. Soziale Netzwerke bilden Netze. Straßenkarten erstellen miteinander verbundene Routen.
+
+**Bäume** und **Diagramme** erfassen diese Beziehungen und sind das Herzstück einiger der leistungsstärksten KI-Techniken.
+
+## Bäume – Hierarchische Daten
+
+Ein **Baum** ist eine Struktur, in der jedes Element (als **Knoten** bezeichnet) untergeordnete Knoten haben kann, die eine Hierarchie bilden. Oben gibt es einen speziellen Knoten namens **Wurzel**, und Knoten ohne untergeordnete Knoten werden **Blätter** genannt.
+
+```
+         CEO
+        /    \
+      CTO    CFO
+     /   \      \
+   Dev1  Dev2   Accountant
+```
+
+<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="Eine Baumstruktur mit einem Wurzelknoten, der sich über drei Ebenen in untergeordnete Knoten verzweigt, sowie einem Diagramm mit miteinander verbundenen Knoten" caption="Bäume fließen von einer Wurzel nach unten; Graphen verbinden Knoten in beliebiger Richtung." />
+
+### Bäume sind überall
+
+- **Dateisysteme**: Ordner enthalten Unterordner, die Dateien enthalten – einen Baum.
+- **HTML/DOM**: Jede Webseite ist ein Baum aus verschachtelten Elementen.
+- **Organigramme**: Manager haben Berichte, die möglicherweise ihre eigenen Berichte haben.
+- **JSON-Daten**: Die verschachtelte Struktur von JSON ist im Grunde ein Baum.
+
+### Binärbäume
+
+Ein **Binärbaum** beschränkt jeden Knoten auf höchstens zwei Kinder – ein linkes Kind und ein rechtes Kind. Diese einfache Einschränkung ermöglicht leistungsstarke Algorithmen.
+
+```
+        8
+       / \
+      3   10
+     / \    \
+    1   6    14
+```
+
+### Binäre Suchbäume (BSTs)
+
+Ein **binärer Suchbaum** fügt eine Regel hinzu: Für jeden Knoten sind alle Werte im linken Teilbaum kleiner und alle Werte im rechten Teilbaum größer.
+
+Dies macht die Suche schnell – an jedem Knoten wissen Sie, ob Sie nach links oder rechts gehen müssen:
+
+```
+Find 6 in the BST above:
+  Start at 8 → 6 < 8, go left
+  At 3 → 6 > 3, go right
+  At 6 → Found it!
+```
+
+**Zeitkomplexität**: O(log n) für einen ausgeglichenen Baum – die gleiche logarithmische Magie wie die binäre Suche in einem sortierten Array.
+
+<Quiz question="Wie viele Vergleiche sind in einem ausgeglichenen binären Suchbaum mit 1.000.000 Knoten ungefähr erforderlich, um einen Wert zu finden?" options="1.000.000|500.000|Ungefähr 20|Ungefähr 100" answer="2" explanation="Eine ausgeglichene BST hat eine Tiefe log₂(1.000.000) ≈ 20. Sie führen einen Vergleich pro Ebene durch, sodass das Finden eines beliebigen Werts etwa 20 Schritte dauert – identisch mit der binären Suche in einem sortierten Array." />
+
+## Diagramme – Alles verbunden
+
+Ein **Graph** verallgemeinert Bäume, indem er die Hierarchiebeschränkung entfernt. Es besteht aus **Knoten** (auch Eckpunkte genannt) und **Kanten** (Verbindungen zwischen Knoten). Kanten können sein:
+
+- **Gerichtet** (einseitig: A → B) oder **ungerichtet** (zweiseitig: A ↔ B)
+- **Gewichtet** (jede Kante hat Kosten/Entfernung) oder **ungewichtet**
+
+```
+Social network (undirected):
+  Alice - Bob - Charlie
+    \       |
+     Diana - Eve
+
+Road map (weighted, directed):
+  London →(2h)→ Birmingham →(1.5h)→ Manchester
+```
+
+### Grafiken sind überall
+
+- **Soziale Netzwerke**: Menschen sind Knotenpunkte; Freundschaften sind Kanten.
+- **Das Internet**: Webseiten sind Knoten; Hyperlinks sind Kanten.
+- **Straßenkarten**: Kreuzungen sind Knoten; Straßen sind Kanten mit Distanzgewichten.
+- **Empfehlungssysteme**: Benutzer und Produkte sind Knoten; Interaktionen sind Kanten.
+
+<FunFact>Der soziale Graph von Facebook enthält über 3 Milliarden Knoten (Benutzer) und Hunderte Milliarden Kanten (Freundschaften). Diagrammalgorithmen bestimmen Ihren Newsfeed, Ihre Freundesvorschläge und die Anzeigenausrichtung – alles läuft auf einem der größten Diagramme, die jemals erstellt wurden.
+</FunFact>
+
+## Wie KI Bäume nutzt
+
+### Entscheidungsbäume
+
+Eines der am besten interpretierbaren KI-Modelle ist der **Entscheidungsbaum**. Es stellt eine Reihe von Ja/Nein-Fragen zur Klassifizierung von Daten:
+
+```
+Is temperature > 30°C?
+├── Yes: Is humidity > 70%?
+│   ├── Yes: "Don't play tennis"
+│   └── No: "Play tennis"
+└── No: Is it windy?
+    ├── Yes: "Don't play tennis"
+    └── No: "Play tennis"
+```
+
+Entscheidungsbäume sind beliebt, weil Menschen sie lesen und verstehen können – entscheidend im Gesundheitswesen, im Finanzwesen und in der juristischen KI, wo es auf Erklärbarkeit ankommt.
+
+<ThinkAboutIt>Ein Krankenhaus nutzt eine KI, um das Patientenrisiko vorherzusagen. Regulierungsbehörden verlangen von der KI, dass sie ihre Entscheidungen erklärt. Warum könnte hier ein Entscheidungsbaum einem tiefen neuronalen Netzwerk vorgezogen werden, auch wenn das neuronale Netzwerk etwas genauer ist?
+</ThinkAboutIt>
+
+### Zufällige Wälder
+
+Ein **zufälliger Wald** erstellt Hunderte von Entscheidungsbäumen, die jeweils auf einer leicht unterschiedlichen Teilmenge der Daten trainiert werden, und nimmt dann eine Abstimmung vor. Dieser Ensemble-Ansatz ist genauer und robuster als ein einzelner Baum – und immer noch eine der am weitesten verbreiteten KI-Techniken in der Industrie.
+
+## Wie KI Diagramme verwendet
+
+### Wissensgraphen
+
+Ein **Wissensgraph** speichert Fakten als Beziehungen zwischen Entitäten:
+
+```
+(London) --[capital_of]--> (United Kingdom)
+(London) --[located_in]--> (England)
+(Big Ben) --[located_in]--> (London)
+```
+
+Der Knowledge Graph von Google unterstützt die Informationsbereiche, die Sie in den Suchergebnissen sehen. Wenn Sie nach „Big Ben“ suchen, verbindet die Grafik ihn mit London, Großbritannien und verwandten Sehenswürdigkeiten.
+
+### Empfehlungsdiagramme
+
+Netflix, Spotify und Amazon modellieren Benutzer und Artikel als Diagramm. Wenn Benutzern A und B beide die Artikel
+
+<Quiz question="Warum eignen sich Grafiken zur Modellierung sozialer Netzwerke besser als einfache Listen?" options="Diagramme benötigen weniger Speicher|Diagramme können komplexe Viele-zu-Viele-Beziehungen zwischen Menschen darstellen, nicht nur lineare Abfolgen|Diagramme sind immer schneller zu durchsuchen|Diagramme sortieren die Daten automatisch" answer="1" explanation="Soziale Netzwerke haben komplexe Viele-zu-Viele-Beziehungen – eine Person kann Hunderte von Freunden haben, jeder mit seinen eigenen Verbindungen. Diagramme modellieren diese miteinander verbundenen Beziehungen auf natürliche Weise. Listen können nicht." />
+
+## Traversal – Durch Bäume und Diagramme gehen
+
+### Tiefensuche (DFS)
+
+DFS erkundet so weit wie möglich entlang eines Pfades, bevor es zurückverfolgt. Stellen Sie sich vor, Sie erkunden ein Labyrinth, indem Sie immer ganz links abbiegen, bis Sie in eine Sackgasse geraten, und dann zurückgehen.
+
+```
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+
+DFS order: A → B → D → E → C → F
+```
+
+DFS verwendet einen **Stack** (natürlich über Rekursion oder explizit). Es ist großartig für:
+- Labyrinthe und Rätsel lösen
+- Erkennen von Zyklen in Diagrammen
+- Topologische Sortierung (Ordnung von Aufgaben mit Abhängigkeiten)
+
+### Breitensuche (BFS)
+
+BFS erkundet alle Nachbarn in der aktuellen Tiefe, bevor es tiefer geht. Stellen Sie sich das wie Wellen vor, die sich von einem Stein ausbreiten, der in einen Teich geworfen wird.
+
+```
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+
+BFS order: A → B → C → D → E → F
+```
+
+BFS verwendet eine **Warteschlange**. Es ist großartig für:
+- Den kürzesten Weg in einem ungewichteten Diagramm finden
+- Analyse sozialer Netzwerke (Trennungsgrade)
+- Web-Crawling (Seiten Ebene für Ebene besuchen)
+
+<Callout>Beachten Sie, wie Stapel und Warteschlangen aus der vorherigen Lektion mit der Baum- und Diagrammdurchquerung verbunden sind? DFS verwendet einen Stapel; BFS verwendet eine Warteschlange. Datenstrukturen bauen aufeinander auf – deshalb ist es wichtig, sie in der richtigen Reihenfolge zu lernen.
+</Callout>
+
+<Quiz question="Sie möchten auf einer Karte die kürzeste Route zwischen zwei Städten finden, auf der alle Straßen gleich lang sind. Welche Durchquerung sollten Sie verwenden?" options="Tiefensuche – es werden zuerst tiefere Pfade erkundet|Breitensuche – findet den kürzesten Weg in ungewichteten Diagrammen|Binäre Suche – sie funktioniert mit sortierten Daten|Zufällige Suche – es werden Pfade nach dem Zufallsprinzip ausprobiert" answer="1" explanation="BFS untersucht Knoten Ebene für Ebene und stellt so sicher, dass es beim ersten Erreichen eines Ziels den kürzesten Weg (in Bezug auf die Anzahl der Kanten) gefunden hat. DFS findet möglicherweise zuerst einen längeren Pfad." />
+
+<ThinkAboutIt>Social-Media-Plattformen messen den „Grad der Trennung“ – wie viele Freundschaftssprünge zwei Menschen verbinden. Welcher Durchlaufalgorithmus würde effizient die wenigsten Sprünge zwischen zwei Benutzern finden? Wie hängt das mit der Idee der „sechs Grad der Trennung“ zusammen?
+</ThinkAboutIt>
+
+<FunFact>Der PageRank-Algorithmus von Google – der ursprüngliche Durchbruch, der Google zur Marktführerschaft verhalf – modelliert das Web als Diagramm. Jede Webseite ist ein Knoten, jeder Hyperlink ist eine gerichtete Kante und die Wichtigkeit einer Seite wird dadurch bestimmt, wie viele wichtige Seiten darauf verweisen. Es handelt sich im Wesentlichen um eine zufällige Wanderung in einem Diagramm.
+</FunFact>
+
+## Wichtige Erkenntnisse
+
+- **Bäume** modellieren hierarchische Daten – Dateisysteme, HTML und KI-Entscheidungsbäume verwenden alle Baumstrukturen.
+- **Binäre Suchbäume** ermöglichen O(log n)-Suchen durch die Aufrechterhaltung einer sortierten Hierarchie.
+- **Grafiken** modellieren miteinander verbundene Daten – soziale Netzwerke, Wissensdatenbanken und Empfehlungsmaschinen.
+- **DFS** (Stack-basiert) geht tief; **BFS** (warteschlangenbasiert) geht weit – sowohl Kern-KI-Algorithmen wie PageRank als auch Empfehlungs-Engines werden unterstützt.

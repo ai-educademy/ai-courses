@@ -1,0 +1,126 @@
+---
+title: "Como os dados alimentam a IA – o combustível por trás de todo sistema inteligente"
+description: "Descubra o que são conjuntos de dados, por que a qualidade dos dados é importante e como os dados certos ensinam a IA a ser inteligente."
+order: 1
+difficulty: "beginner"
+duration: 12
+icon: "📊"
+published: true
+machineTranslated: true
+---
+# Como os dados potencializam a IA
+
+Você já sabe que a IA pode reconhecer rostos, traduzir idiomas e recomendar músicas. Mas o que realmente alimenta tudo isso? **Dados.** Sem dados, a IA é como um carro sem combustível: ela simplesmente não pode ir a lugar nenhum.
+
+Nesta lição, exploraremos a aparência dos conjuntos de dados, os diferentes tipos de dados que a IA usa e por que a qualidade desses dados é tão importante.
+
+## O que é um conjunto de dados?
+
+Um conjunto de dados é uma coleção organizada de informações com as quais um sistema de IA aprende. Pense nisso como uma planilha gigante.
+
+- **Linhas** representam exemplos individuais (por exemplo, uma foto de um gato, um registro de paciente).
+- **Colunas** representam recursos - as características que estão sendo medidas (por exemplo, idade, cor, tamanho).
+- **Rótulos** são as respostas que queremos que a IA preveja (por exemplo, "gato" ou "cachorro").
+
+<Illustration src="/images/lessons/datasets-and-data.svg" alt="Uma tabela simples de conjunto de dados mostrando linhas de imagens de animais com colunas para recursos como cor e tamanho, e uma coluna de rótulo mostrando gato ou cachorro" caption="Um conjunto de dados é como uma planilha bem organizada onde cada linha é um exemplo e cada coluna é um recurso." />
+
+<FunFact>O conjunto de dados ImageNet contém mais de 14 milhões de imagens rotuladas manualmente em mais de 20.000 categorias. Os pesquisadores levaram anos e milhares de anotadores humanos para construí-lo.
+</FunFact>
+
+## Tipos de dados
+
+A IA trabalha com duas grandes categorias de dados:
+
+### Dados Estruturados
+
+São dados que se encaixam perfeitamente em tabelas com linhas e colunas - como um registro de transações bancárias ou um registro de paciente hospitalar. Cada campo possui um tipo claro (número, data, categoria).
+
+**Exemplos:** números de vendas, leituras de sensores, respostas a pesquisas.
+
+### Dados não estruturados
+
+São dados que não seguem um formato fixo. Inclui imagens, vídeos, gravações de áudio, e-mails e postagens em mídias sociais. Mais de 80% dos dados mundiais não são estruturados.
+
+**Exemplos:** fotos no seu telefone, mensagens de voz, artigos de notícias.
+
+<Quiz question="Qual das alternativas a seguir é um exemplo de dados não estruturados?" options="Uma planilha de notas de exames|Um banco de dados de endereços de clientes|Uma coleção de cartas manuscritas|Uma tabela de preços de produtos" answer="2" explanation="As cartas manuscritas não seguem um formato fixo de linha e coluna, o que as torna dados não estruturados. Todas as outras opções cabem perfeitamente nas tabelas." />
+
+## Por que a IA precisa de tantos dados?
+
+Os humanos podem aprender a reconhecer um cachorro depois de ver apenas algumas fotos. A IA normalmente precisa de milhares – às vezes milhões – de exemplos antes de poder fazer o mesmo. Isso ocorre porque a IA não tem uma compreensão integrada do mundo. Todo conhecimento deve vir dos dados.
+
+Quanto mais variados e representativos os dados, melhor a IA generaliza para novas situações. Um modelo treinado apenas com fotos de golden retrievers pode não conseguir reconhecer um poodle. A diversidade nos dados leva à robustez da IA.
+
+É por isso que as empresas investem pesadamente na coleta, limpeza e curadoria de grandes conjuntos de dados – muitas vezes é a parte mais demorada e cara da construção de um sistema de IA.
+
+A boa notícia é que, uma vez existente um conjunto de dados de alta qualidade, ele pode ser reutilizado e partilhado, acelerando a investigação em todo o mundo.
+
+## Qualidade dos dados: lixo entra, lixo sai
+
+A IA é tão boa quanto os dados com os quais aprende. Se os dados estiverem confusos, incompletos ou incorretos, a IA produzirá resultados não confiáveis. Este princípio é conhecido como **lixo entra, lixo sai (GIGO)**.
+
+Problemas comuns de qualidade de dados incluem:
+
+- **Valores ausentes** – campos em branco que deixam lacunas no que a IA pode aprender.
+- **Duplicados** - o mesmo exemplo aparecendo diversas vezes, distorcendo o modelo.
+- **Rótulos incorretos** - a foto de um cachorro rotulado como gato confunde o processo de aprendizagem.
+- **Informações desatualizadas** - o treinamento com dados de 2005 não refletirá as tendências de 2025.
+
+<ThinkAboutIt>Imagine que você está estudando para uma prova, mas faltam metade das páginas do seu livro e algumas respostas no final estão erradas. Quão bem você teria um desempenho? Isso é exatamente o que acontece quando a IA treina com dados de baixa qualidade.
+</ThinkAboutIt>
+
+## Conjuntos de dados do mundo real
+
+Alguns conjuntos de dados tornaram-se famosos na comunidade de IA:
+
+| Conjunto de dados | O que contém | Tamanho |
+|--------|-----------------|------|
+| **ImageNet** | Fotografias etiquetadas | Mais de 14 milhões de imagens |
+| **Rastreamento comum** | Páginas da Web de toda a Internet | Petabytes de texto |
+| **Wikipédia** | Artigos da enciclopédia | Mais de 60 milhões de artigos |
+| **MNIST** | Dígitos manuscritos (0–9) | 70.000 imagens |
+
+Esses conjuntos de dados estão disponíveis gratuitamente e têm sido usados ​​para treinar alguns dos modelos de IA mais influentes da história.
+
+<Quiz question="O que contém o conjunto de dados MNIST?" options="Imagens médicas de raios X|Imagens de dígitos manuscritos|Gravações de áudio de fala|Fotografias de satélite" answer="1" explanation="MNIST é um conjunto de dados clássico de 70.000 imagens de dígitos manuscritos (0 a 9), amplamente utilizado para ensinar máquinas a reconhecer números." />
+
+## Rotulagem e anotação de dados
+
+Antes que a IA possa aprender com os dados, geralmente alguém precisa **rotulá-los**. Isso significa dizer ao sistema o que cada exemplo representa.
+
+- Uma foto é marcada como “gato” ou “cachorro”.
+- Uma frase é marcada como “sentimento positivo” ou “sentimento negativo”.
+- Um exame médico é anotado por um médico como "saudável" ou "anormal".
+
+Esse processo é chamado de **anotação** e geralmente é feito por humanos – às vezes milhares deles trabalhando juntos.
+
+<FunFact>Muitas empresas de IA utilizam plataformas de crowdsourcing onde trabalhadores de todo o mundo rotulam os dados por apenas alguns centavos por item. É um enorme esforço global que a maioria das pessoas nunca vê.
+</FunFact>
+
+## Viés de dados: quando os dados dão errado
+
+Os dados reflectem o mundo de onde provêm – incluindo os preconceitos do mundo. Quando um conjunto de dados representa excessivamente um grupo ou subrepresenta outro, a IA treinada nele herdará esses desequilíbrios.
+
+**Exemplos reais de viés de dados:**
+
+- Um algoritmo de contratação treinado principalmente em currículos masculinos aprendeu a penalizar as candidatas do sexo feminino.
+- Os sistemas de reconhecimento facial treinados principalmente em tons de pele mais claros tiveram um desempenho ruim em tons de pele mais escuros.
+- Uma IA médica treinada com base em dados de um país não percebeu sintomas comuns em outras populações.
+
+<Callout>O preconceito não é apenas um problema técnico – é um problema social. Cada conjunto de dados carrega as suposições e os pontos cegos das pessoas que o criaram.
+</Callout>
+
+<ThinkAboutIt>Se você treinasse uma IA para recomendar restaurantes, mas apenas fornecesse dados de Londres, ela daria boas recomendações para alguém em Manchester? O que pode dar errado?
+</ThinkAboutIt>
+
+<Quiz question="Qual é a consequência mais provável de treinar uma IA com base em dados tendenciosos?" options="A IA funcionará mais lentamente|A IA usará mais eletricidade|A IA produzirá resultados injustos ou imprecisos|A IA se recusará a fazer previsões" answer="2" explanation="Dados de formação tendenciosos levam a modelos que reproduzem e amplificam esses preconceitos, produzindo resultados injustos ou imprecisos para grupos sub-representados." />
+
+## Principais conclusões
+
+- Um **conjunto de dados** é uma coleção organizada de exemplos com os quais a IA aprende.
+- Os dados podem ser **estruturados** (tabelas) ou **não estruturados** (imagens, texto, áudio).
+- **A qualidade dos dados** determina diretamente a qualidade da IA: entrada de lixo, saída de lixo.
+- **Rotulagem** é o esforço humano que ensina à IA o que cada exemplo significa.
+- **Preconceito** nos dados leva ao preconceito na IA - e tem consequências no mundo real.
+
+A seguir, veremos os **algoritmos** que realmente processam todos esses dados e os transformam em inteligência.

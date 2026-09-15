@@ -1,0 +1,294 @@
+---
+title: "تعلم لغة بايثون للذكاء الاصطناعي: الحد الأدنى من لغة بايثون التي تحتاجها بالفعل"
+description: "لا تحتاج إلى إتقان لغة بايثون لاستخدامها في الذكاء الاصطناعي. إليك الحد الأدنى من مجموعة Python الفرعية التي ستساعدك على قراءة كود الذكاء الاصطناعي وكتابته وفهمه بسرعة."
+date: "2026-06-10"
+author: "AI Educademy Team"
+tags:
+  - python
+  - ai
+  - programming
+  - tutorial
+published: true
+machineTranslated: true
+---
+بايثون هي لغة الذكاء الاصطناعي. إذا قضيت أي وقت في القراءة عن التعلم الآلي، فقد رأيت كود Python في كل مكان - في البرامج التعليمية، ومستودعات GitHub، والأوراق البحثية، والدورات التدريبية. في نهاية المطاف، سوف ترغب في قراءته، وتشغيله، وربما تعديله.
+
+الخبر السار: لست بحاجة إلى أن تصبح خبيرًا في لغة بايثون. أنت بحاجة إلى مجموعة فرعية مركزة من اللغة. يعلمك هذا الدليل ذلك بالضبط - الحد الأدنى المطلوب من لغة Python لفهم كود الذكاء الاصطناعي والعمل معه - مع أمثلة مستمدة من سير عمل تعلم الآلة الحقيقي.
+
+---
+
+## إعداد بايثون
+
+قبل أي شيء آخر، قم بتثبيت Python.
+
+**الطريقة الموصى بها**: تثبيت [Miniconda](https://docs.conda.io/en/latest/miniconda.html)، مدير توزيع Python خفيف الوزن. فهو يجعل إدارة الحزم والبيئات واضحة.
+
+بعد التثبيت، افتح الطرفية واكتب:
+```
+python --version
+```
+
+إذا رأيت `Python 3.x.x`، فأنت جاهز. يمكنك كتابة وتشغيل بايثون في:
+- **Jupyter Notebook** — الأداة القياسية لتجارب الذكاء الاصطناعي (التفاعلية والمعتمدة على المتصفح)
+- **VS Code** — محرر مجاني يدعم لغة Python بشكل ممتاز
+- **Google Colab** — مجاني، يعتمد على المتصفح، ولا يحتاج إلى تثبيت
+
+لتعلم الذكاء الاصطناعي، ابدأ بـ Google Colab. إنه مجاني، ويعمل في متصفحك، ويتمتع بإمكانية الوصول إلى وحدة معالجة الرسومات.
+
+---
+
+## 1. المتغيرات وأنواع البيانات
+
+في بايثون، تقوم بتخزين القيم في المتغيرات. لا حاجة لإعلانات النوع.
+
+```python
+name = "neural network"       # string (text)
+layers = 4                    # integer (whole number)
+accuracy = 0.94               # float (decimal)
+is_trained = True             # boolean (True/False)
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: يتم تخزين المعلمات الفائقة للنموذج ودرجات الدقة وقيم التكوين كمتغيرات. سترى أشياء مثل `learning_rate = 0.001` أو `epochs = 50` باستمرار.
+
+---
+
+## 2. القوائم
+
+القائمة عبارة عن مجموعة مرتبة من العناصر. يمكنك تخزين قيم متعددة في متغير واحد.
+
+```python
+scores = [0.82, 0.87, 0.91, 0.95]
+labels = ["cat", "dog", "bird"]
+
+# Access by index (starts at 0)
+print(labels[0])    # "cat"
+print(labels[-1])   # "bird" (last item)
+
+# Add an item
+labels.append("fish")
+
+# Number of items
+print(len(scores))  # 4
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: سجلات التدريب، وقوائم التسميات، ومجموعات البيانات - كلها مخزنة في قوائم (أو مصفوفات NumPy، التي تعمل بشكل مشابه).
+
+---
+
+## 3. القواميس
+
+تقوم القواميس بتخزين أزواج القيمة الرئيسية. فكر فيها مثل الصناديق المسمى.
+
+```python
+model_config = {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "epochs": 10,
+    "optimizer": "adam"
+}
+
+# Access a value
+print(model_config["learning_rate"])    # 0.001
+
+# Update a value
+model_config["epochs"] = 20
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: يتم دائمًا تمثيل تكوين النموذج ووسائط التدريب والنتائج كقواميس. عندما ترى `config = {...}` في كود الذكاء الاصطناعي، فهذا ما يحدث.
+
+---
+
+## 4. الحلقات
+
+تتيح لك الحلقات تكرار الإجراء لكل عنصر في المجموعة.
+
+```python
+# for loop — iterate over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# range — loop a specific number of times
+for i in range(5):
+    print(i)    # prints 0, 1, 2, 3, 4
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: تتكرر حلقات التدريب على البيانات في فترات متعددة. تقوم حلقات المعالجة المسبقة للبيانات بتنظيف كل صف في مجموعة البيانات. سترى `for epoch in range(epochs):` في كل نص تدريبي تقريبًا.
+
+---
+
+## 5. الوظائف
+
+الوظائف عبارة عن كتل من التعليمات البرمجية قابلة لإعادة الاستخدام. يمكنك تعريفهم مرة واحدة والاتصال بهم عدة مرات.
+
+```python
+def calculate_accuracy(correct, total):
+    return correct / total
+
+result = calculate_accuracy(85, 100)
+print(result)    # 0.85
+```
+
+يمكن أن تحتوي الوظائف على قيم افتراضية للمعلمات:
+
+```python
+def train_model(data, epochs=10, learning_rate=0.001):
+    print(f"Training for {epochs} epochs at lr={learning_rate}")
+
+train_model(data)                          # uses defaults
+train_model(data, epochs=20)               # override one
+train_model(data, epochs=20, learning_rate=0.01)   # override both
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: تتكون كل مكتبة تعلم الآلة من وظائف. `model.fit()`، `model.predict()`، `train_test_split()` — هذه كلها استدعاءات دالة. إن فهم كيفية عمل الوظائف (بما في ذلك الوسائط الافتراضية) يفتح قدرتك على قراءة وثائق المكتبة.
+
+---
+
+## 6. الشروط
+
+```python
+accuracy = 0.92
+
+if accuracy > 0.90:
+    print("Model is performing well")
+elif accuracy > 0.75:
+    print("Model is acceptable")
+else:
+    print("Model needs improvement")
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: يظهر المنطق الشرطي في التحقق من صحة البيانات، ومعايير الإيقاف المبكر، واتخاذ القرار أثناء الاستدلال.
+
+---
+
+## 7. استيراد المكتبات
+
+قوة بايثون الحقيقية تأتي من مكتباتها. يمكنك استيرادها في الجزء العلوي من الملف الخاص بك.
+
+```python
+import numpy as np           # numerical computing
+import pandas as pd          # data manipulation
+import matplotlib.pyplot as plt   # plotting
+```
+
+يقوم الجزء `as np` بإنشاء اسم مستعار - اكتب `np.array()` بدلاً من `numpy.array()`. هذه هي الاتفاقية القياسية.
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: يبدأ كل سير عمل للذكاء الاصطناعي بالواردات. تظهر الثلاثة المذكورة أعلاه - NumPy وPandas وMatplotlib - في كل دفتر ملاحظات لعلم البيانات تقريبًا.
+
+---
+
+## 8. أساسيات NumPy
+
+NumPy هو أساس الحوسبة العددية في بايثون. كائنها الأساسي هو **المصفوفة**.
+
+```python
+import numpy as np
+
+# Create arrays
+a = np.array([1, 2, 3, 4, 5])
+b = np.array([10, 20, 30, 40, 50])
+
+# Operations apply element-wise
+print(a + b)         # [11, 22, 33, 44, 55]
+print(a * 2)         # [2, 4, 6, 8, 10]
+print(np.mean(a))    # 3.0
+
+# 2D arrays (matrices)
+matrix = np.array([[1, 2], [3, 4], [5, 6]])
+print(matrix.shape)  # (3, 2) — 3 rows, 2 columns
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: أوزان الشبكة العصبية، وبيانات بكسل الصورة، وتضمينات الكلمات — كلها مخزنة كمصفوفات NumPy. عندما ترى `X_train.shape == (1000, 28, 28)`، فهذه مجموعة NumPy مكونة من 1000 صورة، كل منها 28 × 28 بكسل.
+
+---
+
+## 9. أساسيات الباندا
+
+Pandas مخصص للعمل مع البيانات الجدولية — جداول البيانات في Python.
+
+```python
+import pandas as pd
+
+# Load a CSV file
+df = pd.read_csv("data.csv")
+
+# Explore the data
+print(df.head())         # first 5 rows
+print(df.shape)          # (rows, columns)
+print(df.columns)        # column names
+print(df.describe())     # statistics
+
+# Select a column
+ages = df["age"]
+
+# Filter rows
+adults = df[df["age"] >= 18]
+
+# Check for missing values
+print(df.isnull().sum())
+```
+
+**سبب أهمية ذلك بالنسبة للذكاء الاصطناعي**: تأتي مجموعات البيانات الواقعية كملفات CSV. Pandas هي كيفية تحميل البيانات واستكشافها وتنظيفها وإعدادها قبل تدريب النموذج.
+
+---
+
+## 10. مثال صغير كامل
+
+فيما يلي نص برمجي كامل لـ Python يقوم بتحميل البيانات وتقسيمها وتدريب نموذج بسيط وتقييمه:
+
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# 1. Load data
+df = pd.read_csv("customers.csv")
+
+# 2. Separate features and target
+X = df[["age", "income", "years_customer"]]
+y = df["will_churn"]
+
+# 3. Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 4. Train a model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 5. Evaluate
+predictions = model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy:.2%}")
+```
+
+**اقرأ هذا سطرًا سطرًا.** باستخدام المفاهيم المذكورة أعلاه، يمكنك فهم كل سطر منه. هذا هو الهدف — ليس كتابة تعليمات تعلم الآلة من الصفر، ولكن القدرة على قراءتها وفهمها وتعديلها.
+
+---
+
+## ما لا تحتاجه (حتى الآن)
+
+لكي تكون عمليًا مع كود الذكاء الاصطناعي، لا تحتاج إلى أن تتعلم على الفور:
+
+- البرمجة الشيئية (الفئات، الميراث)
+- أدوات الديكور وميزات بايثون المتقدمة
+- رمز التزامن وغير المتزامن
+- كتابة حزم ووحدات بايثون
+
+تصبح هذه الأشياء ذات قيمة كلما تعمقت أكثر، ولكنها ليست متطلبات أساسية للعمل باستخدام أدوات الذكاء الاصطناعي والبرامج التعليمية.
+
+---
+
+## مكان الممارسة
+
+- **[Google Colab](https://colab.research.google.com)** — دفاتر ملاحظات مجانية مع إمكانية الوصول إلى وحدة معالجة الرسومات
+- **[Kaggle Learn](https://www.kaggle.com/learn)** — دورات تدريبية صغيرة مجانية للغة Python وML
+- **[مسار تمرين بايثون](https://exercism.org/tracks/python)** — تمارين عملية مع التوجيه
+
+أفضل طريقة للتعلم هي تشغيل التعليمات البرمجية وكسرها وإصلاحها والتجربة. اختر مجموعة بيانات Kaggle حول موضوع تجده مثيرًا للاهتمام وابدأ في استكشافه باستخدام Pandas.
+
+---
+
+لا تتعلق طلاقة بايثون في الذكاء الاصطناعي بحفظ بناء الجملة. يتعلق الأمر بالتعرف على الأنماط - معرفة شكل الحلقة، وما يفعله استدعاء الوظيفة، وما يجلبه الاستيراد. باستخدام المفاهيم الواردة في هذا الدليل، لديك الأساس لقراءة دروس الذكاء الاصطناعي، ومتابعة أمثلة التعليمات البرمجية، والبدء في تجربة نفسك.
+
+هل تريد مسارًا منظمًا عبر أساسيات الذكاء الاصطناعي؟ [AI Educademy](https://aieducademy.org) يقدم دورات مجانية تأخذك من أساسيات الذكاء الاصطناعي إلى بناء النماذج الخاصة بك وتدريبها - دون الحاجة إلى خبرة سابقة.

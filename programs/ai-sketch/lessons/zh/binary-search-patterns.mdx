@@ -1,0 +1,144 @@
+---
+title: "二分搜索模式 - 超越排序数组"
+description: "学习二分搜索思维：搜索空间、对答案的二分搜索以及出现在数十个面试问题中的模式。"
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+machineTranslated: true
+---
+## 经典二分搜索 - 快速回顾
+
+二分搜索每一步将搜索空间减半。在 n 个元素的排序数组上，它在 **O(log n)** 时间内找到目标。
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+简单 - 但二分搜索的真正威力远远超出了排序数组。
+
+## 搜索空间概念
+
+只要您在某个范围内有**单调条件**，二分搜索就会起作用。 “数组”甚至不需要存在 - 你只需要一个范围 `[lo, hi]` 和一个在某个边界从 `False` 翻转到 `True` （反之亦然）的函数。
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>二分搜索首次发布于 1946 年，但第一个无错误版本直到 1962 年才编写 - 16 年的差一错误！</FunFact>
+
+## 对答案进行二分查找
+
+不要搜索数组，而是搜索**答案空间**。问：“我能达到结果 X 吗？”如果是，请尝试较小的；如果没有，请尝试更大的。
+
+### 示例：Koko 吃香蕉
+
+Koko 有 `n` 堆香蕉和 `h` 小时。找到**最小进食速度**，以便她及时吃完。
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+答案空间是 `[1, max(piles)]` 并且条件是单调的 - 更高的速度总是意味着更少的时间。
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="二分搜索缩小了最小进食速度的答案空间" caption="对答案进行二分搜索：缩小每次迭代的可行速度范围。" />
+
+## 旋转排序数组
+
+已排序的数组在某个枢轴处旋转：`[4, 5, 6, 7, 0, 1, 2]`。一半总是排序的。比较 `mid` 和 `lo` 来决定哪一半，然后检查目标是否属于已排序的一半。
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="在旋转排序数组 [3,4,5,1,2] 中，当 mid=2（值 5）时哪一半已排序？" options="右半部分 [1,2]|左半部 [3,4,5]|没有一半|两半" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5，所以左半部分[3,4,5]已排序。我们检查目标是否位于该范围内；如果没有，我们就搜索正确的。" />
+
+## 第一次和最后一次出现
+
+要找到**第一个**出现，当您击中目标时，不要停止 - 设置 `hi = mid` 并继续向左搜索。对于**最后**，设置 `lo = mid + 1` 并向右搜索。
+
+这对搜索还为您提供了目标的**计数**：`last - first + 1`。
+
+## 峰值元素
+
+比两个邻居都大的元素。即使在未排序的数组中，二分搜索也有效：如果 `nums[mid] < nums[mid + 1]`，则峰值在右侧；如果 `nums[mid] < nums[mid + 1]`，则峰值在右侧；否则它在左边。 O(log n)。
+
+<ThinkAboutIt>为什么即使数组未排序，峰值查找仍可与二分搜索一起使用？什么属性取代了这里的排序顺序？</ThinkAboutIt>
+
+## 在二维矩阵中搜索
+
+如果行已排序并且每行的第一个元素大于前一行的最后一个，则将矩阵视为 `m × n` 元素的单个排序数组。将索引 `k` 映射到行 `k // n`、列 `k % n`。
+
+## 没有库的平方根
+
+找到最大的整数 `x` 其中 `x * x ≤ n`。搜索空间：`[0, n]`。经典的二分搜索答案。
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## “最小化最大”模式
+
+诸如“拆分数组最大总和”或“D 天内运送包裹的能力”之类的问题要求您**最小化最坏的情况**。答案是单调的：如果容量 C 有效，那么 C+1 也有效。对 C 进行二分查找
+
+<Quiz question="对于”D 天内运送包裹的能力”，二分搜索的搜索空间是多少？" options="[0，总重量]|[最大单重、总重]|【1、包装数量】|[D、总重量]" answer="1" explanation="最小可能容量是单个包裹中最重的（否则无法运输）。最大重量为总重量（一天内运送所有物品）。" />
+
+## 通用模板
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+根据您是否寻求**第一个 True** 或 **最后一个 True** 来调整 `hi = mid` 与 `lo = mid`。
+
+<Quiz question="在大小为 S 的答案空间上进行 O(n) 可行性检查的二分搜索的时间复杂度是多少？" options="在）|O(log S)|O(n log S)|O(n×S)" answer="2" explanation="您执行 O(log S) 次二分搜索迭代，每次运行一次 O(n) 检查，总共为 O(n log S) 。" />
+
+<ThinkAboutIt>当您在问题陈述中看到短语“最小可能的最大值”或“最大可能的最小值”时，您应该立即想到什么？</ThinkAboutIt>
+
+---
+
+## 📚 进一步阅读
+
+- [NeetCode - 二分搜索播放列表](https://neetcode.io/roadmap) - 从易到难的精选问题
+- [技术面试手册 - 二分搜索](https://www.techinterviewhandbook.org/algorithms/binary-search/) - 模式、技巧和陷阱
+- 【LeetCode 二分查找学习计划](https://leetcode.com/studyplan/binary-search/)-递进题集

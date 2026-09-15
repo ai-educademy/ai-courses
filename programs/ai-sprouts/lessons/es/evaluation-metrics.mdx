@@ -1,0 +1,162 @@
+---
+title: "Métricas de evaluación: ¿es realmente buena su IA?"
+description: "Descubra por qué la precisión por sí sola es engañosa y domine las métricas (precisión, recuperación, F1, ROC-AUC, BLEU y perplejidad) que realmente miden el rendimiento de la IA."
+order: 10
+difficulty: "intermediate"
+duration: 15
+icon: "📊"
+published: true
+machineTranslated: true
+---
+# Métricas de evaluación: ¿Es realmente buena su IA?
+
+Has entrenado un modelo. La pérdida disminuyó. ¿Pero es realmente *bueno*? La respuesta depende enteramente de cómo se mide, y elegir la métrica incorrecta puede generar una confianza peligrosamente engañosa. Esta lección cubre las métricas que todo profesional de IA debe comprender.
+
+## La trampa de la precisión
+
+**Precisión** = predicciones correctas ÷ predicciones totales. Suena razonable, hasta que se encuentra con el **desequilibrio de clases**.
+
+Imagine un modelo de detección de fraude. De 10.000 transacciones, sólo 50 son fraudulentas. Un modelo que simplemente predice "no fraude" para cada transacción logra una precisión del **99,5%** y al mismo tiempo detecta cero fraude. Totalmente inútil, pero la precisión parece brillante.
+
+Esta es la razón por la que la precisión por sí sola nunca es suficiente para la IA del mundo real.
+
+<FunFact>En el cribado médico de enfermedades raras, un modelo que siempre predice "saludable" puede superar el 99,9% de precisión. Esta es la razón por la que los médicos y científicos de datos confían en la sensibilidad (recordación) como métrica principal para las pruebas de detección.
+</FunFact>
+
+## La matriz de la confusión
+
+Antes de profundizar en mejores métricas, necesitamos la **matriz de confusión**, una tabla de 2×2 que desglosa cada predicción:
+
+|  | Positivo previsto | Negativo previsto |
+|---|---|---|
+| **Realmente Positivo** | Verdadero Positivo (TP) | Falso Negativo (FN) |
+| **Realmente negativo** | Falso Positivo (FP) | Verdadero Negativo (TN) |
+
+**Ejemplo concreto: filtro de spam de correo electrónico en 1000 correos electrónicos (100 spam, 900 legítimos):**
+
+|  | Spam previsto | Legítimo previsto |
+|---|---|---|
+| **En realidad es spam** | 80 (TP) | 20 (FN) |
+| **Realmente legítimo** | 30 (FP) | 870 (TN) |
+
+A partir de esta única tabla, podemos derivar todas las métricas de clasificación.
+
+<Illustration src="/images/lessons/evaluation-metrics.svg" alt="Una matriz de confusión para un filtro de spam con los cuatro cuadrantes codificados por colores: verde para TP y TN, rojo para FP y FN, con fórmulas de precisión y recuperación al lado." caption="La matriz de confusión es la base de todas las métricas de clasificación." />
+
+## Precisión: "De todo lo que marqué, ¿cuánto fue correcto?"
+
+```
+Precision = TP ÷ (TP + FP) = 80 ÷ (80 + 30) = 72.7%
+```
+
+En nuestro filtro de spam: de todos los correos electrónicos marcados como spam, el 72,7% en realidad lo eran. El otro 27,3% eran correos electrónicos legítimos detectados incorrectamente: **falsos positivos**.
+
+**Cuando la precisión es más importante:** Cuando los falsos positivos son costosos. Un filtro de spam que envía correos electrónicos importantes de clientes a la basura es un problema grave.
+
+## Recordemos: "De todo lo positivo, ¿cuánto encontré?"
+
+```
+Recall = TP ÷ (TP + FN) = 80 ÷ (80 + 20) = 80%
+```
+
+El modelo captó 80 de los 100 correos electrónicos no deseados reales; *recordó* el 80% de ellos. Los otros 20 se filtraron como **falsos negativos**.
+
+**Cuando el recuerdo es más importante:** Cuando pasar por alto un caso positivo es peligroso. En la detección del cáncer, no detectar un tumor (falso negativo) podría costar una vida.
+
+<Quiz question="Un hospital quiere un modelo para detectar una enfermedad peligrosa. ¿Qué métrica deberían priorizar?" options="Precisión: evite falsas alarmas|Recuerde: detecte todos los casos, incluso a costa de algunas falsas alarmas.|Precisión: obtenga la mayor cantidad de predicciones correctas|F1: equilibra todo por igual" answer="1" explanation="En los exámenes médicos, pasar por alto un caso verdadero (falso negativo) es mucho más peligroso que una falsa alarma. Un alto nivel de recuerdo garantiza que se detecten casi todos los casos positivos, incluso si algunos pacientes sanos necesitan pruebas de seguimiento." />
+
+## La compensación entre precisión y recuperación
+
+La precisión y la recuperación tiran en direcciones opuestas. Ajustar el umbral de spam detecta menos correos electrónicos legítimos (la precisión aumenta), pero permite que pase más spam (la recuperación disminuye). Al aflojarlo se detecta más spam (aumenta el recuerdo), pero se captan más correos electrónicos buenos (la precisión disminuye).
+
+No hay nada gratis: usted debe decidir qué errores son más costosos para su caso de uso específico.
+
+## Puntuación F1: la media armónica
+
+Cuando necesite precisión y recuperación de equilibrio de un solo número, utilice la **puntuación F1**:
+
+```
+F1 = 2 × (Precision × Recall) ÷ (Precision + Recall)
+```
+
+Para nuestro filtro de spam: `F1 = 2 × (0.727 × 0.80) ÷ (0.727 + 0.80) = 0.762` - alrededor del 76,2%.
+
+La media armónica castiga los desequilibrios extremos. Si la precisión o la recuperación son muy bajas, F1 cae bruscamente.
+
+<ThinkAboutIt>Un sistema de moderación de contenido tiene un 95% de precisión pero solo un 30% de recuperación. La puntuación de la F1 es sólo del 46%. ¿Qué le dice esto sobre el comportamiento del sistema en el mundo real? ¿Lo implementaría?
+</ThinkAboutIt>
+
+## Curvas ROC y AUC
+
+La **curva ROC** (característica operativa del receptor) traza la tasa de verdaderos positivos frente a la tasa de falsos positivos en cada umbral de clasificación posible. Muestra qué tan bien un modelo separa las clases en todos los umbrales, no solo en uno.
+
+**AUC** (Área bajo la curva) resume esto en un solo número:
+
+- **AUC = 1,0** - separación perfecta.
+- **AUC = 0,5** - no es mejor que adivinar al azar (la línea diagonal).
+- **AUC < 0,5**: peor que aleatorio (¡sus etiquetas podrían estar volteadas!).
+
+El AUC es independiente del umbral, lo que lo hace excelente para comparar modelos antes de decidir un punto de operación específico.
+
+<Quiz question="¿Qué significa un AUC de 0,5?" options="el modelo es perfecto|El modelo no funciona mejor que las conjeturas aleatorias.|El modelo tiene un 50% de precisión.|El modelo tiene un alto recuerdo." answer="1" explanation="Un AUC de 0,5 corresponde a la diagonal de la curva ROC; el modelo no tiene la capacidad de distinguir entre clases. Equivale a lanzar una moneda al aire." />
+
+## Métricas para la generación de texto
+
+Las métricas de clasificación no se aplican a los modelos de lenguaje que generan texto. Diferentes tareas necesitan diferentes medidas.
+
+### Puntuación BLEU
+
+**BLEU** (Estudio suplente de evaluación bilingüe) mide en qué medida una traducción generada se superpone con las traducciones de referencia, contando los n-gramas (secuencias de palabras) coincidentes. Las puntuaciones varían de 0 a 1.
+
+BLEU se utiliza ampliamente en la traducción automática, pero tiene limitaciones importantes: premia la superposición de palabras, no el significado. "El gato se sentó en la alfombra" y "Un felino descansó en la alfombra" obtienen malos resultados entre sí a pesar de tener un significado similar.
+
+### Perplejidad
+
+**Perplejidad** mide qué tan sorprendido está un modelo de lenguaje ante un texto nuevo. Cuanto más bajo, mejor: una perplejidad de 20 significa que el modelo, en promedio, está eligiendo entre 20 siguientes palabras igualmente probables. Un buen modelo tiene poca perplejidad porque predice bien el texto.
+
+GPT-4 logra una perplejidad notablemente baja en el texto en inglés, lo que refleja su sólida comprensión del idioma.
+
+<FunFact>La métrica BLEU se introdujo en 2002 y rápidamente se convirtió en el estándar para la evaluación de la traducción automática. A pesar de los defectos conocidos, siguió siendo dominante durante casi dos décadas porque ninguna alternativa simple se correlacionaba mejor y de manera consistente con el juicio humano.
+</FunFact>
+
+## Pruebas A/B en producción
+
+Las métricas fuera de línea son necesarias pero no suficientes. La prueba definitiva son las **pruebas A/B**: implemente dos versiones del modelo para diferentes grupos de usuarios y mida los resultados del mundo real.
+
+- ¿El nuevo modelo de recomendación aumenta las tasas de clics?
+- ¿El chatbot mejorado reduce la escalada de tickets de soporte?
+- ¿El filtro de spam actualizado recibe menos correcciones "no spam"?
+
+Las métricas de producción a menudo difieren de las métricas fuera de línea porque los usuarios se comportan de manera impredecible.
+
+<Quiz question="¿Por qué un modelo con excelentes métricas fuera de línea podría tener un mal desempeño en las pruebas A/B?" options="El conjunto de prueba era demasiado grande|Las métricas fuera de línea no pueden capturar el comportamiento real del usuario, los casos extremos y los cambios de distribución.|Las pruebas A/B son menos precisas que la evaluación fuera de línea|El modelo se estaba sobreajustando a la prueba A/B." answer="1" explanation="La evaluación fuera de línea utiliza conjuntos de datos estáticos que pueden no reflejar las condiciones del mundo real: el comportamiento del usuario evoluciona, las distribuciones de datos cambian y surgen casos extremos que los conjuntos de pruebas nunca anticiparon. Las pruebas A/B revelan cómo se desempeña el modelo cuando realmente importa." />
+
+## Cuándo utilizar qué métrica
+
+| Escenario | Métrica primaria |
+|----------|---------------|
+| Clasificación equilibrada | Precisión, F1 |
+| Clases desequilibradas | Precisión, recuperación, AUC |
+| Examen médico | Recordatorio (sensibilidad) |
+| Filtrado de spam | Balanza de precisión + recuperación |
+| Traducción automática | AZUL, METEOR |
+| Calidad del modelo de lenguaje | Perplejidad |
+| Impacto en la producción | Resultados de las pruebas A/B |
+
+<ThinkAboutIt>Estás construyendo un sistema de detección de peatones para un vehículo autónomo. Un falso negativo significa no ver a un peatón; un falso positivo significa frenar por una sombra. ¿Qué métrica optimiza y qué compensación está dispuesto a aceptar?
+</ThinkAboutIt>
+
+## Conclusiones clave
+
+- **La precisión** es engañosa con datos desequilibrados; consulte siempre la matriz de confusión.
+- **Precisión** mide la exactitud de las predicciones positivas; **recordar** mide la integridad.
+- **F1** equilibra ambos; **AUC** evalúa todos los umbrales.
+- La generación de texto utiliza **BLEU** y **perplejidad** en lugar de métricas de clasificación.
+- **Las pruebas A/B** son el estándar de oro para medir el impacto del modelo en el mundo real.
+
+---
+
+## 📚 Lecturas adicionales
+
+- [Curso intensivo de aprendizaje automático de Google - Métricas de clasificación](https://developers.google.com/machine-learning/crash-course/classification/accuracy) - Tutorial interactivo de precisión, recuperación y curvas ROC
+- [Hacia la ciencia de datos - Más allá de la precisión](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c/) - Guía práctica con ejemplos del mundo real de selección de métricas

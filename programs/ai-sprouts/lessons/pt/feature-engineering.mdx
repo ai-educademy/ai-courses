@@ -1,0 +1,252 @@
+---
+title: "Engenharia de recursos: ensinando às máquinas o que importa"
+description: "Saiba como a engenharia de recursos transforma dados brutos em entradas poderosas de aprendizado de máquina — a habilidade que separa bons modelos de excelentes."
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# Engenharia de recursos: ensinando às máquinas o que importa
+
+Há um ditado no aprendizado de máquina: **entra lixo, sai lixo**. Você pode ter o algoritmo mais sofisticado do mundo, mas se alimentá-lo com dados mal preparados, os resultados serão ruins. Por outro lado, um algoritmo simples com dados excelentes e cuidadosamente preparados pode superar um algoritmo complexo com dados brutos e confusos.
+
+A engenharia de recursos é a arte de transformar dados brutos em representações com as quais os algoritmos de aprendizado de máquina podem aprender de maneira eficaz. É sem dúvida a habilidade de maior impacto no aprendizado de máquina aplicado — e é onde o profundo conhecimento do domínio se encontra com a ciência de dados.
+
+## 🧩 O que são recursos?
+
+No aprendizado de máquina, um **recurso** é qualquer propriedade ou atributo mensurável daquilo que você está tentando prever. Os recursos são as entradas do seu modelo; o **rótulo** (ou destino) é a saída.
+
+Para um modelo de previsão de preços de casas:
+- Características: metragem quadrada, número de quartos, código postal, ano de construção, distância até a escola mais próxima
+- Etiqueta: preço de venda
+
+Para um classificador de spam de e-mail:
+- Recursos: frequências de palavras, domínio do remetente, presença de certas frases, comprimento do e-mail
+- Rótulo: spam (1) ou não spam (0)
+
+A qualidade, quantidade e relevância de seus recursos costumam ser mais importantes do que o algoritmo que você escolhe.
+
+## 🗃️ Por que os dados brutos raramente estão prontos para o modelo
+
+Os dados do mundo real são confusos. Os algoritmos de aprendizado de máquina têm requisitos específicos que os dados brutos quase nunca satisfazem:
+
+- **Somente numérico**: a maioria dos algoritmos não consegue processar diretamente texto, categorias ou datas
+- **Sem valores ausentes**: a maioria dos algoritmos não consegue lidar com valores NaN ou nulos
+- **Escalas semelhantes**: recursos com faixas de valores muito diferentes podem distorcer o aprendizado baseado em gradiente
+- **Representação significativa**: carimbos de data e hora brutos ou códigos postais não codificam os padrões que importam (é um fim de semana? é uma área rica?)
+
+A engenharia de recursos é o processo de preencher a lacuna entre os dados brutos e as entradas prontas para o modelo.
+
+## 📏 Normalização e Padronização
+
+Quando os recursos têm escalas muito diferentes, os modelos podem ser enganados. Um recurso com valores na casa dos milhares pode dominar um recurso com valores entre 0 e 1.
+
+### Normalização Mín-Máx (escalando para [0, 1])
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### Padronização (pontuação Z, média = 0, padrão = 1)
+
+Mais robusto para valores discrepantes do que a escala min-max:
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**Regra prática**: use a padronização por padrão. Use min-max quando precisar de valores em um intervalo limitado específico (por exemplo, entradas de rede neural).
+
+## 🏷️ Codificando variáveis ​​​​categóricas
+
+Categorias como "vermelho/verde/azul" ou "Londres/Manchester/Birmingham" não têm ordem numérica natural. Você precisa codificá-los antes de alimentá-los na maioria dos algoritmos.
+
+### Codificação One-Hot
+
+Cria uma coluna binária para cada categoria. Melhor quando as categorias não têm ordem inerente:
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### Codificação de etiqueta
+
+Mapeia cada categoria para um número inteiro. Use somente quando as categorias tiverem uma ordem natural:
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>Um erro comum para iniciantes é codificar nomes de cidades, informando acidentalmente ao modelo que Tóquio é “mais que” Londres, o que leva a previsões bizarras. Sempre use codificação one-hot para categorias não ordenadas.</FunFact>
+
+## 🕳️ Lidando com valores ausentes
+
+A falta de dados é quase universal em conjuntos de dados do mundo real. Você tem várias opções:
+
+### Imputação
+
+Preencha os valores ausentes com um substituto calculado:
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### Adicionando um indicador de falta
+
+Às vezes, o fato de faltarem dados é por si só informativo:
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### Quando abandonar
+
+Elimine uma coluna se ela tiver mais de 70-80% de valores ausentes (raramente informativo). Elimine uma linha apenas se você tiver muitos dados e a linha estiver faltando aleatoriamente (não sistematicamente).
+
+## 🛠️ Criando novos recursos
+
+É aqui que a engenharia de recursos se torna uma arte. Você usa o conhecimento do domínio para criar recursos que capturam padrões não visíveis nos dados brutos.
+
+### Decomposição de data/hora
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+Um carimbo de data/hora bruto não informa nada diretamente ao modelo; esses recursos derivados expõem padrões como “pico de fraude às 3 da manhã” ou “aumento de vendas nos finais de semana”.
+
+### Recursos de interação
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### Recursos de texto
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>Se você estivesse construindo um modelo para prever falhas na inspeção de saúde de restaurantes, a quais dados brutos você teria acesso e quais novos recursos você poderia desenvolver a partir deles que seriam mais úteis do que apenas os dados brutos?</ThinkAboutIt>
+
+## 📊 Importância do recurso
+
+Depois de construir um modelo, você pode avaliar quais recursos ele considerou mais úteis. Isso é valioso tanto para entender seu modelo quanto para decidir quais recursos manter ou descartar:
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+Recursos com importância próxima de zero geralmente podem ser eliminados sem afetar o desempenho – e eliminá-los simplifica o modelo, reduz o tempo de treinamento e pode melhorar a generalização.
+
+## 🗜️ Redução de dimensionalidade: uma breve introdução
+
+Quando você tem centenas ou milhares de recursos, os modelos podem ter dificuldades — isso é chamado de **maldição da dimensionalidade**. As técnicas de redução de dimensionalidade compactam recursos enquanto preservam os padrões mais importantes:
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA (Análise de Componentes Principais) é a abordagem mais comum, mas outras incluem t-SNE (para visualização) e UMAP (para preservar a estrutura local).
+
+<Quiz question="Você tem um conjunto de dados com uma coluna 'cidade' contendo 50 nomes de cidades diferentes. Qual abordagem de codificação você deve usar?" options="Codificação de etiqueta — atribua a cada cidade um número inteiro de 0 a 49|Codificação one-hot – crie uma coluna binária para cada cidade|Deixe como texto – a maioria dos modelos lida com strings|Converta todas as cidades para o PIB do seu país" answer="1" explanation="Os nomes das cidades não têm ordem natural, portanto a codificação dos rótulos implicaria incorretamente uma hierarquia (Cidade 49 > Cidade 0). A codificação one-hot cria uma coluna binária para cada cidade, representando-as corretamente como categorias não ordenadas distintas." />
+
+## Principais conclusões
+
+- **Recursos** são as entradas para seu modelo; a qualidade do recurso geralmente é mais importante do que a escolha do algoritmo
+- Os dados brutos quase nunca estão prontos para o modelo – eles precisam de limpeza, transformação e enriquecimento
+- **Normalização/padronização** coloca recursos em escalas comparáveis; usar padronização por padrão
+- **A codificação one-hot** é correta para variáveis categóricas não ordenadas; **codificação de rótulo** apenas para pedidos
+- **Valores faltantes** podem ser tratados por imputação (mediana/média/modo) e pela adição de um sinalizador indicador de falta
+- **Criar novos recursos** a partir do conhecimento do domínio — decomposição temporal, proporções, interações — geralmente produz os maiores ganhos de desempenho
+- As pontuações de **importância do recurso** ajudam você a entender quais entradas seu modelo depende e quais podem ser descartadas
+- **Redução de dimensionalidade** (por exemplo, PCA) compacta dados de alta dimensão enquanto preserva a maior parte da variação útil

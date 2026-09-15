@@ -1,0 +1,99 @@
+---
+title: "Warum wir die KI-Bildungsakademie aufgebaut haben"
+description: "Die Geschichte hinter einer kostenlosen Open-Source-KI-Bildungsplattform, die künstliche Intelligenz in 11 Sprachen lehrt – vom absoluten Anfänger bis zum Fortgeschrittenen."
+date: "2026-03-12"
+author: "Ramesh Reddy Adutla"
+tags: ["ai-education", "open-source", "launch", "multilingual"]
+published: true
+image: "/images/blog/why-we-built-ai-educademy.png"
+machineTranslated: true
+---
+# Warum wir die KI-Bildungsakademie aufgebaut haben
+
+KI verändert jede Branche – doch der Großteil der KI-Ausbildung findet hinter Bezahlschranken statt, ist nur auf Englisch verfasst und setzt voraus, dass Sie bereits programmieren können. Wir haben uns vorgenommen, das zu ändern.
+
+## Das Problem
+
+Als ich anfing, KI zu lernen, fielen mir drei Barrieren auf, die den Großteil der Welt fernhielten:
+
+1. **Sprache** – Fast alle hochwertigen KI-Kurse sind auf Englisch. Das schließt Milliarden von Lernenden aus.
+2. **Kosten** – Premium-KI-Kurse kosten zwischen 50 und über 500 US-Dollar. Für Studierende in Entwicklungsländern ist das kein Neuanfang.
+3. **Voraussetzungen** – Die meisten Kurse beginnen mit „Zuerst, installiere Python …“ – was jeden ohne technischen Hintergrund sofort verunsichert.
+
+Das sind keine kleinen Lücken. Es sind Mauern, die dafür sorgen, dass die KI-Kenntnisse auf eine Handvoll wohlhabender, englischsprachiger Gemeinschaften konzentriert bleiben.
+
+## Unsere Lösung
+
+AI Educamy ist eine **kostenlose Open-Source-Plattform**, die KI in Ihrer Sprache vom absoluten Nullpunkt an lehrt. Zum Starten ist keine Codierung erforderlich. Keine Kreditkarte erforderlich. Immer.
+
+### Was es anders macht
+
+- **11 Sprachen** – Englisch, Französisch, Niederländisch, Hindi, Telugu, Spanisch, Portugiesisch, Deutsch, Chinesisch, Japanisch und Arabisch. Weitere kommen.
+- **Zwei Lernpfade** – Der *KI-Lernpfad* (🌱 Seeds → 🌲 Forest) für konzeptionelles Verständnis und der *Craft Engineering Path* (✏️ Sketch → 🏆 Masterpiece) für praktisches Bauen.
+- **10 strukturierte Programme** – Jedes mit sorgfältig sequenzierten MDX-Lektionen, interaktiven Elementen und Fortschrittsverfolgung.
+- **Interaktives Labor** – Sieben Experimente, darunter ein Neural Network Playground, ein Prompt Lab und ein Sentiment Analyzer – alle laufen im Browser.
+- **KI-gestützte Funktionen** – Edu, unser integrierter Chatbot, beantwortet Fragen zu jedem Programm. Der Mock-Interview-Simulator führt realistische STAR-Methode-Interviews mit Feedback durch.
+- **Abschlusszertifikate** – Schließen Sie alle Lektionen eines Programms ab und laden Sie ein personalisiertes PDF-Zertifikat herunter.
+
+## Die Architektur
+
+Wir haben AI Educamy als moderne, zusammensetzbare Plattform aufgebaut:
+
+```
+┌─────────────────────────────────────────────┐
+│              aieducademy.org                 │
+│         Next.js 16 + React 19               │
+│      ┌──────────┐  ┌──────────────┐         │
+│      │  MDX      │  │  Interactive │         │
+│      │  Lessons  │  │  Lab         │         │
+│      └────┬─────┘  └──────┬───────┘         │
+│           │               │                  │
+│      ┌────▼───────────────▼──────┐           │
+│      │     Content Layer         │           │
+│      │  (Git Submodules per      │           │
+│      │   program — own repos)    │           │
+│      └───────────────────────────┘           │
+│                                              │
+│      ┌─────────┐  ┌──────────┐  ┌────────┐  │
+│      │ Auth    │  │ Progress │  │ AI Chat│  │
+│      │ NextAuth│  │ Neon PG  │  │ Gemini │  │
+│      └─────────┘  └──────────┘  └────────┘  │
+└──────────────────────────────────────────────┘
+```
+
+Jeder Kurs befindet sich in seinem eigenen GitHub-Repository, das als Git-Submodul in die Plattform eingebunden wird. Das heisst:
+
+- **Inhaltsautoren** können Lektionen schreiben, ohne den Plattformcode zu berühren.
+- **Übersetzer** können eine Sprache hinzufügen, indem sie in jedem Kurs-Repository einen Ordner erstellen.
+- **Die Plattform wird automatisch neu erstellt**, wenn ein Inhalts-Repo Änderungen vornimmt.
+
+Der Tech-Stack: Next.js 16 mit App Router + Turbopack, TypeScript im strikten Modus, Tailwind CSS 4, next-intl für i18n, NextAuth v5 für Authentifizierung und Neon Postgres für Persistenz. Das Designsystem ist ein [separates NPM-Paket](https://www.npmjs.com/package/@aieducademy/ai-ui-library) mit einem veröffentlichten [Storybook](https://aieducademy.github.io/ai-ui-library/).
+
+## Standardmäßig Open Source
+
+Jede Zeile Plattformcode ist MIT-lizenziert und auf [GitHub](https://github.com/ai-educademy) verfügbar. Wir glauben, dass die Bildungsinfrastruktur ein öffentliches Gut sein sollte.
+
+Sie können:
+- **Selbsthosting** der gesamten Plattform für Ihre Schule oder Organisation.
+- **Forken** Sie ein Kurs-Repo und passen Sie es an Ihren Lehrplan an.
+- **Beiträge** zu Übersetzungen, Lektionen, Fehlerbehebungen oder Funktionen.
+
+## Was kommt als nächstes?
+
+Wir fangen gerade erst an. Auf unserer Roadmap:
+
+- 🌍 **Mehr Sprachen** – Community-gesteuertes Übersetzungsportal in Kürze verfügbar.
+- 🔌 **LMS-Integration** – LTI-Unterstützung für Universitäten und Schulen.
+- 🧪 **Interaktive Codeübungen** – Codierung im Browser mit sofortigem Feedback.
+- 📱 **Mobile App** – KI-Ausbildung offline schalten.
+- 🎯 **Personalisierte Lernpfade** – KI-gestützte Empfehlungen basierend auf Ihrem Fortschritt.
+
+## Probieren Sie es aus
+
+Gehen Sie zu [aieducademy.org](https://aieducademy.org) und beginnen Sie mit **AI Seeds** – unserem Einsteiger-Track für Menschen ohne technische Vorkenntnisse. Es dauert etwa 10 Minuten, Ihre erste Lektion abzuschließen.
+
+Wenn Sie es nützlich finden, [markieren Sie das Repo auf GitHub](https://github.com/ai-educademy/ai-platform) ⭐ – es hilft mehr Menschen, uns zu entdecken.
+
+---
+
+*AI Educademy wird von [Ramesh Reddy Adutla](https://github.com/rameshreddy-adutla) und der Open-Source-Community erstellt und gepflegt.*

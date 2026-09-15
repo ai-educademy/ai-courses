@@ -1,0 +1,178 @@
+---
+title: "Comprendre les grands modèles de langage"
+description: "Comment GPT, Claude et autres LLM fonctionnent sous le capot"
+order: 11
+difficulty: "intermediate"
+duration: 15
+icon: "🔤"
+published: true
+machineTranslated: true
+---
+# Comprendre les grands modèles de langage 🔤
+
+ChatGPT, Claude, Gemini, Llama — ils sont partout. Mais que font réellement ces choses lorsqu’elles répondent à vos messages ? La réponse est à la fois plus simple et plus hallucinante que vous ne le pensez.
+
+À la base, les grands modèles linguistiques (LLM) font une chose : **prédire le prochain jeton**. Encore et encore. C'est ça. Et pourtant, de ce processus simple émerge la capacité d’écrire du code, d’expliquer la physique quantique, de composer de la poésie et de tenir des conversations étonnamment cohérentes.
+
+Voyons comment.
+
+---
+
+## 🔡 Premièrement : qu'est-ce qu'un jeton ?
+
+Avant d'aborder le modèle lui-même, nous devons comprendre les **jetons** — l'unité de langage avec laquelle les LLM travaillent.
+
+Un jeton n'est pas exactement un mot. Il s'agit plutôt d'un **morceau de texte** qui apparaît suffisamment fréquemment dans le langage pour mériter d'être traité comme une unité. En anglais, les mots courants comme « le », « et », « est » sont des jetons uniques. Des mots plus longs et plus rares pourraient être divisés : « extraordinaire » pourrait devenir « extra » + « ordinaire ». Les chiffres et la ponctuation sont souvent leurs propres symboles.
+
+Une règle générale : **1 jeton ≈ 0,75 mot** en anglais.
+
+Pourquoi ne pas simplement utiliser des mots ? Parce que la tokenisation gère :
+- Plusieurs langues avec différentes structures de mots
+- Code (où les espaces et les symboles importent différemment)
+- Nouveaux mots, noms et termes techniques
+- Expressions mathématiques
+
+Lorsque vous saisissez un message dans un LLM, il est immédiatement converti en une séquence d'ID de jeton, c'est-à-dire des nombres dans un vocabulaire comprenant généralement 30 000 à 100 000 jetons.
+
+<FunFact>GPT-4 possède un vocabulaire d'environ 100 000 jetons. La langue anglaise dans son ensemble compte environ 170 000 mots d'usage courant, mais le vocabulaire symbolique d'un LLM couvre également simultanément de nombreuses langues, la syntaxe du code, les emoji et la terminologie spécialisée.
+</FunFact>
+
+---
+
+## 🎯 La tâche principale : prédire ce qui va suivre
+
+Voici l'objectif de formation fondamental de chaque LLM :
+
+> Étant donné une séquence de jetons, **prédisez la probabilité de chaque prochain jeton possible**.
+
+Pendant la formation, le modèle voit des milliards d'exemples tels que :
+- "Le chat s'est assis sur le ___" → (probable : tapis, sol, canapé, toit...)
+- "def calculate_sum(a, b):\n return ___" → (probable : a + b)
+- "La capitale de la France est ___" → (presque certainement : Paris)
+
+En voyant suffisamment d’exemples, le modèle apprend les modèles statistiques du langage – non seulement mot par mot, mais aussi les structures profondes de sens, de causalité et de contexte.
+
+Lors de la génération de texte, le modèle :
+1. Examine tous les jetons précédents
+2. Produit une distribution de probabilité sur l'ensemble de son vocabulaire
+3. Échantillonne un jeton de cette distribution (avec un certain caractère aléatoire contrôlé par la « température »)
+4. Ajoute ce jeton à la séquence
+5. Répétitions
+
+Chaque mot que vous lisez dans la réponse d'un LLM a été généré un jeton à la fois, chacun étant informé par tout ce qui l'a précédé.
+
+---
+
+## 🔄 L'architecture du transformateur
+
+L'architecture qui a rendu possible les LLM modernes s'appelle **Transformer**, présentée par des chercheurs de Google dans un article historique de 2017 intitulé « L'attention est tout ce dont vous avez besoin ».
+
+Avant Transformers, les modèles de langage traitaient le texte de manière séquentielle, mot par mot, comme si vous lisiez lentement une phrase avec votre doigt sous chaque mot. C’était lent et il était difficile de relier des mots éloignés les uns des autres dans une phrase.
+
+Les transformateurs traitent **tous les jetons simultanément** et permettent à chaque jeton d'interagir directement avec tous les autres jetons. C'est ce qu'on appelle le **traitement parallèle**, et c'est en partie pourquoi ils sont si puissants.
+
+Mais la vraie magie réside dans le **mécanisme d'attention**.
+
+---
+
+## 👁️ Attention : Comment le modèle se concentre
+
+Imaginez lire cette phrase :
+
+> *"Le trophée ne rentrait pas dans la valise car il était trop grand."*
+
+À quoi fait référence « ça » ? Le trophée. Vous le saviez parce que vous avez rapidement fait un retour en arrière et donné un poids supplémentaire au « trophée » lors de l'interprétation de « ce ».
+
+Le **mécanisme d'attention** permet au modèle de faire exactement cela : pour chaque jeton, il calcule le degré « d'attention » à accorder à chaque autre jeton dans le contexte. Il demande :
+
+> *"Pour comprendre ce mot, quels autres mots de la séquence sont les plus pertinents ?"*
+
+Ces poids d’attention sont appris pendant l’entraînement. Le modèle apprend que lors du traitement d’un pronom, les noms situés plus tôt dans la phrase méritent une grande attention. Lors du traitement d'un verbe, le sujet mérite une grande attention.
+
+### Attention multi-têtes
+
+Les transformateurs modernes utilisent **l'attention multi-têtes** : ils exécutent de nombreux calculs d'attention en parallèle, chacun recherchant différents types de relations :
+- Une "tête" peut suivre les relations grammaticales (accord sujet-verbe)
+- Un autre pourrait suivre la coréférence (à quoi font référence les pronoms)
+- Un autre pourrait suivre la similarité sémantique (quels mots signifient des choses similaires)
+
+Les résultats de toutes les têtes sont combinés pour construire une compréhension riche et multidimensionnelle de la relation de chaque jeton avec l'ensemble du contexte.
+
+<FunFact>GPT-3 possède 96 têtes d’attention réparties sur 96 couches. Cela signifie qu'à chaque couche de traitement, 96 « perspectives » différentes sur les relations entre les mots sont calculées simultanément. Personne ne comprend vraiment ce que chaque tête a appris – c'est l'un des nombreux mystères des grands réseaux neuronaux.
+</FunFact>
+
+---
+
+## 📏 Fenêtre contextuelle : de combien de choses peut-elle se souvenir ?
+
+La **fenêtre contextuelle** correspond au nombre maximum de jetons qu'un LLM peut prendre en compte à la fois. Considérez-le comme la mémoire de travail du modèle.
+
+Les premiers modèles GPT avaient des fenêtres contextuelles de 2 048 jetons (~ 1 500 mots). Les modèles modernes comme GPT-4o, Claude 3 et Gemini 1.5 Pro ont des fenêtres contextuelles de 128 000 jetons ou plus, soit suffisamment pour contenir un roman entier.
+
+Tout ce qui se trouve dans la fenêtre contextuelle est accessible à chaque tête d'attention à chaque couche. Tout ce qui se trouve à l’extérieur est tout simplement invisible pour le modèle. Il n’y a pas de « mémoire qui s’efface » floue comme les humains – c’est une coupure dure.
+
+C'est pourquoi les conversations avec les LLM peuvent mal tourner si elles deviennent très longues : éventuellement, les premières parties de la conversation sortent de la fenêtre contextuelle.
+
+---
+
+## 🏋️ Formation : l'échelle est primordiale
+
+Les LLM sont formés sur des quantités de texte vraiment stupéfiantes :
+- **GPT-3** a été formé sur environ 300 milliards de jetons, soit environ 570 Go de texte.
+- Les détails de la formation **GPT-4** sont secrets, mais les estimations suggèrent des milliards de jetons
+- **Llama 3** a été formé sur plus de 15 000 milliards de jetons de texte
+
+Les données de formation proviennent d'explorations Web (Common Crawl), de livres, de Wikipédia, de référentiels de codes, d'articles universitaires et bien plus encore – essentiellement une fraction importante du texte écrit sur Internet.
+
+Les coûts de calcul de la formation sont énormes : la formation de GPT-3 a coûté environ 4,6 millions de dollars rien qu'en calcul. On estime que GPT-4 a coûté plus de 100 millions de dollars.
+
+### Capacités émergentes : la surprise
+
+Quelque chose d'étrange se produit à mesure que les modèles grandissent : ils développent des **capacités émergentes** – des capacités qui n'ont pas été explicitement entraînées, qui n'apparaissent pas dans des modèles plus petits et qui semblent apparaître soudainement à grande échelle.
+
+GPT-2 (2019) pouvait à peine écrire des paragraphes cohérents. GPT-3 (2020) pouvait rédiger des essais, résoudre des énigmes logiques et traduire des langues qu'il avait à peine vues. GPT-4 peut réussir les examens médicaux et juridiques.
+
+Ceux-ci n’étaient pas explicitement programmés. Ils sont sortis de l'échelle.
+
+<ThinkAboutIt>Un LLM n’a jamais « vécu » quoi que ce soit. Il n’a jamais vu un lever de soleil, n’a jamais eu froid ou n’a jamais eu de conversation en temps réel. Pourtant, il peut écrire de manière convaincante sur ces choses parce qu’il en a traité des millions de descriptions humaines. Cela signifie-t-il que le modèle « comprend » ces expériences, ou fait-il quelque chose de fondamentalement différent ?
+</ThinkAboutIt>
+
+---
+
+## 🎛️ De la machine de prédiction à l'assistant utile
+
+La prédiction brute du prochain jeton produirait quelque chose qui continue tout texte que vous lui donnez – utile pour la complétion, mais pas pour la conversation.
+
+Pour faire des LLM des assistants utiles, ils passent par une deuxième phase de formation appelée **RLHF (Reinforcement Learning from Human Feedback)** :
+
+1. Le modèle génère de nombreuses réponses possibles aux invites
+2. Les évaluateurs humains classent les réponses de la meilleure à la pire
+3. Un « modèle de récompense » apprend à prédire les préférences humaines
+4. Le LLM est affiné pour produire des réponses très appréciées par le modèle de récompense.
+
+C'est ainsi qu'un modèle de langage brut devient le ChatGPT ou Claude avec lequel vous interagissez : utile, inoffensif et relativement honnête.
+
+---
+
+## 🔬 Ce que les LLM peuvent et ne peuvent pas faire
+
+**Les LLM sont remarquablement bons pour :**
+- Générer un texte fluide et contextuellement approprié
+- Traduire entre les langues
+- Rédaction et explication du code
+- Résumer de longs documents
+- Suivre des instructions complexes
+- Tâches créatives : histoires, poèmes, brainstorming
+
+**Les LLM ont encore du mal avec :**
+- Arithmétique précise (ce ne sont pas des calculatrices)
+- Savoir de manière fiable ce qu'ils ne savent pas (hallucination)
+- Suivre les événements après la fin de leur formation
+- Raisonnement long en plusieurs étapes sans erreurs
+- Véritable raisonnement causal vs corrélation statistique
+
+Comprendre ces limites n'est pas du pessimisme : c'est la façon dont vous utilisez efficacement les LLM, en créant des systèmes qui exploitent leurs points forts tout en compensant leurs faiblesses.
+
+<Quiz question="Quel est l’objectif de formation principal d’un grand modèle linguistique ?" options={["", "Pour prédire la probabilité du prochain jeton étant donné tous les jetons précédents", "", ""]} correct={1} explanation="Les LLM sont formés à la prédiction du prochain jeton : étant donné une séquence de jetons, prédisez le prochain jeton le plus probable. En faisant cela des milliards de fois sur de grandes quantités de texte, le modèle apprend des modèles statistiques profonds du langage, ce qui donne lieu à une compréhension et une capacité de raisonnement apparentes." />
+
+<Quiz question="Qu'est-ce que le « mécanisme d'attention » dans Transformers permet à un modèle de faire ?" options={["Traitez les jetons plus rapidement que les architectures précédentes", "", "Pesez l'importance des différents jetons dans la séquence lors du traitement de chaque jeton", ""]} correct={2} explanation="Le mécanisme d'attention permet à chaque jeton de « s'occuper » de tous les autres jetons, en calculant les pondérations de pertinence de manière dynamique. C'est ainsi que le modèle résout les références aux pronoms, maintient l'accord sujet-verbe dans les phrases longues et construit une compréhension contextuelle en reliant des informations qui peuvent être très éloignées les unes des autres dans le texte." />

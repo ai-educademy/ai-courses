@@ -1,0 +1,127 @@
+---
+title: "Matrizes e mapas de hash – como a IA armazena e recupera dados"
+description: "Aprenda como matrizes e mapas hash potencializam tudo, desde vetores de recursos até pesquisas incorporadas em sistemas de IA."
+order: 1
+difficulty: "intermediate"
+duration: 15
+icon: "📦"
+published: true
+machineTranslated: true
+---
+## Por que o armazenamento de dados é importante na IA
+
+Todo sistema de IA precisa armazenar e recuperar dados – rapidamente. Quer seja uma lista de valores de pixel em uma imagem, um vocabulário de 50.000 palavras ou milhões de preferências do usuário, a escolha da estrutura de dados determina a rapidez com que sua IA pode pensar.
+
+Duas estruturas dominam: **matrizes** e **mapas hash**. Domine-os e você terá a base para quase todos os pipelines de IA.
+
+## Arrays - Listas ordenadas com acesso instantâneo
+
+Um array é simplesmente uma lista numerada de itens armazenados lado a lado na memória. Cada item possui um **índice** - sua posição na lista, começando do zero.
+
+```
+index:   0       1       2       3       4
+value: ["cat", "dog", "bird", "fish", "frog"]
+```
+
+Como os itens ficam próximos uns dos outros, você pode pular direto para qualquer posição. Quer o item 3? Pronto - não é necessária pesquisa. Esse é o acesso **O(1)**, o que significa que leva o mesmo tempo se a matriz contém 10 itens ou 10 milhões.
+
+<Illustration src="/images/lessons/arrays-and-hashmaps.svg" alt="Uma matriz de cinco elementos com índices de 0 a 4, mostrando acesso direto ao índice 3" caption="Arrays permitem pular diretamente para qualquer posição usando seu índice." />
+
+### Quando os arrays brilham
+
+- **Vetores de características**: uma imagem pode ser representada como uma matriz de 784 números (28×28 pixels), cada um contendo um valor de brilho.
+- **Incorporações**: modelos de linguagem armazenam significados de palavras como matrizes de centenas de números de ponto flutuante.
+- **Processamento em lote**: os dados de treinamento são carregados em matrizes para que a GPU possa processar milhares de exemplos simultaneamente.
+
+### A captura
+
+Inserir ou remover itens no meio é caro. Cada item após a alteração deve ser embaralhado. Isso é **O(n)** - quanto mais itens, mais tempo leva.
+
+<ThinkAboutIt>Se você tivesse uma lista de reprodução de 10.000 músicas e quisesse inserir uma nova faixa na posição 5, todas as músicas da posição 5 em diante precisariam ser alteradas. Como um serviço de streaming pode lidar com isso sem desacelerar?
+</ThinkAboutIt>
+
+## Mapas Hash - Pesquisas instantâneas por nome
+
+Um mapa hash (também chamado de dicionário ou tabela hash) armazena dados como **pares de valores-chave**. Em vez de acessar itens por número de índice, você os acessa por meio de uma chave significativa.
+
+```
+word_counts = {
+  "hello": 42,
+  "world": 37,
+  "AI": 156
+}
+```
+
+Precisa da contagem para "AI"? O mapa hash usa uma **função hash** para converter a chave em um índice nos bastidores. O resultado? **O(1)** tempo médio de pesquisa - assim como arrays, mas usando nomes em vez de números.
+
+<FunFact>Os dicionários do Python são mapas hash. Quando o ChatGPT conta a frequência das palavras durante o treinamento, ele usa estruturas semelhantes a mapas hash para rastrear bilhões de ocorrências de palavras em todo o texto da Internet.
+</FunFact>
+
+### Usos reais de IA para mapas de hash
+
+- **Mapeamento de vocabulário**: Transformando palavras como "brilhante" em token ID 8921 para um modelo de linguagem.
+- **Contagem de frequência**: com que frequência cada palavra aparece em um conjunto de dados? Os mapas hash respondem a isso de uma só vez.
+- **Resultados de armazenamento em cache**: se uma IA já calculou uma previsão para a entrada X, armazene-a para nunca recalcular.
+
+## Complexidade de tempo simplificada
+
+| Operação | Matriz | Mapa de hash |
+|----------|-------|----------|
+| Acesso por índice | O(1)⚡ | N/A |
+| Acesso por chave | O(n) 🐢 | O(1)⚡ |
+| Inserir no final | O(1)⚡ | O(1)⚡ |
+| Inserir no meio | O(n) 🐢 | N/A |
+| Procure por valor | O(n) 🐢 | O(1)⚡ |
+
+Pense em **O(1)** como "instantâneo, não importa o tamanho" e **O(n)** como "mais lento quanto maiores os dados".
+
+<Quiz question="Você tem 100.000 perfis de usuário e precisa encontrar um usuário pelo nome de usuário. Qual estrutura é mais rápida?" options="Uma matriz classificada em ordem alfabética|Um mapa hash com nomes de usuários como chaves|Uma matriz simples e não classificada|Não importa - eles são todos iguais" answer="1" explanation="Um mapa hash fornece pesquisa média O(1) por chave, tornando-o ideal para encontrar itens por um identificador exclusivo, como um nome de usuário." />
+
+## Padrão Comum: Contagem de Frequência
+
+Um dos padrões mais úteis tanto em entrevistas quanto em IA é a contagem de ocorrências. Aqui está a ideia em pseudocódigo:
+
+```
+counts = {}
+for each word in text:
+    if word in counts:
+        counts[word] = counts[word] + 1
+    else:
+        counts[word] = 1
+```
+
+Essa única passagem pelo texto fornece a frequência de cada palavra. Os modelos de linguagem usam exatamente essa abordagem (em grande escala) para entender quais palavras são mais importantes.
+
+## Padrão Comum: O Problema das Duas Somas
+
+Dada uma matriz de números e um alvo, encontre dois números que somam o alvo. A abordagem ingênua verifica cada par - O(n²). A abordagem inteligente usa um mapa hash:
+
+```
+seen = {}
+for each number in array:
+    complement = target - number
+    if complement in seen:
+        return [seen[complement], current_index]
+    seen[number] = current_index
+```
+
+Uma passagem, O(n) tempo. O mapa hash lembra o que você já viu.
+
+<Quiz question="Por que a abordagem do mapa hash para soma dupla é mais rápida do que verificar cada par?" options="Mapas hash usam menos memória|Os mapas hash permitem que você verifique 'vi este número?' em O(1) em vez de varrer todo o array|Os mapas hash classificam os dados automaticamente|Mapas hash funcionam apenas com arrays pequenos" answer="1" explanation="Cada pesquisa em um mapa hash é O(1) em média, então, em vez de comparar cada par (O(n²)), você faz uma única passagem com pesquisas O(1) - fornecendo O(n) total." />
+
+## Quando escolher qual
+
+- **Use arrays** quando a ordem é importante, você acessa itens por posição ou precisa processar tudo sequencialmente (como pixels em uma imagem).
+- **Use mapas hash** quando precisar de pesquisas rápidas por uma chave, quiser contar ocorrências ou precisar verificar se algo existe rapidamente.
+
+<ThinkAboutIt>Um mecanismo de recomendação precisa verificar se o usuário já assistiu a um filme antes de sugeri-lo. Você armazenaria o histórico de exibição do usuário em uma matriz ou mapa hash? Que compensações vêm à mente?
+</ThinkAboutIt>
+
+<Quiz question="Um modelo de IA armazena incorporações de palavras como matrizes de 300 números cada. Por que os arrays são uma boa escolha aqui?" options="Matrizes permitem acesso aleatório baseado em chave|Os arrays armazenam dados numéricos ordenados e de tamanho fixo com eficiência e as GPUs os processam em paralelo|Matrizes classificam automaticamente os números|Arrays usam menos memória do que qualquer outra estrutura" answer="1" explanation="Incorporações são sequências de números de comprimento fixo onde a ordem é importante - a posição 0 pode representar 'gênero' e a posição 1 'royalty'. Os arrays os armazenam de forma compacta e as GPUs são otimizadas para operações de array." />
+
+## Principais conclusões
+
+- **Arrays** fornecem acesso O(1) por índice e são a espinha dorsal da IA ​​numérica (imagens, embeddings, tensores).
+- **Mapas hash** fornecem acesso O(1) por chave e são essenciais para pesquisas, contagem e armazenamento em cache.
+- Escolher a estrutura certa pode transformar um algoritmo O(n²) em um algoritmo O(n) - uma diferença que é importante ao processar milhões de pontos de dados.
+- Na prática, a maioria dos pipelines de IA usa ambos: arrays para computação numérica e mapas hash para pesquisas de metadados.

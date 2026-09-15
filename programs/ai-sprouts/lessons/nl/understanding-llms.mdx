@@ -1,0 +1,178 @@
+---
+title: "Grote taalmodellen begrijpen"
+description: "Hoe GPT, Claude en andere LLM's onder de motorkap werken"
+order: 11
+difficulty: "intermediate"
+duration: 15
+icon: "🔤"
+published: true
+machineTranslated: true
+---
+# Grote taalmodellen begrijpen 🔤
+
+ChatGPT, Claude, Gemini, Llama: ze zijn overal. Maar wat doen deze dingen eigenlijk als ze op uw berichten reageren? Het antwoord is zowel eenvoudiger als meer verbijsterend dan je zou verwachten.
+
+In de kern doen Large Language Models (LLM's) één ding: **het volgende token voorspellen**. Steeds opnieuw. Dat is het. En toch komt uit dit eenvoudige proces het vermogen voort om code te schrijven, de kwantumfysica uit te leggen, poëzie te componeren en verrassend coherente gesprekken te voeren.
+
+Laten we uitpakken hoe.
+
+---
+
+## 🔡 Ten eerste: wat is een token?
+
+Voordat we bij het model zelf komen, moeten we **tokens** begrijpen: de taaleenheid waarmee LLM's werken.
+
+Een token is niet bepaald een woord. Het lijkt meer op een **stuk tekst** dat vaak genoeg in de taal voorkomt om de moeite waard te zijn om als een geheel te behandelen. In het Engels zijn gewone woorden als "de", "en", "is" enkele tokens. Langere, zeldzamere woorden kunnen worden opgesplitst: 'buitengewoon' kan 'extra' + 'gewoon' worden. Cijfers en interpunctie zijn vaak hun eigen symbolen.
+
+Een grove vuistregel: **1 token ≈ 0,75 woorden** in het Engels.
+
+Waarom niet gewoon woorden gebruiken? Omdat tokenisatie het volgende regelt:
+- Meerdere talen met verschillende woordstructuren
+- Code (waar witruimte en symbolen er anders toe doen)
+- Nieuwe woorden, namen en technische termen
+- Wiskundige uitdrukkingen
+
+Wanneer u een bericht naar een LLM typt, wordt het onmiddellijk omgezet in een reeks token-ID's: getallen in een woordenschat van doorgaans 30.000 tot 100.000 tokens.
+
+<FunFact>GPT-4 heeft een vocabulaire van ongeveer 100.000 tokens. De hele Engelse taal heeft grofweg 170.000 woorden die algemeen worden gebruikt, maar de symbolische woordenschat van een LLM omvat tegelijkertijd vele talen, codesyntaxis, emoji en gespecialiseerde terminologie.
+</FunFact>
+
+---
+
+## 🎯 De kerntaak: voorspellen wat er daarna komt
+
+Dit is het fundamentele trainingsdoel voor elke LLM:
+
+> Gegeven een reeks tokens, **voorspel de waarschijnlijkheid van elk mogelijk volgend token**.
+
+Tijdens de training krijgt het model miljarden voorbeelden te zien, zoals:
+- "De kat zat op de ___" → (waarschijnlijk: mat, vloer, bank, dak...)
+- "def bereken_som(a, b):\n return ___" → (waarschijnlijk: a + b)
+- "De hoofdstad van Frankrijk is ___" → (vrijwel zeker: Parijs)
+
+Door voldoende voorbeelden te zien, leert het model de statistische patronen van taal kennen – niet alleen woord voor woord, maar ook de diepe structuren van betekenis, causaliteit en context.
+
+Bij het genereren van tekst doet het model het volgende:
+1. Kijkt naar alle voorgaande tokens
+2. Voert een waarschijnlijkheidsverdeling uit over de gehele woordenschat
+3. Neem een voorbeeld van een token uit die distributie (waarbij enige willekeur wordt bepaald door "temperatuur")
+4. Voegt dat token toe aan de reeks
+5. Herhalingen
+
+Elk woord dat u in het antwoord van een LLM leest, werd één token tegelijk gegenereerd, elk op de hoogte van alles wat eraan voorafging.
+
+---
+
+## 🔄 De Transformer-architectuur
+
+De architectuur die moderne LLM's mogelijk heeft gemaakt, wordt de **Transformer** genoemd, geïntroduceerd door Google-onderzoekers in een baanbrekend artikel uit 2017 getiteld "Attention is All You Need".
+
+Vóór Transformers verwerkten taalmodellen tekst opeenvolgend – woord voor woord, alsof je een zin langzaam leest met je vinger onder elk woord. Dit was langzaam en maakte het moeilijk om woorden die ver uit elkaar lagen in een zin met elkaar te verbinden.
+
+Transformers verwerken **alle tokens tegelijkertijd** en laten elk token rechtstreeks communiceren met elk ander token. Dit wordt **parallelle verwerking** genoemd en is een van de redenen waarom ze zo krachtig zijn.
+
+Maar de echte magie zit in het **aandachtsmechanisme**.
+
+---
+
+## 👁️ Let op: hoe het model focust
+
+Stel je voor dat je deze zin leest:
+
+> *"De trofee paste niet in de koffer omdat hij te groot was."*
+
+Waar verwijst ‘het’ naar? De trofee. Dat wist je omdat je snel terugkeek en extra gewicht toekende aan 'trofee' bij het interpreteren van 'het'.
+
+Het **aandachtsmechanisme** laat het model precies dit doen: voor elk token berekent het hoeveel "aandacht" er moet worden besteed aan elk ander token in de context. Het vraagt:
+
+> *"Welke andere woorden in de reeks zijn het meest relevant om dit woord te begrijpen?"*
+
+Deze aandachtsgewichten worden tijdens de training geleerd. Het model leert dat bij de verwerking van een voornaamwoord de zelfstandige naamwoorden eerder in de zin veel aandacht verdienen. Bij het verwerken van een werkwoord verdient het onderwerp veel aandacht.
+
+### Aandacht voor meerdere hoofden
+
+Moderne Transformers gebruiken **multi-head aandacht**; ze voeren veel aandachtsberekeningen parallel uit, waarbij elk op zoek gaat naar verschillende soorten relaties:
+- Eén "hoofd" kan grammaticale relaties volgen (overeenkomst tussen onderwerp en werkwoord)
+- Een ander zou coreferentie kunnen volgen (waarnaar voornaamwoorden verwijzen)
+- Een ander zou semantische gelijkenis kunnen volgen (welke woorden soortgelijke dingen betekenen)
+
+De outputs van alle heads worden gecombineerd om een ​​rijk, multidimensionaal begrip op te bouwen van de relatie van elk token tot de hele context.
+
+<FunFact>GPT-3 heeft 96 aandachtskoppen verdeeld over 96 lagen. Dat betekent dat op elke laag van de verwerking tegelijkertijd 96 verschillende 'perspectieven' op de relaties tussen woorden worden berekend. Niemand begrijpt volledig wat elk hoofd heeft geleerd – het is een van de vele mysteries van grote neurale netwerken.
+</FunFact>
+
+---
+
+## 📏 Contextvenster: hoeveel kan het onthouden?
+
+Het **contextvenster** is het maximale aantal tokens dat een LLM tegelijk kan overwegen. Zie het als het werkgeheugen van het model.
+
+Vroege GPT-modellen hadden contextvensters van 2.048 tokens (~ 1.500 woorden). Moderne modellen zoals GPT-4o, Claude 3 en Gemini 1.5 Pro hebben contextvensters van 128.000 tokens of meer – genoeg om een ​​hele roman te bevatten.
+
+Alles binnen het contextvenster is toegankelijk voor elk aandachtshoofd op elke laag. Alles daarbuiten is eenvoudigweg onzichtbaar voor het model. Er is geen vage ‘vervagende herinnering’ zoals mensen dat hebben – het is een moeilijke grens.
+
+Dit is de reden waarom gesprekken met LLM's mis kunnen gaan als ze erg lang worden: uiteindelijk vallen de eerste delen van het gesprek buiten het contextvenster.
+
+---
+
+## 🏋️Training: Schaal is alles
+
+LLM's zijn getraind in werkelijk duizelingwekkende hoeveelheden tekst:
+- **GPT-3** is getraind op ~300 miljard tokens – ongeveer 570 GB aan tekst
+- **GPT-4** trainingsdetails zijn geheim, maar schattingen duiden op biljoenen tokens
+- **Llama 3** werd getraind op meer dan 15 biljoen tokens aan tekst
+
+De trainingsgegevens zijn afkomstig van webcrawls (Common Crawl), boeken, Wikipedia, codeopslagplaatsen, academische artikelen en nog veel meer – in wezen een aanzienlijk deel van de geschreven tekst op internet.
+
+De computerkosten voor training zijn enorm: de training van GPT-3 kostte alleen al aan rekenkracht naar schatting $4,6 miljoen. Er wordt aangenomen dat GPT-4 meer dan $100 miljoen heeft gekost.
+
+### Opkomende vaardigheden: de verrassing
+
+Er gebeurt iets vreemds als modellen groter worden: ze ontwikkelen **opkomende vaardigheden** – vaardigheden die niet expliciet zijn getraind, niet in kleinere modellen zijn verschenen en plotseling op schaal lijken te verschijnen.
+
+GPT-2 (2019) kon nauwelijks samenhangende paragrafen schrijven. GPT-3 (2020) kon essays schrijven, logische puzzels oplossen en talen vertalen die het nauwelijks had gezien. GPT-4 kan medische en juridische examens doorstaan.
+
+Deze waren niet expliciet geprogrammeerd. Ze kwamen uit de schaal.
+
+<ThinkAboutIt>Een LLM heeft nog nooit iets ‘ervaren’. Het heeft nog nooit een zonsopgang gezien, het koud gevoeld of in realtime een gesprek gevoerd. Toch kan het op overtuigende wijze over deze dingen schrijven, omdat het miljoenen menselijke beschrijvingen ervan heeft verwerkt. Betekent dit dat het model deze ervaringen ‘begrijpt’, of doet het iets fundamenteel anders?
+</ThinkAboutIt>
+
+---
+
+## 🎛️ Van voorspellingsmachine tot behulpzame assistent
+
+Een ruwe voorspelling van de volgende token zou iets opleveren dat elke tekst voortzet die u eraan geeft - nuttig voor voltooiing, maar niet voor conversatie.
+
+Om van LLM’s behulpzame assistenten te maken, doorlopen ze een tweede trainingsfase genaamd **RLHF (Reinforcement Learning from Human Feedback)**:
+
+1. Het model genereert veel mogelijke reacties op aanwijzingen
+2. Menselijke beoordelaars rangschikken de antwoorden van beste naar slechtste
+3. Een ‘beloningsmodel’ leert menselijke voorkeuren voorspellen
+4. De LLM is verfijnd om reacties te produceren die door het beloningsmodel hoog gewaardeerd worden
+
+Dit is hoe een onbewerkt taalmodel de ChatGPT of Claude wordt waarmee je communiceert: behulpzaam, onschadelijk en relatief eerlijk.
+
+---
+
+## 🔬 Wat LLM's wel en niet kunnen doen
+
+**LLM’s zijn opmerkelijk goed in:**
+- Het genereren van vloeiende, contextueel passende tekst
+- Vertalen tussen talen
+- Code schrijven en uitleggen
+- Lange documenten samenvatten
+- Complexe instructies volgen
+- Creatieve taken: verhalen, gedichten, brainstormen
+
+**LLM’s worstelen nog steeds met:**
+- Nauwkeurige rekenkunde (het zijn geen rekenmachines)
+- Betrouwbaar weten wat ze niet weten (hallucinatie)
+- Op de hoogte blijven van gebeurtenissen na het einde van de training
+- Lange redenering in meerdere stappen zonder fouten
+- Ware causale redenering versus statistische correlatie
+
+Het begrijpen van deze beperkingen is geen pessimisme; het gaat erom hoe je LLM's effectief gebruikt, door systemen te bouwen die hun sterke punten benutten en tegelijkertijd hun zwakke punten compenseren.
+
+<Quiz question="Wat is het kerndoel van de training van een groot taalmodel?" options={["Om alle tekst te onthouden waarop het is getraind", "Om de waarschijnlijkheid van het volgende token te voorspellen, gegeven alle voorgaande tokens", "Om de betekenis van menselijke taal te begrijpen", "Om te vertalen tussen programmeertalen"]} correct={1} explanation="LLM's zijn getraind in het voorspellen van het volgende token: voorspel, gegeven een reeks tokens, het meest waarschijnlijke volgende token. Door dit miljarden keren te doen op grote hoeveelheden tekst, leert het model diepe statistische taalpatronen kennen – wat aanleiding geeft tot schijnbaar begrip en redeneervermogen." />
+
+<Quiz question="Wat kan een model doen dankzij het 'aandachtsmechanisme' in Transformers?" options={["Verwerk tokens sneller dan eerdere architecturen", "Bewaar informatie buiten het contextvenster", "Weeg het belang van verschillende tokens in de reeks af bij het verwerken van elk token", "Vertaal tussen verschillende tokenisatieformaten"]} correct={2} explanation="Dankzij het aandachtsmechanisme kan elk token elk ander token 'aanschouwen', waarbij relevantiegewichten dynamisch worden berekend. Dit is de manier waarop het model verwijzingen naar voornaamwoorden oplost, de overeenkomst tussen onderwerp en werkwoord in lange zinnen handhaaft en contextueel begrip opbouwt – informatie met elkaar verbindt die in de tekst mogelijk ver uit elkaar liggen." />

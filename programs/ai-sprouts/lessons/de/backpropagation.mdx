@@ -1,0 +1,128 @@
+---
+title: "Backpropagation – Das Kalkül hinter dem Lernen"
+description: "Verstehen Sie, wie neuronale Netze lernen, indem sie Fehler rückwärts durch Schichten weitergeben und dabei die Kettenregel verwenden, um jedes Gewicht zu aktualisieren."
+order: 6
+difficulty: "intermediate"
+duration: 16
+icon: "⛓️"
+published: true
+machineTranslated: true
+---
+# Backpropagation – Der Motor des Lernens
+
+In den vorherigen Lektionen haben Sie gesehen, dass neuronale Netze Gewichte haben und diese Gewichte durch Training angepasst werden. Aber *woher* weiß das Netzwerk, welche Gewichtungen geändert werden müssen und um wie viel? Die Antwort ist **Backpropagation** – der wichtigste Algorithmus im modernen Deep Learning.
+
+Andrej Karpathy nennt es „das Wichtigste, was man über neuronale Netze verstehen muss“. Lassen Sie uns sehen, warum.
+
+## Eine kurze Zusammenfassung des Vorwärtspasses
+
+Während eines **Vorwärtsdurchlaufs** fließen Daten von links nach rechts durch das Netzwerk:
+
+1. Eingaben werden mit Gewichten multipliziert und summiert.
+2. Eine Voreingenommenheit wird hinzugefügt.
+3. Eine Aktivierungsfunktion (wie ReLU) wird angewendet.
+4. Die Ausgabe wird in die nächste Ebene eingespeist und wiederholt, bis eine endgültige Vorhersage entsteht.
+
+Die Vorhersage wird dann mithilfe einer **Verlustfunktion** (wird in der nächsten Lektion behandelt) mit der wahren Antwort verglichen. Der Verlust ist eine einzelne Zahl, die besagt: *„Hier sehen Sie, wie falsch Sie liegen.“*
+
+<Illustration src="/images/lessons/backpropagation.svg" alt="Ein Berechnungsdiagramm, das einen Vorwärtsdurchlauf durch drei Knoten zeigt, wobei Pfeile den Datenfluss vom Eingang zum Verlust anzeigen" caption="Der Vorwärtsdurchlauf erstellt einen Berechnungsgraphen. Backpropagation führt es dann in umgekehrter Reihenfolge durch." />
+
+## Die wichtigste Erkenntnis – Schuldzuweisung
+
+Stellen Sie sich vor, Sie backen einen Kuchen und er schmeckt schrecklich. Sie haben fünf Zutaten verwendet. Die Frage ist: *Welche Zutat hat am meisten zum schlechten Geschmack beigetragen und in welchem ​​Ausmaß?*
+
+Backpropagation beantwortet genau diese Frage für neuronale Netze. Es weist jedem einzelnen Gewicht die **Schuld** zu, indem es fragt: „Wenn ich dieses Gewicht leicht verändere, wie stark ändert sich dann der Verlust?“
+
+Diese Änderungsrate wird **Gradient** genannt und stammt aus der Analysis – genauer gesagt aus der **Ableitung**.
+
+<FunFact>Geoffrey Hinton, einer der „Paten der KI“, sagte, dass Backpropagation die Schlüsselidee sei, die Deep Learning praktisch machte. Ohne sie wäre das Training von Netzwerken mit Millionen von Parametern rechnerisch unmöglich.
+</FunFact>
+
+## Die Kettenregel – Eine Idee, um sie alle zu beherrschen
+
+Neuronale Netze sind Ketten einfacher Operationen, die miteinander verbunden sind. Die **Kettenregel** aus der Analysis sagt uns, wie man zusammengesetzte Funktionen unterscheidet:
+
+> Wenn `y = f(g(x))`, dann `dy/dx = f'(g(x)) × g'(x)`.
+
+**Alltagsanalogie:** Sie fahren zu einem Geschäft. Ihre Geschwindigkeit hängt davon ab, wie stark Sie auf das Gaspedal treten. Die Gaspedalstellung hängt vom Verkehr ab. Um zu erfahren, wie sich der Verkehr auf Ihre Geschwindigkeit auswirkt, multiplizieren Sie: *(Geschwindigkeit pro Gaspedalbetätigung)* × *(Gaspedalbetätigung pro Verkehrssituation)*. Das ist die Kettenregel – die Multiplikation lokaler Änderungsraten entlang einer Kette.
+
+<FunFact>Die Backpropagation wurde 1986 in einem bahnbrechenden Aufsatz von Rumelhart, Hinton und Williams populär gemacht, die Kernidee der automatischen Differenzierung im Umkehrmodus reicht jedoch bis in die 1960er Jahre zurück.
+</FunFact>
+
+## Berechnungsdiagramme – Visualisierung der Mathematik
+
+Moderne Frameworks wie PyTorch erstellen während des Vorwärtsdurchlaufs ein **Berechnungsdiagramm**. Jede Operation – Addition, Multiplikation, ReLU – wird zu einem Knoten. Die Backpropagation durchläuft diesen Graphen dann **in umgekehrter Reihenfolge** und wendet die Kettenregel an jedem Knoten an, um Gradienten zu berechnen.
+
+Stellen Sie es sich wie ein Flusssystem vor. Der Verlust ist der Ozean am Ende. Backprop verfolgt jeden Zufluss stromaufwärts, um herauszufinden, wie viel jede Quelle (Gewicht) zum endgültigen Fluss beigetragen hat.
+
+### Ein kleines Beispiel
+
+Angenommen, `L = (w × x - y)²` mit `w = 2`, `x = 3`, `y = 10`.
+
+1. **Vorwärts:** `w × x = 6`, dann `6 - 10 = -4`, dann `(-4)² = 16`. Verlust = 16.
+2. **Rückwärts:** `dL/d(diff) = 2 × (-4) = -8`, dann `d(diff)/d(wx) = 1`, also `dL/d(wx) = -8`.
+3. Schließlich `d(wx)/dw = x = 3`, also **`dL/dw = -8 × 3 = -24`**.
+
+Der Gradient von −24 sagt uns: *Eine Erhöhung von `w` wird den Verlust schnell verringern.* Das ist genau das Signal, das wir verbessern müssen.
+
+<Quiz question="Was machen wir in der Kettenregel mit den lokalen Ableitungen an jedem Knoten?" options="Fügen Sie sie zusammen|Multiplizieren Sie sie miteinander|Nimm das Maximum|Durchschnittlich" answer="1" explanation="Die Kettenregel multipliziert lokale Ableitungen auf dem Weg von der Ausgabe zurück zum interessierenden Gewicht. Dies ist das mathematische Rückgrat der Backpropagation." />
+
+## Farbverlauf durch Ebenen
+
+In einem tiefen Netzwerk müssen Farbverläufe viele Schichten durchlaufen. Jede Schicht multipliziert den Gradienten mit seiner lokalen Ableitung. Dadurch entstehen zwei gefährliche Fehlermodi:
+
+### Verschwindende Farbverläufe
+
+Wenn lokale Ableitungen klein sind (z. B. die Sigmoidfunktion erreicht die Sättigung nahe 0 oder 1), führt eine wiederholte Multiplikation dazu, dass die Gradienten gegen Null schrumpfen. Frühe Legehennen lernen kaum – sie empfangen fast kein Signal. Dies plagte frühe tiefe Netzwerke.
+
+### Explodierende Farbverläufe
+
+Wenn die lokalen Ableitungen groß sind, wachsen die Gradienten exponentiell. Gewichte werden enorm aktualisiert und das Netzwerk wird instabil, wodurch NaN-Werte entstehen.
+
+<ThinkAboutIt>Die Ableitung von ReLU ist entweder 0 oder 1 – es verkleinert den Gradienten nie, wenn es aktiv ist. Warum könnte diese einfache Eigenschaft für das Training tiefer Netzwerke revolutionär gewesen sein?
+</ThinkAboutIt>
+
+**Zu den modernen Lösungen gehören:**
+- **ReLU-Aktivierung** – Ableitung ist 1 für positive Eingaben, um Schrumpfung zu vermeiden.
+- **Restverbindungen (Verbindungen überspringen)** – Geben Sie Farbverläufen eine Autobahn, um Ebenen zu umgehen.
+- **Chargennormalisierung** – hält die Werte in einem gesunden Bereich.
+- **Verlaufsbeschneidung** – begrenzt Verläufe, um Explosionen zu verhindern.
+
+## Wie Gewichte tatsächlich aktualisiert werden
+
+Sobald Backprop jeden Farbverlauf berechnet hat, aktualisiert der **Optimierer** (nächste Lektion) jede Gewichtung:
+
+```
+w_new = w_old - learning_rate × gradient
+```
+
+Die Lernrate steuert die Schrittgröße. Wenn es zu groß ist, schießt man zu weit; zu klein und das Training dauert ewig. Der Farbverlauf gibt Ihnen die Richtung an; Die Lernrate sagt Ihnen, wie weit Sie gehen müssen.
+
+<Quiz question="Was verursacht verschwindende Gradienten in tiefen Netzwerken?" options="Lernrate zu hoch|Aktivierungsfunktionen mit sehr kleinen Ableitungen, die sich über Schichten zusammensetzen|Zu viele Trainingsdaten|Verwenden der ReLU-Aktivierung" answer="1" explanation="Wenn Aktivierungen wie Sigmoid in die Sättigung gelangen, nähern sich ihre Ableitungen Null. Das Multiplizieren vieler Werte nahe Null mit der Kettenregel führt dazu, dass Gradienten verschwinden und die ersten Schichten des Lernsignals ausgehungert werden." />
+
+## Warum Backprop wichtig ist
+
+Jedes Mal, wenn ChatGPT seine Vorhersage des nächsten Wortes verbessert, jedes Mal, wenn ein selbstfahrendes Auto seine Lenkung verfeinert, läuft die Backpropagation darunter. Es ist der Algorithmus, der das **Lernen aus Fehlern** mathematisch präzise macht.
+
+Ohne Backprop hätten wir keine effiziente Möglichkeit, Netzwerke mit Millionen – oder Milliarden – Parametern zu trainieren.
+
+<Quiz question="Was sagt uns ein Gradient über ein Gewicht?" options="Der genaue Wert, den das Gewicht haben sollte|Wie stark ändert sich der Verlust, wenn wir das Gewicht leicht verschieben?|Ob das Gewicht entfernt werden soll|Die Position des Gewichts im Netzwerk" answer="1" explanation="Ein Gradient ist die Änderungsrate des Verlusts in Bezug auf ein Gewicht. Es zeigt uns sowohl die Richtung als auch das Ausmaß der Änderung an, die erforderlich ist, um den Verlust zu reduzieren." />
+
+<ThinkAboutIt>Karpathy betont, dass Backprop „nur eine rekursive Anwendung der Kettenregel“ ist. Wenn Sie die Kettenregel und die Berechnungsdiagramme verstehen, verstehen Sie auch Backprop. Welche anderen komplexen Systeme könnten verstanden werden, wenn man sie in einfache, zusammensetzbare Teile zerlegt?
+</ThinkAboutIt>
+
+## Wichtige Erkenntnisse
+
+- **Backpropagation** berechnet Gradienten, indem der Berechnungsgraph in umgekehrter Reihenfolge durchlaufen wird.
+- Die **Kettenregel** multipliziert lokale Ableitungen entlang jedes Pfades.
+- **Verschwindende Farbverläufe** langsames Lernen; **Explodierende Gradienten** destabilisieren es.
+- Moderne Tricks (ReLU, Verbindungen überspringen, Gradientenbeschneidung) sorgen für einen gesunden Gradientenfluss.
+- Backprop + ein Optimierer = die Lernmaschine allen modernen Deep Learnings.
+
+---
+
+## 📚 Weiterführende Literatur
+
+- [Andrej Karpathy – nn-zero-to-hero (micrograd)](https://karpathy.ai/zero-to-hero.html) – Backprop von Grund auf in Python erstellen
+- [3Blue1Brown – Backpropagation-Kalkül](https://www.3blue1brown.com/lessons/backpropagation-calculus) – Schöne visuelle Erklärung der Kettenregel in neuronalen Netzen
+– [CS231n Backprop Notes](https://cs231n.github.io/optimization-2/) – Stanfords prägnante Referenz zu Berechnungsdiagrammen und Gradientenfluss

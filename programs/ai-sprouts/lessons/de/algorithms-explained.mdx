@@ -1,0 +1,128 @@
+---
+title: "Algorithmen erklärt – Die Rezepte hinter jedem KI-System"
+description: "Erfahren Sie, was Algorithmen sind, wie sie anhand alltäglicher Beispiele funktionieren und warum die Wahl des richtigen Algorithmus für die KI wichtig ist."
+order: 2
+difficulty: "beginner"
+duration: 15
+icon: "📝"
+published: true
+machineTranslated: true
+---
+# Algorithmen erklärt
+
+In der vorherigen Lektion haben Sie gelernt, dass Daten der Treibstoff für KI sind. Aber Kraftstoff allein bewegt ein Auto nicht – man braucht einen Motor. In der KI ist diese Engine ein **Algorithmus**. Jedes Mal, wenn ein KI-System eine Vorhersage trifft, ein Video empfiehlt oder Spam erkennt, erledigt ein Algorithmus hinter den Kulissen die schwere Arbeit.
+
+## Was ist ein Algorithmus?
+
+Ein Algorithmus ist einfach eine **Schritt-für-Schritt-Anleitung** zur Lösung eines Problems. Sie folgen jeden Tag Algorithmen, ohne es zu merken.
+
+- **Ein Rezept** ist ein Algorithmus: Kombinieren Sie Zutaten in einer bestimmten Reihenfolge, um einen Kuchen zu backen.
+- **Anleitungen für zerlegte Möbel** sind ein Algorithmus: Befolgen Sie jeden Schritt, um ein Bücherregal zu bauen.
+- **Anfahrtsbeschreibungen** sind ein Algorithmus: links abbiegen, geradeaus fahren, rechts abbiegen, ankommen.
+
+Die Kernidee ist, dass ein Algorithmus **präzise**, **geordnet** und **wiederholbar** sein muss – jeder, der dieselben Schritte befolgt, sollte das gleiche Ergebnis erhalten.
+
+<Illustration src="/images/lessons/algorithms-explained.svg" alt="Ein Flussdiagramm, das einen einfachen Entscheidungsalgorithmus zeigt: Regnet es? Wenn ja, nehmen Sie einen Regenschirm mit. Wenn nein, tragen Sie eine Sonnenbrille." caption="Ein Algorithmus ist eine klare Reihe von Anweisungen – wie ein Flussdiagramm, das Sie zu einer Entscheidung führt." />
+
+<FunFact>Das Wort „Algorithmus“ stammt vom Namen eines persischen Mathematikers aus dem 9. Jahrhundert, Muhammad ibn Musa al-Khwarizmi, der eines der ersten Bücher über systematische Problemlösung schrieb.
+</FunFact>
+
+## Beispiele für alltägliche Algorithmen
+
+Bevor wir in die KI eintauchen, werfen wir einen Blick auf zwei einfache Algorithmen, die Sie bereits intuitiv verstehen.
+
+### Sortieren einer Kartenhand
+
+Wenn Sie eine Hand voller Spielkarten nehmen und diese in der richtigen Reihenfolge anordnen, führen Sie einen **Sortieralgorithmus** aus:
+
+1. Schauen Sie sich die ersten beiden Karten an. Tauschen Sie sie aus, wenn sie nicht in Ordnung sind.
+2. Gehen Sie zum nächsten Paar. Vergleichen und tauschen Sie erneut.
+3. Wiederholen, bis die gesamte Hand sortiert ist.
+
+Im Wesentlichen funktioniert **Bubble Sort** – einer der einfachsten Sortieralgorithmen in der Informatik.
+
+### Ein Wort in einem Wörterbuch finden
+
+Sie beginnen nicht auf Seite eins und lesen jedes Wort. Stattdessen:
+
+1. Öffnen Sie das Wörterbuch etwa in der Mitte.
+2. Überprüfen Sie, ob das gesuchte Wort vor oder nach dieser Seite steht.
+3. Entsorgen Sie die nicht benötigte Hälfte und wiederholen Sie den Vorgang.
+
+Dies wird als **binäre Suche** bezeichnet und ist unglaublich effizient. Es kann in etwa 20 Schritten jedes Wort aus einer Million Einträgen finden.
+
+<Quiz question="Warum ist die binäre Suche schneller, als jeden Eintrag von Anfang an zu lesen?" options="Es verwendet ein größeres Wörterbuch|Es überspringt Einträge nach dem Zufallsprinzip|Bei jedem Schritt werden die verbleibenden Optionen halbiert|Es funktioniert nur mit kurzen Worten" answer="2" explanation="Die binäre Suche eliminiert bei jedem Vergleich die Hälfte der verbleibenden Einträge und ist damit wesentlich schneller als die Prüfung jedes einzelnen Eintrags der Reihe nach." />
+
+## Wie Algorithmen die KI antreiben
+
+KI-Algorithmen sind ausgefeilter als das Sortieren von Karten, aber das Prinzip ist dasselbe: Befolgen Sie strukturierte Schritte, um zu einer Antwort zu gelangen. Hier sind zwei grundlegende KI-Algorithmen.
+
+### Entscheidungsbäume
+
+Ein Entscheidungsbaum stellt eine Reihe von Ja-oder-Nein-Fragen, um etwas zu klassifizieren.
+
+**Beispiel – Handelt es sich bei dieser E-Mail um Spam?**
+
+1. Steht in der Betreffzeile „KOSTENLOSES GELD“? → Wenn ja, wahrscheinlich Spam.
+2. Ist der Absender in Ihren Kontakten? → Wenn ja, wahrscheinlich kein Spam.
+3. Enthält es mehr als fünf Links? → Wenn ja, tendieren Sie zu Spam.
+
+Jede Frage ist ein **Zweig** und jede endgültige Antwort ist ein **Blatt**. Entscheidungsbäume sind leicht zu verstehen, was sie beliebt macht, wenn Menschen die Argumentation der KI erklären müssen.
+
+### K-Nächste Nachbarn (KNN)
+
+KNN klassifiziert etwas, indem es sich die **nächsten Beispiele** ansieht, die es bereits gesehen hat.
+
+Stellen Sie sich vor, Sie ziehen in eine neue Nachbarschaft und möchten wissen, ob ein Haus teuer oder erschwinglich ist. Sie schauen sich die fünf nächstgelegenen Häuser (Ihre „Nachbarn“) an und überprüfen deren Preise. Wenn die meisten teuer sind, gehen Sie davon aus, dass Ihres auch teuer ist.
+
+KNN funktioniert mit Datenpunkten genauso: Es findet die K nächsten Beispiele und nimmt eine Abstimmung vor.
+
+<ThinkAboutIt>Wenn Sie drei Freunde um eine Filmempfehlung bitten würden und zwei von ihnen denselben Film vorschlagen würden, würden Sie sich wahrscheinlich diesen ansehen. Das ist die Kernidee von KNN – die Mehrheitsherrschaft unter den nächsten Nachbarn.
+</ThinkAboutIt>
+
+<Quiz question="Wie trifft das Modell in einem K-Nearest Neighbors-Algorithmus mit K=5 seine Vorhersage?" options="Der Durchschnitt aller Datenpunkte im Datensatz wird ermittelt|Es wählt den einzelnen nächstgelegenen Datenpunkt aus|Es ist eine Mehrheitsentscheidung der 5 nächstgelegenen Datenpunkte erforderlich|Es werden zufällig 5 Datenpunkte ausgewählt" answer="2" explanation="KNN mit K=5 findet die fünf Datenpunkte, die dem neuen Beispiel am nächsten kommen, und entscheidet anhand der Mehrheitsentscheidung unter ihnen über die Klassifizierung." />
+
+## Big O Notation: Schnelle vs. langsame Algorithmen
+
+Nicht alle Algorithmen sind gleich schnell. Informatiker verwenden die **Big-O-Notation**, um zu beschreiben, wie sich die Geschwindigkeit eines Algorithmus ändert, wenn die Daten wachsen.
+
+| Notation | Name | Beispiel | Geschwindigkeit |
+|----------|------|---------|-------|
+| O(1) | Konstante | Einen Wert nach Index suchen | ⚡ Sofort |
+| O(log n) | Logarithmisch | Binäre Suche | 🚀 Sehr schnell |
+| O(n) | Linear | Jedes Element in einer Liste lesen | 🏃 Anständig |
+| O(n²) | Quadratisch | Jedes Element mit jedem anderen vergleichen | 🐢 Langsam |
+
+Sie müssen die Mathematik nicht auswendig lernen. Die wichtigste Erkenntnis ist folgende: **Wenn Ihr Datensatz wächst, kann ein schlecht ausgewählter Algorithmus von schnell auf unglaublich langsam umsteigen**.
+
+<FunFact>Google verarbeitet über 8,5 Milliarden Suchanfragen pro Tag. Wenn ihr Suchalgorithmus O(n²) statt hochoptimiert wäre, könnte eine einzelne Suche Stunden statt Millisekunden dauern.
+</FunFact>
+
+<Callout>Bei der Big-O-Notation geht es nicht um die exakte Geschwindigkeit, sondern darum, wie die Geschwindigkeit *skaliert*. Ein O(n)-Algorithmus kann bei kleinen Daten langsam sein, wird jedoch immer einen O(n²)-Algorithmus übertreffen, wenn der Datensatz groß wird.
+</Callout>
+
+## Warum die Wahl des richtigen Algorithmus wichtig ist
+
+Es gibt keinen einzigen „besten“ Algorithmus. Die richtige Wahl hängt ab von:
+
+- **Der Problemtyp** - Klassifizieren Sie Bilder oder sagen Sie Zahlen voraus?
+- **Die Datengröße** – Einige Algorithmen haben Probleme mit Millionen von Zeilen.
+- **Erklärbarkeitsbedarf** – Können Sie eine Blackbox verwenden oder müssen Sie jede Entscheidung erklären?
+- **Geschwindigkeitsanforderungen** - Muss die Antwort in Millisekunden eintreffen oder kann es Minuten dauern?
+
+Ein Entscheidungsbaum könnte perfekt für ein einfaches Kreditgenehmigungssystem sein, bei dem Transparenz erforderlich ist. Um Objekte auf einem Foto zu erkennen, benötigen Sie jedoch ein neuronales Netzwerk – das wir in der nächsten Lektion untersuchen werden.
+
+<ThinkAboutIt>Ein Krankenhaus benötigt eine KI, um bei der Diagnose von Patienten zu helfen. Sollten sie einen Algorithmus wählen, der sehr genau ist, aber nicht erklärt werden kann, oder einen, der etwas weniger genau ist, aber seine Argumentation klar erkennen lässt? Welche Kompromisse gibt es?
+</ThinkAboutIt>
+
+<Quiz question="Welcher Faktor ist bei der Auswahl eines KI-Algorithmus am wenigsten wichtig?" options="Die Größe des Datensatzes|Ob das Modell seine Entscheidungen erklären muss|Die Farbe der Benutzeroberfläche|Die Geschwindigkeit, mit der Vorhersagen erforderlich sind" answer="2" explanation="Die Farbe der Benutzeroberfläche hat nichts mit der Algorithmusauswahl zu tun. Datensatzgröße, Erklärbarkeit und Vorhersagegeschwindigkeit sind entscheidende Faktoren." />
+
+## Wichtige Erkenntnisse
+
+- Ein **Algorithmus** ist eine schrittweise Anleitung zur Lösung eines Problems.
+- **Entscheidungsbäume** klassifizieren, indem sie aufeinanderfolgende Ja/Nein-Fragen stellen.
+- **K-Nearest Neighbours** klassifiziert anhand der nächstgelegenen bekannten Beispiele.
+- **Big O-Notation** sagt uns, wie die Geschwindigkeit eines Algorithmus mit der Datengröße skaliert.
+- Die Auswahl des richtigen Algorithmus hängt vom Problem, den Daten und den Einschränkungen ab.
+
+Als Nächstes werfen wir einen Blick auf die leistungsstärkste Algorithmenfamilie der modernen KI: **Neuronale Netze**.

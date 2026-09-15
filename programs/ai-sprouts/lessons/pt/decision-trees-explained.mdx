@@ -1,0 +1,102 @@
+---
+title: "Árvores de decisão: o algoritmo que você pode desenhar no papel"
+description: "Aprenda como as árvores de decisão funcionam, por que são um dos algoritmos de ML mais intuitivos e quando usá-las."
+order: 15
+difficulty: "intermediate"
+duration: 25
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+# Árvores de decisão: o algoritmo que você pode desenhar no papel 🌳
+
+A maioria dos algoritmos de aprendizado de máquina são caixas pretas – você alimenta dados, algo matemático acontece dentro deles e uma previsão sai. As árvores de decisão são diferentes. Eles são um dos poucos algoritmos que você pode explicar completamente a um colega não técnico, desenhar em um quadro branco e ainda confiar para fazer previsões precisas.
+
+---
+
+## 🎮 A Analogia das 20 Perguntas
+
+Você provavelmente já jogou 20 perguntas: uma pessoa pensa em algo e outras fazem perguntas de sim/não para restringir. "Está vivo? É maior que um carro? Vive na água?" Cada resposta elimina uma enorme gama de possibilidades até que a resposta se torne óbvia.
+
+Uma árvore de decisão funciona exatamente assim. Dado um novo ponto de dados para classificar, a árvore faz uma série de perguntas sobre suas características, seguindo os ramos que correspondem a cada resposta, até chegar a uma folha – uma previsão final.
+
+<Illustration src="/images/lessons/decision-trees-explained.svg" alt="Uma árvore de decisão para classificar animais: primeiro dividida em 'tem asas?', depois 'vive na água?', levando a nós de folhas com nomes de animais" caption="Uma árvore de decisão faz uma série de perguntas sobre recursos, restringindo-se a uma previsão em cada nó folha." />
+
+---
+
+## 🌿 Anatomia de uma árvore
+
+Antes de entrarmos em como as árvores aprendem, vamos nomear as partes:
+
+- **Nó raiz** — a pergunta principal; a característica mais importante
+- **Nós internos** — perguntas em cada ponto de ramificação
+- **Ramos** — os caminhos percorridos com base em respostas sim/não (ou intervalo de valores)
+- **Nós folha** — os pontos finais; cada um tem uma previsão final
+
+Um único ponto de dados viaja da raiz à folha, respondendo a uma pergunta em cada nó, até atingir uma previsão.
+
+---
+
+## 📐 Como uma árvore de decisão aprende
+
+A parte inteligente: como o algoritmo decide *qual* pergunta fazer em cada nó? Ele tenta todas as divisões possíveis em cada recurso e escolhe aquele que melhor separa os dados.
+
+### Ganho de informação e impureza de Gini
+
+Duas medidas comuns de “melhor separação”:
+
+**Impureza de Gini** mede o quão misto é um grupo. Um nó perfeitamente puro — todos os exemplos pertencem a uma classe — tem uma impureza de Gini igual a 0. Um nó completamente misto tem a impureza máxima. O algoritmo prefere divisões que produzam os nós filhos mais puros.
+
+**O ganho de informação** é semelhante: mede o quanto uma divisão reduz a incerteza (entropia) sobre o rótulo da classe. Maior ganho de informação = melhor divisão.
+
+Ambas as medidas fazem a mesma pergunta subjacente: *depois de dividir esse recurso, quão mais certo estou sobre a classe?*
+
+<FunFact>O algoritmo CART (Árvores de Classificação e Regressão), introduzido em 1984 por Breiman, Friedman, Olshen e Stone, é a base da maioria das implementações modernas de árvores de decisão. Apesar de ter 40 anos, continua sendo um dos algoritmos de ML mais utilizados.
+</FunFact>
+
+---
+
+## ✂️ Sobreajuste e poda
+
+Se não tiver restrições, uma árvore de decisão crescerá até que cada exemplo de treinamento tenha sua própria folha — alcançando 100% de precisão nos dados de treinamento, mas falhando completamente em novos dados. Isso é **ajuste excessivo**.
+
+Imagine memorizar todas as questões de exames anteriores, palavra por palavra, em vez de entender o assunto. Você tiraria nota nas provas anteriores, mas seria reprovado no exame real.
+
+Dois remédios principais:
+
+1. **Pré-poda (parada antecipada)** — definir limites durante o treinamento: profundidade máxima, amostras mínimas por folha, limite mínimo de ganho de informação. A árvore para de crescer quando atinge esses limites.
+
+2. **Pós-poda** — aumente a árvore inteira e, em seguida, corte os galhos que não melhoram o desempenho em um conjunto de validação.
+
+<ThinkAboutIt>Uma árvore de decisão com profundidade 1 (uma única pergunta) é chamada de “coto de decisão”. É extremamente simples – quase certamente inadequado. Uma árvore de profundidade 100 com uma amostra por folha está sobreajustada. Como você decidiria onde parar?
+</ThinkAboutIt>
+
+---
+
+## 🌲 Das árvores às florestas
+
+Uma única árvore de decisão é poderosa, mas frágil – pequenas alterações nos dados de treinamento podem produzir árvores muito diferentes. A solução: cultivar centenas de árvores, cada uma treinada em um subconjunto aleatório de dados e recursos, e depois **calcular a média de suas previsões**.
+
+Esta é uma **Floresta Aleatória** — um dos algoritmos mais confiáveis ​​e amplamente utilizados em todo o aprendizado de máquina. Você abordará isso em profundidade em uma lição posterior. Por enquanto, lembre-se: as árvores individuais são interpretáveis, as florestas são robustas.
+
+---
+
+## ✅ Pontos fortes e ⚠️ Fraquezas
+
+| Pontos fortes | Fraquezas |
+|---|---|
+| Totalmente interpretável — pode ser visualizado | Propenso a overfitting sem poda |
+| Não há necessidade de normalizar ou dimensionar recursos | Pequenas alterações nos dados = árvores muito diferentes |
+| Lida com recursos numéricos e categóricos | Orientado para recursos com mais valores |
+| Funciona sem engenharia de recursos | Não é bom em capturar relacionamentos lineares |
+| Rápido para treinar e prever | Árvores isoladas geralmente apresentam desempenho inferior aos conjuntos |
+
+---
+
+<Quiz question="O que representa um nó folha em uma árvore de decisão?" options={["Uma pergunta sobre um recurso", "A previsão final depois que todas as perguntas foram respondidas", "O conjunto de dados de treinamento", "Uma medida da precisão do modelo"]} correct={1} explanation="Os nós folha são os pontos finais de uma árvore de decisão. Quando um ponto de dados segue todas as ramificações da raiz à folha, o nó folha contém a previsão final – um rótulo de classe para tarefas de classificação ou um valor para regressão." />
+
+<Quiz question="O que a 'impureza de Gini' mede em uma árvore de decisão?" options={["Quão grande a árvore cresceu", "Quão misturado é um conjunto de rótulos de classe - menor significa mais puro", "O custo computacional para treinar a árvore", "Quantos recursos existem no conjunto de dados"]} correct={1} explanation="A impureza de Gini mede a probabilidade de classificar incorretamente um elemento escolhido aleatoriamente se ele for rotulado de acordo com a distribuição de rótulos em um nó. Um Gini de 0 significa que todos os exemplos no nó pertencem à mesma classe – pureza perfeita." />
+
+<Quiz question="O que é overfitting no contexto das árvores de decisão?" options={["Quando a árvore é muito rasa para aprender algo útil", "Quando a árvore memoriza perfeitamente os dados de treinamento, mas não consegue generalizar para novos dados", "Quando a árvore demora muito para treinar", "Quando a árvore usa muitos recursos"]} correct={1} explanation="Uma árvore de decisão superajustada cresceu tanto que cria um caminho único para cada exemplo de treinamento. Ele atinge uma precisão de treinamento quase perfeita, mas tem um desempenho ruim em dados invisíveis porque memorizou ruídos em vez de aprender padrões genuínos." />
+
+<Quiz question="O que é uma floresta aleatória?" options={["Um conjunto de dados de imagens de florestas usado para treinar modelos de visão", "Um conjunto de muitas árvores de decisão, cada uma treinada em subconjuntos aleatórios de dados e recursos, com média de previsões", "Uma única árvore de decisão muito profunda", "Uma técnica de poda para remover galhos sem importância"]} correct={1} explanation="Uma Floresta Aleatória combina centenas de árvores de decisão, cada uma construída a partir de uma amostra aleatória de dados de treinamento e um subconjunto aleatório de recursos. A média de suas previsões reduz a variância e torna o conjunto muito mais robusto do que qualquer árvore individual." />

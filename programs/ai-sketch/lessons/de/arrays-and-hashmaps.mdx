@@ -1,0 +1,127 @@
+---
+title: "Arrays und Hash-Maps – Wie KI Daten speichert und abruft"
+description: "Erfahren Sie, wie Arrays und Hash-Maps alles unterstützen, von Feature-Vektoren bis hin zur Einbettung von Suchvorgängen in KI-Systemen."
+order: 1
+difficulty: "intermediate"
+duration: 15
+icon: "📦"
+published: true
+machineTranslated: true
+---
+## Warum Datenspeicherung in der KI wichtig ist
+
+Jedes KI-System muss Daten speichern und abrufen – und zwar schnell. Ob es sich um eine Liste von Pixelwerten in einem Bild, einen Wortschatz von 50.000 Wörtern oder Millionen von Benutzerpräferenzen handelt, die Wahl der Datenstruktur bestimmt, wie schnell Ihre KI denken kann.
+
+Es dominieren zwei Strukturen: **Arrays** und **Hash-Maps**. Wenn Sie diese beherrschen, haben Sie die Grundlage für nahezu jede KI-Pipeline.
+
+## Arrays – Geordnete Listen mit sofortigem Zugriff
+
+Ein Array ist einfach eine nummerierte Liste von Elementen, die nebeneinander im Speicher gespeichert sind. Jedes Element hat einen **Index** – seine Position in der Liste, beginnend bei Null.
+
+```
+index:   0       1       2       3       4
+value: ["cat", "dog", "bird", "fish", "frog"]
+```
+
+Da die Gegenstände nebeneinander liegen, können Sie direkt zu jeder Position springen. Möchten Sie Punkt 3? Fertig – keine Suche erforderlich. Das ist **O(1)**-Zugriff, was bedeutet, dass es die gleiche Zeit dauert, egal ob das Array 10 Elemente oder 10 Millionen enthält.
+
+<Illustration src="/images/lessons/arrays-and-hashmaps.svg" alt="Ein Array aus fünf Elementen mit den Indizes 0 bis 4, das den direkten Zugriff auf Index 3 zeigt" caption="Mit Arrays können Sie über den Index direkt zu jeder Position springen." />
+
+### Wenn Arrays glänzen
+
+- **Merkmalsvektoren**: Ein Bild könnte als Array von 784 Zahlen (28×28 Pixel) dargestellt werden, von denen jede einen Helligkeitswert enthält.
+- **Einbettungen**: Sprachmodelle speichern Wortbedeutungen als Arrays aus Hunderten von Gleitkommazahlen.
+- **Stapelverarbeitung**: Trainingsdaten werden in Arrays geladen, sodass die GPU Tausende von Beispielen gleichzeitig verarbeiten kann.
+
+### Der Haken
+
+Das Einfügen oder Entfernen von Gegenständen in der Mitte ist teuer. Jedes Element nach der Änderung muss mitgemischt werden. Das ist **O(n)** – je mehr Elemente, desto länger dauert es.
+
+<ThinkAboutIt>Wenn Sie eine Playlist mit 10.000 Songs hätten und an Position 5 einen neuen Titel einfügen möchten, müsste jeder Song ab Position 5 verschoben werden. Wie könnte ein Streaming-Dienst damit umgehen, ohne langsamer zu werden?
+</ThinkAboutIt>
+
+## Hash Maps – Sofortige Suche nach Namen
+
+Eine Hash-Map (auch Wörterbuch oder Hash-Tabelle genannt) speichert Daten als **Schlüssel-Wert-Paare**. Anstatt auf Elemente über die Indexnummer zuzugreifen, greifen Sie auf sie über einen aussagekräftigen Schlüssel zu.
+
+```
+word_counts = {
+  "hello": 42,
+  "world": 37,
+  "AI": 156
+}
+```
+
+Benötigen Sie die Zählung für „KI“? Die Hash-Map verwendet eine **Hash-Funktion**, um den Schlüssel im Hintergrund in einen Index umzuwandeln. Das Ergebnis? **O(1)** durchschnittliche Suchzeit – genau wie Arrays, aber mit Namen anstelle von Zahlen.
+
+<FunFact>Pythons Wörterbücher sind Hash-Maps. Wenn ChatGPT während des Trainings Worthäufigkeiten zählt, verwendet es Hash-Map-ähnliche Strukturen, um Milliarden von Wortvorkommen im gesamten Text des Internets zu verfolgen.
+</FunFact>
+
+### Echte KI-Anwendungen für Hash-Maps
+
+- **Vokabularzuordnung**: Wörter wie „brilliant“ in Token-ID 8921 für ein Sprachmodell umwandeln.
+- **Häufigkeitszählung**: Wie oft kommt jedes Wort in einem Datensatz vor? Hash-Maps beantworten dies in einem Durchgang.
+- **Ergebnisse zwischenspeichern**: Wenn eine KI bereits eine Vorhersage für Eingabe X berechnet hat, speichern Sie sie, damit Sie sie nie erneut berechnen müssen.
+
+## Zeitkomplexität leicht gemacht
+
+| Betrieb | Array | Hash-Karte |
+|-----------|-------|----------|
+| Zugriff per Index | O(1) ⚡ | N/A |
+| Zugriff per Schlüssel | O(n) 🐢 | O(1) ⚡ |
+| Am Ende einfügen | O(1) ⚡ | O(1) ⚡ |
+| In der Mitte einsetzen | O(n) 🐢 | N/A |
+| Suche nach Wert | O(n) 🐢 | O(1) ⚡ |
+
+Stellen Sie sich **O(1)** als „sofort, unabhängig von der Größe“ und **O(n)** als „langsamer, je größer die Daten“ vor.
+
+<Quiz question="Sie haben 100.000 Benutzerprofile und müssen einen Benutzer anhand seines Benutzernamens finden. Welche Struktur ist am schnellsten?" options="Ein alphabetisch sortiertes Array|Eine Hash-Map mit Benutzernamen als Schlüssel|Ein einfaches unsortiertes Array|Es spielt keine Rolle – sie sind alle gleich" answer="1" explanation="Eine Hash-Map bietet eine durchschnittliche O(1)-Suche nach Schlüssel und eignet sich daher ideal für die Suche nach Elementen anhand einer eindeutigen Kennung wie einem Benutzernamen." />
+
+## Gemeinsames Muster: Häufigkeitszählung
+
+Eines der nützlichsten Muster sowohl bei Interviews als auch bei KI ist das Zählen von Ereignissen. Hier ist die Idee im Pseudocode:
+
+```
+counts = {}
+for each word in text:
+    if word in counts:
+        counts[word] = counts[word] + 1
+    else:
+        counts[word] = 1
+```
+
+Dieser einzelne Durchgang durch den Text liefert Ihnen die Häufigkeit jedes Wortes. Sprachmodelle nutzen genau diesen Ansatz (in großem Maßstab), um zu verstehen, welche Wörter am wichtigsten sind.
+
+## Gemeinsames Muster: Das Zweisummenproblem
+
+Finden Sie anhand einer Reihe von Zahlen und eines Ziels zwei Zahlen, die sich zum Ziel addieren. Der naive Ansatz prüft jedes Paar – O(n²). Der clevere Ansatz nutzt eine Hash-Map:
+
+```
+seen = {}
+for each number in array:
+    complement = target - number
+    if complement in seen:
+        return [seen[complement], current_index]
+    seen[number] = current_index
+```
+
+Ein Durchgang, O(n) Zeit. Die Hash-Map merkt sich, was Sie bereits gesehen haben.
+
+<Quiz question="Warum ist der Hash-Map-Ansatz für Zweisummen schneller als die Überprüfung jedes Paares?" options="Hash-Maps verbrauchen weniger Speicher|Mithilfe von Hash-Maps können Sie überprüfen, ob ich diese Nummer gesehen habe. in O(1) statt das gesamte Array zu scannen|Hash-Maps sortieren die Daten automatisch|Hash-Maps funktionieren nur mit kleinen Arrays" answer="1" explanation="Jeder Suchvorgang in einer Hash-Map hat im Durchschnitt O(1). Anstatt also jedes Paar (O(n²)) zu vergleichen, führen Sie einen einzigen Durchgang mit O(1)-Suchvorgängen durch – was insgesamt O(n) ergibt." />
+
+## Wann man welche auswählen sollte
+
+- **Verwenden Sie Arrays**, wenn die Reihenfolge wichtig ist, Sie auf Elemente nach Position zugreifen oder alles nacheinander verarbeiten müssen (wie Pixel in einem Bild).
+- **Verwenden Sie Hash-Maps**, wenn Sie eine schnelle Suche nach einem Schlüssel benötigen, Vorkommen zählen möchten oder schnell prüfen müssen, ob etwas existiert.
+
+<ThinkAboutIt>Eine Empfehlungsmaschine muss prüfen, ob ein Nutzer einen Film bereits gesehen hat, bevor er ihn vorschlägt. Würden Sie den Wiedergabeverlauf des Benutzers in einem Array oder einer Hash-Map speichern? Welche Kompromisse fallen Ihnen ein?
+</ThinkAboutIt>
+
+<Quiz question="Ein KI-Modell speichert Worteinbettungen als Arrays mit jeweils 300 Zahlen. Warum sind Arrays hier eine gute Wahl?" options="Arrays ermöglichen einen zufälligen, schlüsselbasierten Zugriff|Arrays speichern geordnete numerische Daten fester Größe effizient und GPUs verarbeiten sie parallel|Arrays sortieren die Zahlen automatisch|Arrays benötigen weniger Speicher als jede andere Struktur" answer="1" explanation="Einbettungen sind Zahlenfolgen fester Länge, bei denen die Reihenfolge wichtig ist – Position 0 könnte für „Geschlecht” und Position 1 für „Lizenzgebühr” stehen. Arrays speichern diese kompakt und GPUs sind für Array-Operationen optimiert." />
+
+## Wichtige Erkenntnisse
+
+- **Arrays** ermöglichen O(1)-Zugriff per Index und sind das Rückgrat der numerischen KI (Bilder, Einbettungen, Tensoren).
+- **Hash-Maps** ermöglichen O(1)-Zugriff per Schlüssel und sind für Suchvorgänge, Zählungen und Zwischenspeicherung unerlässlich.
+- Die Wahl der richtigen Struktur kann einen O(n²)-Algorithmus in einen O(n)-Algorithmus verwandeln – ein Unterschied, der bei der Verarbeitung von Millionen von Datenpunkten von Bedeutung ist.
+– In der Praxis verwenden die meisten KI-Pipelines beides: Arrays für numerische Berechnungen und Hash-Maps für die Suche nach Metadaten.

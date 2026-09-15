@@ -1,0 +1,226 @@
+---
+title: "Aprendizagem supervisionada versus não supervisionada: principais diferenças explicadas"
+description: "Uma comparação clara entre aprendizado de máquina supervisionado e não supervisionado — quando usar cada abordagem, com exemplos e algoritmos do mundo real."
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+machineTranslated: true
+---
+# Aprendizagem supervisionada versus não supervisionada: principais diferenças explicadas
+
+Quando você começa a aprender o aprendizado de máquina, uma das primeiras bifurcações no caminho é esta: que tipo de aprendizado você está fazendo? A resposta muda tudo – os algoritmos disponíveis para você, os dados de que você precisa e o que você pode esperar que seu modelo faça.
+
+As duas categorias fundamentais são **aprendizagem supervisionada** e **aprendizagem não supervisionada**. Compreender a diferença não é apenas acadêmico – é a primeira decisão que você tomará ao abordar qualquer novo problema de ML.
+
+## 🏷️ A distinção principal: rótulos
+
+A diferença mais fundamental entre aprendizagem supervisionada e não supervisionada é **se seus dados de treinamento incluem rótulos**.
+
+**Dados rotulados** significa que cada exemplo em seu conjunto de dados vem com a "resposta certa" — o resultado que você deseja que o modelo preveja ou classifique:
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**Dados não rotulados** significa que você tem as informações, mas não tem respostas predefinidas — apenas as observações brutas:
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+A produção de dados rotulados é cara e demorada – exige que humanos anote manualmente os exemplos. Os dados não rotulados são abundantes (a maioria dos dados no mundo não tem rótulos). Esta restrição prática molda qual abordagem é possível para um determinado problema.
+
+## ✅ Aprendizagem Supervisionada
+
+Na aprendizagem supervisionada, o modelo aprende um mapeamento de entradas para saídas estudando exemplos rotulados. O “supervisor” são os próprios dados rotulados – cada exemplo de treinamento informa ao modelo qual deve ser a saída correta.
+
+### Classificação
+
+Quando a saída é uma **categoria discreta**, é um problema de classificação.
+
+**Exemplos:**
+- Este e-mail é spam ou não é spam?
+- Esta imagem contém um gato ou um cachorro?
+- Este solicitante de empréstimo ficará inadimplente? (Sim/Não)
+- Qual dígito (0–9) este número manuscrito representa?
+
+**Algoritmos comuns:**
+- Regressão Logística
+- Árvores de Decisão e Florestas Aleatórias
+- Máquinas de Vetores de Suporte (SVM)
+- Redes Neurais
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### Regressão
+
+Quando a saída é um **número contínuo**, é um problema de regressão.
+
+**Exemplos:**
+- Por que esta casa será vendida?
+- Qual será o preço das ações amanhã?
+- Quantas unidades venderemos no próximo mês?
+- Qual será a pressão arterial de um paciente daqui a seis meses?
+
+**Algoritmos comuns:**
+- Regressão Linear
+- Regressão Ridge / Laço
+- Aumento de gradiente (XGBoost, LightGBM)
+- Redes Neurais
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>Os modelos Gradient Boosting (XGBoost, LightGBM, CatBoost) ganharam mais competições de aprendizado de máquina Kaggle do que qualquer outra categoria de algoritmo. Eles continuam sendo a escolha certa para dados estruturados/tabulares na indústria.</FunFact>
+
+## 🔍 Aprendizagem não supervisionada
+
+Na aprendizagem não supervisionada, o modelo explora a estrutura dos dados **sem quaisquer rótulos**. Em vez de aprender um mapeamento para uma saída conhecida, ele descobre padrões, agrupamentos ou representações ocultos por conta própria.
+
+### Agrupamento
+
+Os algoritmos de cluster agrupam pontos de dados semelhantes sem saber quais deveriam ser os grupos.
+
+**Exemplos:**
+- Segmentar clientes por comportamento de compra (sem pré-definir segmentos)
+- Agrupar documentos por tópico
+- Identificar comunidades em uma rede social
+- Detectar anomalias (pontos que não pertencem a nenhum cluster)
+
+**Algoritmos comuns:**
+- Clustering K-Means
+- DBSCAN (baseado em densidade, lida com formas irregulares)
+- Clustering Hierárquico
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### Redução de dimensionalidade
+
+Compacte dados de alta dimensão em menos dimensões, preservando o máximo de estrutura possível. Usado para visualização, pré-processamento e remoção de informações redundantes.
+
+**Algoritmos comuns:**
+- PCA (Análise de Componentes Principais) — compressão linear
+- t-SNE — não linear, excelente para visualização
+- UMAP — rápido, preserva a estrutura local e global
+- Autoencoders — compressão baseada em rede neural
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>Um varejista possui dados de transações de 10 milhões de clientes, mas não possui segmentos de clientes predefinidos. Por que o clustering não supervisionado seria útil aqui? Que decisões de negócios os segmentos descobertos poderiam informar?</ThinkAboutIt>
+
+## 🔄 Além do Binário: Outros Paradigmas de Aprendizagem
+
+A distinção supervisionado/não supervisionado é fundamental, mas o panorama do ML é mais rico do que apenas essas duas categorias.
+
+### Aprendizagem Semi-Supervisionada
+
+Usa uma **pequena quantidade de dados rotulados** combinada com uma **grande quantidade de dados não rotulados**. Isto é muito prático porque a rotulagem é cara.
+
+**Exemplo**: você tem 1.000 exames médicos rotulados e 100.000 exames não rotulados. O aprendizado semissupervisionado permite que você se beneficie dos dados não rotulados para melhorar o desempenho além do que apenas 1.000 rótulos poderiam alcançar.
+
+### Aprendizagem auto-supervisionada
+
+Um caso especial em que os **rótulos são gerados automaticamente a partir dos próprios dados**. É assim que os modelos modernos de grandes linguagens são pré-treinados.
+
+**Exemplo**: pegue uma frase, oculte algumas palavras e treine o modelo para prever as palavras que faltam. Os “rótulos” (as palavras corretas) são gratuitos – vêm diretamente do próprio texto. Foi assim que o BERT foi treinado.
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+A aprendizagem autossupervisionada tem sido transformadora porque permite o treinamento em dados em escala da Internet sem anotação humana.
+
+### Aprendizado por Reforço
+
+Um agente aprende realizando **ações** em um **ambiente** e recebendo **recompensas** ou **penalidades**. Não existem rótulos – apenas sinais de feedback dos resultados.
+
+**Exemplos**: jogar xadrez, treinar um robô para andar, otimizar o sistema de refrigeração de um data center. Abordaremos isso em profundidade em sua própria lição.
+
+## 🗺️ Escolhendo a abordagem certa
+
+Aqui está uma estrutura de decisão prática:
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="Você tem 50.000 avaliações de produtos sem avaliações com estrelas ou rótulos de sentimento. Você deseja agrupá-los automaticamente por tópico. Qual abordagem de aprendizagem você deve usar?" options="Classificação supervisionada — treine um modelo para classificar tópicos|Clustering não supervisionado — descubra grupos de tópicos nos dados|Aprendizado por reforço – deixe um agente ler e classificar as avaliações|Regressão – preveja uma pontuação numérica do tópico para cada revisão" answer="1" explanation="Sem rótulos, a aprendizagem supervisionada não é possível. O agrupamento não supervisionado (por exemplo, K-Means ou modelagem de tópicos com LDA) pode descobrir agrupamentos naturais no texto da revisão sem quaisquer categorias predefinidas." />
+
+## Principais conclusões
+
+- **Aprendizagem supervisionada** requer dados rotulados; o modelo aprende um mapeamento de entradas para saídas conhecidas – usado para classificação (saída discreta) e regressão (saída contínua)
+- **Aprendizado não supervisionado** funciona com dados não rotulados; o modelo descobre estrutura oculta – usada para agrupamento, redução de dimensionalidade e detecção de anomalias
+- A escolha entre supervisionado e não supervisionado é motivada principalmente por **se você rotulou os dados** e pela pergunta que está tentando responder
+- **Aprendizado semissupervisionado** preenche a lacuna, usando uma pequena quantidade de dados rotulados junto com grandes quantidades de dados não rotulados
+- **Aprendizagem autossupervisionada** gera seus próprios rótulos a partir dos dados — é a técnica por trás de LLMs modernos como BERT e GPT
+- **Aprendizado por reforço** é diferente de ambos: um agente aprende com sinais de recompensa por meio da interação com um ambiente, sem rótulos
+- Utilizar o quadro de decisão: rotulado + saída da categoria → classificação; rotulado + saída contínua → regressão; não rotulado + encontrar grupos → agrupamento

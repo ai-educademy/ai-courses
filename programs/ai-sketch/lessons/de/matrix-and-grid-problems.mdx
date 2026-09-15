@@ -1,0 +1,186 @@
+---
+title: "Matrix- und Gitterprobleme – BFS zu Gittern und Inselzählung"
+description: "Beherrschen Sie die 2D-Gitterdurchquerung mit BFS, DFS, Flutfüllung, Multi-Source-BFS, Spiraldurchquerung und dynamischer Programmierung auf Gittern."
+order: 10
+difficulty: "intermediate"
+duration: 19
+icon: "🗺️"
+published: true
+machineTranslated: true
+---
+## 2D-Arrays als Gitter
+
+Eine Matrix ist nur ein 2D-Array, aber in Interviews stellt sie oft ein **Gitter** dar – eine Karte, eine Tafel oder ein Labyrinth. Jede Zelle `grid[r][c]` ist ein Knoten und ihre Nachbarn sind benachbarte Zellen.
+
+```
+grid = [
+  [1, 1, 0],
+  [1, 0, 0],
+  [0, 0, 1]
+]
+```
+
+Zeile `r`, Spalte `c`, Abmessungen `m × n`. Einfach – aber die darauf aufbauenden Muster sind mächtig.
+
+## Richtungsarrays
+
+Anstatt vier separate if-Anweisungen zu schreiben, verwenden Sie ein **Richtungsarray**:
+
+```python
+# 4-directional (up, down, left, right)
+dirs = [(-1,0), (1,0), (0,-1), (0,1)]
+
+# 8-directional (includes diagonals)
+dirs = [(-1,0),(1,0),(0,-1),(0,1),
+        (-1,-1),(-1,1),(1,-1),(1,1)]
+
+for dr, dc in dirs:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < m and 0 <= nc < n:
+        # process neighbour
+```
+
+Dies ist der am meisten wiederverwendbare Snippet bei Grid-Problemen.
+
+<FunFact>Der Richtungsarray-Trick wird manchmal als „Delta-Kodierung“ bezeichnet. Es taucht in der Spieleentwicklung, Bildverarbeitung und Wettbewerbsprogrammierung auf – überall dort, wo Raster verwendet werden.</FunFact>
+
+## BFS auf einem Gitter – Kürzester Weg in einem Labyrinth
+
+BFS findet den **kürzesten Pfad** in einem ungewichteten Raster. Beginnen Sie an der Quelle, erkunden Sie alle Nachbarn in Entfernung 1, dann in Entfernung 2 und so weiter.
+
+```python
+from collections import deque
+
+def shortest_path(grid, start, end):
+    m, n = len(grid), len(grid[0])
+    q = deque([(start[0], start[1], 0)])
+    visited = {(start[0], start[1])}
+    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+    while q:
+        r, c, dist = q.popleft()
+        if (r, c) == end:
+            return dist
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<m and 0<=nc<n and (nr,nc) not in visited and grid[nr][nc]==0:
+                visited.add((nr, nc))
+                q.append((nr, nc, dist+1))
+    return -1
+```
+
+<Illustration src="/images/lessons/matrix-and-grid-problems.svg" alt="BFS expandiert Level für Level durch ein Gitterlabyrinth" caption="BFS erkundet Zellen Ebene für Ebene und garantiert so den kürzesten Weg." />
+
+## DFS auf einem Raster – Flutfüllung und Anzahl der Inseln
+
+**Flutfüllung** (wie das Farbeimer-Werkzeug): Ändern Sie von einer Startzelle aus alle verbundenen Zellen derselben Farbe. DFS oder BFS funktionieren beide.
+
+**Anzahl der Inseln:** Scannen Sie das Raster. Wenn Sie `1` finden, führen Sie DFS/BFS aus, um die gesamte Insel als besucht zu markieren, und erhöhen Sie dann Ihre Anzahl.
+
+```python
+def num_islands(grid):
+    count = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == '1':
+                dfs(grid, r, c)  # mark island
+                count += 1
+    return count
+```
+
+<Quiz question="Warum markieren wir in „Anzahl der Inseln” Zellen als während der DFS besucht?" options="Aus Gründen der Genauigkeit werden sie zweimal gezählt|Um zu vermeiden, dass dieselbe Insel mehrmals gezählt wird|Um die Inseln zu sortieren|Um die größte Insel zu finden" answer="1" explanation="Das Markieren besuchter Zellen verhindert, dass die äußere Schleife ein neues DFS auf derselben Insel startet, was zu einer Überzählung führen würde." />
+
+## Rotting Oranges – Multi-Source-BFS
+
+Alle zunächst faulen Orangen sind Quellen. Schieben Sie sie alle zum Zeitpunkt 0 in die Warteschlange, dann BFS. Jedes Level dauert eine Minute. Wenn sich die Warteschlange leert, prüfen Sie, ob noch frische Orangen übrig sind.
+
+```
+Minute 0:  [2, 1, 1]    2 = rotten, 1 = fresh
+           [1, 1, 0]
+           [0, 1, 1]
+
+Minute 4:  [2, 2, 2]    All reachable oranges rotten
+           [2, 2, 0]
+           [0, 2, 2]
+```
+
+Die wichtigste Erkenntnis: **Multi-Source-BFS** startet von mehreren Knoten gleichzeitig, nicht von einem.
+
+<Quiz question="Was unterscheidet „Rotting Oranges” vom Standard-BFS?" options="Stattdessen wird DFS verwendet|Mehrere Startpunkte werden gleichzeitig in die Warteschlange gestellt|Es erfordert den Dijkstra-Algorithmus|Das Gitter hat gewichtete Kanten" answer="1" explanation="Multi-Source-BFS stellt alle verfaulten Orangen auf einmal als „Startgrenze” in die Warteschlange, sodass sich der Verfall von jeder Quelle parallel ausbreitet." />
+
+## Spiralmatrixdurchquerung
+
+Gehen Sie spiralförmig durch die Matrix: rechts → unten → links → oben, wobei die Grenzen nach jedem Durchgang kleiner werden.
+
+```python
+def spiral(matrix):
+    res = []
+    top, bot = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bot and left <= right:
+        for c in range(left, right + 1):
+            res.append(matrix[top][c])
+        top += 1
+        for r in range(top, bot + 1):
+            res.append(matrix[r][right])
+        right -= 1
+        if top <= bot:
+            for c in range(right, left - 1, -1):
+                res.append(matrix[bot][c])
+            bot -= 1
+        if left <= right:
+            for r in range(bot, top - 1, -1):
+                res.append(matrix[r][left])
+            left += 1
+    return res
+```
+
+## Matrixdrehung (90°)
+
+Drehen Sie eine N×N-Matrix an Ort und Stelle im Uhrzeigersinn: **transponieren** (tauschen Sie `[r][c]` mit `[c][r]`), dann **kehren Sie jede Zeile um**.
+
+```
+Original → Transpose → Reverse rows
+1 2 3     1 4 7       7 4 1
+4 5 6  →  2 5 8   →   8 5 2
+7 8 9     3 6 9       9 6 3
+```
+
+<ThinkAboutIt>Um gegen den Uhrzeigersinn zu drehen, würden Sie zuerst die Zeilen umkehren und dann transponieren, oder umdrehen und dann die Spalten umkehren? Versuchen Sie es auf Papier.</ThinkAboutIt>
+
+## Suche in einer sortierten 2D-Matrix
+
+Zwei gängige Varianten:
+- **Zeilen und Spalten unabhängig voneinander sortiert** – beginnen Sie in der oberen rechten Ecke. Wenn das Ziel kleiner ist, bewegen Sie sich nach links. Wenn größer, nach unten verschieben. O(m + n).
+- **Vollständig sortiert** (jede Zeile beginnt dort, wo die vorherige endet) – als flach sortiertes Array und binäre Suche behandeln. O(log(m × n)).
+
+## Dynamische Programmierung auf Grids
+
+**Eindeutige Pfade:** Zählt Pfade von links oben nach rechts unten und bewegt sich dabei nur nach rechts oder unten. `dp[r][c] = dp[r-1][c] + dp[r][c-1]`.
+
+**Mindestpfadsumme:** Dieselbe Idee, aber wählen Sie den minimalen eingehenden Pfad.
+
+Dies ist oft der sanfteste Einstieg in die dynamische 2D-Programmierung.
+
+<Quiz question="Was ist im Unique Paths-Problem dp[0][c] für jede Spalte c?" options="0|1|C|c + 1" answer="1" explanation="Die erste Zeile kann nur erreicht werden, indem man sich nach rechts bewegt, sodass es zu jeder Zelle in der ersten Zeile genau einen Pfad gibt. dp[0][c] = 1." />
+
+## Gittermuster-Spickzettel
+
+| Muster | Technik | Schlüsselproblem |
+|---------|-----------|-------------|
+| Kürzester Weg (ungewichtet) | BFS | Labyrinth kürzester Weg |
+| Verbundene Komponenten | DFS / BFS | Anzahl der Inseln |
+| Verbreitung aus mehreren Quellen | Multi-Source-BFS | Verrottende Orangen |
+| Durchlaufreihenfolge | Grenzzeiger | Spiralmatrix |
+| In-Place-Transformation | Transponieren + umkehren | Bild drehen |
+| Wege zählen | DP | Einzigartige Wege |
+| Suche im sortierten Raster | Treppenhaus / binäre Suche | Suche 2D-Matrix |
+
+<ThinkAboutIt>Viele Gitterprobleme sind in Wirklichkeit getarnte Grafikprobleme. Wann würden Sie DFS gegenüber BFS in einem Raster bevorzugen und umgekehrt?</ThinkAboutIt>
+
+---
+
+## 📚 Weiterführende Literatur
+
+- [NeetCode – 2D Dynamic Programming](https://neetcode.io/roadmap) – Raster-DP-Probleme mit visuellen Erklärungen
+- [Tech Interview Handbook – Matrix](https://www.techinterviewhandbook.org/algorithms/matrix/) – gängige Muster und Techniken
+- [LeetCode Matrix-Tag](https://leetcode.com/tag/matrix/) – Hunderte von Übungsaufgaben

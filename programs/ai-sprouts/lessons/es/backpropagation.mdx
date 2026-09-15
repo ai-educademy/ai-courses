@@ -1,0 +1,128 @@
+---
+title: "Propagación hacia atrás: el cálculo detrás del aprendizaje"
+description: "Comprenda cómo aprenden las redes neuronales propagando errores hacia atrás a través de capas, utilizando la regla de la cadena para actualizar cada peso."
+order: 6
+difficulty: "intermediate"
+duration: 16
+icon: "⛓️"
+published: true
+machineTranslated: true
+---
+# Retropropagación: el motor del aprendizaje
+
+En las lecciones anteriores viste que las redes neuronales tienen pesos y el entrenamiento ajusta esos pesos. Pero ¿*cómo* sabe la red qué pesos cambiar y en qué medida? La respuesta es **propagación hacia atrás**: el algoritmo más importante del aprendizaje profundo moderno.
+
+Andrej Karpathy lo llama "lo más importante que hay que entender sobre las redes neuronales". Veamos por qué.
+
+## Un resumen rápido del pase hacia adelante
+
+Durante un **pase hacia adelante**, los datos fluyen de izquierda a derecha a través de la red:
+
+1. Las entradas se multiplican por pesos y se suman.
+2. Se agrega un sesgo.
+3. Se aplica una función de activación (como ReLU).
+4. La salida pasa a la siguiente capa y se repite hasta que surge una predicción final.
+
+Luego, la predicción se compara con la respuesta verdadera utilizando una **función de pérdida** (que se tratará en la siguiente lección). La pérdida es un solo número que dice: *"Así de equivocado estás."*
+
+<Illustration src="/images/lessons/backpropagation.svg" alt="Un gráfico de cálculo que muestra un paso directo a través de tres nodos, con flechas que indican el flujo de datos desde la entrada hasta la pérdida." caption="El pase hacia adelante construye un gráfico de cálculo. La retropropagación luego lo hace en reversa." />
+
+## La idea clave: Asignación de culpas
+
+Imagina que horneas un pastel y sabe horrible. Usaste cinco ingredientes. La pregunta es: *¿qué ingrediente contribuyó más al mal sabor y en qué medida?*
+
+La retropropagación responde exactamente a esta pregunta para las redes neuronales. Asigna **culpa** a cada peso preguntando: "Si empujo ligeramente este peso, ¿cuánto cambia la pérdida?"
+
+Esa tasa de cambio se llama **gradiente** y proviene del cálculo, específicamente, la **derivada**.
+
+<FunFact>Geoffrey Hinton, uno de los "padrinos de la IA", ha dicho que la retropropagación es la idea clave que hizo práctico el aprendizaje profundo. Sin él, entrenar redes con millones de parámetros sería computacionalmente imposible.
+</FunFact>
+
+## La regla de la cadena: una idea para gobernarlos a todos
+
+Las redes neuronales son cadenas de operaciones simples compuestas entre sí. La **regla de la cadena** del cálculo nos dice cómo diferenciar funciones compuestas:
+
+> Si `y = f(g(x))`, entonces `dy/dx = f'(g(x)) × g'(x)`.
+
+**Analogía cotidiana:** Conduces hasta una tienda. Tu velocidad depende de qué tan fuerte presiones el acelerador. La posición del acelerador depende del tráfico. Para saber cómo el tráfico afecta su velocidad, multiplique: *(velocidad por presión del acelerador)* × *(presión del acelerador por condición de tráfico)*. Ésa es la regla de la cadena: multiplicar las tasas de cambio locales a lo largo de una cadena.
+
+<FunFact>La retropropagación se popularizó en un artículo histórico de 1986 de Rumelhart, Hinton y Williams, pero la idea central de la diferenciación automática en modo inverso se remonta a la década de 1960.
+</FunFact>
+
+## Gráficos de cálculo: visualización de las matemáticas
+
+Los marcos modernos como PyTorch crean un **gráfico de cálculo** durante el avance. Cada operación (suma, multiplicación, ReLU) se convierte en un nodo. Luego, la retropropagación recorre este gráfico **al revés**, aplicando la regla de la cadena en cada nodo para calcular los gradientes.
+
+Piense en ello como un sistema fluvial. La pérdida es el océano al final. Backprop rastrea cada afluente aguas arriba para encontrar cuánto contribuyó cada fuente (peso) al flujo final.
+
+### Un pequeño ejemplo elaborado
+
+Supongamos `L = (w × x - y)²` con `w = 2`, `x = 3`, `y = 10`.
+
+1. **Adelante:** `w × x = 6`, luego `6 - 10 = -4`, luego `(-4)² = 16`. Pérdida = 16.
+2. **Hacia atrás:** `dL/d(diff) = 2 × (-4) = -8`, luego `d(diff)/d(wx) = 1`, entonces `dL/d(wx) = -8`.
+3. Finalmente, `d(wx)/dw = x = 3`, entonces **`dL/dw = -8 × 3 = -24`**.
+
+El gradiente de −24 nos dice: *aumentar `w` disminuirá la pérdida rápidamente.* Esa es exactamente la señal que necesitamos mejorar.
+
+<Quiz question="En la regla de la cadena, ¿qué hacemos con las derivadas locales en cada nodo?" options="Agrégalos juntos|multiplicarlos juntos|Toma el máximo|promediarlos" answer="1" explanation="La regla de la cadena multiplica los derivados locales a lo largo del camino desde la producción hasta el peso de los intereses. Ésta es la columna vertebral matemática de la retropropagación." />
+
+## Flujo de degradado a través de capas
+
+En una red profunda, los gradientes deben atravesar muchas capas. Cada capa multiplica el gradiente por su derivada local. Esto crea dos modos de falla peligrosos:
+
+### Degradados que desaparecen
+
+Si las derivadas locales son pequeñas (por ejemplo, la función sigmoidea se satura cerca de 0 o 1), la multiplicación repetida hace que los gradientes se reduzcan hacia cero. Las primeras ponedoras apenas aprenden: casi no reciben señal. Esto afectó a las primeras redes profundas.
+
+### Explosión de degradados
+
+Si las derivadas locales son grandes, los gradientes crecen exponencialmente. Los pesos reciben enormes actualizaciones y la red se vuelve inestable, produciendo valores NaN.
+
+<ThinkAboutIt>La derivada de ReLU es 0 o 1; nunca reduce el gradiente cuando está activo. ¿Por qué esta simple propiedad podría haber sido revolucionaria para entrenar redes profundas?
+</ThinkAboutIt>
+
+**Las soluciones modernas incluyen:**
+- **Activación ReLU** - la derivada es 1 para entradas positivas, evitando la contracción.
+- **Conexiones residuales (omitir conexiones)**: proporciona a los gradientes una autopista para evitar capas.
+- **Normalización por lotes**: mantiene los valores en un rango saludable.
+- **Recorte de gradiente**: limita los gradientes para evitar explosiones.
+
+## Cómo se actualizan realmente los pesos
+
+Una vez que backprop calcula cada gradiente, el **optimizador** (próxima lección) actualiza cada peso:
+
+```
+w_new = w_old - learning_rate × gradient
+```
+
+La tasa de aprendizaje controla el tamaño del paso. Demasiado grande y te excedes; demasiado pequeño y el entrenamiento lleva una eternidad. El gradiente te indica la dirección; la tasa de aprendizaje le indica qué tan lejos debe dar un paso.
+
+<Quiz question="¿Qué causa la desaparición de gradientes en redes profundas?" options="Tasa de aprendizaje demasiado alta|Funciones de activación con derivados muy pequeños que se combinan en capas.|Demasiados datos de entrenamiento|Usando la activación ReLU" answer="1" explanation="Cuando activaciones como las sigmoideas se saturan, sus derivadas se acercan a cero. Multiplicar muchos valores cercanos a cero a través de la regla de la cadena hace que los gradientes desaparezcan, privando a las primeras capas de señal de aprendizaje." />
+
+## Por qué es importante la retropropiedad
+
+Cada vez que ChatGPT mejora su predicción de la siguiente palabra, cada vez que un automóvil autónomo refina su dirección, se ejecuta retropropagación por debajo. Es el algoritmo el que hace que **aprender de los errores** sea matemáticamente preciso.
+
+Sin backprop, no tendríamos una forma eficiente de entrenar redes con millones (o miles de millones) de parámetros.
+
+<Quiz question="¿Qué nos dice un gradiente sobre un peso?" options="El valor exacto que debe tener el peso.|¿Cuánto cambia la pérdida cuando empujamos ligeramente ese peso?|Si se debe quitar el peso|La posición del peso en la red." answer="1" explanation="Un gradiente es la tasa de cambio de la pérdida con respecto a un peso. Nos dice tanto la dirección como la magnitud del cambio necesario para reducir la pérdida." />
+
+<ThinkAboutIt>Karpathy enfatiza que backprop es "simplemente una aplicación recursiva de la regla de la cadena". Si comprende la regla de la cadena y los gráficos de cálculo, comprenderá la backprop. ¿Qué otros sistemas complejos podrían entenderse dividiéndolos en piezas simples y componibles?
+</ThinkAboutIt>
+
+## Conclusiones clave
+
+- **Retropropagación** calcula los gradientes recorriendo el gráfico de cálculo al revés.
+- La **regla de la cadena** multiplica las derivadas locales a lo largo de cada camino.
+- **Gradientes que desaparecen** aprendizaje lento; **gradientes explosivos** lo desestabilizan.
+- Los trucos modernos (ReLU, omitir conexiones, recorte de gradiente) mantienen saludable el flujo de gradiente.
+- Backprop + un optimizador = el motor de aprendizaje de todo el aprendizaje profundo moderno.
+
+---
+
+## 📚 Lecturas adicionales
+
+- [Andrej Karpathy - nn-zero-to-hero (micrograd)](https://karpathy.ai/zero-to-hero.html) - Construye backprop desde cero en Python
+- [3Blue1Brown - Cálculo de retropropagación](https://www.3blue1brown.com/lessons/backpropagation-calculus) - Hermosa explicación visual de la regla de la cadena en redes neuronales
+- [CS231n Backprop Notes](https://cs231n.github.io/optimization-2/) - Referencia concisa de Stanford sobre gráficos de cálculo y flujo de gradiente

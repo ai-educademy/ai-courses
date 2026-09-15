@@ -1,0 +1,294 @@
+---
+title: "为 AI 学习 Python：你实际需要的最小 Python"
+description: "您无需掌握 Python 即可将其用于人工智能。这是 Python 的最小子集，可帮助您快速阅读、编写和理解 AI 代码。"
+date: "2026-06-10"
+author: "AI Educademy Team"
+tags:
+  - python
+  - ai
+  - programming
+  - tutorial
+published: true
+machineTranslated: true
+---
+Python 是人工智能的语言。如果您花时间阅读有关机器学习的内容，您就会在教程、GitHub 存储库、研究论文和课程中随处看到 Python 代码。最终，您会想要阅读它、运行它，甚至可能修改它。
+
+好消息：您不需要成为 Python 专家。您需要该语言的一个重点子集。本指南准确地教您这一点——理解和使用 AI 代码所需的最低限度的 Python——并提供来自真实 ML 工作流程的示例。
+
+---
+
+## 设置 Python
+
+首先，安装 Python。
+
+**推荐方式**：安装[Miniconda](https://docs.conda.io/en/latest/miniconda.html)，一个轻量级的Python发行管理器。它使管理包和环境变得简单。
+
+安装后，打开终端并输入：
+```
+python --version
+```
+
+如果您看到 `Python 3.x.x`，则表示您已准备就绪。您可以在以下位置编写和运行 Python：
+- **Jupyter Notebook** — AI 实验的标准工具（基于浏览器，交互式）
+- **VS Code** — 具有出色 Python 支持的免费编辑器
+- **Google Colab** — 免费，基于浏览器，无需安装
+
+对于人工智能学习，请从 Google Colab 开始。它是免费的，在浏览器中运行，并且具有 GPU 访问权限。
+
+---
+
+## 1. 变量和数据类型
+
+在 Python 中，您将值存储在变量中。不需要类型声明。
+
+```python
+name = "neural network"       # string (text)
+layers = 4                    # integer (whole number)
+accuracy = 0.94               # float (decimal)
+is_trained = True             # boolean (True/False)
+```
+
+**为什么这对人工智能很重要**：模型超参数、准确度分数和配置值存储为变量。您会不断看到类似 `learning_rate = 0.001` 或 `epochs = 50` 的内容。
+
+---
+
+## 2. 列表
+
+列表是项目的有序集合。您可以在一个变量中存储多个值。
+
+```python
+scores = [0.82, 0.87, 0.91, 0.95]
+labels = ["cat", "dog", "bird"]
+
+# Access by index (starts at 0)
+print(labels[0])    # "cat"
+print(labels[-1])   # "bird" (last item)
+
+# Add an item
+labels.append("fish")
+
+# Number of items
+print(len(scores))  # 4
+```
+
+**为什么这对人工智能很重要**：训练历史、标签列表、数据批次——全部存储在列表中（或 NumPy 数组，其工作原理类似）。
+
+---
+
+## 3. 字典
+
+字典存储键值对。将它们想象成贴有标签的盒子。
+
+```python
+model_config = {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "epochs": 10,
+    "optimizer": "adam"
+}
+
+# Access a value
+print(model_config["learning_rate"])    # 0.001
+
+# Update a value
+model_config["epochs"] = 20
+```
+
+**为什么这对人工智能很重要**：模型配置、训练参数和结果几乎总是以字典的形式表示。当你在 AI 代码中看到 `config = {...}` 时，这就是正在发生的事情。
+
+---
+
+## 4. 循环
+
+循环可让您对集合中的每个项目重复执行某个操作。
+
+```python
+# for loop — iterate over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# range — loop a specific number of times
+for i in range(5):
+    print(i)    # prints 0, 1, 2, 3, 4
+```
+
+**为什么这对人工智能很重要**：训练循环迭代多个时期的数据。数据预处理循环清理数据集中的每一行。您几乎会在每个训练脚本中看到 `for epoch in range(epochs):`。
+
+---
+
+## 5. 函数
+
+函数是可重用的代码块。您定义它们一次并调用它们多次。
+
+```python
+def calculate_accuracy(correct, total):
+    return correct / total
+
+result = calculate_accuracy(85, 100)
+print(result)    # 0.85
+```
+
+函数可以有参数的默认值：
+
+```python
+def train_model(data, epochs=10, learning_rate=0.001):
+    print(f"Training for {epochs} epochs at lr={learning_rate}")
+
+train_model(data)                          # uses defaults
+train_model(data, epochs=20)               # override one
+train_model(data, epochs=20, learning_rate=0.01)   # override both
+```
+
+**为什么这对人工智能很重要**：每个机器学习库都是由函数组成的。 `model.fit()`、`model.predict()`、`train_test_split()` — 这些都是函数调用。了解函数如何工作（包括默认参数）可以解锁您阅读库文档的能力。
+
+---
+
+## 6. 条件句
+
+```python
+accuracy = 0.92
+
+if accuracy > 0.90:
+    print("Model is performing well")
+elif accuracy > 0.75:
+    print("Model is acceptable")
+else:
+    print("Model needs improvement")
+```
+
+**为什么这对人工智能很重要**：条件逻辑出现在数据验证、早期停止标准和推理过程中的决策中。
+
+---
+
+## 7. 导入库
+
+Python 的真正力量来自于它的库。您可以将它们导入到文件的顶部。
+
+```python
+import numpy as np           # numerical computing
+import pandas as pd          # data manipulation
+import matplotlib.pyplot as plt   # plotting
+```
+
+`as np` 部分创建一个别名 - 您键入 `np.array()` 而不是 `numpy.array()`。这是标准约定。
+
+**为什么这对人工智能很重要**：每个人工智能工作流程都从导入开始。上述三个——NumPy、Pandas 和 Matplotlib——几乎出现在每个数据科学笔记本中。
+
+---
+
+## 8.NumPy 基础知识
+
+NumPy 是 Python 数值计算的基础。它的核心对象是**数组**。
+
+```python
+import numpy as np
+
+# Create arrays
+a = np.array([1, 2, 3, 4, 5])
+b = np.array([10, 20, 30, 40, 50])
+
+# Operations apply element-wise
+print(a + b)         # [11, 22, 33, 44, 55]
+print(a * 2)         # [2, 4, 6, 8, 10]
+print(np.mean(a))    # 3.0
+
+# 2D arrays (matrices)
+matrix = np.array([[1, 2], [3, 4], [5, 6]])
+print(matrix.shape)  # (3, 2) — 3 rows, 2 columns
+```
+
+**为什么这对人工智能很重要**：神经网络权重、图像像素数据、词嵌入——全部存储为 NumPy 数组。当您看到 `X_train.shape == (1000, 28, 28)` 时，这是一个包含 1,000 个图像的 NumPy 数组，每个图像为 28×28 像素。
+
+---
+
+## 9. Pandas 基础知识
+
+Pandas 用于处理表格数据——Python 中的电子表格。
+
+```python
+import pandas as pd
+
+# Load a CSV file
+df = pd.read_csv("data.csv")
+
+# Explore the data
+print(df.head())         # first 5 rows
+print(df.shape)          # (rows, columns)
+print(df.columns)        # column names
+print(df.describe())     # statistics
+
+# Select a column
+ages = df["age"]
+
+# Filter rows
+adults = df[df["age"] >= 18]
+
+# Check for missing values
+print(df.isnull().sum())
+```
+
+**为什么这对人工智能很重要**：现实世界的数据集以 CSV 文件形式出现。 Pandas 是您在训练模型之前加载、探索、清理和准备数据的方式。
+
+---
+
+## 10. 一个完整的迷你示例
+
+下面是一个完整的 Python 脚本，它加载数据、分割数据、训练一个简单的模型并对其进行评估：
+
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# 1. Load data
+df = pd.read_csv("customers.csv")
+
+# 2. Separate features and target
+X = df[["age", "income", "years_customer"]]
+y = df["will_churn"]
+
+# 3. Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 4. Train a model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 5. Evaluate
+predictions = model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy:.2%}")
+```
+
+**逐行阅读本文。**有了上面的概念，你就可以理解它的每一行了。这就是目标——不是从头开始编写机器学习代码，而是能够阅读、理解和修改它。
+
+---
+
+## 你还不需要什么
+
+要实用 AI 代码，您不需要立即学习：
+
+- 面向对象编程（类、继承）
+- 装饰器和高级 Python 功能
+- 并发和异步代码
+- 编写Python包和模块
+
+随着您深入了解，这些内容会变得很有价值，但它们并不是使用 AI 工具和教程的先决条件。
+
+---
+
+## 在哪里练习
+
+- **[Google Colab](https://colab.research.google.com)** — 可访问 GPU 的免费笔记本
+- **[Kaggle Learn](https://www.kaggle.com/learn)** — 免费的 Python 和 ML 微课程
+- **[Exercism Python track](https://exercism.org/tracks/python)** — 在指导下进行实践练习
+
+最好的学习方法是运行代码、破坏它、修复它并进行实验。选择您感兴趣的主题的 Kaggle 数据集，然后开始使用 Pandas 进行探索。
+
+---
+
+对于 AI 来说，Python 的流畅度并不是要记住语法。它是关于识别模式——了解循环是什么样子、函数调用做什么、导入带来什么。有了本指南中的概念，您就有了阅读 AI 教程、遵循代码示例并开始自己实验的基础。
+
+想要了解人工智能基础知识的结构化路径吗？ [AI Educademy](https://aieducademy.org) 提供免费课程，带您从人工智能的基础知识到构建和训练您自己的模型 - 无需任何经验。

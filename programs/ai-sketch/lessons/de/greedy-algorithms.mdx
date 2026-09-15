@@ -1,0 +1,133 @@
+---
+title: "Gierige Algorithmen – Wenn lokale Entscheidungen zu globalen Lösungen führen"
+description: "Erfahren Sie, wann die lokal optimale Wahl bei jedem Schritt tatsächlich zum global optimalen Ergebnis führt und wann nicht."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+machineTranslated: true
+---
+## Was macht einen Algorithmus gierig?
+
+Ein gieriger Algorithmus erstellt **Schritt für Schritt** eine Lösung und wählt immer die Option aus, die **im Moment** am besten aussieht – ohne frühere Entscheidungen zu überdenken. Kein Zurückweichen, kein Blick nach vorne.
+
+Es funktioniert, wenn zwei Eigenschaften gelten:
+1. **Greedy-Choice-Eigenschaft** – eine lokal optimale Wahl führt zu einer global optimalen Lösung.
+2. **Optimale Unterstruktur** – das verbleibende Problem nach jeder Auswahl ist eine kleinere Instanz desselben Problems.
+
+## Aktivitätsauswahl – Das klassische Beispiel
+
+Wählen Sie anhand einer Reihe von Aktivitäten mit Start- und Endzeiten die **maximale Anzahl** sich nicht überschneidender Aktivitäten aus.
+
+**Gierige Strategie:** Sortieren Sie nach Endzeit und wählen Sie immer die Aktivität aus, die am frühesten endet.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+Warum funktioniert das? Die Auswahl der Aktivität, die am frühesten abgeschlossen wird, lässt den meisten Spielraum für zukünftige Aktivitäten. Keine andere Wahl kann es besser machen.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Zeitleiste mit Aktivitätsauswahl nach frühester Endzeit" caption="Durch die Auswahl nach frühester Endzeit wird die Anzahl der sich nicht überschneidenden Aktivitäten maximiert." />
+
+## Huffman-Codierung – Konzept
+
+Erstellen Sie einen optimalen präfixfreien Binärcode, indem Sie die **zwei Symbole mit der niedrigsten Häufigkeit** wiederholt zusammenführen. Das ist gierig: Bei jedem Schritt wird das günstigste Paar zusammengeführt. Das Ergebnis ist ein Baum, in dem häufige Symbole Kurzcodes erhalten.
+
+<FunFact>Die Huffman-Kodierung wird bei der JPEG-, MP3- und ZIP-Komprimierung verwendet. David Huffman erfand es 1952 als Student – ​​es war eine Hausaufgabe!</FunFact>
+
+## Sprungspiel
+
+Bestimmen Sie anhand eines Arrays, bei dem `nums[i]` die maximale Sprunglänge vom Index `i` ist, ob Sie den letzten Index erreichen können.
+
+**Gieriger Ansatz:** Verfolgen Sie den bisher am weitesten entfernten Index. Von links nach rechts scannen – wenn Sie jemals ins Hintertreffen geraten, geben Sie „false“ zurück.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="Was stellt im Sprungspiel die gierige Variable „am weitesten” dar?" options="Die aktuelle Position|Die Anzahl der ausgeführten Sprünge|Der maximale Index, der von jeder besuchten Position aus erreichbar ist|Die Länge des weitesten Sprungs" answer="2" explanation="„farthest” verfolgt den Index ganz rechts, der von jeder bisher besuchten Position aus erreichbar ist. Wenn Ihr aktueller Index diesen überschreitet, stecken Sie fest." />
+
+## Tankstelle
+
+Fahren Sie einen Rundweg mit Tankstellen. An der Station `i` erhältst du `gas[i]` Treibstoff und gibst `cost[i]` aus, um die nächste Station zu erreichen. Finden Sie die Startstation, an der Sie die Runde absolvieren können, oder geben Sie −1 zurück.
+
+**Gierige Erkenntnis:** Wenn Gesamtgas ≥ Gesamtkosten, gibt es eine Lösung. Verfolgen Sie einen laufenden Überschuss; Immer wenn der Wert unter Null fällt, muss die Antwort **nach** diesem Punkt beginnen.
+
+## Aufgabenplaner
+
+Planen Sie Aufgaben mit einer Abklingzeit von `n` zwischen identischen Aufgaben. **Gierig:** Wählen Sie immer die häufigste verbleibende Aufgabe aus. Die Antwort hängt von der maximalen Häufigkeit ab und davon, wie viele Aufgaben sie teilen.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>Warum minimiert die Auswahl der häufigsten Aufgabe im Aufgabenplaner zuerst Leerlaufplätze? Was würde schief gehen, wenn Sie zuerst die am seltensten vorkommende auswählen würden?</ThinkAboutIt>
+
+## Fractional Knapsack vs. 0/1 Knapsack
+
+**Fraktioneller Rucksack:** Sie können Bruchteile von Gegenständen mitnehmen. Greedy funktioniert – sortieren Sie nach Wert pro Gewicht und nehmen Sie zuerst das beste Verhältnis.
+
+**0/1 Rucksack:** Gegenstände sind alles oder nichts. Greedy scheitert hier, weil es schlimmer sein könnte, einen schweren, aber wertvollen Gegenstand auszulassen, als zwei leichtere mitzunehmen. Dies erfordert eine dynamische Programmierung.
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): takes item 1 (w=3, v=4) → 1 remaining → can't fit rest → value = 4
+Optimal: takes items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fails!
+```
+
+<Quiz question="Warum schlägt der Greedy-Ansatz für das 0/1-Rucksackproblem fehl?" options="Artikel können nicht aufgeteilt werden, sodass der Artikel mit dem besten Verhältnis möglicherweise Kapazität verschwendet|Die Artikel sind nicht sortiert|Es sind zu viele Artikel vorhanden|Bei Rucksackproblemen funktionieren Greedy-Algorithmen nie" answer="0" explanation="Wenn Sie ganze Artikel entnehmen müssen, kann die Auswahl des besten Verhältnisses zunächst ungenutzte Kapazitäten hinterlassen, die mit kleineren Artikeln profitabler hätten gefüllt werden können." />
+
+## Wann funktioniert Greedy?
+
+✅ **Funktioniert**, wenn Sie die Greedy-Choice-Eigenschaft beweisen können:
+- Intervallplanung, Huffman-Codierung, minimale Spannbäume, Dijkstra-Algorithmus, Münzwechsel mit Standard-Stückelungen
+
+❌ **Schlägt fehl**, wenn sich lokale Optima nicht in globale Optima zusammensetzen:
+- 0/1 Rucksack, längster Weg im Allgemeinen, Handlungsreisender
+
+## Beweis der gierigen Korrektheit – Austauschargument
+
+Die Standardtechnik: Nehmen Sie eine optimale Lösung an, die **nicht** die Greedy-Choice verwendet. Zeigen Sie, dass Sie eine seiner Optionen gegen die gierige Option **austauschen** können, ohne die Lösung zu verschlechtern. Dies beweist, dass Greedy mindestens genauso gut ist.
+
+<Quiz question="Wofür wird das „Austauschargument” verwendet?" options="Zwei Elemente in einem Array vertauschen|Der Nachweis eines Greedy-Algorithmus führt zu einer optimalen Lösung|Rekursion in Iteration umwandeln|Optimierung der Zeitkomplexität" answer="1" explanation="Das Austauschargument beweist die Richtigkeit, indem es zeigt, dass jede optimale Lösung ohne Qualitätsverlust so transformiert werden kann, dass sie mit der gierigen Lösung übereinstimmt." />
+
+## Gierige vs. dynamische Programmierung
+
+| Aspekt | Gierig | Dynamische Programmierung |
+|--------|--------|-------|
+| Auswahlmöglichkeiten | Eine beste Wahl pro Schritt | Erkunden Sie alle Teilprobleme |
+| Besucht die Vergangenheit noch einmal? | Niemals | Ja – speichert Unterergebnisse |
+| Geschwindigkeit | Normalerweise schneller | Hängt vom Zustandsraum ab |
+| Korrektheit | Nur wenn beweisbar | Immer (wenn richtig formuliert) |
+
+Wenn Sie Zweifel haben, beginnen Sie gierig – wenn Sie nicht beweisen können, dass es funktioniert, wechseln Sie zu DP.
+
+<FunFact>Der Kürzeste-Wege-Algorithmus von Dijkstra ist gierig – er verarbeitet immer den nächstgelegenen nicht besuchten Knoten. Dies funktioniert, weil Kantengewichte nicht negativ sind, wodurch sichergestellt wird, dass die gierige Wahl sicher ist.</FunFact>
+
+<ThinkAboutIt>Ihnen werden Münzwerte [1, 3, 4] gegeben und Sie müssen 6 Münzen wechseln. Der gierige Ansatz wählt 4+1+1=3 Münzen, aber das Optimum ist 3+3=2 Münzen. Was ist mit diesen Konfessionen, die die Eigenschaft der Gierigen Wahl zerstören?</ThinkAboutIt>
+
+---
+
+## 📚 Weiterführende Literatur
+
+- [NeetCode – Greedy-Playlist](https://neetcode.io/roadmap) – kuratierte Greedy-Probleme mit Erklärungen
+- [Tech Interview Handbook – Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) – Wann man Greedy und gängige Muster verwendet
+- [CP-Algorithmen – Greedy-Algorithmen](https://cp-algorithms.com/) – tiefergehende Theorie und Beweise

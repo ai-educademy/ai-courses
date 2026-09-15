@@ -1,0 +1,252 @@
+---
+title: "特徴量エンジニアリング: 何が重要かを機械に教える"
+description: "特徴量エンジニアリングが生データを強力な機械学習入力に変換する方法、つまり優れたモデルと優れたモデルを区別するスキルを学びましょう。"
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# 特徴量エンジニアリング: 何が重要かを機械に教える
+
+機械学習には「*ガベージイン、ガベージアウト**」という格言があります。世界で最も洗練されたアルゴリズムを使用できますが、適切に準備されていないデータを入力すると、結果は劣悪なものになります。逆に、綿密に準備された優れたデータが与えられた単純なアルゴリズムは、生の乱雑なデータが与えられた複雑なアルゴリズムよりも優れたパフォーマンスを発揮する可能性があります。
+
+特徴エンジニアリングは、生データを機械学習アルゴリズムが効果的に学習できる表現に変換する技術です。これはおそらく、応用機械学習において最も影響力のあるスキルであり、深い専門知識とデータ サイエンスが出会う場所です。
+
+## 🧩 機能とは何ですか?
+
+機械学習では、**特徴** は、予測しようとしているものの測定可能なプロパティまたは属性です。特徴はモデルへの入力です。 **ラベル** (またはターゲット) が出力です。
+
+住宅価格予測モデルの場合:
+- 特徴: 平方フィート、寝室の数、郵便番号、築年数、最寄りの学校までの距離
+- ラベル: セール価格
+
+電子メールスパム分類子の場合:
+- 特徴: 単語の頻度、送信者のドメイン、特定のフレーズの有無、電子メールの長さ
+- ラベル: スパム (1) またはスパムではない (0)
+
+多くの場合、どのアルゴリズムを選択するかよりも、機能の質、量、関連性の方が重要です。
+
+## 🗃️ なぜ生データはモデル化できることがほとんどないのか
+
+現実世界のデータは乱雑です。機械学習アルゴリズムには、生データがほとんど満たすことができない特定の要件があります。
+
+- **数値のみ**: ほとんどのアルゴリズムはテキスト、カテゴリ、または日付を直接処理できません。
+- **欠損値なし**: ほとんどのアルゴリズムは NaN または null 値を処理できません。
+- **同様のスケール**: 値の範囲が大きく異なる特徴は勾配ベースの学習を歪める可能性があります
+- **意味のある表現**: 生のタイムスタンプや郵便番号は重要なパターンをエンコードしません (週末ですか? 裕福な地域ですか?)
+
+特徴量エンジニアリングは、生データとモデル対応入力の間のギャップを埋めるプロセスです。
+
+## 📏 正規化と標準化
+
+フィーチャのスケールが大きく異なる場合、モデルが誤解される可能性があります。数千の値を持つフィーチャは、0 から 1 までの値を持つフィーチャよりも優先される可能性があります。
+
+### Min-Max 正規化 ([0, 1] へのスケーリング)
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### 標準化 (Z スコア、平均 = 0、標準 = 1)
+
+最小-最大スケーリングよりも外れ値に対してより堅牢です。
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**経験則**: デフォルトで標準化を使用します。特定の境界範囲内の値が必要な場合 (ニューラル ネットワーク入力など)、min-max を使用します。
+
+## 🏷️ カテゴリ変数のエンコード
+
+「赤/緑/青」や「ロンドン/マンチェスター/バーミンガム」などのカテゴリには、自然な数値順序がありません。ほとんどのアルゴリズムにフィードする前に、それらをエンコードする必要があります。
+
+### ワンホットエンコーディング
+
+カテゴリごとにバイナリ列を作成します。カテゴリに固有の順序がない場合に最適です。
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### ラベルエンコーディング
+
+各カテゴリを整数にマップします。カテゴリに自然な順序がある場合にのみ使用します。
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>よくある初心者の間違いは、都市名をラベル エンコードしてしまい、誤って東京がロンドン「以上」であるとモデルに伝えてしまい、奇妙な予測につながることです。順序のないカテゴリには常にワンホット エンコーディングを使用してください。</FunFact>
+
+## 🕳️ 欠損値の処理
+
+欠損データは、現実世界のデータセットではほぼ普遍的に存在します。いくつかのオプションがあります。
+
+### 代入
+
+欠損値を計算された代替値で埋めます。
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### 欠落インジケーターの追加
+
+データが欠落しているという事実自体が有益な場合もあります。
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### いつドロップするか
+
+欠損値が約 70 ～ 80% を超える場合、列を削除します (有益なことはほとんどありません)。行を削除するのは、データが大量にあり、行がランダムに (体系的にではなく) 欠落している場合にのみです。
+
+## 🛠️ 新しい機能の作成
+
+ここで特徴量エンジニアリングが芸術となります。ドメインの知識を使用して、生データには表示されないパターンを捕捉する機能を作成します。
+
+### 日付/時刻の分解
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+生のタイムスタンプはモデルに直接何も伝えません。これらの派生機能により、「午前 3 時に詐欺のピーク」や「週末の売上の急増」などのパターンが明らかになります。
+
+### インタラクション機能
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### テキスト機能
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>レストランの衛生検査の不合格を予測するモデルを構築している場合、どのような生データにアクセスできる可能性がありますか?また、生データのみよりも役立つ、そこからどのような新機能を開発できるでしょうか?</ThinkAboutIt>
+
+## 📊 機能の重要性
+
+モデルを構築したら、どの機能が最も有用であるかを測定できます。これは、モデルを理解する上でも、どの機能を維持するか削除するかを決定する上でも役立ちます。
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+重要性がほぼゼロの特徴は、通常、パフォーマンスに影響を与えることなく削除できます。また、それらを削除すると、モデルが簡素化され、トレーニング時間が短縮され、一般化が向上します。
+
+## 🗜️ 次元削減: 簡単な紹介
+
+何百、何千もの特徴がある場合、モデルは苦戦する可能性があります。これは**次元の呪い**と呼ばれます。次元削減技術は、最も重要なパターンを維持しながら特徴を圧縮します。
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA (主成分分析) が最も一般的なアプローチですが、他のアプローチには t-SNE (視覚化用) や UMAP (局所構造の保存用) などがあります。
+
+<Quiz question="50 の異なる都市名を含む「city」列を持つデータセットがあります。どのようなエンコード手法を使用する必要がありますか?" options="ラベルのエンコード - 各都市に 0 ～ 49 の整数を割り当てます。|ワンホット エンコーディング - 都市ごとにバイナリ列を作成します|テキストのままにしておきます - ほとんどのモデルは文字列を処理します|すべての都市をその国のGDPに換算する" answer="1" explanation="都市名には自然な順序がないため、ラベルのエンコードによって誤って階層 (都市 49 > 都市 0) が暗示されてしまいます。ワンホット エンコーディングでは、都市ごとにバイナリ列が作成され、それらを個別の順序付けされていないカテゴリとして正しく表現します。" />
+
+## 重要なポイント
+
+- **特徴**はモデルへの入力です。多くの場合、アルゴリズムの選択よりも機能の品質の方が重要です
+- 生データはほとんどモデルの準備ができていないため、クリーニング、変換、強化が必要です
+- **正規化/標準化** は、機能を同等のスケールに置きます。デフォルトで標準化を使用する
+- **ワンホット エンコーディング**は、順序付けされていないカテゴリ変数に対しては正しいです。 **ラベル エンコーディング** 注文されたもののみ
+- **欠損値**は、代入 (中央値/平均/最頻値) および欠損インジケーター フラグの追加によって処理できます。
+- **新しい機能**をドメイン知識 (時間分解、比率、相互作用) から作成すると、多くの場合、最大のパフォーマンス向上が得られます。
+- **特徴重要度** スコアは、モデルがどの入力に依存し、どの入力を省略できるかを理解するのに役立ちます
+- **次元削減** (PCA など) は、有用な分散の大部分を維持しながら高次元データを圧縮します。

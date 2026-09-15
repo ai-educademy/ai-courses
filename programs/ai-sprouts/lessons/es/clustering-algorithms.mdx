@@ -1,0 +1,109 @@
+---
+title: "Agrupación: cómo la IA encuentra patrones sin etiquetas"
+description: "Comprenda la agrupación en clústeres, una técnica clave de aprendizaje no supervisado, a través de K-Means, agrupación en clústeres jerárquica y aplicaciones del mundo real."
+order: 16
+difficulty: "intermediate"
+duration: 25
+icon: "🔵"
+published: true
+machineTranslated: true
+---
+# Agrupación: cómo la IA encuentra patrones sin etiquetas 🔵
+
+Todos los algoritmos que has estudiado hasta ahora han sido **supervisados**: le proporcionas ejemplos etiquetados y aprende a predecir etiquetas para otras nuevas. Pero, ¿qué sucede cuando tienes una montaña de datos y ninguna etiqueta?
+
+Aquí es donde entra en juego el **aprendizaje no supervisado**, y la agrupación en clústeres es una de sus herramientas más poderosas.
+
+---
+
+## 🔍 ¿Qué es la agrupación?
+
+La agrupación es la tarea de agrupar puntos de datos de modo que los puntos del mismo grupo (clúster) sean más **similares** entre sí que los puntos de otros grupos.
+
+Lo más importante es que nadie le dice al algoritmo cuántos grupos hay o qué representan. Encuentra la estructura por sí solo.
+
+Piense en ello como clasificar un montón de dulces mezclados con los ojos cerrados, simplemente usando el tacto. Los agruparías por forma (los redondos juntos, los largos juntos, los masticables separados de los duros) sin que nadie defina las categorías de antemano.
+
+<FunFact>Los astrónomos utilizan la agrupación para agrupar galaxias por forma y composición, los genetistas para identificar subtipos de enfermedades y Spotify para generar listas de reproducción personalizadas, todo sin que nadie etiquete los datos a mano.
+</FunFact>
+
+---
+
+## 📍 K-Means: el algoritmo de agrupamiento más famoso
+
+**K-Means** es simple, rápido y sorprendentemente poderoso. Aquí está el algoritmo completo en inglés sencillo:
+
+1. **Elija K**: decida de antemano cuántos grupos desea.
+2. **Coloque K centroides aleatoriamente**: distribuya K puntos aleatoriamente por el espacio de datos. Un centroide es simplemente el "centro" de un grupo.
+3. **Asigne cada punto de datos a su centroide más cercano**: cada punto pertenece al centroide al que esté más cercano.
+4. **Recalcular cada centroide**: mueva cada centroide a la posición promedio de todos los puntos asignados a él.
+5. **Repita los pasos 3 y 4**: siga reasignando y recalculando hasta que las asignaciones dejen de cambiar.
+
+<Illustration src="/images/lessons/clustering-algorithms.svg" alt="Tres iteraciones de K-Means: centroides aleatorios, primera asignación, grupos convergentes finales mostrados en diferentes colores" caption="K-Means itera entre la asignación de puntos a los centroides y el recalculo de las posiciones de los centroides hasta que los grupos se estabilizan." />
+
+La analogía: imagine colocar imanes K en un mapa de direcciones de clientes. Cada cliente se siente atraído por el imán más cercano. Luego mueves cada imán al centro de sus clientes. Repita hasta que los imanes dejen de moverse.
+
+<ThinkAboutIt>K-Means depende de la ubicación aleatoria inicial de los centroides. Dos ejecuciones con los mismos datos pueden producir grupos diferentes. ¿Cómo decidirías qué resultado es mejor? ¿Qué medirías siquiera?
+</ThinkAboutIt>
+
+---
+
+## 🔢 Eligiendo K: El método del codo
+
+Un problema práctico: ¿cómo se elige K? Si establece K igual al número de puntos de datos, cada punto es su propio grupo: perfecto pero inútil. Si K = 1, todo es una gran masa, también inútil.
+
+El **método del codo** ayuda: ejecute K-Means para K = 1, 2, 3,… N y trace cuánto "error" (varianza dentro del grupo) disminuye a medida que K aumenta. Más grupos siempre reducen el error, pero generalmente hay un punto K en el que la mejora comienza a disminuir drásticamente: el "codo" de la curva. Ese es un buen candidato para el K de derecha.
+
+No es una regla estricta, pero le brinda un punto de partida basado en principios.
+
+---
+
+## 🌿 Agrupación jerárquica
+
+K-Means requiere que arregles K por adelantado. **La agrupación jerárquica** no.
+
+En lugar de ello, construye un árbol (llamado **dendrograma**) de conglomerados mediante:
+
+- **Aglomerativo (de abajo hacia arriba)**: comienza con cada punto como su propio grupo. Fusione repetidamente los dos grupos más similares hasta que todo sea un grupo grande.
+- **Divisivo (de arriba hacia abajo)**: comience con todo en un grupo. Divida repetidamente el grupo más diferente hasta que cada punto sea su propio grupo.
+
+El dendrograma resultante le permite "cortar" en cualquier nivel para obtener cualquier número de grupos, lo cual es extremadamente flexible. La desventaja: la agrupación jerárquica es computacionalmente costosa en grandes conjuntos de datos.
+
+---
+
+## 🌍 Aplicaciones del mundo real
+
+La agrupación aparece en todas partes:
+
+| Solicitud | Qué se agrupa |
+|---|---|
+| Segmentación de clientes | Clientes agrupados por comportamiento de compra |
+| Compresión de imágenes | Colores de píxeles reducidos a K colores representativos |
+| Organización del documento | Artículos agrupados por tema sin etiquetas manuales |
+| Detección de anomalías | Valores atípicos que no encajan en ningún grupo = sospechosos |
+| Genética | Patrones de expresión genética agrupados por subtipo de enfermedad |
+| Redes sociales | Comunidades identificadas por patrones de conexión |
+
+---
+
+## ⚠️ Limitaciones de la agrupación
+
+La agrupación en clústeres es poderosa pero tiene limitaciones reales:
+
+- **Interpretar grupos es difícil**: el algoritmo agrupa los datos, pero aún tienes que averiguar qué *significa* cada grupo.
+- **K-Means supone grupos aproximadamente esféricos**; tiene problemas con formas de grupos alargadas, irregulares o anidadas.
+- **Sensible a la escala**: las características con grandes rangos numéricos dominan los cálculos de distancia; Siempre normalice las características antes de agruparlas.
+- **Sin verdad básica**: sin etiquetas, evaluar la calidad es subjetivo. Dos analistas podrían sacar conclusiones diferentes del mismo agrupamiento.
+
+<FunFact>K-Means fue propuesto por primera vez por Stuart Lloyd en 1957 (como una nota técnica interna de Bell Labs) y Forgy lo volvió a describir de forma independiente en 1965. A pesar de su antigüedad, sigue siendo uno de los algoritmos más utilizados en la ciencia de datos.
+</FunFact>
+
+---
+
+<Quiz question="¿Cuál es la diferencia fundamental entre el aprendizaje supervisado y la agrupación?" options={["La agrupación requiere más datos", "La agrupación encuentra estructura en datos sin etiquetar, mientras que el aprendizaje supervisado aprende de ejemplos etiquetados", "El aprendizaje supervisado siempre es más preciso", "La agrupación solo puede manejar datos numéricos"]} correct={1} explanation="El aprendizaje supervisado requiere datos de entrenamiento etiquetados: entradas combinadas con respuestas correctas. La agrupación no está supervisada: descubre agrupaciones naturales en datos sin etiquetas. Nadie le dice al algoritmo cuáles deberían ser los grupos." />
+
+<Quiz question="En K-Means, ¿qué es un 'centroide'?" options={["El punto de datos más grande de un grupo.", "El punto central representativo de un grupo, calculado como el promedio de todos sus miembros.", "El límite entre dos grupos.", "El número de grupos"]} correct={1} explanation="Un centroide es el centro geométrico de un grupo. En K-Means, se vuelve a calcular después de cada paso de asignación como la posición media de todos los puntos de datos que pertenecen a ese grupo. El algoritmo converge cuando los centroides dejan de moverse." />
+
+<Quiz question="¿Qué le ayuda a determinar el 'método del codo' en K-Means?" options={["Cómo inicializar los centroides de forma más fiable", "El número óptimo de conglomerados K ​​identificando dónde agregar más conglomerados produce rendimientos decrecientes", "Cómo escalar funciones antes de agruparlas", "Qué métrica de distancia usar"]} correct={1} explanation="El método del codo traza la varianza dentro del grupo contra K. A medida que K aumenta, la varianza siempre disminuye, pero en algún momento la tasa de disminución se desacelera drásticamente: el ”codo”. Este punto de inflexión suele ser una buena estimación del número correcto de conglomerados." />
+
+<Quiz question="¿Por qué debería normalizar las funciones antes de ejecutar K-Means?" options={["Para hacer el algoritmo más rápido", "Porque las características con rangos numéricos grandes dominarían los cálculos de distancia y las asignaciones de grupos de sesgo.", "Para reducir el número de puntos de datos", "Porque K-Means no puede manejar variables categóricas"]} correct={1} explanation="K-Means utiliza la distancia euclidiana para asignar puntos a los centroides. Si una característica tiene valores en miles (por ejemplo, ingresos) y otra en decenas (por ejemplo, edad), la primera característica domina el cálculo de la distancia. La normalización pone todas las características en pie de igualdad." />

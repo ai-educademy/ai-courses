@@ -1,0 +1,132 @@
+---
+title: "Haufen und Prioritätswarteschlangen – das Schweizer Taschenmesser unter den Vorstellungsgesprächen"
+description: "Master-Heaps, die Abstraktion der Prioritätswarteschlange und klassische Muster wie Top-K-Probleme und das Zusammenführen sortierter Listen."
+order: 6
+difficulty: "intermediate"
+duration: 18
+icon: "⛰️"
+published: true
+machineTranslated: true
+---
+## Was ist ein Heap?
+
+Ein **Heap** ist ein vollständiger Binärbaum, in dem jedes übergeordnete Element die **Heap-Eigenschaft** erfüllt – entweder immer kleiner (Min.-Heap) oder immer größer (Max-Heap) als seine untergeordneten Elemente. „Abgeschlossen“ bedeutet, dass jedes Level voll ist, mit Ausnahme möglicherweise des letzten, das von links nach rechts gefüllt wird.
+
+```
+       1            Min-heap
+      / \
+     3   5
+    / \
+   7   4
+```
+
+Da es vollständig ist, speichern wir es in einem **flachen Array** – es sind keine Zeiger erforderlich. Für Index `i`: linkes Kind = `2i + 1`, rechtes Kind = `2i + 2`, Eltern = `(i - 1) // 2`.
+
+## Min-Heap vs. Max-Heap
+
+| Eigentum | Min-Heap | Max-Heap |
+|----------|----------|----------|
+| Wurzel | Kleinstes Element | Größtes Element |
+| Eltern ≤ Kinder? | ✅ Ja | ❌ Nein (≥) |
+| Auszug ergibt | Minimum | Maximal |
+
+Pythons `heapq` ist standardmäßig ein **Min-Heap**. Negieren Sie für einen Max-Heap Werte beim Einfügen und erneut beim Extrahieren.
+
+## Einfügen und Extrahieren – Schritt für Schritt
+
+**Einfügen** – bis zum Ende drücken, dann **aufblasen** (mit dem übergeordneten Element tauschen, solange es kleiner ist):
+
+```python
+import heapq
+h = [1, 3, 5, 7]
+heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
+```
+
+**Mindestmenge extrahieren** – Wurzel mit letztem Element tauschen, letztes einfügen, dann **nach unten sieben** (mit kleinerem Kind tauschen):
+
+```python
+smallest = heapq.heappop(h)  # returns 1
+```
+
+Beide Operationen werden in **O(log n)** ausgeführt, da die Baumhöhe log n ist.
+
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Diagramm, das das Aufblasen des Einsatzes und das Absieben des Extrakts auf einem Min-Haufen zeigt" caption="Blasen nach oben einsetzen; extract-min filtert nach unten." />
+
+## Heapify – Erstellen eines Heaps in O(n)
+
+Der Aufruf von `heapq.heapify(arr)` konvertiert eine Liste **in-place** in einen Heap in O(n), nicht in O(n log n). Es funktioniert von unten nach oben und durchsucht jeden Nicht-Blattknoten. Dies ist eines der überraschendsten Komplexitätsergebnisse in CS.
+
+<FunFact>Der Aufbau eines Heaps ist O(n), nicht O(n log n). Die meisten Knoten befinden sich in der Nähe des unteren Endes und müssen kaum nach unten gesiebt werden – die Mathematik ergibt eine lineare Zeit.</FunFact>
+
+## Die Prioritätswarteschlangenabstraktion
+
+Mit einer **Prioritätswarteschlange** können Sie immer zuerst auf das Element mit der höchsten Priorität zugreifen. Heaps sind die bevorzugte Implementierung, da sowohl Einfügen als auch Extrahieren O(log n) sind. Verwenden Sie eines immer dann, wenn Sie „Geben Sie mir den bisher besten Artikel“ benötigen.
+
+## Muster: Top-K-Probleme
+
+> „Finden Sie die K größten Elemente in einem unsortierten Array.“
+
+Behalten Sie einen **Min-Heap der Größe K**. Drücken Sie für jedes Element darauf; Wenn der Heap größer als K ist, platziere den kleinsten. Übrig bleiben die K-größten.
+
+```python
+import heapq
+def top_k(nums, k):
+    return heapq.nlargest(k, nums)
+```
+
+Zeit: **O(n log k)** – viel besser als Sortieren, wenn k ≪ n.
+
+<Quiz question="Sie benötigen die 5 höchsten Punktzahlen aus 1 Million Einträgen. Welcher Heap-Typ und welche Größe?" options="Maximaler Heap mit einer Größe von 1.000.000|Min-Heap der Größe 5|Maximaler Heap der Größe 5|Min. Heap der Größe 1.000.000" answer="1" explanation="Ein Min-Heap der Größe 5 behält die 5 größten, die bisher gesehen wurden. Die Wurzel (Minimum der 5) ist der Gatekeeper – alles, was kleiner ist, wird abgelehnt." />
+
+## Muster: K-sortierte Listen zusammenführen
+
+Schieben Sie den Kopf jeder Liste in einen Min-Heap. Platzieren Sie das kleinste Element und verschieben Sie dann das nächste Element aus derselben Liste. Wiederholen, bis alle Listen erschöpft sind. Zeit: **O(N log K)** wobei N die Gesamtzahl der Elemente ist.
+
+## Muster: Median aus Datenstrom
+
+Behalten Sie zwei Heaps bei: einen **Max-Heap** für die untere Hälfte und einen **Min-Heap** für die obere Hälfte. Gleichen Sie ihre Größen so aus, dass sie sich höchstens um 1 unterscheiden. Der Median liegt immer bei einer oder beiden Wurzeln.
+
+```
+Lower half (max-heap): [1, 2, 3]  ← max = 3
+Upper half (min-heap): [4, 5, 6]  ← min = 4
+Median = (3 + 4) / 2 = 3.5
+```
+
+<Quiz question="Wo landet beim Zwei-Heap-Median-Ansatz ein neues Element zuerst?" options="Immer der Min-Heap|Immer der Max-Heap|Welcher Heap kleiner ist|Zuerst mit Max-Heap-Root vergleichen und dann neu ausgleichen" answer="3" explanation="Schieben Sie zuerst auf den Max-Heap (untere Hälfte), verschieben Sie dann bei Bedarf dessen Wurzel auf den Min-Heap und gleichen Sie die Größen neu aus. Dadurch wird gewährleistet, dass die Heap-Eigenschaft erhalten bleibt." />
+
+## Planungsprobleme
+
+Bei der Planung glänzen jede Menge Dinge: Besprechungsräume (verfolgen Sie die früheste Endzeit), Aufgabenplanung mit Abklingzeiten oder CPU-Jobwarteschlangen. Die wichtigste Erkenntnis besteht darin, dass ein Heap effizient verfolgt, „was als nächstes endet“.
+
+<ThinkAboutIt>Wenn Sie sowohl das Minimum als auch das Maximum effizient benötigen, reicht ein einzelner Heap nicht aus. Welche Datenstrukturkombination würden Sie verwenden?</ThinkAboutIt>
+
+## Wann sollte Heap vs. Sorted Array vs. BST verwendet werden?
+
+| Brauchen | Beste Wahl | Warum |
+|------|-------------|-----|
+| Wiederholte Min/Max-Extraktion | Haufen | O(log n) einfügen + extrahieren |
+| Statische Daten, einmalige Sortierung | Sortiertes Array | O(n log n) einmal, O(1) Zugriff |
+| Bereichsabfragen + Bestellstatistiken | Ausgewogener BST | O(log n) für alles |
+| Top-K aus einem Stream | Haufen der Größe K | O(n log k) insgesamt |
+
+<Quiz question="Welche Operation ist O(1) in einem Min-Heap?" options="Finden Sie das Minimum|Minimum löschen|Finden Sie das Maximum|Finden Sie den Median" answer="0" explanation="Das Minimum befindet sich an der Wurzel (Index 0) eines Min-Heaps, daher ist das Peeking O(1). Das Löschen ist O(log n), da Sie nach unten filtern müssen." />
+
+## Komplexitäts-Spickzettel
+
+| Betrieb | Zeit |
+|-----------|------|
+| Einfügen | O(log n) |
+| Extrahieren Sie Min./Max. | O(log n) |
+| Peek min/max | O(1) |
+| Aufhäufen | O(n) |
+| Top-K aus n Elementen | O(n log k) |
+
+<ThinkAboutIt>Warum können Sie auf einem Heap keine binäre Suche durchführen, obwohl dieser in einem Array gespeichert ist? Überlegen Sie, welche Sortierreihenfolge die Heap-Eigenschaft tatsächlich garantiert.</ThinkAboutIt>
+
+---
+
+## 📚 Weiterführende Literatur
+
+- [NeetCode – Heap-/Prioritätswarteschlange](https://neetcode.io/roadmap) – visuelle Problem-Roadmap mit gruppierten Heap-Problemen
+- [Tech Interview Handbook – Heap](https://www.techinterviewhandbook.org/algorithms/heap/) – prägnante Muster und Tipps
+– [Python-Heapq-Dokumente](https://docs.python.org/3/library/heapq.html) – offizielle Modulreferenz mit Beispielen

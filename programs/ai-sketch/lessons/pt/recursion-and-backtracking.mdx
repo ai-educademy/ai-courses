@@ -1,0 +1,160 @@
+---
+title: "Recursão e retrocesso - resolvendo quebra-cabeças como um computador"
+description: "Entenda a recursão da pilha de chamadas e, em seguida, aprenda o modelo de retrocesso que resolve permutações, N-Queens e muito mais."
+order: 8
+difficulty: "intermediate"
+duration: 20
+icon: "🧩"
+published: true
+machineTranslated: true
+---
+## Fundamentos de recursão
+
+Uma função recursiva chama a si mesma com uma versão **menor** do problema até atingir um **caso base** que interrompe a cadeia.
+
+Toda recursão precisa de duas coisas:
+1. **Caso base** - a entrada mais simples à qual você retorna diretamente.
+2. **Caso recursivo** - analise o problema e ligue para si mesmo.
+
+```python
+def factorial(n):
+    if n <= 1:        # base case
+        return 1
+    return n * factorial(n - 1)  # recursive case
+```
+
+## A pilha de chamadas - visualizada
+
+Cada chamada recursiva envia um quadro para a pilha de chamadas. Quando o caso base retorna, os quadros aparecem na ordem inversa.
+
+```
+factorial(4)
+  → factorial(3)
+    → factorial(2)
+      → factorial(1) → returns 1
+    ← returns 2
+  ← returns 6
+← returns 24
+```
+
+Se não houver caso base, a pilha transborda. O limite de recursão padrão do Python é 1.000 frames.
+
+<FunFact>O limite de recursão padrão do Python de 1.000 é intencionalmente conservador. Você pode aumentá-lo com sys.setrecursionlimit(), mas soluções iterativas geralmente são preferidas para recursão profunda.</FunFact>
+
+## Fibonacci – A Armadilha Clássica
+
+O Fibonacci recursivo ingênuo é O(2ⁿ) porque recalcula os mesmos subproblemas. A memorização corrige isso em O(n) tempo e espaço.
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+<Illustration src="/images/lessons/recursion-and-backtracking.svg" alt="Árvore de recursão para Fibonacci mostrando subproblemas repetidos" caption="Sem memorização, fib(5) faz 15 chamadas. Com ele, apenas 5." />
+
+## Backtracking - Tente tudo e depois desfaça
+
+Retrocesso é recursão com uma diferença: você **faz uma escolha**, recursa e então **desfaz a escolha** antes de tentar a próxima opção. Pense nisso como explorar um labirinto - ande para frente, chegue a um beco sem saída, volte, tente o próximo caminho.
+
+### O modelo de retrocesso
+
+```python
+def backtrack(state, choices):
+    if is_solution(state):
+        result.append(state.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            state.add(choice)       # choose
+            backtrack(state, ...)   # explore
+            state.remove(choice)    # un-choose
+```
+
+Este padrão de três etapas – **escolher, explorar, cancelar a escolha** – é a espinha dorsal de quase todos os problemas de retrocesso.
+
+<Quiz question="No modelo de retrocesso, por que desfazemos a escolha após a chamada recursiva?" options="Para liberar memória|Para redefinir para o próximo ramo de exploração|Porque a escolha foi errada|Para evitar estouro de pilha" answer="1" explanation="Desfazer a escolha restaura o estado para que a próxima iteração do loop possa explorar uma ramificação diferente do mesmo ponto inicial." />
+
+## Permutações
+
+Gere todas as ordenações de `[1, 2, 3]`. Em cada nível, escolha um número não utilizado, recorra e desmarque.
+
+```
+         []
+      /   |   \
+    [1]  [2]  [3]
+    / \   ...
+ [1,2] [1,3]
+   |      |
+[1,2,3] [1,3,2]  ... (6 total)
+```
+
+Existem permutações **n!**, então a complexidade do tempo é O(n × n!).
+
+## Combinações e subconjuntos
+
+**Combinações (n escolha k):** em cada elemento, inclua-o ou pule-o, mas apenas recurse adiante para evitar duplicatas.
+
+**Subconjuntos:** mesma ideia sem restrição de tamanho - cada nó na árvore de recursão é um subconjunto válido. Existem **2ⁿ** subconjuntos.
+
+<ThinkAboutIt>Permutações produzem n! resultados enquanto os subconjuntos produzem 2ⁿ. Para n = 10, são 3.628.800 contra 1.024 – uma diferença enorme. Por quê?</ThinkAboutIt>
+
+## N-Queens - Passo a passo
+
+Coloque N rainhas em um tabuleiro N×N para que nenhuma ataque uma à outra. Para N=4:
+
+```
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+```
+
+**Estratégia:** coloque uma rainha por linha. Para cada linha, experimente todas as colunas. Verifique os conflitos de coluna, diagonal principal e antidiagonal. Se for seguro, coloque e volte para a próxima linha. Se estiver preso, volte atrás.
+
+Rastreie conflitos com três conjuntos: `cols`, `diag` (linha − col) e `anti_diag` (linha + col).
+
+<Quiz question="No problema das N-Queens, como verificamos eficientemente os conflitos diagonais?" options="Verifique a posição de cada rainha colocada|Use conjuntos de rastreamento (linha-col) e (linha+col)|Digitalize todo o quadro de cada vez|Use uma matriz booleana 2D" answer="1" explanation="Rainhas na mesma diagonal compartilham o mesmo valor (linha-coluna); mesmo compartilhamento antidiagonal (linha + coluna). Conjuntos fornecem pesquisa O(1)." />
+
+## Solucionador de Sudoku - Conceito
+
+Encontre uma célula vazia e tente os dígitos 1–9. Para cada dígito, verifique as restrições de linha, coluna e caixa 3×3. Se for válido, coloque e recorra. Se nenhum dígito funcionar, desfaça e volte atrás. A remoção de restrições torna-o tratável, apesar do enorme espaço de pesquisa.
+
+## Pesquisa de palavras em uma grade
+
+Dado um quadro 2D de letras e uma palavra alvo, comece em cada célula e DFS em quatro direções, combinando um caractere por vez. Marque as células como visitadas durante a recursão e **desmarque no retrocesso** para permitir outros caminhos.
+
+## Complexidade temporal do retrocesso
+
+O custo depende do **fator de ramificação** (escolhas por etapa) e da **profundidade** (etapas para uma solução). Para ramos b e profundidade d: O (bᵈ).
+
+| Problema | Ramificação | Profundidade | Complexidade |
+|--------|-----------|-------|------------|
+| Permutações | n, n−1, … | n | O(n!) |
+| Subconjuntos | 2 | n | O(2ⁿ) |
+| N-Rainhas | ~n | n | O(n!) pior caso |
+
+## Poda para otimizar
+
+**Podar** significa pular galhos que você sabe que irão falhar. Exemplos:
+- N-Queens: pula colunas já ocupadas.
+- Sudoku: pule dígitos que violam restrições.
+- Soma da combinação: pule se a soma restante for < 0.
+
+Uma boa poda pode transformar uma busca pouco prática em rápida.
+
+<Quiz question="O que a poda faz em um algoritmo de retrocesso?" options="Reduz a profundidade da recursão|Elimina ramificações que não podem levar a uma solução válida|Converte recursão em iteração|Classifica as opções antes de explorar" answer="1" explanation="A poda corta partes da árvore de pesquisa antecipadamente, evitando desperdício de trabalho em caminhos que certamente falharão." />
+
+<ThinkAboutIt>Muitos problemas de retrocesso também podem ser resolvidos com programação dinâmica. Qual é a principal diferença de abordagem entre os dois?</ThinkAboutIt>
+
+---
+
+## 📚 Leitura adicional
+
+- [NeetCode - Playlist de retrocesso](https://neetcode.io/roadmap) - problemas selecionados com orientações em vídeo
+- [Manual de entrevista técnica - Recursão](https://www.techinterviewhandbook.org/algorithms/recursion/) - padrões e armadilhas comuns
+- [Plano de estudo LeetCode Backtracking](https://leetcode.com/tag/backtracking/) - conjunto de problemas progressivos

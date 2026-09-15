@@ -1,0 +1,109 @@
+---
+title: "Clustering: como a IA encontra padrões sem rótulos"
+description: "Entenda o clustering — uma técnica importante de aprendizado não supervisionado — por meio de K-Means, clustering hierárquico e aplicativos do mundo real."
+order: 16
+difficulty: "intermediate"
+duration: 25
+icon: "🔵"
+published: true
+machineTranslated: true
+---
+# Clustering: como a IA encontra padrões sem rótulos 🔵
+
+Cada algoritmo que você estudou até agora foi **supervisionado**: você o alimenta com exemplos rotulados e ele aprende a prever rótulos para novos. Mas o que acontece quando você tem uma montanha de dados e nenhum rótulo?
+
+É aqui que entra o **aprendizado não supervisionado** — e o clustering é uma de suas ferramentas mais poderosas.
+
+---
+
+## 🔍 O que é clustering?
+
+Clustering é a tarefa de agrupar pontos de dados de modo que os pontos no mesmo grupo (cluster) sejam mais **semelhantes** entre si do que com pontos em outros grupos.
+
+Crucialmente, ninguém diz ao algoritmo quantos grupos existem ou o que eles representam. Ele encontra a estrutura por conta própria.
+
+Pense nisso como separar uma pilha de doces misturados com os olhos fechados, apenas usando o toque. Você os agruparia por formato – redondos juntos, longos juntos, mastigáveis ​​exceto os duros – sem que ninguém definisse as categorias com antecedência.
+
+<FunFact>O agrupamento é usado por astrônomos para agrupar galáxias por formato e composição, por geneticistas para identificar subtipos de doenças e pelo Spotify para gerar listas de reprodução personalizadas — tudo isso sem que ninguém rotule os dados manualmente.
+</FunFact>
+
+---
+
+## 📍 K-Means: o algoritmo de cluster mais famoso
+
+**K-Means** é simples, rápido e surpreendentemente poderoso. Aqui está o algoritmo completo em inglês simples:
+
+1. **Escolha K** — decida com antecedência quantos clusters você deseja.
+2. **Coloque K centróides aleatoriamente** — espalhe K pontos aleatoriamente pelo espaço de dados. Um centróide é apenas o “centro” de um cluster.
+3. **Atribua cada ponto de dados ao centróide mais próximo** — cada ponto pertence ao centróide do qual estiver mais próximo.
+4. **Recalcular cada centróide** — mova cada centróide para a posição média de todos os pontos atribuídos a ele.
+5. **Repita as etapas 3 e 4** — continue reatribuindo e recalculando até que as atribuições parem de mudar.
+
+<Illustration src="/images/lessons/clustering-algorithms.svg" alt="Três iterações de K-Means: centróides aleatórios, primeira atribuição, clusters convergentes finais mostrados em cores diferentes" caption="K-Means itera entre atribuir pontos aos centróides e recalcular as posições dos centróides até que os clusters se estabilizem." />
+
+A analogia: imagine colocar K ímãs em um mapa de endereços de clientes. Cada cliente é atraído pelo ímã mais próximo. Então você move cada ímã para o centro de seus clientes. Repita até que os ímãs parem de se mover.
+
+<ThinkAboutIt>K-Means depende da colocação aleatória inicial dos centróides. Duas execuções nos mesmos dados podem produzir clusters diferentes. Como você decidiria qual resultado é melhor? O que você mediria?
+</ThinkAboutIt>
+
+---
+
+## 🔢 Escolhendo K: O Método do Cotovelo
+
+Um problema prático: como você escolhe K? Se você definir K igual ao número de pontos de dados, cada ponto será seu próprio cluster – perfeito, mas inútil. Se K = 1, tudo é uma grande bolha – também inútil.
+
+O **método do cotovelo** ajuda: execute K-Means para K = 1, 2, 3,… N e represente quanto o "erro" (variância dentro do cluster) diminui à medida que K aumenta. Mais clusters sempre reduzem o erro, mas geralmente há um K onde a melhoria começa a diminuir drasticamente – o “cotovelo” na curva. Esse é um bom candidato para o K certo.
+
+Não é uma regra rígida, mas fornece um ponto de partida baseado em princípios.
+
+---
+
+## 🌿 Clustering hierárquico
+
+K-Means exige que você corrija K antecipadamente. **Clustering hierárquico** não.
+
+Em vez disso, ele constrói uma árvore (chamada **dendrograma**) de clusters:
+
+- **Aglomerativo (de baixo para cima)**: comece com cada ponto como seu próprio cluster. Mescle repetidamente os dois clusters mais semelhantes até que tudo seja um grande cluster.
+- **Divisivo (de cima para baixo)**: comece com tudo em um cluster. Divida repetidamente o cluster mais diferente até que cada ponto seja seu próprio cluster.
+
+O dendograma resultante permite "cortar" em qualquer nível para obter qualquer número de clusters, o que é extremamente flexível. A desvantagem: o clustering hierárquico é computacionalmente caro em grandes conjuntos de dados.
+
+---
+
+## 🌍 Aplicativos do mundo real
+
+O clustering aparece em todos os lugares:
+
+| Aplicação | O que fica agrupado |
+|---|---|
+| Segmentação de clientes | Clientes agrupados por comportamento de compra |
+| Compressão de imagem | Cores de pixel reduzidas a K cores representativas |
+| Organização de documentos | Artigos agrupados por tópico sem rótulos manuais |
+| Detecção de anomalias | Outliers que não cabem em nenhum cluster = suspeito |
+| Genética | Padrões de expressão genética agrupados por subtipo de doença |
+| Redes sociais | Comunidades identificadas por padrões de conexão |
+
+---
+
+## ⚠️ Limitações do cluster
+
+O clustering é poderoso, mas tem limitações reais:
+
+- **Interpretar clusters é difícil** — o algoritmo agrupa os dados, mas você ainda precisa descobrir o que cada grupo *significa*.
+- **K-Means assume clusters aproximadamente esféricos** — ele luta com formatos de cluster alongados, irregulares ou aninhados.
+- **Sensível à escala** — recursos com grandes faixas numéricas dominam os cálculos de distância; sempre normalize os recursos antes de agrupar.
+- **Nenhuma verdade** — sem rótulos, avaliar a qualidade é subjetivo. Dois analistas podem tirar conclusões diferentes do mesmo agrupamento.
+
+<FunFact>K-Means foi proposto pela primeira vez por Stuart Lloyd em 1957 (como uma nota técnica interna do Bell Labs) e redescrito de forma independente por Forgy em 1965. Apesar de sua idade, continua sendo um dos algoritmos mais utilizados na ciência de dados.
+</FunFact>
+
+---
+
+<Quiz question="Qual é a diferença fundamental entre aprendizagem supervisionada e agrupamento?" options={["Clustering requer mais dados", "O clustering encontra estrutura em dados não rotulados, enquanto a aprendizagem supervisionada aprende com exemplos rotulados", "A aprendizagem supervisionada é sempre mais precisa", "O clustering só pode lidar com dados numéricos"]} correct={1} explanation="A aprendizagem supervisionada requer dados de treinamento rotulados – entradas combinadas com respostas corretas. O clustering não é supervisionado: ele descobre agrupamentos naturais em dados sem nenhum rótulo. Ninguém diz ao algoritmo quais deveriam ser os grupos." />
+
+<Quiz question="Em K-Means, o que é um 'centróide'?" options={["O maior ponto de dados em um cluster", "O ponto central representativo de um cluster, calculado como a média de todos os seus membros", "A fronteira entre dois clusters", "O número de clusters"]} correct={1} explanation="Um centróide é o centro geométrico de um cluster. No K-Means, é recalculado após cada etapa de atribuição como a posição média de todos os pontos de dados pertencentes a esse cluster. O algoritmo converge quando os centróides param de se mover." />
+
+<Quiz question="O que o 'método do cotovelo' ajuda você a determinar no K-Means?" options={["Como inicializar centróides de forma mais confiável", "O número ideal de clusters K, identificando onde a adição de mais clusters produz retornos decrescentes", "Como dimensionar recursos antes de agrupar", "Qual métrica de distância usar"]} correct={1} explanation="O método do cotovelo representa graficamente a variância dentro do cluster em relação a K. À medida que K aumenta, a variância sempre diminui, mas em algum ponto a taxa de diminuição diminui drasticamente - o 'cotovelo'. Este ponto de inflexão é normalmente uma boa estimativa para o número certo de clusters." />
+
+<Quiz question="Por que você deve normalizar os recursos antes de executar o K-Means?" options={["Para tornar o algoritmo mais rápido", "Porque os recursos com grandes intervalos numéricos dominariam os cálculos de distância e as atribuições de cluster de polarização", "Para reduzir o número de pontos de dados", "Porque K-Means não pode lidar com variáveis ​​​​categóricas"]} correct={1} explanation="K-Means usa a distância euclidiana para atribuir pontos aos centróides. Se uma característica tiver valores na casa dos milhares (por exemplo, renda) e outra na casa das dezenas (por exemplo, idade), a primeira característica dominará o cálculo da distância. A normalização coloca todos os recursos em pé de igualdade." />

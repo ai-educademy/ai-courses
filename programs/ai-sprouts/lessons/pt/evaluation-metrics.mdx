@@ -1,0 +1,162 @@
+---
+title: "Métricas de avaliação – sua IA é realmente boa?"
+description: "Saiba por que a precisão por si só é enganosa e domine as métricas (precisão, recall, F1, ROC-AUC, BLEU e perplexidade) que realmente medem o desempenho da IA."
+order: 10
+difficulty: "intermediate"
+duration: 15
+icon: "📊"
+published: true
+machineTranslated: true
+---
+# Métricas de avaliação – Sua IA é realmente boa?
+
+Você treinou um modelo. A perda diminuiu. Mas é realmente *bom*? A resposta depende inteiramente de como você a mede – e escolher a métrica errada pode lhe dar uma confiança perigosamente enganosa. Esta lição cobre as métricas que todo profissional de IA deve compreender.
+
+## A armadilha da precisão
+
+**Precisão** = previsões corretas ÷ previsões totais. Parece razoável - até você encontrar **desequilíbrio de classe**.
+
+Imagine um modelo de detecção de fraude. De 10.000 transações, apenas 50 são fraudulentas. Um modelo que simplesmente prevê "não fraude" para cada transação atinge **99,5% de precisão** e não detecta nenhuma fraude. Totalmente inútil, mas a precisão parece brilhante.
+
+É por isso que a precisão por si só nunca é suficiente para a IA do mundo real.
+
+<FunFact>Na triagem médica para doenças raras, um modelo que sempre prevê “saudável” pode ultrapassar 99,9% de precisão. É por isso que médicos e cientistas de dados confiam na sensibilidade (recall) como métrica primária para testes de triagem.
+</FunFact>
+
+## A Matriz de Confusão
+
+Antes de mergulhar em métricas melhores, precisamos da **matriz de confusão** - uma tabela 2×2 que detalha cada previsão:
+
+|  | Previsto Positivo | Negativo previsto |
+|---|---|---|
+| **Na verdade positivo** | Verdadeiro Positivo (TP) | Falso Negativo (FN) |
+| **Na verdade negativo** | Falso Positivo (FP) | Verdadeiro Negativo (TN) |
+
+**Exemplo concreto - filtro de spam de e-mail em 1.000 e-mails (100 spam, 900 legítimos):**
+
+|  | Spam previsto | Legítimo previsto |
+|---|---|---|
+| **Na verdade Spam** | 80 (TP) | 20 (FN) |
+| **Realmente legítimo** | 30 (FP) | 870 (TN) |
+
+A partir desta tabela única, podemos derivar todas as métricas de classificação.
+
+<Illustration src="/images/lessons/evaluation-metrics.svg" alt="Uma matriz de confusão para um filtro de spam com os quatro quadrantes codificados por cores: verde para TP e TN, vermelho para FP e FN, com fórmulas de precisão e recuperação ao lado" caption="A matriz de confusão é a base de todas as métricas de classificação." />
+
+## Precisão - "De tudo que sinalizei, quanto estava correto?"
+
+```
+Precision = TP ÷ (TP + FP) = 80 ÷ (80 + 30) = 72.7%
+```
+
+Em nosso filtro de spam: de todos os e-mails marcados como spam, 72,7% eram na verdade spam. Os outros 27,3% eram e-mails legítimos capturados incorretamente – **falsos positivos**.
+
+**Quando a precisão é mais importante:** Quando os falsos positivos são caros. Um filtro de spam que envia e-mails importantes de clientes para o lixo eletrônico é um problema sério.
+
+## Recall - "De tudo que foi positivo, quanto eu encontrei?"
+
+```
+Recall = TP ÷ (TP + FN) = 80 ÷ (80 + 20) = 80%
+```
+
+O modelo capturou 80 dos 100 e-mails de spam reais – ele *lembrou* 80% deles. Os outros 20 escaparam como **falsos negativos**.
+
+**Quando a recordação é mais importante:** Quando perder um caso positivo é perigoso. No rastreio do cancro, a não detecção de um tumor (falso negativo) pode custar uma vida.
+
+<Quiz question="Um hospital quer um modelo para rastrear uma doença perigosa. Qual métrica eles devem priorizar?" options="Precisão – evite alarmes falsos|Recall - capture todos os casos, mesmo ao custo de alguns alarmes falsos|Precisão - acerte o máximo de previsões|F1 - equilibre tudo igualmente" answer="1" explanation="Na triagem médica, perder um caso verdadeiro (falso negativo) é muito mais perigoso do que um alarme falso. Uma elevada recordação garante que quase todos os casos positivos sejam detectados, mesmo que alguns pacientes saudáveis ​​necessitem de testes de acompanhamento." />
+
+## A compensação entre precisão e recall
+
+Precisão e recall puxam em direções opostas. Restringir o limite de spam captura menos e-mails legítimos (aumenta a precisão), mas permite a passagem de mais spam (quedas de recall). Afrouxá-lo captura mais spam (aumenta o recall), mas captura mais e-mails bons (quedas de precisão).
+
+Não existe almoço grátis – você deve decidir quais erros são mais caros para seu caso de uso específico.
+
+## Pontuação F1 - A Média Harmônica
+
+Quando você precisar de precisão e recuperação de equilíbrio de um único número, use a **pontuação F1**:
+
+```
+F1 = 2 × (Precision × Recall) ÷ (Precision + Recall)
+```
+
+Para nosso filtro de spam: `F1 = 2 × (0.727 × 0.80) ÷ (0.727 + 0.80) = 0.762` - cerca de 76,2%.
+
+A média harmônica pune desequilíbrios extremos. Se a precisão ou o recall forem muito baixos, F1 cai drasticamente.
+
+<ThinkAboutIt>Um sistema de moderação de conteúdo tem 95% de precisão, mas apenas 30% de recall. A pontuação da F1 é de apenas 46%. O que isso lhe diz sobre o comportamento do sistema no mundo real e você o implantaria?
+</ThinkAboutIt>
+
+## Curvas ROC e AUC
+
+A **curva ROC** (Receiver Operating Characteristic) representa graficamente a taxa de verdadeiros positivos em relação à taxa de falsos positivos em todos os limites de classificação possíveis. Mostra quão bem um modelo separa as classes em todos os limites, não apenas em um.
+
+**AUC** (Área sob a curva) resume isso em um único número:
+
+- **AUC = 1,0** - separação perfeita.
+- **AUC = 0,5** - não é melhor do que adivinhação aleatória (a linha diagonal).
+- **AUC < 0,5** - pior que aleatório (seus rótulos podem ser invertidos!).
+
+AUC é independente de limite, o que a torna excelente para comparar modelos antes de você decidir sobre um ponto operacional específico.
+
+<Quiz question="O que significa uma AUC de 0,5?" options="O modelo é perfeito|O modelo não tem melhor desempenho do que adivinhação aleatória|O modelo tem 50% de precisão|O modelo tem alto recall" answer="1" explanation="Uma AUC de 0,5 corresponde à diagonal da curva ROC – o modelo não tem capacidade de distinguir entre classes. É equivalente a jogar uma moeda." />
+
+## Métricas para geração de texto
+
+As métricas de classificação não se aplicam a modelos de linguagem que geram texto. Tarefas diferentes necessitam de medidas diferentes.
+
+### Pontuação BLEU
+
+**BLEU** (Bilingual Evaluation Understudy) mede o quanto uma tradução gerada se sobrepõe às traduções de referência, contando n-gramas correspondentes (sequências de palavras). As pontuações variam de 0 a 1.
+
+O BLEU é amplamente utilizado na tradução automática, mas tem limitações significativas: recompensa a sobreposição de palavras, não o significado. "O gato sentou no tapete" e "Um felino descansou no tapete" pontuam mal um contra o outro, apesar do significado semelhante.
+
+### Perplexidade
+
+**Perplexidade** mede o quão surpreso um modelo de linguagem fica com o novo texto. Quanto menor, melhor - uma perplexidade de 20 significa que o modelo está, em média, escolhendo entre 20 palavras seguintes igualmente prováveis. Um bom modelo tem baixa perplexidade porque prevê bem o texto.
+
+O GPT-4 atinge uma perplexidade notavelmente baixa em textos em inglês, refletindo sua forte compreensão do idioma.
+
+<FunFact>A métrica BLEU foi introduzida em 2002 e rapidamente se tornou o padrão para avaliação de tradução automática. Apesar das falhas conhecidas, permaneceu dominante durante quase duas décadas porque nenhuma alternativa simples se correlacionava consistentemente melhor com o julgamento humano.
+</FunFact>
+
+## Teste A/B em produção
+
+As métricas offline são necessárias, mas não suficientes. O teste final é o **teste A/B**: implemente duas versões de modelo para diferentes grupos de usuários e meça os resultados do mundo real.
+
+- O novo modelo de recomendação aumenta as taxas de cliques?
+- O chatbot aprimorado reduz os escalonamentos de tickets de suporte?
+- O filtro de spam atualizado recebe menos correções "não é spam"?
+
+As métricas de produção geralmente divergem das métricas off-line porque os usuários se comportam de maneira imprevisível.
+
+<Quiz question="Por que um modelo com excelentes métricas off-line pode ter um desempenho ruim em testes A/B?" options="O conjunto de teste era muito grande|As métricas off-line não conseguem capturar o comportamento real do usuário, casos extremos e mudanças de distribuição|Os testes A/B são menos precisos do que a avaliação offline|O modelo estava superajustado para o teste A/B" answer="1" explanation="A avaliação off-line usa conjuntos de dados estáticos que podem não refletir as condições do mundo real: o comportamento do usuário evolui, as distribuições de dados mudam e surgem casos extremos que os conjuntos de testes nunca anteciparam. O teste A/B revela o desempenho do modelo onde realmente importa." />
+
+## Quando usar qual métrica
+
+| Cenário | Métrica primária |
+|----------|---------------|
+| Classificação equilibrada | Precisão, F1 |
+| Aulas desequilibradas | Precisão, recall, AUC |
+| Triagem médica | Rechamada (sensibilidade) |
+| Filtragem de spam | Balança de precisão + recall |
+| Tradução automática | AZUL, METEORO |
+| Qualidade do modelo de linguagem | Perplexidade |
+| Impacto na produção | Resultados do teste A/B |
+
+<ThinkAboutIt>Você está construindo um sistema de detecção de pedestres para um carro autônomo. Um falso negativo significa não ver um pedestre; um falso positivo significa frear em busca de uma sombra. Qual métrica você otimiza e que compensação você está disposto a aceitar?
+</ThinkAboutIt>
+
+## Principais conclusões
+
+- **A precisão** é enganosa com dados desequilibrados - sempre verifique a matriz de confusão.
+- **Precisão** mede a exatidão de previsões positivas; **lembrar** mede a integridade.
+- **F1** equilibra ambos; **AUC** avalia todos os limites.
+- A geração de texto usa **BLEU** e **perplexidade** em vez de métricas de classificação.
+- **O teste A/B** é o padrão ouro para medir o impacto do modelo no mundo real.
+
+---
+
+## 📚 Leitura adicional
+
+- [Google ML Crash Course - Classification Metrics](https://developers.google.com/machine-learning/crash-course/classification/accuracy) - Passo a passo interativo de precisão, recall e curvas ROC
+- [Rumo à Ciência de Dados - Além da Precisão](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c/) - Guia prático com exemplos reais de seleção de métricas

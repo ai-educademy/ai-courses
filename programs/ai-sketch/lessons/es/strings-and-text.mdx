@@ -1,0 +1,168 @@
+---
+title: "Cadenas y procesamiento de texto: cómo la IA lee y comprende el texto"
+description: "Explore cómo los sistemas de inteligencia artificial descomponen, buscan y manipulan texto mediante operaciones de cadenas y coincidencia de patrones."
+order: 2
+difficulty: "intermediate"
+duration: 15
+icon: "📝"
+published: true
+machineTranslated: true
+---
+## El texto está en todas partes en la IA
+
+Antes de que una IA pueda comprender su pregunta, escribir un ensayo o traducir una oración, debe procesar el texto sin formato. Cada chatbot, motor de búsqueda y modelo de lenguaje comienza con **cadenas**: secuencias de caracteres que representan el lenguaje humano.
+
+Comprender cómo funcionan las cuerdas abre la puerta al procesamiento del lenguaje natural, una de las áreas más apasionantes de la inteligencia artificial.
+
+## Conceptos básicos de cadenas
+
+Una cadena es simplemente una secuencia de caracteres (letras, dígitos, espacios y símbolos) almacenados en orden.
+
+```
+message = "Hello, World!"
+```
+
+Cada carácter tiene una posición (índice), como una matriz:
+
+```
+index:  0  1  2  3  4  5  6  7  8  9  10  11  12
+char:   H  e  l  l  o  ,     W  o  r   l   d   !
+```
+
+<Illustration src="/images/lessons/strings-and-text.svg" alt="Una cadena dividida en caracteres individuales con posiciones de índice que se muestran debajo de cada uno." caption="En esencia, una cadena es una matriz de caracteres, cada uno con su propio índice." />
+
+### Subcadenas
+
+Una **subcadena** es una porción de una cadena. De "¡Hola mundo!" podrías extraer "Mundo" (índices 7 a 11). Los sistemas de inteligencia artificial extraen constantemente subcadenas: extraen nombres de oraciones, aislan hashtags de tweets o obtienen URL de páginas web.
+
+### Inmutabilidad
+
+En la mayoría de los idiomas, las cadenas son **inmutables**: no se puede cambiar un carácter en su lugar. En su lugar, crea una nueva cadena. Esto es importante para el rendimiento: si su proceso de IA modifica el texto millones de veces, crear nuevas cadenas cada vez puede ralentizar el proceso.
+
+<FunFact>Las obras completas de Shakespeare contienen aproximadamente 900.000 palabras. GPT-4 se entrenó en conjuntos de datos de texto miles de veces más grandes: cientos de miles de millones de palabras, todas procesadas como cadenas antes de convertirse en números.
+</FunFact>
+
+## Cómo lee ChatGPT el texto: tokenización
+
+Los modelos de IA no leen palabras como lo hacen los humanos. Usan **tokenización**: dividir el texto en partes más pequeñas llamadas tokens.
+
+```
+Input:  "unhappiness"
+Tokens: ["un", "happiness"]
+
+Input:  "ChatGPT is brilliant"
+Tokens: ["Chat", "G", "PT", " is", " brilliant"]
+```
+
+La tokenización se sitúa entre el procesamiento a nivel de caracteres y a nivel de palabras. Maneja palabras raras dividiéndolas en subpartes conocidas, manteniendo el vocabulario manejable.
+
+<ThinkAboutIt>Cuando escribes una palabra larga e inusual como "antidisestablecimiento" en ChatGPT, el modelo la divide en tokens de subpalabras familiares. ¿Por qué esto podría ser mejor que almacenar cada palabra posible en inglés como un token separado?
+</ThinkAboutIt>
+
+### Por qué es importante la tokenización
+
+- Un modelo de lenguaje típico tiene un vocabulario de 50.000 a 100.000 tokens.
+- Cada token se asigna a un número (su ID), que el modelo realmente procesa.
+- La forma en que se tokeniza el texto afecta el costo: más tokens significa más cálculo y tarifas de API más altas.
+
+## Coincidencia de patrones: encontrar agujas en pajares
+
+Una operación de cadena central consiste en buscar un patrón dentro de un texto más grande. ¿Este correo electrónico contiene la palabra "urgente"? ¿Este código contiene una vulnerabilidad de seguridad?
+
+### El enfoque simple
+
+Desliza el patrón a lo largo del texto, comprobando carácter por carácter:
+
+```
+text:    "the cat sat on the mat"
+pattern: "cat"
+
+Position 0: "the" → no match
+Position 1: "he " → no match
+Position 4: "cat" → match found at index 4!
+```
+
+Esto es **O(n × m)** en el peor de los casos, donde n es la longitud del texto y m es la longitud del patrón. Para patrones cortos, está bien. Para escanear millones de documentos, necesitamos enfoques más inteligentes.
+
+<Quiz question="¿Por qué la coincidencia de patrones ingenuos es lenta para textos muy grandes?" options="Usa demasiada memoria|Comprueba todas las posiciones iniciales posibles y compara carácter por carácter.|Sólo funciona con caracteres alfabéticos.|Requiere que el texto se ordene primero." answer="1" explanation="El enfoque ingenuo desliza el patrón en cada posición del texto, comparando hasta m caracteres en cada posición, lo que genera una complejidad temporal O (n × m)." />
+
+## Desafíos de cuerdas clásicos
+
+### Inversión de cuerdas
+
+Invertir una cadena es simple pero revela cómo piensa acerca de los datos:
+
+```
+reverse("hello") → "olleh"
+```
+
+La IA utiliza la inversión en modelos de secuencia a secuencia; por ejemplo, algunos de los primeros modelos de traducción invirtieron la oración de entrada para mejorar la precisión.
+
+### Detección de palíndromo
+
+Un palíndromo dice lo mismo al derecho que al revés: "carrera", "señora", "nivel".
+
+```
+is_palindrome(text):
+    return text == reverse(text)
+```
+
+### Detección de anagramas
+
+Dos palabras son anagramas si contienen los mismos caracteres en diferente orden: "escucha" y "silencio".
+
+¿La solución elegante? Cuente las frecuencias de caracteres usando un mapa hash:
+
+```
+are_anagrams(word1, word2):
+    return character_counts(word1) == character_counts(word2)
+```
+
+Esto se conecta directamente con el patrón de conteo de frecuencia de la lección anterior: los mapas hash lo convierten en O(n).
+
+<Quiz question="¿Qué método comprueba más eficazmente si dos palabras son anagramas?" options="Ordena ambas palabras y compáralas.|Compara cada carácter de palabra1 con cada carácter de palabra2|Cuente las frecuencias de caracteres en cada palabra usando un mapa hash y compare|Invierte una palabra y comprueba si es igual a la otra." answer="2" explanation="Contar frecuencias de caracteres con un mapa hash es O(n): un paso por cada palabra. La clasificación también funciona en O (n log n), pero el enfoque del mapa hash es más rápido para cadenas grandes." />
+
+## Expresiones regulares: coincidencia de patrones con esteroides
+
+Las expresiones regulares (regex) le permiten describir patrones en lugar de texto exacto:
+
+| Patrón | Partidos | Caso de uso |
+|---------|---------|----------|
+| `\d+` | Uno o más dígitos | Extraer números del texto |
+| `[A-Z][a-z]+` | Una palabra en mayúscula | Encontrar nombres propios |
+| `\b\w+@\w+\.\w+\b` | Direcciones de correo electrónico | Extracción de datos |
+| `(cat\|dog\|bird)` | Cualquiera de las tres palabras | Palabras clave de clasificación |
+
+Los canales de datos de IA utilizan expresiones regulares ampliamente para **limpieza de datos**: eliminar etiquetas HTML, extraer fechas, estandarizar números de teléfono y filtrar caracteres no deseados antes del entrenamiento.
+
+<Callout>Las expresiones regulares son poderosas pero pueden resultar complicadas. Una expresión regular mal escrita puede tardar exponencialmente en ciertas entradas, un problema conocido como "retroceso catastrófico". Pruebe siempre sus patrones en casos extremos.
+</Callout>
+
+## Canal de procesamiento de textos de IA del mundo real
+
+Aquí hay una vista simplificada de cómo una IA procesa el texto:
+
+1. **Texto sin formato** → "¡¡¡El Wi-Fi de la cafetería no funciona!!!"
+2. **En minúsculas** → "¡¡¡el wifi de la cafetería no funciona!!!"
+3. **Eliminando puntuación** → "el wifi de la cafetería no funciona"
+4. **Tokenización** → ["the", "café", "s", "wi", "fi", "isn", "t", "working"]
+5. **ID de token** → [1, 8432, 82, 5901, 3344, 2817, 83, 1562]
+6. **En el modelo** → Números que la IA realmente puede procesar
+
+Cada paso implica operaciones de cadenas: cortar, buscar, reemplazar y dividir.
+
+<ThinkAboutIt>Cuando envías un mensaje a un chatbot en un idioma que no utiliza espacios entre palabras (como chino o japonés), ¿cómo podría funcionar de manera diferente la tokenización? ¿Qué desafíos adicionales crea esto?
+</ThinkAboutIt>
+
+<FunFact>El tokenizador de OpenAI divide la "tokenización" en ["token", "isation"] - dos tokens. Pero la ortografía estadounidense "tokenización" se convierte en ["token", "ización"]. ¡El mismo concepto cuesta diferentes cantidades dependiendo de cómo se escriba!
+</FunFact>
+
+<Quiz question="En un proceso de procesamiento de texto, ¿por qué se realiza la tokenización antes de enviar texto a un modelo de IA?" options="Para que el texto se vea más bonito|Convertir texto legible por humanos en ID de tokens numéricos que el modelo pueda procesar matemáticamente|Para comprobar si hay errores de ortografía|Para comprimir el texto y ahorrar espacio de almacenamiento" answer="1" explanation="Los modelos de IA funcionan con números, no con letras. La tokenización convierte el texto en ID de tokens: representaciones numéricas que pueden incorporarse a operaciones matemáticas como la multiplicación de matrices dentro del modelo." />
+
+## Conclusiones clave
+
+- Las cadenas son secuencias de caracteres: la materia prima de toda la IA basada en texto.
+- **Tokenización** une el lenguaje humano y el aprendizaje automático al dividir el texto en partes procesables.
+- La coincidencia de patrones y las expresiones regulares son herramientas esenciales para limpiar y extraer datos.
+- Los problemas de cuerdas clásicos (inversión, palíndromos, anagramas) desarrollan las habilidades de pensamiento necesarias para el procesamiento de textos con IA.
+- Cada mensaje que envías a ChatGPT pasa por un proceso de operaciones de cadena antes de que el modelo lo vea.

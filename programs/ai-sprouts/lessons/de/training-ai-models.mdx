@@ -1,0 +1,129 @@
+---
+title: "KI-Modelle trainieren – Maschinen beibringen, intelligenter zu werden"
+description: "Verstehen Sie die Trainingsschleife, Verlustfunktionen und Überanpassung und erfahren Sie, wann Ihr KI-Modell bereit ist."
+order: 4
+difficulty: "beginner"
+duration: 15
+icon: "🏋️"
+published: true
+machineTranslated: true
+---
+# KI-Modelle trainieren
+
+Sie wissen jetzt, dass neuronale Netze lernen, indem sie Gewichte und Verzerrungen anpassen. Doch wie läuft der gesamte Ausbildungsprozess eigentlich ab? Woher wissen Sie, wann ein Modell genug gelernt hat – oder zu viel? In dieser Lektion werden wir die gesamte Trainingsreise durchlaufen.
+
+## Die Trainingsschleife
+
+Das Training eines KI-Modells folgt einem Zyklus, der sich immer wieder wiederholt:
+
+1. **Vorhersage** – Leiten Sie Daten durch das Modell und erhalten Sie eine Vorhersage.
+2. **Vergleichen** – Überprüfen Sie, wie weit die Vorhersage von der richtigen Antwort entfernt ist.
+3. **Anpassen** – Aktualisieren Sie die Gewichte, um den Fehler zu reduzieren.
+4. **Wiederholen** – Wiederholen Sie den Vorgang mit dem nächsten Datenstapel.
+
+Diese Schleife läuft tausende oder sogar millionenfach. Mit jeder Wiederholung rückt das Modell den richtigen Antworten etwas näher.
+
+<Illustration src="/images/lessons/training-ai-models.svg" alt="Ein kreisförmiges Diagramm, das die Trainingsschleife zeigt: Vorhersagen, Vergleichen, Anpassen, Wiederholen, mit Pfeilen, die jeden Schritt in einem Zyklus verbinden" caption="Die Trainingsschleife ist der Herzschlag des KI-Lernens – vorhersagen, vergleichen, anpassen und wiederholen." />
+
+<FunFact>Berichten zufolge hat das Training von GPT-4 allein an Rechenleistung über 100 Millionen US-Dollar gekostet. Die Trainingsschleife lief über Monate hinweg über Tausende von Spezialchips.
+</FunFact>
+
+## Verlustfunktionen: Wie falsch ist das Modell?
+
+Nach jeder Vorhersage brauchen wir eine Möglichkeit zu messen, *wie falsch* das Modell war. Diese Messung wird **Verlust** (oder **Kosten**) genannt, und die Formel zur Berechnung ist die **Verlustfunktion**.
+
+- **Geringer Verlust** = die Vorhersage lag nahe an der richtigen Antwort.
+- **Hoher Verlust** = die Vorhersage lag weit daneben.
+
+Stellen Sie es sich wie eine Dartscheibe vor. Das Bullseye ist die richtige Antwort. Der Verlust ist die Entfernung von der Landung Ihres Pfeils bis zum Bullseye. Das Ziel des Trainings besteht darin, diese Distanz im Laufe der Zeit zu minimieren.
+
+Zu den üblichen Verlustfunktionen gehören:
+
+- **Mean Squared Error (MSE)** – misst den durchschnittlichen quadratischen Abstand zwischen Vorhersagen und tatsächlichen Werten. Wird zur Vorhersage von Zahlen verwendet.
+- **Kreuzentropieverlust** – misst, wie gut vorhergesagte Wahrscheinlichkeiten mit den wahren Kategorien übereinstimmen. Wird für Klassifizierungsaufgaben verwendet.
+
+<Quiz question="Was misst eine Verlustfunktion im KI-Training?" options="Wie schnell das Modell läuft|Wie viel Speicher das Modell verwendet|Wie weit die Vorhersagen des Modells von den richtigen Antworten entfernt sind|Wie viele Schichten hat das Modell?" answer="2" explanation="Eine Verlustfunktion quantifiziert den Unterschied zwischen der Vorhersage des Modells und der tatsächlich richtigen Antwort. Der Trainingsprozess versucht, diesen Wert zu minimieren." />
+
+## Epochen: Wie oft durch die Daten?
+
+Ein vollständiger Durchlauf des gesamten Trainingsdatensatzes wird als **Epoche** bezeichnet. Das Training umfasst in der Regel viele Epochen – das Modell sieht dieselben Daten mehrmals und wird von Runde zu Runde etwas besser.
+
+- **Epoche 1:** Das Modell macht viele Fehler; Der Verlust ist hoch.
+- **Epoche 10:** Das Modell wurde deutlich verbessert; Der Verlust sinkt.
+- **Epoche 50:** Verbesserungen verlangsamen sich; Das Modell nähert sich seiner Bestform.
+- **Epoche 200:** Das Modell beginnt möglicherweise mit dem Auswendiglernen – was uns zu unserem nächsten Thema bringt.
+
+<ThinkAboutIt>Das Überarbeiten für eine Prüfung ist wie das Durchlaufen von Epochen. Das erste Durchlesen ist verwirrend, aber jede Rezension fördert das Verständnis. Wenn Sie jedoch dieselben Notizen hundertmal erneut lesen, kann es sein, dass Sie sich den genauen Wortlaut merken, ohne die Konzepte wirklich zu verstehen. KI hat das gleiche Problem.
+</ThinkAboutIt>
+
+## Überanpassung: Der Student, der auswendig lernt
+
+**Überanpassung** ist eines der häufigsten Probleme beim KI-Training. Es passiert, wenn das Modell die Trainingsdaten *zu gut* lernt – einschließlich ihres Rauschens und ihrer Macken – und bei neuen, unsichtbaren Daten keine Leistung erbringt.
+
+Stellen Sie sich einen Studenten vor, der sich jede Prüfungsarbeit Wort für Wort auswendig lernt. Bei alten Arbeiten schneiden sie perfekt ab, haben aber Schwierigkeiten, wenn sich die Fragen auch nur geringfügig ändern. Der Schüler hat das Thema nicht gelernt – er hat die Antworten auswendig gelernt.
+
+Anzeichen einer Überanpassung:
+
+- Die Trainingsgenauigkeit ist sehr hoch (z. B. 99 %).
+- Die Leistung bei neuen Daten ist viel schlechter (z. B. 75 %).
+- Das Modell hat die Trainingsbeispiele im Wesentlichen auswendig gelernt.
+
+<Callout>Das Ziel des Trainings besteht nicht darin, anhand der Daten, die das Modell bereits gesehen hat, eine perfekte Punktzahl zu erzielen. Es soll eine gute Leistung bei Daten erbringen, die es *noch nie* zuvor gesehen hat. Das ist der wahre Test des Lernens.
+</Callout>
+
+## Underfitting: Der Student, der nicht lernt
+
+Das gegenteilige Problem ist **Unteranpassung**. Dies geschieht, wenn das Modell nicht genug aus den Daten gelernt hat. Die Leistung ist *sowohl* bei Trainingsdaten als auch bei neuen Daten schlecht.
+
+Zu den Ursachen einer Unteranpassung gehören:
+
+- Das Modell ist für die Komplexität des Problems zu einfach.
+- Das Training wurde zu früh abgebrochen (nicht genügend Epochen).
+- Die Merkmale in den Daten sind nicht aussagekräftig genug.
+
+Wenn eine Überanpassung dem Auswendiglernen früherer Arbeiten gleicht, ist eine Unteranpassung so, als würde man in die Prüfung gehen, ohne das Lehrbuch kaum aufgeschlagen zu haben.
+
+<Quiz question="Ein Modell erreicht bei Trainingsdaten eine Genauigkeit von 98 %, bei neuen Daten jedoch nur 60 %. Was ist das wahrscheinlichste Problem?" options="Unteranpassung|Überanpassung|Die Daten sind zu klein|Das Modell ist zu einfach" answer="1" explanation="Eine große Lücke zwischen der Trainingsleistung (98 %) und der Leistung bei neuen Daten (60 %) ist das klassische Zeichen einer Überanpassung – das Modell hat sich die Trainingsdaten gemerkt, anstatt verallgemeinerbare Muster zu lernen." />
+
+## Validierungs- und Testsätze
+
+Um Über- und Unteranpassung zu erkennen, teilen wir unsere Daten in drei Teile auf:
+
+| Festlegen | Zweck | Bei Verwendung |
+|-----|---------|-----------|
+| **Trainingsset** | Das Modell lernt aus diesen Daten | Während des Trainings |
+| **Validierungssatz** | Wird verwendet, um den Fortschritt zu überprüfen und Einstellungen anzupassen | Während des Trainings |
+| **Testsatz** | Endgültige Bewertung auf völlig unsichtbaren Daten | Nach dem Training |
+
+Eine übliche Aufteilung ist 70 % Schulung, 15 % Validierung und 15 % Test. Das Model sieht den Testsatz *nie* bis zum Ende – es ist die Abschlussprüfung.
+
+<ThinkAboutIt>Der Validierungssatz ist wie ein Übungstest, den Sie zwischen den Lernsitzungen absolvieren. Es zeigt Ihnen, wie gut Sie lernen, ohne die eigentliche Prüfung zu verderben. Wenn die Ergebnisse Ihrer Übungstests sinken, während die Ergebnisse Ihrer Studiennotizen weiter steigen, wissen Sie, dass etwas nicht stimmt.
+</ThinkAboutIt>
+
+## Wann sollte man mit dem Training aufhören?
+
+Es ist entscheidend zu wissen, wann man aufhören muss. Trainiere zu wenig und das Model passt nicht. Wenn man zu viel trainiert, passt man zu sehr. Der Sweet Spot liegt dort, wo **der Validierungsverlust nicht mehr besser wird**.
+
+Eine Technik namens **Frühes Stoppen** automatisiert dies:
+
+1. Überwachen Sie den Validierungsverlust nach jeder Epoche.
+2. Wenn es sich über eine bestimmte Anzahl von Epochen (**Geduld** genannt) nicht verbessert hat, beenden Sie das Training.
+3. Rollen Sie zurück zu den Gewichten der besten Epoche.
+
+Dadurch wird verhindert, dass das Modell über den Punkt des nützlichen Lernens hinausgeht und ins Auswendiglernen abrutscht.
+
+<Quiz question="Was bedeutet „frühzeitiges Stoppen” im KI-Training?" options="Stoppen Sie das Training, bevor Daten verarbeitet werden|Wird angehalten, wenn der Computer nicht mehr über genügend Arbeitsspeicher verfügt|Stoppen Sie das Training, wenn sich die Validierungsleistung nicht mehr verbessert|Entfernen von Neuronen, die keinen Beitrag leisten" answer="2" explanation="Durch frühzeitiges Stoppen wird der Validierungsverlust überwacht und das Training gestoppt, wenn keine Verbesserung mehr auftritt. Dadurch wird verhindert, dass das Modell durch zu langes Training überangepasst wird." />
+
+<FunFact>Bei einigen modernen Trainingsläufen kommt eine Technik namens „Learning Rate Scheduling“ zum Einsatz, die schrittweise reduziert, wie stark sich die Gewichte bei jedem Schritt ändern – etwa, wenn man kleinere und vorsichtigere Schritte macht, wenn man sich dem Gipfel eines Berges nähert.
+</FunFact>
+
+## Wichtige Erkenntnisse
+
+- Die **Trainingsschleife** wiederholt sich: vorhersagen → vergleichen → anpassen → wiederholen.
+- Eine **Verlustfunktion** misst, wie weit Vorhersagen von der Wahrheit entfernt sind.
+– Eine **Epoche** ist ein vollständiger Durchlauf der Trainingsdaten.
+- **Überanpassung** bedeutet das Auswendiglernen von Daten; **Unteranpassung** bedeutet, nicht genug zu lernen.
+- Die Daten werden in **Trainings-**, **Validierungs-** und **Test-Sets** aufgeteilt.
+- **Frühes Anhalten** verhindert, dass das Training zu weit geht.
+
+In der letzten Lektion werden wir die **ethischen Dimensionen** der KI untersuchen – Voreingenommenheit, Fairness, Datenschutz und wie verantwortungsvolle KI aussieht.

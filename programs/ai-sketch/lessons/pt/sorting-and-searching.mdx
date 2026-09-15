@@ -1,0 +1,145 @@
+---
+title: "Classificação e pesquisa - como a IA classifica e encontra resultados"
+description: "Descubra por que os algoritmos de classificação e pesquisa são fundamentais para a forma como a IA classifica recomendações e encontra respostas."
+order: 3
+difficulty: "intermediate"
+duration: 15
+icon: "🔍"
+published: true
+machineTranslated: true
+---
+## Encontrando as coisas rapidamente
+
+Quando você pesquisa no Google, os resultados aparecem em menos de um segundo - classificados do mais para o menos relevante. Quando a Netflix recomenda filmes, ela classifica milhares de títulos de acordo com a probabilidade de você gostar deles. Por trás de cada pesquisa rápida e de cada lista classificada existe um algoritmo de classificação ou pesquisa.
+
+## Por que a classificação é importante
+
+Dados classificados são dados poderosos. Quando a lista estiver em ordem, você pode:
+
+- **Pesquise com eficiência** usando pesquisa binária (falaremos disso em breve).
+- **Encontre duplicatas** - elas estarão sentadas uma ao lado da outra.
+- **Identifique os N principais resultados** - basta pegar os N primeiros itens.
+- **Mesclar conjuntos de dados** - combinar duas listas classificadas é muito mais rápido do que combinar listas não classificadas.
+
+<Illustration src="/images/lessons/sorting-and-searching.svg" alt="Uma matriz não classificada sendo transformada em uma matriz classificada, com uma lupa destacando a pesquisa binária" caption="A classificação transforma dados caóticos em algo pesquisável e estruturado." />
+
+## Bubble Sort - Simples, mas lento
+
+A classificação por bolha percorre repetidamente a lista, comparando itens adjacentes e trocando-os se estiverem na ordem errada. Valores maiores "borbulham" até o fim.
+
+```
+[5, 3, 8, 1, 2]
+ ↕
+[3, 5, 8, 1, 2]  → swapped 5 and 3
+[3, 5, 1, 8, 2]  → swapped 8 and 1
+[3, 5, 1, 2, 8]  → swapped 8 and 2
+... keep going until no swaps needed
+```
+
+**Complexidade de tempo**: O(n²) - para cada um dos n itens, você pode comparar com todos os outros itens. Com 1.000 itens, isso equivale a 1.000.000 de comparações. Com 1.000.000 de itens? Um trilhão de comparações. Não é prático para cargas de trabalho de IA.
+
+<ThinkAboutIt>Se a classificação por bolha leva aproximadamente n² comparações, quão mais lento seria classificar um milhão de itens em comparação com mil? Pense na proporção: (1.000.000)² vs (1.000)². Isso é um milhão de vezes mais lento – apenas por ter mil vezes mais dados.
+</ThinkAboutIt>
+
+## Merge Sort - Dividir e Conquistar
+
+A classificação por mesclagem adota uma abordagem mais inteligente: divida a lista ao meio, classifique cada metade e depois mescle as duas metades classificadas.
+
+```
+[5, 3, 8, 1, 2, 7, 4, 6]
+         split
+[5, 3, 8, 1]   [2, 7, 4, 6]
+    split            split
+[5, 3] [8, 1]  [2, 7] [4, 6]
+  ↓       ↓       ↓       ↓
+[3, 5] [1, 8]  [2, 7] [4, 6]
+    merge            merge
+[1, 3, 5, 8]   [2, 4, 6, 7]
+         merge
+[1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+**Complexidade de tempo**: O(n log n) - dramaticamente mais rápido. Para um milhão de itens, são cerca de 20 milhões de comparações em vez de um trilhão. Este é o tipo de algoritmo que torna possíveis sistemas reais de IA.
+
+<FunFact>A classificação integrada do Python usa Timsort - um algoritmo híbrido que combina classificação por mesclagem com classificação por inserção. Foi inventado por Tim Peters em 2002 e agora é usado em Python, Java e Android. Ele foi projetado especificamente para ter um bom desempenho em dados do mundo real que muitas vezes já estão parcialmente classificados.
+</FunFact>
+
+### Classificação por bolha versus classificação por mesclagem em escala
+
+| Itens | Classificação por bolha (O(n²)) | Classificação de mesclagem (O(n log n)) |
+|-------|---------------------|------------------------|
+| 100 | 10.000 operações | ~700 operações |
+| 10.000 | 100 milhões de operações | ~130.000 operações |
+| 1.000.000 | 1.000.000.000.000 de operações | ~20.000.000 operações |
+
+A diferença não é acadêmica – é a diferença entre “terminar em um segundo” e “terminar na próxima semana”.
+
+<Quiz question="Por que a classificação por mesclagem é preferida à classificação por bolha para grandes conjuntos de dados em aplicativos de IA?" options="A classificação por mesclagem usa menos memória|A classificação por mesclagem é O (n log n) em comparação com a classificação por bolha O (n²), tornando-a dramaticamente mais rápida em escala|A classificação por mesclagem foi inventada mais recentemente|A classificação por mesclagem funciona apenas com números, que é o que a IA usa" answer="1" explanation="Em escala, a diferença entre O(n²) e O(n log n) é enorme. Para um milhão de itens, o merge sort realiza cerca de 20 milhões de operações contra o trilhão do bubble sort – tornando-o essencial para cargas de trabalho de IA." />
+
+## Pesquisa binária - o truque da lista telefônica
+
+Imagine procurar “Smith” em uma lista telefônica. Você não começaria na página um e leria todos os nomes. Você abriria o livro aproximadamente no meio, veria onde está e pularia para a metade correta. Então repita.
+
+Isso é **pesquisa binária** - e só funciona em dados classificados.
+
+```
+sorted_list = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+target = 23
+
+Step 1: Middle = 16 → 23 > 16, search right half
+Step 2: Middle = 38 → 23 < 38, search left half
+Step 3: Middle = 23 → Found it!
+```
+
+**Complexidade de tempo**: O(log n). Em uma lista ordenada de um milhão de itens, a pesquisa binária encontra qualquer item em no máximo 20 etapas. Uma pesquisa linear levaria até um milhão de passos.
+
+<Quiz question="Um banco de dados classificado contém 1.000.000 de registros. Quantas comparações a pesquisa binária precisa no pior caso?" options="1.000.000|500.000|Cerca de 20|Cerca de 1.000" answer="2" explanation="A pesquisa binária reduz pela metade o espaço de pesquisa em cada etapa. log₂(1.000.000) ≈ 20, então você precisa de no máximo cerca de 20 comparações para encontrar qualquer item - ou confirmar que ele não está lá." />
+
+## Como a IA usa classificação e pesquisa
+
+### Classificação dos resultados da pesquisa
+
+Quando o Google processa sua consulta, ele pontua todas as páginas relevantes e as classifica por relevância. Os 10 principais resultados aparecem na página um. Sem uma classificação eficiente, isso levaria minutos em vez de milissegundos.
+
+### Sistemas de recomendação
+
+A Netflix calcula uma “pontuação de correspondência” para milhares de títulos com base no seu histórico de visualizações e, em seguida, classifica-os para mostrar primeiro as melhores correspondências. O algoritmo de classificação afeta diretamente o que você vê na tela inicial.
+
+### K-vizinhos mais próximos
+
+Este algoritmo clássico de IA encontra os K itens mais semelhantes a uma determinada entrada. Ele calcula as distâncias para cada item e, em seguida, classifica parcialmente para encontrar as K menores distâncias. A classificação eficiente torna isso prático para milhões de pontos de dados.
+
+<Callout>Você nem sempre precisa classificar completamente. Se você precisar apenas dos 10 principais resultados de um milhão de itens, uma **classificação parcial** ou **heap** poderá encontrá-los em tempo O(n log k) - muito mais rápido do que classificar tudo.
+</Callout>
+
+### Preparação de dados de treinamento
+
+Antes do treinamento, os profissionais de IA geralmente classificam os dados para criar lotes balanceados – garantindo que cada lote de treinamento contenha uma mistura de exemplos fáceis e difíceis ou uma distribuição equilibrada de categorias.
+
+## Quando classificar vs. quando usar um mapa hash
+
+Esta é uma decisão de design crucial:
+
+| Cenário | Melhor escolha | Por que |
+|----------|------------|-----|
+| Encontre um item por chave | Mapa hash | pesquisa O(1) |
+| Encontre os 10 principais itens | Classificar | Precisa de resultados ordenados |
+| Verifique se o item existe | Mapa hash | O(1) vs O(log n) |
+| Coloque os itens em ordem | Classificar | Os mapas hash não têm ordem |
+| Consultas de intervalo (itens entre A e B) | Matriz ordenada + pesquisa binária | Mapas hash não podem fazer intervalos |
+
+<ThinkAboutIt>Um serviço de streaming de música precisa mostrar suas “50 músicas mais tocadas”. Você classificaria todo o seu histórico de escuta ou manteria uma estrutura de dados que sempre conhecesse os 50 melhores? Quais são as vantagens de cada abordagem?
+</ThinkAboutIt>
+
+<FunFact>O Google processa mais de 8,5 bilhões de pesquisas por dia. Cada pesquisa envolve classificar e classificar centenas de resultados potenciais em milissegundos. A eficiência dos algoritmos de classificação afeta diretamente a quantidade de eletricidade consumida pelos data centers do Google – algoritmos melhores economizam literalmente megawatts de energia.
+</FunFact>
+
+<Quiz question="Quando a pesquisa binária NÃO seria apropriada?" options="Quando os dados são classificados|Quando você precisa encontrar um item específico|Quando os dados não estão classificados e mudam com frequência|Quando o conjunto de dados é muito grande" answer="2" explanation="A pesquisa binária requer dados classificados. Se seus dados mudam com frequência, manter a ordem de classificação é caro. Um mapa hash seria melhor para pesquisas rápidas em dados dinâmicos e não classificados." />
+
+## Principais conclusões
+
+- A **classificação** transforma dados caóticos em dados estruturados e pesquisáveis, essenciais para classificação e recomendações.
+- Algoritmos **O(n²)** como bubble sort são educacionais, mas impraticáveis ​​em escala; **O(n log n)** algoritmos como merge sort alimentam sistemas reais.
+- **A pesquisa binária** é extraordinariamente eficiente em dados classificados - 20 etapas para pesquisar um milhão de itens.
+- Escolha entre mapas de classificação e hash com base na necessidade de **resultados ordenados** ou **pesquisas instantâneas**.
+- Cada resultado de pesquisa, recomendação e lista de classificação que você vê online depende desses algoritmos fundamentais.

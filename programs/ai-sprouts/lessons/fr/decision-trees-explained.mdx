@@ -1,0 +1,102 @@
+---
+title: "Arbres de décision : l'algorithme que vous pouvez dessiner sur papier"
+description: "Découvrez comment fonctionnent les arbres de décision, pourquoi ils constituent l'un des algorithmes de ML les plus intuitifs et quand les utiliser."
+order: 15
+difficulty: "intermediate"
+duration: 25
+icon: "🌳"
+published: true
+machineTranslated: true
+---
+# Arbres de décision : l'algorithme que vous pouvez dessiner sur papier 🌳
+
+La plupart des algorithmes d'apprentissage automatique sont des boîtes noires : vous introduisez des données, quelque chose de mathématique se produit à l'intérieur et une prédiction en sort. Les arbres de décision sont différents. Il s'agit de l'un des rares algorithmes que vous pouvez expliquer entièrement à un collègue non technique, dessiner sur un tableau blanc et toujours faire confiance pour faire des prédictions précises.
+
+---
+
+## 🎮 L'analogie des 20 questions
+
+Vous avez probablement joué à 20 questions : une personne pense à quelque chose et d'autres posent des questions oui/non pour le préciser. "Est-ce vivant ? Est-il plus gros qu'une voiture ? Est-ce qu'il vit dans l'eau ?" Chaque réponse élimine un large éventail de possibilités jusqu'à ce que la réponse devienne évidente.
+
+Un arbre de décision fonctionne exactement comme ceci. Étant donné un nouveau point de données à classer, l’arbre pose une série de questions sur ses caractéristiques, en suivant les branches qui correspondent à chaque réponse, jusqu’à ce qu’il atteigne une feuille – une prédiction finale.
+
+<Illustration src="/images/lessons/decision-trees-explained.svg" alt="Un arbre de décision pour classer les animaux : d'abord divisé en ”a des ailes ?”, puis ”vit dans l'eau ?”, menant à des nœuds feuilles avec des noms d'animaux" caption="Un arbre de décision pose une série de questions sur les caractéristiques, se limitant à une prédiction à chaque nœud feuille." />
+
+---
+
+## 🌿 Anatomie d'un arbre
+
+Avant d'aborder la façon dont les arbres apprennent, nommons les parties :
+
+- **Nœud racine** — la toute première question ; la caractéristique la plus importante
+- **Nœuds internes** — questions à chaque point de branchement
+- **Branches** — les chemins empruntés en fonction des réponses oui/non (ou plage de valeurs)
+- **Nœuds feuilles** — les points de terminaison ; chacun détient une prédiction finale
+
+Un seul point de données se déplace de la racine à la feuille, répondant à une question à chaque nœud, jusqu'à ce qu'il atteigne une prédiction.
+
+---
+
+## 📐 Comment un arbre de décision apprend
+
+La partie intelligente : comment l'algorithme décide-t-il *quelle* question poser à chaque nœud ? Il essaie toutes les divisions possibles sur chaque fonctionnalité et sélectionne celle qui sépare le mieux les données.
+
+### Gain d'information et impureté Gini
+
+Deux mesures courantes de « meilleure séparation » :
+
+**L'impureté Gini** mesure le degré de mixité d'un groupe. Un nœud parfaitement pur (tous les exemples appartiennent à la même classe) a une impureté Gini de 0. Un nœud complètement mélangé a l'impureté maximale. L'algorithme préfère les divisions qui produisent les nœuds enfants les plus purs.
+
+Le **gain d'information** est similaire : il mesure dans quelle mesure une division réduit l'incertitude (entropie) concernant l'étiquette de classe. Gain d'informations plus élevé = meilleure répartition.
+
+Les deux mesures posent la même question sous-jacente : *après avoir partagé cette fonctionnalité, suis-je plus sûr de la classe ?*
+
+<FunFact>L'algorithme CART (Classification and Regression Trees), introduit en 1984 par Breiman, Friedman, Olshen et Stone, constitue le fondement de la plupart des implémentations d'arbres de décision modernes. Bien qu’il ait 40 ans, il reste l’un des algorithmes de ML les plus utilisés.
+</FunFact>
+
+---
+
+## ✂️ Surajustement et élagage
+
+Sans contrainte, un arbre de décision grandira jusqu'à ce que chaque exemple de formation ait sa propre feuille – atteignant une précision de 100 % sur les données de formation, mais échouant complètement sur les nouvelles données. Il s'agit d'un **surapprentissage**.
+
+Imaginez mémoriser chaque question d'examen passée mot pour mot au lieu de comprendre le sujet. Vous réussiriez les épreuves précédentes mais échoueriez au véritable examen.
+
+Deux remèdes principaux :
+
+1. **Pré-taille (arrêt précoce)** — fixez des limites pendant la formation : profondeur maximale, échantillons minimum par feuille, seuil minimum de gain d'informations. L’arbre cesse de croître lorsqu’il atteint ces limites.
+
+2. **Post-élagage** : développez l'arbre complet, puis coupez les branches qui n'améliorent pas les performances sur un ensemble de validation.
+
+<ThinkAboutIt>Un arbre de décision de profondeur 1 (une seule question) est appelé « souche de décision ». C'est extrêmement simple : il s'agit presque certainement d'un sous-ajustement. Un arbre de profondeur 100 avec un échantillon par feuille est en surapprentissage. Comment décideriez-vous où vous arrêter ?
+</ThinkAboutIt>
+
+---
+
+## 🌲 Des arbres aux forêts
+
+Un seul arbre de décision est puissant mais fragile : de petits changements dans les données d’entraînement peuvent produire des arbres très différents. La solution : faites pousser des centaines d'arbres, chacun formé sur un sous-ensemble aléatoire de données et de fonctionnalités, puis **faites la moyenne de leurs prédictions**.
+
+Il s'agit d'une **Forêt aléatoire** : l'un des algorithmes les plus fiables et les plus largement utilisés dans tout l'apprentissage automatique. Vous en parlerez en profondeur dans une leçon ultérieure. Pour l’instant, n’oubliez pas : les arbres individuels sont interprétables, les forêts sont robustes.
+
+---
+
+## ✅Forces et ⚠️Faiblesses
+
+| Points forts | Faiblesses |
+|---|---|
+| Entièrement interprétable — peut être visualisé | Sujet au surajustement sans élagage |
+| Pas besoin de normaliser ou de mettre à l'échelle les fonctionnalités | Petits changements de données = arbres très différents |
+| Gère les fonctionnalités numériques et catégorielles | Biais vers des fonctionnalités avec plus de valeurs |
+| Fonctionne sans ingénierie de fonctionnalités | Pas doué pour capturer les relations linéaires |
+| Rapide à former et à prévoir | Les arbres isolés sont souvent moins performants que les ensembles |
+
+---
+
+<Quiz question="Que représente un nœud feuille dans un arbre de décision ?" options={["Une question sur une fonctionnalité", "La prédiction finale une fois que toutes les questions ont été répondues", "L'ensemble de données de formation", "Une mesure de la précision du modèle"]} correct={1} explanation="Les nœuds feuilles sont les points finaux d’un arbre de décision. Lorsqu'un point de données a suivi toutes les branches de la racine à la feuille, le nœud feuille contient la prédiction finale : une étiquette de classe pour les tâches de classification ou une valeur pour la régression." />
+
+<Quiz question="Que mesure « l'impureté de Gini » dans un arbre de décision ?" options={["Quelle est la taille de l'arbre", "Dans quelle mesure un ensemble d'étiquettes de classe est-il mélangé - plus bas signifie plus pur", "Le coût informatique de la formation de l'arbre", "Combien de fonctionnalités y a-t-il dans l'ensemble de données"]} correct={1} explanation="L'impureté Gini mesure la probabilité de classer incorrectement un élément choisi au hasard s'il était étiqueté selon la distribution des étiquettes dans un nœud. Un Gini de 0 signifie que tous les exemples du nœud appartiennent à la même classe : pureté parfaite." />
+
+<Quiz question="Qu’est-ce que le surapprentissage dans le contexte des arbres de décision ?" options={["Quand l'arbre est trop peu profond pour apprendre quelque chose d'utile", "Lorsque l'arbre mémorise parfaitement les données d'entraînement mais ne parvient pas à se généraliser à de nouvelles données", "Quand l'arbre met trop de temps à s'entraîner", "Quand l'arborescence utilise trop de fonctionnalités"]} correct={1} explanation="Un arbre de décision surajusté est devenu si profond qu'il crée un chemin unique pour chaque exemple de formation. Il atteint une précision d'entraînement presque parfaite, mais fonctionne mal sur des données invisibles car il a mémorisé le bruit plutôt que d'avoir appris de véritables modèles." />
+
+<Quiz question="Qu’est-ce qu’une forêt aléatoire ?" options={["Un ensemble de données d'images de forêts utilisé pour entraîner des modèles de vision", "Un ensemble de nombreux arbres de décision, chacun formé sur des sous-ensembles aléatoires de données et de fonctionnalités, avec des prédictions moyennées", "Un seul arbre de décision très profond", "Une technique de taille pour supprimer les branches sans importance"]} correct={1} explanation="Une forêt aléatoire combine des centaines d'arbres de décision, chacun construit à partir d'un échantillon aléatoire de données d'entraînement et d'un sous-ensemble aléatoire de fonctionnalités. La moyenne de leurs prédictions réduit la variance et rend l'ensemble beaucoup plus robuste que n'importe quel arbre individuel." />

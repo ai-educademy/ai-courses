@@ -1,0 +1,226 @@
+---
+title: "Aprendizaje supervisado versus no supervisado: diferencias clave explicadas"
+description: "Una comparación clara del aprendizaje automático supervisado y no supervisado: cuándo utilizar cada enfoque, con ejemplos y algoritmos del mundo real."
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+machineTranslated: true
+---
+# Aprendizaje supervisado versus no supervisado: diferencias clave explicadas
+
+Cuando empiezas a aprender el aprendizaje automático, una de las primeras bifurcaciones en el camino es esta: ¿qué tipo de aprendizaje estás haciendo? La respuesta lo cambia todo: los algoritmos disponibles para usted, los datos que necesita y lo que puede esperar que haga su modelo.
+
+Las dos categorías fundamentales son **aprendizaje supervisado** y **aprendizaje no supervisado**. Comprender la diferencia no es solo académico: es la primera decisión que tomará al abordar cualquier problema nuevo de ML.
+
+## 🏷️ La distinción central: etiquetas
+
+La diferencia más fundamental entre el aprendizaje supervisado y no supervisado es **si los datos de entrenamiento incluyen etiquetas**.
+
+**Datos etiquetados** significa que cada ejemplo de su conjunto de datos viene con la "respuesta correcta": el resultado que desea que el modelo prediga o clasifique:
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**Datos sin etiqueta** significa que tienes las entradas pero no las respuestas predefinidas, solo las observaciones sin procesar:
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+Los datos etiquetados son costosos y su producción requiere mucho tiempo: requiere que los humanos anoten ejemplos manualmente. Los datos sin etiquetar abundan (la mayoría de los datos del mundo no tienen etiquetas). Esta restricción práctica determina qué enfoque es posible para un problema determinado.
+
+## ✅ Aprendizaje supervisado
+
+En el aprendizaje supervisado, el modelo aprende un mapeo de entradas a salidas mediante el estudio de ejemplos etiquetados. El "supervisor" son los datos etiquetados en sí: cada ejemplo de entrenamiento le dice al modelo cuál debería ser el resultado correcto.
+
+### Clasificación
+
+Cuando la salida es una **categoría discreta**, es un problema de clasificación.
+
+**Ejemplos:**
+- ¿Este correo electrónico es spam o no es spam?
+- ¿Esta imagen contiene un gato o un perro?
+- ¿Este solicitante de préstamo incumplirá? (Sí/No)
+- ¿Qué dígito (0–9) representa este número escrito a mano?
+
+**Algoritmos comunes:**
+- Regresión logística
+- Árboles de decisión y bosques aleatorios
+- Máquinas de vectores de soporte (SVM)
+- Redes Neuronales
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### Regresión
+
+Cuando el resultado es un **número continuo**, es un problema de regresión.
+
+**Ejemplos:**
+- ¿A qué precio se venderá esta casa?
+- ¿Cuál será el precio de las acciones mañana?
+- ¿Cuántas unidades venderemos el próximo mes?
+- ¿Cuál será la presión arterial de un paciente dentro de seis meses?
+
+**Algoritmos comunes:**
+- Regresión lineal
+- Regresión de cresta/lazo
+- Aumento de gradiente (XGBoost, LightGBM)
+- Redes Neuronales
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>Los modelos de aumento de gradiente (XGBoost, LightGBM, CatBoost) han ganado más competencias de aprendizaje automático de Kaggle que cualquier otra categoría de algoritmos. Siguen siendo la opción preferida para datos estructurados/tabulares en la industria.</FunFact>
+
+## 🔍 Aprendizaje no supervisado
+
+En el aprendizaje no supervisado, el modelo explora la estructura de los datos **sin etiquetas**. En lugar de aprender a mapear una salida conocida, descubre patrones, agrupaciones o representaciones ocultos por sí solo.
+
+### Agrupación
+
+Los algoritmos de cluster agrupan puntos de datos similares sin que se les diga cuáles deberían ser los grupos.
+
+**Ejemplos:**
+- Segmentar clientes por comportamiento de compra (sin predefinir segmentos)
+- Agrupar documentos por tema.
+- Identificar comunidades en una red social.
+- Detectar anomalías (puntos que no pertenecen a ningún cluster)
+
+**Algoritmos comunes:**
+- Agrupación de K-medias
+- DBSCAN (basado en densidad, maneja formas irregulares)
+- Agrupación jerárquica
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### Reducción de dimensionalidad
+
+Comprima datos de alta dimensión en menos dimensiones y al mismo tiempo preserve la mayor estructura posible. Se utiliza para visualización, preprocesamiento y eliminación de información redundante.
+
+**Algoritmos comunes:**
+- PCA (Análisis de Componentes Principales): compresión lineal
+- t-SNE: no lineal, excelente para visualización
+- UMAP: rápido, preserva la estructura local y global
+- Autoencoders: compresión basada en redes neuronales
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>Un minorista tiene datos de transacciones de 10 millones de clientes pero no tiene segmentos de clientes predefinidos. ¿Por qué sería útil aquí la agrupación en clústeres no supervisados? ¿Qué decisiones comerciales podrían informar los segmentos descubiertos?</ThinkAboutIt>
+
+## 🔄 Más allá de lo binario: otros paradigmas de aprendizaje
+
+La distinción entre supervisado y no supervisado es fundamental, pero el panorama del aprendizaje automático es más rico que solo estas dos categorías.
+
+### Aprendizaje semisupervisado
+
+Utiliza una **pequeña cantidad de datos etiquetados** combinada con una **gran cantidad de datos sin etiquetar**. Esto es muy práctico porque el etiquetado es caro.
+
+**Ejemplo**: Tiene 1000 exploraciones médicas etiquetadas y 100 000 sin etiquetar. El aprendizaje semisupervisado le permite beneficiarse de los datos sin etiquetar para mejorar el rendimiento más allá de lo que podrían lograr las 1000 etiquetas por sí solas.
+
+### Aprendizaje autosupervisado
+
+Un caso especial donde las **etiquetas se generan automáticamente a partir de los propios datos**. Así es como se entrenan previamente los modelos modernos de lenguajes grandes.
+
+**Ejemplo**: tome una oración, oculte algunas palabras y entrene el modelo para predecir las palabras que faltan. Las "etiquetas" (las palabras correctas) son gratuitas: provienen directamente del texto mismo. Así se formó BERT.
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+El aprendizaje autosupervisado ha sido transformador porque permite el entrenamiento con datos a escala de Internet sin anotaciones humanas.
+
+### Aprendizaje por refuerzo
+
+Un agente aprende realizando **acciones** en un **entorno** y recibiendo **recompensas** o **penalizaciones**. No hay etiquetas, sólo señales de retroalimentación de los resultados.
+
+**Ejemplos**: jugar al ajedrez, entrenar a un robot para que camine, optimizar el sistema de refrigeración de un centro de datos. Cubrimos esto en profundidad en su propia lección.
+
+## 🗺️ Elegir el enfoque correcto
+
+Aquí hay un marco de decisión práctico:
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="Tiene 50.000 reseñas de productos sin calificaciones de estrellas ni etiquetas de opiniones. Quieres agruparlos automáticamente por tema. ¿Qué enfoque de aprendizaje debería utilizar?" options="Clasificación supervisada: entrene un modelo para clasificar temas|Agrupación en clústeres no supervisada: descubra grupos de temas en los datos|Aprendizaje por refuerzo: permita que un agente lea y clasifique reseñas|Regresión: predice una puntuación de tema numérica para cada revisión" answer="1" explanation="Sin etiquetas, el aprendizaje supervisado no es posible. La agrupación no supervisada (por ejemplo, K-Means o modelado de temas con LDA) puede descubrir agrupaciones naturales en el texto de revisión sin categorías predefinidas." />
+
+## Conclusiones clave
+
+- **El aprendizaje supervisado** requiere datos etiquetados; el modelo aprende un mapeo de entradas a salidas conocidas, utilizado para clasificación (salida discreta) y regresión (salida continua)
+- **Aprendizaje no supervisado** funciona con datos sin etiquetar; el modelo descubre una estructura oculta, utilizada para agrupación, reducción de dimensionalidad y detección de anomalías.
+- La elección entre supervisado y no supervisado depende principalmente de **si tienes datos etiquetados** y qué pregunta intentas responder.
+- **El aprendizaje semisupervisado** cierra la brecha, utilizando una pequeña cantidad de datos etiquetados junto con grandes cantidades de datos sin etiquetar
+- **Aprendizaje autosupervisado** genera sus propias etiquetas a partir de los datos: es la técnica detrás de los LLM modernos como BERT y GPT
+- **El aprendizaje por refuerzo** es distinto de ambos: un agente aprende a partir de señales de recompensa a través de la interacción con un entorno, sin etiquetas.
+- Utilice el marco de decisión: etiquetado + salida de categoría → clasificación; etiquetado + salida continua → regresión; sin etiquetar + buscar grupos → agrupación

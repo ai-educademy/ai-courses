@@ -1,0 +1,128 @@
+---
+title: "Einführung in neuronale Netze – Wie KI in Schichten denkt"
+description: "Entdecken Sie, wie neuronale Netze das Gehirn nachahmen, Informationen über Schichten verarbeiten und aus ihren Fehlern lernen."
+order: 3
+difficulty: "beginner"
+duration: 18
+icon: "🕸️"
+published: true
+machineTranslated: true
+---
+# Einführung in neuronale Netze
+
+Entscheidungsbäume und KNN sind leistungsstark, aber die Technologie hinter der beeindruckendsten KI von heute – von ChatGPT bis hin zu selbstfahrenden Autos – ist das **neuronale Netzwerk**. Inspiriert durch das menschliche Gehirn können neuronale Netze unglaublich komplexe Muster lernen, die einfachere Algorithmen nicht können.
+
+Lassen Sie uns die Schichten abstreifen und sehen, wie sie funktionieren.
+
+## Die Gehirnanalogie
+
+Ihr Gehirn enthält etwa 86 Milliarden **Neuronen**, die durch Billionen von **Synapsen** verbunden sind. Wenn Sie etwas Neues lernen, feuern bestimmte Neuronen zusammen und die Verbindungen zwischen ihnen werden gestärkt. Dies wird oft wie folgt zusammengefasst: *Neuronen, die zusammen feuern, vernetzen sich.*
+
+Künstliche neuronale Netze greifen diese Idee auf. Sie nutzen **künstliche Neuronen** (kleine mathematische Funktionen), die in einem Netzwerk verbunden sind. Wenn das Netzwerk Daten nutzt, werden die Verbindungen, die zu richtigen Antworten führen, gestärkt und diejenigen, die zu falschen Antworten führen, geschwächt.
+
+<FunFact>Das erste künstliche Neuron – das Perzeptron – wurde 1958 von Frank Rosenblatt erfunden. Es konnte nur einfache Muster lernen, aber es legte den Grundstein für alles, was wir heute haben.
+</FunFact>
+
+## Die drei Arten von Ebenen
+
+Jedes neuronale Netzwerk besteht aus drei Arten von Schichten:
+
+### 1. Eingabeebene
+Hier gelangen Daten ins Netzwerk. Jedes Neuron in dieser Schicht erhält ein Merkmal aus dem Datensatz. Für ein 28×28 Pixel großes Bild hätte die Eingabeebene 784 Neuronen – eines für jedes Pixel.
+
+### 2. Versteckte Ebenen
+Dies sind die Schichten zwischen Eingabe und Ausgabe, in denen das eigentliche Lernen stattfindet. Jedes Neuron nimmt Eingaben entgegen, verarbeitet sie und gibt das Ergebnis weiter. Ein Netzwerk kann eine oder Hunderte verborgene Schichten haben – je mehr Schichten, desto „tiefer“ das Netzwerk.
+
+### 3. Ausgabeebene
+Diese Ebene liefert die endgültige Antwort. Für einen Ziffernklassifikator (0–9) verfügt die Ausgabeschicht über 10 Neuronen, von denen jedes die Wahrscheinlichkeit einer anderen Ziffer darstellt.
+
+<Illustration src="/images/lessons/neural-networks-intro.svg" alt="Ein Diagramm, das drei Schichten eines neuronalen Netzwerks zeigt: die Eingabeschicht auf der linken Seite, zwei verborgene Schichten in der Mitte und die Ausgabeschicht auf der rechten Seite, wobei Pfeile die Neuronen zwischen den Schichten verbinden" caption="Ein neuronales Netzwerk verarbeitet Daten über Schichten – Eingabe, verborgen und Ausgabe –, um zu einer Vorhersage zu gelangen." />
+
+<Quiz question="Welche Rolle spielen verborgene Schichten in einem neuronalen Netzwerk?" options="Sie speichern die ursprünglichen Trainingsdaten|Sie zeigen dem Benutzer die endgültige Vorhersage an|Sie verarbeiten Eingaben und lernen komplexe Muster|Sie bereinigen und formatieren die Rohdaten" answer="2" explanation="In verborgenen Schichten findet das eigentliche Lernen statt. Jede Schicht extrahiert immer komplexere Muster aus den Daten, während diese durch das Netzwerk fließen." />
+
+## Gewichte und Bias: Die Lautstärkeregler
+
+Jede Verbindung zwischen zwei Neuronen hat ein **Gewicht** – eine Zahl, die steuert, wie viel Einfluss ein Neuron auf das nächste hat. Stellen Sie sich Gewichte als **Lautstärkeregler** vor: Wenn Sie einen aufdrehen, wird diese Verbindung lauter; Wenn man es leiser macht, wird es leiser.
+
+Jedes Neuron verfügt außerdem über einen **Bias** – eine Zahl, die die Ausgabe nach oben oder unten verschiebt, wie etwa die Anpassung der Grundlautstärke, bevor ein Signal eintrifft.
+
+Wenn ein neuronales Netzwerk lernt, **passt es eigentlich nur Tausende oder Millionen dieser Gewichtungen und Verzerrungen an**, bis es die Kombination findet, die die besten Vorhersagen liefert.
+
+<ThinkAboutIt>Stellen Sie sich vor, Sie mischen Musik und haben Hunderte von Lautstärkereglern – einen für jedes Instrument und jedes Mikrofon. Um die perfekte Mischung zu erreichen, muss jeder Regler sorgfältig eingestellt werden. So ist das Training eines neuronalen Netzwerks, nur dass Millionen von Knöpfen automatisch angepasst werden.
+</ThinkAboutIt>
+
+## Wie ein neuronales Netzwerk lernt
+
+Lernen geschieht in einem Zyklus mit vier Schritten:
+
+### Schritt 1: Vorwärtspass
+Daten fließen durch das Netzwerk von der Eingabe zur Ausgabe. Jedes Neuron multipliziert seine Eingaben mit seinen Gewichten, addiert seinen Bias und leitet das Ergebnis durch eine **Aktivierungsfunktion** (die entscheidet, ob das Neuron „feuern“ oder ruhig bleiben soll). Das Netzwerk erstellt eine Vorhersage.
+
+### Schritt 2: Berechnen Sie den Fehler
+Die Vorhersage wird mit der richtigen Antwort verglichen. Der Unterschied ist der **Fehler** (auch **Verlust** genannt). Eine Vorhersage von „7“ bei einer Antwort von „3“ führt zu einem großen Fehler; eine Vorhersage von „3“ ergibt eine kleine.
+
+### Schritt 3: Backpropagation
+Der Fehler wird **rückwärts** über das Netzwerk gesendet. Jedes Gewicht lernt, wie viel es zu dem Fehler beigetragen hat. Das ist die mathematische Magie der **Backpropagation** – sie ermittelt, welche Knöpfe um wie viel gedreht werden müssen.
+
+### Schritt 4: Gewichte aktualisieren
+Die Gewichte und Verzerrungen werden leicht angepasst, um den Fehler zu verringern. Dann wiederholt sich der Zyklus mit dem nächsten Datenelement.
+
+<Callout>Ein neuronales Netzwerk lernt nicht auf einmal. Dieser Zyklus wiederholt sich Tausende oder Millionen Mal und wird mit jedem Durchgang allmählich besser – ähnlich wie man eine Fertigkeit durch Übung verbessert.
+</Callout>
+
+<Quiz question="Was bewirkt Backpropagation in einem neuronalen Netzwerk?" options="Es sendet Daten über das Netzwerk weiter|Es löscht Neuronen, die nicht nützlich sind|Es sendet den Fehler zurück, um die Gewichte zu aktualisieren|Es fügt dem Netzwerk neue Schichten hinzu" answer="2" explanation="Backpropagation berechnet, wie viel jedes Gewicht zum Fehler beigetragen hat, und sendet diese Informationen rückwärts durch das Netzwerk, damit Gewichte angepasst werden können." />
+
+## Visuelle Komplettlösung: Klassifizierung einer handschriftlichen Ziffer
+
+Lassen Sie uns verfolgen, wie ein neuronales Netzwerk eine handgeschriebene „5“ aus dem MNIST-Datensatz klassifiziert:
+
+1. **Eingabe:** Das 28×28 Pixel große Bild wird auf 784 Zahlen reduziert (Pixelhelligkeitswerte von 0 bis 255). Diese gelangen in die 784 Eingabeneuronen.
+
+2. **Verborgene Ebenen:** Die erste verborgene Ebene erkennt möglicherweise einfache Kanten und Kurven. Die zweite verborgene Ebene kombiniert diese zu Formen wie Schleifen und Strichen. In tieferen Schichten sind ziffernartige Muster erkennbar.
+
+3. **Ausgabe:** Die 10 Ausgabeneuronen erzeugen Wahrscheinlichkeiten. Das Netzwerk könnte Folgendes ausgeben:
+   - Ziffer 3: 5 % zuversichtlich
+   - Ziffer 5: 89 % zuversichtlich
+   - Ziffer 8: 4 % zuversichtlich
+   - Alle anderen: weniger als 1 %
+
+4. **Entscheidung:** Das Netzwerk wählt die Ziffer mit der höchsten Wahrscheinlichkeit aus – **5**. Richtig!
+
+5. **Wenn falsch:** Backpropagation passt die Gewichte an, sodass beim nächsten Mal die richtige Ziffer eine höhere Punktzahl erhält.
+
+<FunFact>Moderne neuronale Netze können handgeschriebene Ziffern mit einer Genauigkeit von über 99,7 % klassifizieren – besser als die meisten Menschen. Der MNIST-Datensatz ist für KI so „einfach“ geworden, dass Forscher jetzt härtere Benchmarks verwenden, um neue Modelle zu testen.
+</FunFact>
+
+<ThinkAboutIt>Wenn Sie eine handgeschriebene „5“ betrachten, analysiert Ihr Gehirn nicht einzelne Pixel. Sie erkennen sofort die Gesamtform. Neural networks learn to do something similar - but they build that understanding one layer at a time, starting from pixels and working up to shapes.
+</ThinkAboutIt>
+
+## Aktivierungsfunktionen: Die Gatekeeper
+
+Nicht jedes Signal sollte ein Neuron mit voller Stärke passieren. **Aktivierungsfunktionen** fungieren als Gatekeeper, die entscheiden, ob und wie oft ein Neuron feuern soll.
+
+Die heute gebräuchlichste Aktivierungsfunktion ist **ReLU** (Rectified Linear Unit). Es gibt eine einfache Regel: Wenn die Eingabe positiv ist, lassen Sie sie unverändert durch; Wenn negativ, wird Null ausgegeben. Diese Einfachheit ermöglicht eine schnelle Berechnung, während das Netzwerk dennoch komplexe Muster lernen kann.
+
+Without activation functions, no matter how many layers you stack, the network could only learn simple linear relationships - like drawing straight lines through data. Aktivierungsfunktionen verleihen neuronalen Netzen die Fähigkeit, Kurven, Grenzen und komplizierte Muster zu lernen.
+
+## Warum „Deep“ Learning?
+
+Wenn ein neuronales Netzwerk **viele verborgene Schichten** hat, wird es als **tiefes neuronales Netzwerk** bezeichnet, und das Training wird als **tiefes Lernen** bezeichnet. Durch die Tiefe kann das Netzwerk Hierarchien von Merkmalen erlernen:
+
+- **Ebene 1:** Erkennt Kanten und Verläufe.
+- **Ebene 2:** Kombiniert Kanten zu Texturen und einfachen Formen.
+- **Schicht 3:** Erkennt Teile von Objekten (Augen, Räder, Buchstaben).
+- **Ebene 4+:** Identifiziert ganze Objekte und Szenen.
+
+Dieser mehrschichtige Ansatz ist der Grund, warum sich Deep Learning bei komplexen Aufgaben wie Bilderkennung, Sprachverständnis und Spielen auszeichnet.
+
+<Quiz question="Warum werden neuronale Netze mit vielen verborgenen Schichten „Deep Learning” genannt?" options="Weil sie tiefe mathematische Kenntnisse erfordern|Weil sie Daten über viele Ebenen hinweg mit zunehmender Komplexität verarbeiten|Weil das Training lange dauert|Weil sie sehr große Datensätze verwenden" answer="1" explanation="Der Begriff „tief” bezieht sich beim Deep Learning auf die vielen Schichten im Netzwerk. Jede Schicht lernt immer komplexere Funktionen und ermöglicht es dem Netzwerk, anspruchsvolle Muster zu verstehen." />
+
+## Wichtige Erkenntnisse
+
+- Neuronale Netze sind von den **Neuronen und Synapsen** des Gehirns inspiriert.
+- Sie haben drei Ebenentypen: **Eingabe**, **versteckt** und **Ausgabe**.
+- **Gewichte** und **Voreingenommenheiten** sind die einstellbaren Knöpfe, die das Lernen steuern.
+- Das Lernen folgt einem Zyklus: **Vorwärtsdurchlauf → Fehler → Backpropagation → Aktualisierung**.
+- **Deep Learning** nutzt viele verborgene Ebenen, um komplexe Muster zu lernen.
+
+In der nächsten Lektion werden wir näher auf den **Trainingsprozess** eingehen – wie man einem neuronalen Netzwerk tatsächlich beibringt, mit der Zeit intelligenter zu werden.

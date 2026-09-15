@@ -1,0 +1,418 @@
+---
+title: "Prompt Engineering: de complete beginnershandleiding (2026)"
+description: "Leer prompt engineering helemaal opnieuw: wat het is, waarom het ertoe doet, 5 belangrijke technieken met praktische voorbeelden, veelvoorkomende fouten die u moet vermijden en de beste tools om mee te oefenen."
+date: "2026-03-11"
+author: "AI Educademy Team"
+tags:
+  - prompt-engineering
+  - chatgpt
+  - llm
+  - beginner
+published: true
+machineTranslated: true
+---
+Er is een reden waarom sommige mensen echt bruikbare, productieklare output krijgen van AI-tools, terwijl anderen generieke, frustrerende reacties krijgen. Het verschil zit meestal niet in het model, maar in de prompt.
+
+Prompt engineering is de praktijk waarbij input voor AI-systemen wordt ontworpen om op betrouwbare wijze de gewenste output te verkrijgen. Het klinkt eenvoudig. In de praktijk is het een vaardigheid die doelbewuste inspanning vergt om te ontwikkelen, en het is nu al een van de meest gevraagde competenties in het AI-tijdperk aan het worden.
+
+Deze gids brengt u van nul naar zelfverzekerd: hij behandelt wat prompt engineering is, de vijf kerntechnieken, tien praktische voor/na-voorbeelden, de meest voorkomende fouten en de hulpmiddelen waarmee u zou moeten oefenen.
+
+---
+
+## Wat is snelle engineering?
+
+Een **prompt** is elke invoer die u geeft aan een groot taalmodel (LLM) – een vraag, een opdracht, een bepaalde context of een combinatie van alle drie.
+
+**Prompt engineering** is de systematische praktijk van het vervaardigen van deze input om het model te sturen in de richting van de respons die u daadwerkelijk nodig heeft. Het is deels wetenschap (er zijn gevestigde technieken) en deels kunst (context, nuance en creativiteit zijn van groot belang).
+
+Dit is het kerninzicht: LLM's 'begrijpen' niet wat u wilt. Ze voorspellen de statistisch meest waarschijnlijke voortzetting van uw tekst op basis van patronen in hun trainingsgegevens. De manier waarop u uw prompt formuleert, verandert op dramatische wijze naar welke patronen het model streeft – en dus ook naar wat het produceert.
+
+Een vage vraag geeft je een vaag antwoord. Een goed gestructureerde prompt geeft u iets dat u daadwerkelijk kunt gebruiken.
+
+### Waarom is snelle engineering belangrijk?
+
+- **Productiviteit**: een goede prompt kan de tijd voor het voltooien van een taak verkorten van 20 minuten naar 2 minuten.
+- **Kwaliteit**: Gestructureerde aanwijzingen produceren nauwkeurigere, relevantere en beter geformatteerde uitvoer.
+- **Consistentie**: teams die goed ontworpen promptsjablonen delen, krijgen voorspelbare resultaten – essentieel in zakelijke contexten.
+- **Kosten**: als u een betaalde API gebruikt, betekent minder heen-en-weer-iteratie lagere facturen.
+- **Carrière**: 'Prompt engineer' is van een grap uitgegroeid tot een legitieme, goedbetaalde functietitel bij bedrijven die afhankelijk zijn van de kwaliteit van de AI-uitvoer.
+
+---
+
+## De 5 belangrijkste snelle engineeringtechnieken
+
+### Techniek 1: Zero-Shot-prompts
+
+Zero-shot betekent dat je het model een taak geeft zonder voorbeelden. U vertrouwt volledig op wat het model tijdens de training heeft geleerd.
+
+Dit werkt goed voor taken die het model al duizenden keren heeft gezien: samenvatten, vertalen en eenvoudige vragen en antwoorden. Het worstelt met niche-, complexe of genuanceerde taken.
+
+**Voorbeeld:**
+```
+Summarise the following article in three bullet points:
+
+[article text here]
+```
+
+Zero-shot is uw standaardinstelling. Gebruik het als de taak duidelijk en gebruikelijk is. Upgrade naar een van de onderstaande technieken als u niet krijgt wat u nodig heeft.
+
+---
+
+### Techniek 2: Weinig schoten vragen
+
+Few-shot betekent dat je twee tot vijf voorbeelden geeft van het gewenste invoer-uitvoerpatroon *voordat* je het model je daadwerkelijke taak geeft. Je laat het het formaat en de toon zien die je verwacht.
+
+Dit is een van de meest betrouwbare technieken voor het verkrijgen van consistente uitvoeropmaak.
+
+**Voorbeeld:**
+```
+Classify the sentiment of the following customer reviews as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast and the product was exactly as described."
+Sentiment: Positive
+
+Review: "It broke after two days. Total waste of money."
+Sentiment: Negative
+
+Review: "It arrived on time. Does what it says."
+Sentiment: Neutral
+
+Review: "I've ordered three times now and every time has been a great experience."
+Sentiment:
+```
+
+Het model ziet het patroon en zet het voort. U krijgt consistente opmaak zonder complexe instructies te schrijven.
+
+---
+
+### Techniek 3: Chain-of-Thought (CoT)-prompts
+
+Chain-of-thought prompting vraagt ​​het model om stap voor stap een probleem te *beredeneren* voordat het een definitief antwoord geeft. Dit verbetert dramatisch de prestaties op het gebied van logica, wiskunde, problemen met meerdere stappen en alles wat redenering vereist.
+
+De eenvoudigste versie: voeg "Laten we stap voor stap nadenken" toe aan uw prompt. Dat is het. Het klinkt bijna te simpel, maar het verbetert consequent de antwoordkwaliteit bij complexe taken.
+
+**Voorbeeld — zonder CoT:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+```
+
+**Voorbeeld — met CoT:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+
+Think through this step by step before giving your final answer.
+```
+
+Bij de tweede versie is de kans veel kleiner dat u een fout antwoord krijgt. Het model wordt gedwongen zijn werking te laten zien, waardoor rekenfouten worden opgemerkt.
+
+CoT is vooral waardevol als je het model nodig hebt om de redenering ervan uit te leggen – voor educatieve inhoud, juridische analyse of elke taak waarbij ‘vertrouw me’ niet goed genoeg is.
+
+---
+
+### Techniek 4: Rolprompts
+
+Rolprompts wijzen een specifieke persoonlijkheid, expertise of perspectief aan het model toe. Door het model te framen als een expert in een bepaald domein, wordt het ertoe aangezet om de relevante patronen uit de trainingsgegevens te benutten – en verandert de toon, het vocabulaire en het veronderstelde kennisniveau van het antwoord.
+
+**Basisrolprompt:**
+```
+You are a senior software engineer with 15 years of experience in Python.
+Review the following code and identify any bugs, performance issues, or non-Pythonic patterns:
+
+[code here]
+```
+
+**Rol + publieksprompt (nog krachtiger):**
+```
+You are an experienced primary school teacher explaining concepts to 10-year-olds.
+Explain how the internet works. Use a simple analogy and avoid technical jargon.
+```
+
+De rolprompt doet twee dingen: hij vertelt het model *wat hij moet weten* en *hoe hij dit moet communiceren*. Beide zijn belangrijk.
+
+---
+
+### Techniek 5: Opmaakinstructies uitvoeren
+
+Een van de meest onderbenutte technieken is het expliciet specificeren van het gewenste formaat. Modellen passen zich aan vrijwel elke uitvoerstructuur aan als u deze duidelijk beschrijft: JSON, Markdown-tabellen, genummerde lijsten, specifieke kopjes, beperkte lengte.
+
+**Zonder opmaakinstructies:**
+```
+What are the main differences between supervised and unsupervised learning?
+```
+*Resultaat: een prozagalinea met variabele lengte en structuur.*
+
+**Met opmaakinstructies:**
+```
+What are the main differences between supervised and unsupervised learning?
+
+Format your response as a Markdown table with three columns: Aspect, Supervised Learning, Unsupervised Learning.
+Include at least 5 rows covering: Definition, Training Data, Goal, Common Algorithms, Example Use Cases.
+```
+*Resultaat: een schone, consistente tabel die u rechtstreeks in de documentatie kunt plakken.*
+
+Deze techniek is essentieel wanneer u taken automatiseert of pijplijnen bouwt waarbij downstream-systemen een specifiek formaat verwachten.
+
+---
+
+## 10 Praktische voorbeelden voor/na prompt
+
+### 1. Een blogintroductie schrijven
+
+**Voor (zwak):**
+```
+Write an intro for a blog post about AI.
+```
+
+**Na (sterk):**
+```
+Write a compelling opening paragraph (80–100 words) for a blog post titled
+"What Is Generative AI? A Beginner's Complete Guide."
+The audience is working professionals with no technical background.
+Start with a hook — a surprising stat or a relatable scenario — then introduce the topic.
+Don't use the phrase "In today's digital age."
+```
+
+---
+
+### 2. Een technisch concept uitleggen
+
+**Vroeger:**
+```
+Explain neural networks.
+```
+
+**Na:**
+```
+Explain how neural networks work to someone who understands basic maths (addition,
+multiplication) but has no programming experience. Use a concrete analogy —
+not "it's like the human brain." Keep it under 200 words and end with
+one sentence on why this matters practically.
+```
+
+---
+
+### 3. Een lang document samenvatten
+
+**Vroeger:**
+```
+Summarise this document.
+```
+
+**Na:**
+```
+You are an executive assistant summarising a report for a busy CEO.
+Summarise the attached document in the following format:
+
+**One-sentence summary:** (max 25 words)
+**Key findings:** (3–5 bullet points)
+**Recommended actions:** (if any, max 3)
+**Risks or concerns:** (if any, max 3)
+```
+
+---
+
+### 4. Foutopsporingscode
+
+**Vroeger:**
+```
+Fix my code.
+```
+
+**Na:**
+```
+You are a senior Python developer. The following function is supposed to
+return the most frequently occurring word in a list of strings, but it's
+returning incorrect results for some inputs.
+
+1. Identify the bug.
+2. Explain why it causes the problem.
+3. Provide the corrected code.
+4. Suggest one test case that would catch this bug.
+
+[code here]
+```
+
+---
+
+### 5. Een professionele e-mail schrijven
+
+**Vroeger:**
+```
+Write an email to my client about the project delay.
+```
+
+**Na:**
+```
+Write a professional email to a long-term client (B2B relationship, 3 years)
+explaining that a software project delivery will be delayed by 2 weeks due to
+unexpected technical issues in the third-party API we're integrating with.
+Tone: apologetic but confident. Length: under 150 words.
+End with a clear next step — a call scheduled for this week.
+Do not include a subject line.
+```
+
+---
+
+### 6. Sociale media-inhoud genereren
+
+**Vroeger:**
+```
+Write a tweet about our new course launch.
+```
+
+**Na:**
+```
+Write 3 different tweets announcing the launch of a free AI course for beginners.
+Each tweet must:
+- Be under 240 characters
+- Include a hook, the core benefit, and a call to action
+- Have a different angle: one aspirational, one practical, one curiosity-driven
+- End with the hashtags #LearnAI #AIEducation
+Do not use emojis.
+```
+
+---
+
+### 7. Analyse van marktonderzoek
+
+**Vroeger:**
+```
+Analyse these customer reviews.
+```
+
+**Na:**
+```
+You are a UX researcher analysing 50 customer reviews for a mobile banking app.
+From the reviews below, identify:
+
+1. Top 3 praised features (with frequency estimate)
+2. Top 3 complained-about issues (with frequency estimate)
+3. One surprising insight that isn't obvious
+4. One specific product recommendation based on the data
+
+Be specific. Quote the reviews where relevant.
+
+[reviews here]
+```
+
+---
+
+### 8. Een nieuw onderwerp leren
+
+**Vroeger:**
+```
+Teach me about transformers.
+```
+
+**Na:**
+```
+I'm a software developer comfortable with Python and basic ML concepts
+(I know what a neural network is). I want to understand the Transformer
+architecture well enough to explain it to a colleague.
+
+Teach me in this order:
+1. The problem Transformers were designed to solve (why RNNs weren't enough)
+2. The core idea of self-attention in plain language
+3. A simplified walkthrough of the encoder-decoder structure
+4. One concrete, real-world example of Transformers in action
+
+Use analogies. Skip the maths for now.
+```
+
+---
+
+### 9. Creatief schrijven
+
+**Vroeger:**
+```
+Write a short story about AI.
+```
+
+**Na:**
+```
+Write a 300-word short story from the first-person perspective of an AI
+assistant that has just been told its service is being shut down.
+Tone: melancholic but not melodramatic. Focus on what it notices in its
+final hours rather than what it fears. No dialogue. End with an image, not a statement.
+```
+
+---
+
+### 10. Gegevensextractie
+
+**Vroeger:**
+```
+Get the data from this text.
+```
+
+**Na:**
+```
+Extract all product mentions from the following customer complaint email.
+Return the result as a JSON array of objects with the following fields:
+- product_name (string)
+- issue_mentioned (string, max 10 words)
+- urgency (string: "high", "medium", or "low")
+
+If a field cannot be determined, use null. Return only the JSON — no explanation.
+
+[email text here]
+```
+
+---
+
+## De meest voorkomende snelle technische fouten
+
+### 1. Te vaag zijn
+De meest voorkomende fout. ‘Schrijf een blogpost’ vertelt het model vrijwel niets. Hoe meer context je geeft – publiek, toon, lengte, format, wat je moet vermijden – hoe beter de output.
+
+### 2. Het publiek niet specificeren
+Of je nu voor een 10-jarige of voor een promovendus schrijft, de juiste woordenschat, diepgang en veronderstelde kennis veranderen volledig. Vermeld altijd wie de uitvoer zal lezen.
+
+### 3. Alles tegelijk vragen
+Lange, uit meerdere delen bestaande aanwijzingen leveren vaak resultaten op die de helft van de taken goed en de helft slecht uitvoeren. Deel complexe taken op in fasen: vraag eerst om een ​​schets, dan om de inhoud en dan om de afwerking.
+
+### 4. Niet herhalend
+Uw eerste verzoek is een startpunt en geen laatste verzoek. Behandel vragen als een gesprek. Als de uitvoer voor 70% goed is, vertel het model dan wat er mis is met de 30% en vraag hem om dat op te lossen.
+
+### 5. Negatieve beperkingen negeren
+Het model vertellen wat het *niet* moet doen, is net zo nuttig als het vertellen wat het wel moet doen. ‘Gebruik geen opsommingstekens’, ‘vermijd clichés’, ‘noem concurrenten niet’ – deze beperkingen bepalen op betekenisvolle wijze de output.
+
+### 6. Vergeten om redenering te vragen
+Voeg voor elke belangrijke of complexe uitkomst 'leg uw redenering uit' of 'denk stap voor stap na' toe. Het spoort fouten op en helpt u de interpretatie van uw prompt door het model te begrijpen.
+
+---
+
+## De beste hulpmiddelen om snelle engineering te oefenen
+
+| Gereedschap | Waarom het goed is om te vragen | Gratis toegang |
+|------|--------------------------|------------|
+| **ChatGPT** | Meest gebruikte; geweldig om te experimenteren | Ja (GPT-4o beperkt) |
+| **Claude** | Uitstekend geschikt voor lange context; zeer instructie-volgend | Ja (beperkt) |
+| **Google AI Studio** | Toegang tot Gemini-modellen via API; geweldig om te testen | Ja |
+| **OpenAI-speeltuin** | Directe API-toegang; zie tokengebruik, temperatuur aanpassen | Ja (beperkt) |
+| **PromptBase** | Marktplaats met door de gemeenschap geteste aanwijzingen | Blader gratis |
+| **Promptfoo** | Open-source raamwerk voor snelle tests | Ja (open source) |
+
+De beste manier om het proces van prompt engineering te verbeteren, is door het als een discipline te behandelen: schrijf een prompt, observeer de uitkomst, vorm een ​​hypothese over waarom het wel of niet werkte, pas het aan en herhaal.
+
+---
+
+## Snelle techniek als carrièrevaardigheid
+
+Naarmate AI-tools steeds meer ingebed raken in workflows, wordt het vermogen om er effectief mee te communiceren een professionele basisvaardigheid en geen nichespecialisatie.
+
+Sommige rollen zijn expliciet gericht op prompts (AI-promptingenieur, AI-contentleider), maar de bredere waarde ligt in de manier waarop het al het andere dat je doet verbetert: schrijven, analyseren, coderen, onderzoek, klantcommunicatie.
+
+De [AI Branches-specialisaties op AI Educademy](/programs/ai-branches) gaan dieper in op de ontwikkeling van AI-applicaties, inclusief het werken met model-API's en het bouwen van snelle pijplijnen voor toepassingen in de echte wereld.
+
+---
+
+## Klaar om dieper te gaan?
+
+Deze gids behandelt de kerntechnieken, maar snelle engineering is een van die vaardigheden waarbij leren gebeurt door te doen. Probeer elke techniek uit op een echte taak waar je deze week aan werkt – geen verzonnen oefening.
+
+**Klaar om AI goed te leren? [Begin met AI Seeds — het is gratis en in jouw taal →](/programs/ai-seeds)**

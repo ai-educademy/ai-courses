@@ -1,0 +1,226 @@
+---
+title: "监督学习与无监督学习：主要差异解释"
+description: "监督和无监督机器学习的清晰比较——何时使用每种方法，以及现实世界的示例和算法。"
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+machineTranslated: true
+---
+# 监督学习与无监督学习：主要差异解释
+
+当你开始学习机器学习时，第一个岔路口就是：你在做什么类型的学习？答案会改变一切——您可用的算法、您需要的数据以及您期望模型做什么。
+
+两个基本类别是**监督学习**和**无监督学习**。理解其中的差异不仅仅是学术上的——这是您在处理任何新的机器学习问题时要做的第一个决定。
+
+## 🏷️ 核心区别：标签
+
+监督学习和无监督学习之间最根本的区别是**你的训练数据是否包含标签**。
+
+**标记数据**意味着数据集中的每个示例都带有“正确答案” - 您希望模型预测或分类的结果：
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**未标记的数据**意味着您有输入，但没有预定义的答案 - 只有原始观察结果：
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+生成标记数据既昂贵又耗时——它需要人类手动注释示例。无标签数据非常丰富（世界上大部分数据都没有标签）。这种实际约束决定了对于给定问题可以采用哪种方法。
+
+## ✅ 监督学习
+
+在监督学习中，模型通过研究标记的示例来学习从输入到输出的映射。 “监督者”是标记数据本身 - 每个训练示例都告诉模型正确的输出应该是什么。
+
+＃＃＃ 分类
+
+当输出是**离散类别**时，这是一个分类问题。
+
+**示例：**
+- 这封电子邮件是垃圾邮件还是非垃圾邮件？
+- 该图像包含猫或狗吗？
+- 该贷款申请人会违约吗？ （是/否）
+- 这个手写数字代表哪个数字（0-9）？
+
+**常用算法：**
+- 逻辑回归
+- 决策树和随机森林
+- 支持向量机（SVM）
+- 神经网络
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### 回归
+
+当输出是**连续数**时，这是一个回归问题。
+
+**示例：**
+- 这房子要卖什么钱？
+- 明天该股票价格是多少？
+- 下个月我们将销售多少单位？
+- 六个月后患者的血压会是多少？
+
+**常用算法：**
+- 线性回归
+- 岭/套索回归
+- 梯度提升（XGBoost、LightGBM）
+- 神经网络
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>梯度提升模型（XGBoost、LightGBM、CatBoost）赢得的 Kaggle 机器学习竞赛比任何其他算法类别都多。它们仍然是行业中结构化/表格数据的首选。</FunFact>
+
+## 🔍 无监督学习
+
+在无监督学习中，模型探索数据的结构**没有任何标签**。它不是学习到已知输出的映射，而是自己发现隐藏的模式、分组或表示。
+
+### 聚类
+
+聚类算法将相似的数据点分组在一起，而无需告知分组应该是什么。
+
+**示例：**
+- 按购买行为细分客户（无需预先定义细分）
+- 按主题对文档进行分组
+- 识别社交网络中的社区
+- 检测异常（不属于任何簇的点）
+
+**常用算法：**
+- K-均值聚类
+- DBSCAN（基于密度，处理不规则形状）
+- 层次聚类
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### 降维
+
+将高维数据压缩为更少的维度，同时保留尽可能多的结构。用于可视化、预处理和删除冗余信息。
+
+**常用算法：**
+- PCA（主成分分析）——线性压缩
+- t-SNE — 非线性，非常适合可视化
+- UMAP — 快速，保留局部和全局结构
+- 自动编码器 — 基于神经网络的压缩
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>一家零售商拥有 1000 万客户的交易数据，但没有预定义的客户群。为什么无监督聚类在这里有用？发现的细分可以为哪些业务决策提供信息？</ThinkAboutIt>
+
+## 🔄 超越二元：其他学习范式
+
+监督/无监督的区别是基础性的，但机器学习领域比这两个类别更丰富。
+
+### 半监督学习
+
+使用**少量标记数据**与**大量未标记数据**相结合。这是非常实用的，因为标签很昂贵。
+
+**示例**：您有 1,000 个标记的医疗扫描和 100,000 个未标记的扫描。半监督学习可让您从未标记的数据中受益，从而提高性能，超出仅 1,000 个标签所能达到的效果。
+
+### 自我监督学习
+
+一种特殊情况，**标签是根据数据本身自动生成的**。这就是现代大型语言模型的预训练方式。
+
+**示例**：取一个句子，隐藏一些单词，然后训练模型来预测丢失的单词。 “标签”（正确的单词）是免费的——它们直接来自文本本身。这就是 BERT 的训练方式。
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+自我监督学习具有变革性，因为它允许在无需人工注释的情况下对互联网规模的数据进行训练。
+
+### 强化学习
+
+代理通过在**环境**中采取**行动**并接收**奖励**或**惩罚**来学习。没有标签——只有结果的反馈信号。
+
+**示例**：下棋、训练机器人行走、优化数据中心的冷却系统。我们在自己的课程中深入讨论了这一点。
+
+## 🗺️ 选择正确的方法
+
+这是一个实用的决策框架：
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="您有 50,000 条没有星级或情感标签的产品评论。您希望自动按主题对它们进行分组。您应该使用哪种学习方法？" options="监督分类——训练模型对主题进行分类|无监督聚类——发现数据中的主题组|强化学习——让代理阅读评论并对其进行排序|回归——预测每条评论的主题分数" answer="1" explanation="没有标签，监督学习是不可能的。无监督聚类（例如，K-Means 或使用 LDA 的主题建模）可以发现评论文本中的自然分组，而无需任何预定义的类别。" />
+
+## 要点
+
+- **监督学习**需要标记数据；该模型学习从输入到已知输出的映射 - 用于分类（离散输出）和回归（连续输出）
+- **无监督学习**适用于未标记的数据；该模型发现隐藏结构——用于聚类、降维和异常检测
+- 有监督和无监督之间的选择主要取决于**您是否有标记数据**以及您想要回答什么问题
+- **半监督学习**弥合了差距，使用少量标记数据和大量未标记数据
+- **自监督学习**从数据中生成自己的标签 - 这是 BERT 和 GPT 等现代法学硕士背后的技术
+- **强化学习**与两者不同：代理通过与环境的交互从奖励信号中学习，没有标签
+- 使用决策框架：标记+类别输出→分类；标记+连续输出→回归；未标记+查找组→聚类

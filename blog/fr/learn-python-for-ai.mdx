@@ -1,0 +1,294 @@
+---
+title: "Apprenez Python pour l'IA : le Python minimal dont vous avez réellement besoin"
+description: "Vous n'avez pas besoin de maîtriser Python pour l'utiliser pour l'IA. Voici le sous-ensemble minimal de Python qui vous permettra de lire, d'écrire et de comprendre rapidement le code de l'IA."
+date: "2026-06-10"
+author: "AI Educademy Team"
+tags:
+  - python
+  - ai
+  - programming
+  - tutorial
+published: true
+machineTranslated: true
+---
+Python est le langage de l'IA. Si vous avez passé du temps à lire sur l'apprentissage automatique, vous avez vu du code Python partout : dans les didacticiels, les dépôts GitHub, les documents de recherche et les cours. Finalement, vous souhaiterez le lire, l'exécuter et peut-être le modifier.
+
+La bonne nouvelle : vous n’avez pas besoin de devenir un expert Python. Vous avez besoin d'un sous-ensemble ciblé du langage. Ce guide vous apprend exactement cela – le Python minimal requis pour comprendre et utiliser le code d’IA – avec des exemples tirés de véritables flux de travail ML.
+
+---
+
+## Configuration de Python
+
+Avant toute chose, installez Python.
+
+**La méthode recommandée** : Installez [Miniconda](https://docs.conda.io/en/latest/miniconda.html), un gestionnaire de distribution Python léger. Cela simplifie la gestion des packages et des environnements.
+
+Une fois installé, ouvrez un terminal et tapez :
+```
+python --version
+```
+
+Si vous voyez `Python 3.x.x`, vous êtes prêt. Vous pouvez écrire et exécuter Python dans :
+- **Jupyter Notebook** — l'outil standard pour les expériences d'IA (basé sur un navigateur, interactif)
+- **VS Code** — un éditeur gratuit avec un excellent support Python
+- **Google Colab** : gratuit, basé sur un navigateur, aucune installation requise
+
+Pour l'apprentissage de l'IA, commencez par Google Colab. C'est gratuit, fonctionne dans votre navigateur et dispose d'un accès GPU.
+
+---
+
+## 1. Variables et types de données
+
+En Python, vous stockez les valeurs dans des variables. Aucune déclaration de type n'est nécessaire.
+
+```python
+name = "neural network"       # string (text)
+layers = 4                    # integer (whole number)
+accuracy = 0.94               # float (decimal)
+is_trained = True             # boolean (True/False)
+```
+
+**Pourquoi est-ce important pour l'IA** : les hyperparamètres du modèle, les scores de précision et les valeurs de configuration sont stockés sous forme de variables. Vous verrez constamment des choses comme `learning_rate = 0.001` ou `epochs = 50`.
+
+---
+
+## 2. Listes
+
+Une liste est une collection ordonnée d’éléments. Vous pouvez stocker plusieurs valeurs dans une seule variable.
+
+```python
+scores = [0.82, 0.87, 0.91, 0.95]
+labels = ["cat", "dog", "bird"]
+
+# Access by index (starts at 0)
+print(labels[0])    # "cat"
+print(labels[-1])   # "bird" (last item)
+
+# Add an item
+labels.append("fish")
+
+# Number of items
+print(len(scores))  # 4
+```
+
+**Pourquoi est-ce important pour l'IA** : historiques d'entraînement, listes d'étiquettes, lots de données, tous stockés dans des listes (ou des tableaux NumPy, qui fonctionnent de la même manière).
+
+---
+
+## 3. Dictionnaires
+
+Les dictionnaires stockent des paires clé-valeur. Considérez-les comme des boîtes étiquetées.
+
+```python
+model_config = {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "epochs": 10,
+    "optimizer": "adam"
+}
+
+# Access a value
+print(model_config["learning_rate"])    # 0.001
+
+# Update a value
+model_config["epochs"] = 20
+```
+
+**Pourquoi est-ce important pour l'IA** : la configuration du modèle, les arguments d'entraînement et les résultats sont presque toujours représentés sous forme de dictionnaires. Lorsque vous voyez `config = {...}` dans le code AI, voici ce qui se passe.
+
+---
+
+## 4. Boucles
+
+Les boucles vous permettent de répéter une action pour chaque élément d'une collection.
+
+```python
+# for loop — iterate over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# range — loop a specific number of times
+for i in range(5):
+    print(i)    # prints 0, 1, 2, 3, 4
+```
+
+**Pourquoi est-ce important pour l'IA** : les boucles d'entraînement parcourent les données pendant plusieurs époques. Les boucles de prétraitement des données nettoient chaque ligne d'un ensemble de données. Vous verrez `for epoch in range(epochs):` dans pratiquement tous les scripts de formation.
+
+---
+
+## 5. Fonctions
+
+Les fonctions sont des blocs de code réutilisables. Vous les définissez une fois et les appelez plusieurs fois.
+
+```python
+def calculate_accuracy(correct, total):
+    return correct / total
+
+result = calculate_accuracy(85, 100)
+print(result)    # 0.85
+```
+
+Les fonctions peuvent avoir des valeurs par défaut pour les paramètres :
+
+```python
+def train_model(data, epochs=10, learning_rate=0.001):
+    print(f"Training for {epochs} epochs at lr={learning_rate}")
+
+train_model(data)                          # uses defaults
+train_model(data, epochs=20)               # override one
+train_model(data, epochs=20, learning_rate=0.01)   # override both
+```
+
+**Pourquoi est-ce important pour l'IA** : chaque bibliothèque ML est composée de fonctions. `model.fit()`, `model.predict()`, `train_test_split()` — ce sont tous des appels de fonction. Comprendre le fonctionnement des fonctions (y compris les arguments par défaut) vous permet de lire la documentation de la bibliothèque.
+
+---
+
+## 6. Conditions
+
+```python
+accuracy = 0.92
+
+if accuracy > 0.90:
+    print("Model is performing well")
+elif accuracy > 0.75:
+    print("Model is acceptable")
+else:
+    print("Model needs improvement")
+```
+
+**Pourquoi est-ce important pour l'IA** : la logique conditionnelle apparaît dans la validation des données, les critères d'arrêt précoce et la prise de décision lors de l'inférence.
+
+---
+
+## 7. Importation de bibliothèques
+
+La véritable puissance de Python vient de ses bibliothèques. Vous les importez en haut de votre fichier.
+
+```python
+import numpy as np           # numerical computing
+import pandas as pd          # data manipulation
+import matplotlib.pyplot as plt   # plotting
+```
+
+La partie `as np` crée un alias — vous tapez `np.array()` au lieu de `numpy.array()`. Il s’agit d’une convention standard.
+
+**Pourquoi est-ce important pour l'IA** : Chaque flux de travail d'IA commence par des importations. Les trois ci-dessus – NumPy, Pandas et Matplotlib – apparaissent dans pratiquement tous les cahiers de science des données.
+
+---
+
+## 8. Bases de NumPy
+
+NumPy est la base du calcul numérique en Python. Son objet principal est le **array**.
+
+```python
+import numpy as np
+
+# Create arrays
+a = np.array([1, 2, 3, 4, 5])
+b = np.array([10, 20, 30, 40, 50])
+
+# Operations apply element-wise
+print(a + b)         # [11, 22, 33, 44, 55]
+print(a * 2)         # [2, 4, 6, 8, 10]
+print(np.mean(a))    # 3.0
+
+# 2D arrays (matrices)
+matrix = np.array([[1, 2], [3, 4], [5, 6]])
+print(matrix.shape)  # (3, 2) — 3 rows, 2 columns
+```
+
+**Pourquoi est-ce important pour l'IA** : pondérations des réseaux neuronaux, données de pixels d'image, intégrations de mots, le tout stocké sous forme de tableaux NumPy. Lorsque vous voyez `X_train.shape == (1000, 28, 28)`, cela représente un tableau NumPy de 1 000 images, chacune mesurant 28 × 28 pixels.
+
+---
+
+## 9. Les bases des pandas
+
+Pandas permet de travailler avec des données tabulaires – des feuilles de calcul en Python.
+
+```python
+import pandas as pd
+
+# Load a CSV file
+df = pd.read_csv("data.csv")
+
+# Explore the data
+print(df.head())         # first 5 rows
+print(df.shape)          # (rows, columns)
+print(df.columns)        # column names
+print(df.describe())     # statistics
+
+# Select a column
+ages = df["age"]
+
+# Filter rows
+adults = df[df["age"] >= 18]
+
+# Check for missing values
+print(df.isnull().sum())
+```
+
+**Pourquoi est-ce important pour l'IA** : les ensembles de données du monde réel se présentent sous forme de fichiers CSV. Pandas vous permet de charger, explorer, nettoyer et préparer les données avant de former un modèle.
+
+---
+
+## 10. Un mini exemple complet
+
+Voici un script Python complet qui charge les données, les divise, entraîne un modèle simple et l'évalue :
+
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# 1. Load data
+df = pd.read_csv("customers.csv")
+
+# 2. Separate features and target
+X = df[["age", "income", "years_customer"]]
+y = df["will_churn"]
+
+# 3. Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 4. Train a model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 5. Evaluate
+predictions = model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy:.2%}")
+```
+
+**Lisez ceci ligne par ligne.** Avec les concepts ci-dessus, vous pouvez en comprendre chaque ligne. C'est l'objectif : non pas écrire du code ML à partir de zéro, mais être capable de le lire, de le comprendre et de le modifier.
+
+---
+
+## Ce dont vous n'avez pas (encore) besoin
+
+Pour être pratique avec le code de l'IA, vous n'avez pas besoin d'apprendre immédiatement :
+
+- Programmation orientée objet (classes, héritage)
+- Décorateurs et fonctionnalités Python avancées
+- Concurrence et code asynchrone
+- Rédaction de packages et modules Python
+
+Ceux-ci deviennent précieux à mesure que vous approfondissez, mais ce ne sont pas des conditions préalables pour travailler avec des outils et des didacticiels d’IA.
+
+---
+
+## Où pratiquer
+
+- **[Google Colab](https://colab.research.google.com)** — blocs-notes gratuits avec accès GPU
+- **[Kaggle Learn](https://www.kaggle.com/learn)** — micro-cours Python et ML gratuits
+- **[Exercism Python track](https://exercism.org/tracks/python)** — exercices pratiques avec mentorat
+
+La meilleure façon d’apprendre est d’exécuter du code, de le casser, de le réparer et d’expérimenter. Choisissez un ensemble de données Kaggle sur un sujet que vous trouvez intéressant et commencez à l'explorer avec Pandas.
+
+---
+
+La maîtrise de Python pour l'IA ne consiste pas à mémoriser la syntaxe. Il s'agit de reconnaître des modèles : savoir à quoi ressemble une boucle, à quoi sert un appel de fonction, ce qu'apporte une importation. Avec les concepts de ce guide, vous disposez des bases nécessaires pour lire des didacticiels d'IA, suivre des exemples de code et commencer à expérimenter vous-même.
+
+Vous voulez un parcours structuré à travers les fondamentaux de l’IA ? [AI Educademy](https://aieducademy.org) propose des cours gratuits qui vous guident depuis les bases de l'IA jusqu'à la création et la formation de vos propres modèles — aucune expérience préalable n'est requise.

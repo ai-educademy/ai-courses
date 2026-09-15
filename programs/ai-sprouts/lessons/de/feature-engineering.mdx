@@ -1,0 +1,252 @@
+---
+title: "Feature Engineering: Maschinen beibringen, worauf es ankommt"
+description: "Erfahren Sie, wie Feature Engineering Rohdaten in leistungsstarke Eingaben für maschinelles Lernen umwandelt – die Fähigkeit, die gute Modelle von großartigen unterscheidet."
+order: 13
+difficulty: "intermediate"
+duration: 30
+icon: "⚙️"
+published: true
+machineTranslated: true
+---
+# Feature Engineering: Maschinen beibringen, worauf es ankommt
+
+Beim maschinellen Lernen gibt es ein Sprichwort: **Müll rein, Müll raus**. Sie können den ausgefeiltesten Algorithmus der Welt haben, aber wenn Sie ihn mit schlecht aufbereiteten Daten füttern, werden die Ergebnisse schlecht sein. Umgekehrt kann ein einfacher Algorithmus mit hervorragenden, sorgfältig aufbereiteten Daten einen komplexen Algorithmus mit rohen, chaotischen Daten übertreffen.
+
+Beim Feature Engineering handelt es sich um die Kunst, Rohdaten in Darstellungen umzuwandeln, aus denen maschinelle Lernalgorithmen effektiv lernen können. Es handelt sich wohl um die wirkungsvollste Einzelkompetenz im angewandten maschinellen Lernen – und hier trifft tiefes Fachwissen auf Datenwissenschaft.
+
+## 🧩 Was sind Funktionen?
+
+Beim maschinellen Lernen ist ein **Merkmal** jede messbare Eigenschaft oder jedes messbare Attribut der Sache, die Sie vorhersagen möchten. Features sind die Eingaben für Ihr Modell; Das **Label** (oder Ziel) ist die Ausgabe.
+
+Für ein Hauspreisvorhersagemodell:
+- Merkmale: Quadratmeterzahl, Anzahl der Schlafzimmer, Postleitzahl, Baujahr, Entfernung zur nächsten Schule
+- Etikett: Verkaufspreis
+
+Für einen E-Mail-Spam-Klassifikator:
+- Merkmale: Worthäufigkeit, Absenderdomäne, Vorhandensein bestimmter Phrasen, E-Mail-Länge
+- Label: Spam (1) oder kein Spam (0)
+
+Qualität, Quantität und Relevanz Ihrer Funktionen sind oft wichtiger als der von Ihnen gewählte Algorithmus.
+
+## 🗃️ Warum Rohdaten selten modellreif sind
+
+Daten aus der realen Welt sind chaotisch. Algorithmen für maschinelles Lernen stellen spezifische Anforderungen, die Rohdaten fast nie erfüllen:
+
+- **Nur numerisch**: Die meisten Algorithmen können Text, Kategorien oder Daten nicht direkt verarbeiten
+- **Keine fehlenden Werte**: Die meisten Algorithmen können keine NaN- oder Nullwerte verarbeiten
+- **Ähnliche Skalen**: Merkmale mit sehr unterschiedlichen Wertebereichen können das Gradienten-basierte Lernen verzerren
+- **Aussagekräftige Darstellung**: Rohe Zeitstempel oder Postleitzahlen kodieren nicht die Muster, die wichtig sind (ist es ein Wochenende? Ist es eine wohlhabende Gegend?)
+
+Beim Feature-Engineering handelt es sich um den Prozess, die Lücke zwischen Rohdaten und modellbereiten Eingaben zu schließen.
+
+## 📏 Normalisierung und Standardisierung
+
+Wenn Features sehr unterschiedliche Maßstäbe haben, können Modelle in die Irre geführt werden. Ein Feature mit Werten im Tausenderbereich kann ein Feature mit Werten zwischen 0 und 1 dominieren.
+
+### Min-Max-Normalisierung (Skalierung auf [0, 1])
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Before: age=[22, 65, 34], income=[18000, 95000, 42000]
+# After:  age=[0.0, 1.0, 0.27], income=[0.0, 1.0, 0.31]
+```
+
+### Standardisierung (Z-Score, Mittelwert=0, Standard=1)
+
+Robuster gegenüber Ausreißern als die Min-Max-Skalierung:
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# Transforms each feature to have mean=0, standard deviation=1
+# Feature value → (value - mean) / std_dev
+```
+
+**Faustregel**: Standardmäßig Standardisierung verwenden. Verwenden Sie Min-Max, wenn Sie Werte in einem bestimmten begrenzten Bereich benötigen (z. B. Eingaben für neuronale Netzwerke).
+
+## 🏷️ Kodierung kategorialer Variablen
+
+Kategorien wie „Rot/Grün/Blau“ oder „London/Manchester/Birmingham“ haben keine natürliche numerische Reihenfolge. Sie müssen sie kodieren, bevor Sie sie den meisten Algorithmen zuführen.
+
+### One-Hot-Codierung
+
+Erstellt für jede Kategorie eine Binärspalte. Am besten, wenn Kategorien keine inhärente Reihenfolge haben:
+
+```python
+import pandas as pd
+
+# Original: colour = ['red', 'green', 'blue', 'red']
+df = pd.DataFrame({'colour': ['red', 'green', 'blue', 'red']})
+
+encoded = pd.get_dummies(df['colour'], prefix='colour')
+print(encoded)
+
+#    colour_blue  colour_green  colour_red
+# 0            0             0           1
+# 1            0             1           0
+# 2            1             0           0
+# 3            0             0           1
+```
+
+### Etikettenkodierung
+
+Ordnet jede Kategorie einer Ganzzahl zu. Nur verwenden, wenn die Kategorien eine natürliche Reihenfolge haben:
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+# Works for: ['low', 'medium', 'high'] → [0, 1, 2]
+# DANGER: Don't use for unordered categories like cities —
+# the model will incorrectly assume London(0) < Paris(1) < Tokyo(2)
+
+le = LabelEncoder()
+df['education_level'] = le.fit_transform(df['education_level'])
+# 'school' → 0, 'undergraduate' → 1, 'postgraduate' → 2
+```
+
+<FunFact>Ein häufiger Anfängerfehler besteht darin, Städtenamen mit Etiketten zu kodieren und dem Modell versehentlich mitzuteilen, dass Tokio „mehr als“ London ist, was zu bizarren Vorhersagen führt. Verwenden Sie für ungeordnete Kategorien immer One-Hot-Codierung.</FunFact>
+
+## 🕳️ Umgang mit fehlenden Werten
+
+Fehlende Daten kommen in realen Datensätzen nahezu überall vor. Sie haben mehrere Möglichkeiten:
+
+### Zurechnung
+
+Füllen Sie fehlende Werte mit einem berechneten Ersatz aus:
+
+```python
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Strategy options: 'mean', 'median', 'most_frequent', 'constant'
+imputer = SimpleImputer(strategy='median')
+X_imputed = imputer.fit_transform(X)
+
+# For numerical data: median is robust to outliers
+# For categorical data: use 'most_frequent'
+```
+
+### Hinzufügen eines fehlenden Indikators
+
+Manchmal ist die Tatsache, dass Daten fehlen, selbst aufschlussreich:
+
+```python
+# Create a binary flag: 1 if income was missing, 0 if present
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Then impute the original column
+df['income'].fillna(df['income'].median(), inplace=True)
+```
+
+### Wann fallen gelassen werden?
+
+Löschen Sie eine Spalte, wenn mehr als 70–80 % Werte fehlen (selten informativ). Löschen Sie eine Zeile nur, wenn Sie über viele Daten verfügen und die Zeile zufällig (nicht systematisch) fehlt.
+
+## 🛠️ Neue Funktionen erstellen
+
+Hier wird Feature Engineering zur Kunst. Sie nutzen Domänenwissen, um Features zu erstellen, die Muster erfassen, die in den Rohdaten nicht sichtbar sind.
+
+### Datums-/Uhrzeitzerlegung
+
+```python
+df['purchase_datetime'] = pd.to_datetime(df['purchase_datetime'])
+
+# Extract meaningful components
+df['hour_of_day']   = df['purchase_datetime'].dt.hour
+df['day_of_week']   = df['purchase_datetime'].dt.dayofweek
+df['is_weekend']    = (df['day_of_week'] >= 5).astype(int)
+df['month']         = df['purchase_datetime'].dt.month
+df['is_holiday']    = df['purchase_datetime'].isin(uk_holidays).astype(int)
+```
+
+Ein roher Zeitstempel sagt dem Modell nichts direkt; Diese abgeleiteten Merkmale offenbaren Muster wie „Betrugsspitzen um 3 Uhr morgens“ oder „Umsatzspitzen am Wochenende“.
+
+### Interaktionsfunktionen
+
+```python
+# Square footage × number of bathrooms might be more predictive
+# than either feature alone for house prices
+df['size_per_bathroom'] = df['sqft'] / df['bathrooms']
+
+# Ratio of income to loan amount — a classic credit risk feature
+df['debt_to_income'] = df['loan_amount'] / df['annual_income']
+```
+
+### Textfunktionen
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Convert raw text to numerical feature matrix
+vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+text_features = vectorizer.fit_transform(df['review_text'])
+
+# Each word becomes a feature; its value reflects how important
+# the word is in that document relative to the whole corpus
+```
+
+<ThinkAboutIt>Wenn Sie ein Modell zur Vorhersage von Fehlern bei Gesundheitsinspektionen in Restaurants erstellen würden, auf welche Rohdaten könnten Sie Zugriff haben und welche neuen Funktionen könnten Sie daraus entwickeln, die nützlicher wären als die Rohdaten allein?</ThinkAboutIt>
+
+## 📊 Funktionsbedeutung
+
+Sobald Sie ein Modell erstellt haben, können Sie messen, welche Funktionen es am nützlichsten fand. Dies ist sowohl für das Verständnis Ihres Modells als auch für die Entscheidung, welche Funktionen beibehalten oder weggelassen werden sollen, von Nutzen:
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importances = pd.Series(
+    model.feature_importances_,
+    index=feature_names
+).sort_values(ascending=False)
+
+print(importances.head(10))
+
+# income_to_debt_ratio     0.187
+# days_since_last_payment  0.143
+# credit_utilisation       0.121
+# ...
+```
+
+Features mit einer Bedeutung nahe Null können normalerweise ohne Beeinträchtigung der Leistung verworfen werden – und ihr Weglassen vereinfacht das Modell, verkürzt die Trainingszeit und kann die Generalisierung verbessern.
+
+## 🗜️ Dimensionsreduktion: Eine kurze Einführung
+
+Wenn Sie Hunderte oder Tausende von Features haben, können Modelle Schwierigkeiten haben – das nennt man den **Fluch der Dimensionalität**. Techniken zur Dimensionsreduzierung komprimieren Merkmale unter Beibehaltung der wichtigsten Muster:
+
+```python
+from sklearn.decomposition import PCA
+
+# Reduce 100 features to 10 components that capture 95% of variance
+pca = PCA(n_components=10)
+X_reduced = pca.fit_transform(X_scaled)
+
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.2%}")
+# Variance explained: 94.7%
+```
+
+PCA (Principal Component Analysis) ist der gebräuchlichste Ansatz, andere umfassen jedoch t-SNE (zur Visualisierung) und UMAP (zur Erhaltung der lokalen Struktur).
+
+<Quiz question="Sie haben einen Datensatz mit einer Spalte „Stadt”, die 50 verschiedene Städtenamen enthält. Welchen Codierungsansatz sollten Sie verwenden?" options="Etikettenkodierung – Weisen Sie jeder Stadt eine Ganzzahl von 0 bis 49 zu|One-Hot-Codierung – Erstellen Sie eine Binärspalte für jede Stadt|Belassen Sie es als Text – die meisten Modelle verarbeiten Zeichenfolgen|Rechnen Sie alle Städte in das BIP ihres Landes um" answer="1" explanation="Städtenamen haben keine natürliche Reihenfolge, daher würde die Beschriftungscodierung fälschlicherweise eine Hierarchie implizieren (Stadt 49 > Stadt 0). Durch die One-Hot-Codierung wird für jede Stadt eine Binärspalte erstellt, die sie korrekt als unterschiedliche ungeordnete Kategorien darstellt." />
+
+## Wichtige Erkenntnisse
+
+- **Features** sind die Eingaben für Ihr Modell; Die Merkmalsqualität ist oft wichtiger als die Wahl des Algorithmus
+– Rohdaten sind fast nie modellreif – sie müssen bereinigt, transformiert und angereichert werden
+- **Normalisierung/Standardisierung** bringt Merkmale auf vergleichbare Maßstäbe; Verwenden Sie standardmäßig die Standardisierung
+- **One-Hot-Codierung** ist für ungeordnete kategoriale Variablen korrekt; **Label-Kodierung** nur für bestellte
+- **Fehlende Werte** können durch Imputation (Median/Mittelwert/Modus) und durch Hinzufügen einer Markierung für das Fehlen von Werten behandelt werden
+- **Das Erstellen neuer Funktionen** aus Domänenwissen – Zeitzerlegung, Verhältnisse, Interaktionen – führt oft zu den größten Leistungssteigerungen
+- **Feature-Wichtigkeit**-Scores helfen Ihnen zu verstehen, auf welche Eingaben Ihr Modell angewiesen ist und welche verworfen werden können
+- **Dimensionalitätsreduktion** (z. B. PCA) komprimiert hochdimensionale Daten und behält dabei den größten Teil der nützlichen Varianz bei

@@ -1,0 +1,129 @@
+---
+title: "Entrenamiento de modelos de IA: enseñar a las máquinas a ser más inteligentes"
+description: "Comprenda el ciclo de entrenamiento, las funciones de pérdida, el sobreajuste y cómo saber cuándo su modelo de IA está listo."
+order: 4
+difficulty: "beginner"
+duration: 15
+icon: "🏋️"
+published: true
+machineTranslated: true
+---
+# Entrenamiento de modelos de IA
+
+Ahora sabes que las redes neuronales aprenden ajustando pesos y sesgos. Pero, ¿cómo funciona realmente todo el proceso de formación? ¿Cómo saber si un modelo ha aprendido lo suficiente o demasiado? En esta lección, recorreremos el viaje de formación completo.
+
+## El circuito de entrenamiento
+
+El entrenamiento de un modelo de IA sigue un ciclo que se repite una y otra vez:
+
+1. **Predecir**: introduzca datos a través del modelo y obtenga una predicción.
+2. **Comparar**: comprueba qué tan lejos está la predicción de la respuesta correcta.
+3. **Ajustar**: actualice los pesos para reducir el error.
+4. **Repetir**: hágalo de nuevo con el siguiente lote de datos.
+
+Este bucle se repite miles o incluso millones de veces. Cada repetición acerca ligeramente al modelo a las respuestas correctas.
+
+<Illustration src="/images/lessons/training-ai-models.svg" alt="Un diagrama circular que muestra el ciclo de entrenamiento: predecir, comparar, ajustar, repetir, con flechas que conectan cada paso de un ciclo." caption="El ciclo de entrenamiento es el corazón del aprendizaje de la IA: predice, compara, ajusta y repite." />
+
+<FunFact>Según se informa, entrenar GPT-4 costó más de 100 millones de dólares sólo en potencia informática. El circuito de entrenamiento abarcó miles de chips especializados durante meses.
+</FunFact>
+
+## Funciones de pérdida: ¿Qué tan equivocado está el modelo?
+
+Después de cada predicción, necesitamos una forma de medir *cuán equivocado* estuvo el modelo. Esta medida se llama **pérdida** (o **costo**) y la fórmula que la calcula es la **función de pérdida**.
+
+- **Pérdida baja** = la predicción estuvo cerca de la respuesta correcta.
+- **Pérdida alta** = la predicción estaba lejos.
+
+Piense en ello como una diana. La diana es la respuesta correcta. La pérdida es la distancia desde donde aterrizó el dardo hasta la diana. El objetivo del entrenamiento es minimizar esa distancia con el tiempo.
+
+Las funciones de pérdida comunes incluyen:
+
+- **Error cuadrático medio (MSE)**: mide la distancia cuadrática promedio entre las predicciones y los valores reales. Se utiliza para predecir números.
+- **Pérdida de entropía cruzada**: mide qué tan bien coinciden las probabilidades predichas con las categorías reales. Se utiliza para tareas de clasificación.
+
+<Quiz question="¿Qué mide una función de pérdida en el entrenamiento de IA?" options="¿Qué tan rápido corre el modelo?|Cuánta memoria usa el modelo|Qué tan lejos están las predicciones del modelo de las respuestas correctas|¿Cuántas capas tiene el modelo?" answer="2" explanation="Una función de pérdida cuantifica la diferencia entre lo que predijo el modelo y la respuesta correcta real. El proceso de formación intenta minimizar este valor." />
+
+## Épocas: ¿Cuántas veces a través de los datos?
+
+Una pasada completa por todo el conjunto de datos de entrenamiento se denomina **época**. El entrenamiento normalmente implica muchas épocas: el modelo ve los mismos datos varias veces y mejora ligeramente en cada ronda.
+
+- **Época 1:** El modelo comete muchos errores; la pérdida es alta.
+- **Época 10:** El modelo ha mejorado significativamente; la pérdida está cayendo.
+- **Época 50:** Las mejoras se ralentizan; el modelo se acerca a su mejor momento.
+- **Época 200:** El modelo podría comenzar a memorizar, lo que nos lleva al siguiente tema.
+
+<ThinkAboutIt>Revisar para un examen es como correr épocas. La primera lectura es confusa, pero cada revisión fomenta la comprensión. Sin embargo, si vuelves a leer las mismas notas cien veces, es posible que memorices la redacción exacta sin comprender realmente los conceptos. La IA tiene el mismo problema.
+</ThinkAboutIt>
+
+## Sobreadaptación: El estudiante que memoriza
+
+**El sobreajuste** es uno de los problemas más comunes en el entrenamiento de IA. Ocurre cuando el modelo aprende los datos de entrenamiento *demasiado bien* (incluido su ruido y sus peculiaridades) y no funciona con datos nuevos e invisibles.
+
+Imagine a un estudiante que memoriza palabra por palabra todos los exámenes anteriores. Obtienen puntuaciones perfectas en exámenes antiguos, pero tienen dificultades cuando las preguntas cambian aunque sea ligeramente. El estudiante no ha aprendido el tema, ha memorizado las respuestas.
+
+Signos de sobreajuste:
+
+- La precisión del entrenamiento es muy alta (por ejemplo, 99%).
+- El rendimiento con datos nuevos es mucho peor (por ejemplo, 75%).
+- El modelo esencialmente ha memorizado los ejemplos de entrenamiento.
+
+<Callout>El objetivo del entrenamiento no es obtener una puntuación perfecta en los datos que el modelo ya ha visto. Debe funcionar bien con datos que *nunca* han visto antes. Ésa es la verdadera prueba del aprendizaje.
+</Callout>
+
+## Underfitting: El estudiante que no estudia
+
+El problema opuesto es el **desajuste**. Esto sucede cuando el modelo no ha aprendido lo suficiente de los datos. Tiene un rendimiento deficiente *tanto* con datos de entrenamiento como con datos nuevos.
+
+Las causas del desajuste incluyen:
+
+- El modelo es demasiado simple para la complejidad del problema.
+- El entrenamiento se detuvo demasiado pronto (no hay suficientes épocas).
+- Las características de los datos no son lo suficientemente informativas.
+
+Si el sobreajuste es como memorizar trabajos anteriores, el desajuste es como entrar al examen sin apenas abrir el libro de texto.
+
+<Quiz question="Un modelo obtiene una precisión del 98 % en los datos de entrenamiento, pero solo del 60 % en los datos nuevos. ¿Cuál es el problema más probable?" options="Falta de adaptación|Sobreajuste|Los datos son demasiado pequeños.|El modelo es demasiado simple." answer="1" explanation="Una gran brecha entre el rendimiento del entrenamiento (98%) y el rendimiento con datos nuevos (60%) es el signo clásico de sobreajuste: el modelo ha memorizado los datos del entrenamiento en lugar de aprender patrones generalizables." />
+
+## Conjuntos de validación y prueba
+
+Para detectar sobreajuste y desajuste, dividimos nuestros datos en tres partes:
+
+| Conjunto | Propósito | Cuando se usa |
+|-----|---------|-----------|
+| **Conjunto de entrenamiento** | El modelo aprende de estos datos | Durante el entrenamiento |
+| **Conjunto de validación** | Se utiliza para verificar el progreso y ajustar la configuración | Durante el entrenamiento |
+| **Conjunto de prueba** | Evaluación final sobre datos completamente invisibles | Después del entrenamiento |
+
+Una división común es 70% de capacitación, 15% de validación y 15% de prueba. El modelo *nunca* ve el conjunto de pruebas hasta el final: es el examen final.
+
+<ThinkAboutIt>El conjunto de validación es como una prueba de práctica que se realiza entre sesiones de estudio. Te indica qué tan bien estás aprendiendo sin estropear el examen real. Si los puntajes de sus exámenes de práctica comienzan a bajar mientras los puntajes de sus notas de estudio siguen aumentando, sabrá que algo anda mal.
+</ThinkAboutIt>
+
+## Cuándo dejar de entrenar
+
+Saber cuándo parar es crucial. Si se entrena muy poco, el modelo no queda bien. Entrena demasiado y se adapta demasiado. El punto óptimo es donde **la pérdida de validación deja de mejorar**.
+
+Una técnica llamada **detención anticipada** automatiza esto:
+
+1. Supervise la pérdida de validación después de cada época.
+2. Si no ha mejorado durante un número determinado de épocas (llamado **paciencia**), deje de entrenar.
+3. Vuelva a los pesos de la mejor época.
+
+Esto evita que el modelo pase del punto de aprendizaje útil y caiga en la memorización.
+
+<Quiz question="¿Qué es la ”detención anticipada” en el entrenamiento de IA?" options="Detener el entrenamiento antes de que se procese cualquier dato|Detenerse cuando la computadora se queda sin memoria|Detener el entrenamiento cuando el rendimiento de la validación deja de mejorar|Eliminar neuronas que no contribuyen" answer="2" explanation="La detención temprana monitorea la pérdida de validación y detiene el entrenamiento cuando deja de mejorar, evitando que el modelo se sobreajuste al entrenar demasiado." />
+
+<FunFact>Algunas carreras de entrenamiento modernas utilizan una técnica llamada programación de ritmo de aprendizaje, que reduce gradualmente cuánto cambian los pesos con cada paso, como dar pasos más pequeños y más cuidadosos a medida que se acerca a la cima de una montaña.
+</FunFact>
+
+## Conclusiones clave
+
+- El **bucle de entrenamiento** se repite: predecir → comparar → ajustar → repetir.
+- Una **función de pérdida** mide qué tan lejos están las predicciones de la verdad.
+- Una **época** es un paso completo por los datos de entrenamiento.
+- **Sobreajustar** significa memorizar datos; **desequilibrar** significa no aprender lo suficiente.
+- Los datos se dividen en conjuntos de **formación**, **validación** y **prueba**.
+- **Parar temprano** evita que el entrenamiento vaya demasiado lejos.
+
+En la lección final, exploraremos las **dimensiones éticas** de la IA: prejuicios, equidad, privacidad y cómo es una IA responsable.

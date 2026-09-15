@@ -1,0 +1,128 @@
+---
+title: "Introducción a las redes neuronales: cómo piensa la IA en capas"
+description: "Explore cómo las redes neuronales imitan el cerebro, procesan información a través de capas y aprende de sus errores."
+order: 3
+difficulty: "beginner"
+duration: 18
+icon: "🕸️"
+published: true
+machineTranslated: true
+---
+# Introducción a las redes neuronales
+
+Los árboles de decisión y KNN son poderosos, pero la tecnología detrás de la IA más impresionante de la actualidad (desde ChatGPT hasta autos sin conductor) es la **red neuronal**. Inspiradas en el cerebro humano, las redes neuronales pueden aprender patrones increíblemente complejos que los algoritmos más simples no pueden.
+
+Despeguemos las capas y veamos cómo funcionan.
+
+## La analogía del cerebro
+
+Su cerebro contiene aproximadamente 86 mil millones de **neuronas** conectadas por billones de **sinapsis**. Cuando aprendes algo nuevo, ciertas neuronas se activan juntas y las conexiones entre ellas se fortalecen. Esto a menudo se resume como: *neuronas que se activan juntas, se conectan juntas.*
+
+Las redes neuronales artificiales toman prestada esta idea. Utilizan **neuronas artificiales** (pequeñas funciones matemáticas) conectadas en red. Cuando la red practica con datos, las conexiones que conducen a respuestas correctas se fortalecen y las que conducen a respuestas incorrectas se debilitan.
+
+<FunFact>La primera neurona artificial, el perceptrón, fue inventada en 1958 por Frank Rosenblatt. Sólo pudo aprender patrones simples, pero sentó las bases de todo lo que tenemos hoy.
+</FunFact>
+
+## Los tres tipos de capas
+
+Cada red neuronal tiene tres tipos de capas:
+
+### 1. Capa de entrada
+Aquí es donde los datos ingresan a la red. Cada neurona de esta capa recibe una característica del conjunto de datos. Para una imagen de 28×28 píxeles, la capa de entrada tendría 784 neuronas, una por cada píxel.
+
+### 2. Capas ocultas
+Éstas son las capas entre la entrada y la salida donde ocurre el verdadero aprendizaje. Cada neurona recibe información, la procesa y transmite el resultado. Una red puede tener una capa oculta o cientos: cuantas más capas, más "profunda" será la red.
+
+### 3. Capa de salida
+Esta capa produce la respuesta final. Para un clasificador de dígitos (0 a 9), la capa de salida tiene 10 neuronas, cada una de las cuales representa la probabilidad de un dígito diferente.
+
+<Illustration src="/images/lessons/neural-networks-intro.svg" alt="Un diagrama que muestra tres capas de una red neuronal: la capa de entrada a la izquierda, dos capas ocultas en el medio y la capa de salida a la derecha, con flechas que conectan las neuronas entre las capas." caption="Una red neuronal procesa datos a través de capas (entrada, oculta y salida) para llegar a una predicción." />
+
+<Quiz question="¿Cuál es el papel de las capas ocultas en una red neuronal?" options="Almacenan los datos de entrenamiento originales.|Muestran la predicción final al usuario.|Procesan entradas y aprenden patrones complejos.|Limpian y formatean los datos sin procesar." answer="2" explanation="Las capas ocultas son donde tiene lugar el aprendizaje real. Cada capa extrae patrones cada vez más complejos de los datos a medida que fluyen a través de la red." />
+
+## Pesos y sesgos: las perillas de volumen
+
+Cada conexión entre dos neuronas tiene un **peso**, un número que controla cuánta influencia tiene una neurona sobre la siguiente. Piense en los pesos como **perillas de volumen**: subir uno hace que la conexión sea más fuerte; bajarlo lo hace más silencioso.
+
+Cada neurona también tiene un **sesgo**: un número que desplaza la salida hacia arriba o hacia abajo, como ajustar el volumen de referencia antes de que llegue cualquier señal.
+
+Cuando una red neuronal aprende, en realidad simplemente está **ajustando miles o millones de estos pesos y sesgos** hasta que encuentra la combinación que ofrece las mejores predicciones.
+
+<ThinkAboutIt>Imagina que estás mezclando música y tienes cientos de controles de volumen, uno para cada instrumento y micrófono. Obtener la mezcla perfecta significa ajustar cuidadosamente cada perilla. Así es entrenar una red neuronal, excepto que hay millones de botones ajustados automáticamente.
+</ThinkAboutIt>
+
+## Cómo aprende una red neuronal
+
+El aprendizaje ocurre en un ciclo con cuatro pasos:
+
+### Paso 1: Pase hacia adelante
+Los datos fluyen a través de la red desde la entrada hasta la salida. Cada neurona multiplica sus entradas por sus pesos, suma su sesgo y pasa el resultado a través de una **función de activación** (que decide si la neurona debe "dispararse" o permanecer en silencio). La red produce una predicción.
+
+### Paso 2: Calcular el error
+La predicción se compara con la respuesta correcta. La diferencia es el **error** (también llamado **pérdida**). Una predicción de "7" cuando la respuesta es "3" produce un gran error; una predicción de "3" produce una pequeña.
+
+### Paso 3: Propagación hacia atrás
+El error se envía **hacia atrás** a través de la red. Cada peso aprende cuánto contribuyó al error. Esta es la magia matemática de la **propagación hacia atrás**: determina qué botones girar y en qué medida.
+
+### Paso 4: Actualizar pesos
+Las ponderaciones y los sesgos se ajustan ligeramente para reducir el error. Luego, el ciclo se repite con el siguiente dato.
+
+<Callout>Una red neuronal no aprende de una sola vez. Repite este ciclo miles o millones de veces, mejorando gradualmente con cada pasada, de forma muy parecida a cómo se mejora una habilidad a través de la práctica.
+</Callout>
+
+<Quiz question="¿Qué hace la retropropagación en una red neuronal?" options="Envía datos a través de la red.|Elimina neuronas que no son útiles.|Envía el error hacia atrás para actualizar los pesos.|Agrega nuevas capas a la red" answer="2" explanation="La retropropagación calcula cuánto contribuyó cada peso al error y envía esa información hacia atrás a través de la red para que se puedan ajustar los pesos." />
+
+## Tutorial visual: Clasificación de un dígito escrito a mano
+
+Rastreemos cómo una red neuronal clasifica un "5" escrito a mano del conjunto de datos MNIST:
+
+1. **Entrada:** La imagen de 28×28 píxeles se aplana en 784 números (valores de brillo de píxeles de 0 a 255). Estos ingresan a las 784 neuronas de entrada.
+
+2. **Capas ocultas:** La primera capa oculta puede detectar curvas y bordes simples. La segunda capa oculta las combina en formas como bucles y trazos. Las capas más profundas reconocen patrones similares a dígitos.
+
+3. **Salida:** Las 10 neuronas de salida producen probabilidades. La red podría generar:
+   - Dígito 3: 5% de confianza
+   - Dígito 5: 89% de confianza
+   - Dígito 8: 4% confiado
+   - Todos los demás: menos del 1%
+
+4. **Decisión:** La red elige el dígito con mayor probabilidad: **5**. ¡Correcto!
+
+5. **Si es incorrecto:** La retropropagación ajusta los pesos para que la próxima vez el dígito correcto obtenga una puntuación más alta.
+
+<FunFact>Las redes neuronales modernas pueden clasificar dígitos escritos a mano con una precisión superior al 99,7%, mejor que la mayoría de los humanos. El conjunto de datos MNIST se ha vuelto tan "fácil" para la IA que los investigadores ahora utilizan puntos de referencia más estrictos para probar nuevos modelos.
+</FunFact>
+
+<ThinkAboutIt>Cuando miras un "5" escrito a mano, tu cerebro no analiza los píxeles individuales. Reconoces la forma general al instante. Las redes neuronales aprenden a hacer algo similar, pero construyen esa comprensión capa por capa, empezando por los píxeles y avanzando hasta las formas.
+</ThinkAboutIt>
+
+## Funciones de activación: los guardianes
+
+No todas las señales deberían pasar a través de una neurona con toda su fuerza. **Funciones de activación** actúan como guardianes que deciden si una neurona debe activarse y en qué medida.
+
+La función de activación más común en la actualidad es **ReLU** (Unidad lineal rectificada). Tiene una regla simple: si la entrada es positiva, déjela pasar sin cambios; si es negativo, genera cero. Esta simplicidad hace que el cálculo sea rápido y al mismo tiempo permite que la red aprenda patrones complejos.
+
+Sin funciones de activación, no importa cuántas capas apiles, la red solo podría aprender relaciones lineales simples, como dibujar líneas rectas a través de datos. Las funciones de activación brindan a las redes neuronales la capacidad de aprender curvas, límites y patrones intrincados.
+
+## ¿Por qué el aprendizaje "profundo"?
+
+Cuando una red neuronal tiene **muchas capas ocultas**, se llama **red neuronal profunda** y su entrenamiento se llama **aprendizaje profundo**. La profundidad permite que la red aprenda jerarquías de características:
+
+- **Capa 1:** Detecta bordes y degradados.
+- **Capa 2:** Combina bordes en texturas y formas simples.
+- **Capa 3:** Reconoce partes de objetos (ojos, ruedas, letras).
+- **Capa 4+:** Identifica objetos y escenas completos.
+
+Este enfoque en capas es la razón por la que el aprendizaje profundo sobresale en tareas complejas como el reconocimiento de imágenes, la comprensión del lenguaje y los juegos.
+
+<Quiz question="¿Por qué las redes neuronales con muchas capas ocultas se denominan aprendizaje ”profundo”?" options="Porque requieren conocimientos matemáticos profundos.|Porque procesan datos a través de muchas capas de complejidad creciente.|Porque tardan mucho en entrenar.|Porque utilizan conjuntos de datos muy grandes." answer="1" explanation="Lo ”profundo” en el aprendizaje profundo se refiere a las muchas capas de la red. Cada capa aprende características cada vez más complejas, lo que permite a la red comprender patrones sofisticados." />
+
+## Conclusiones clave
+
+- Las redes neuronales están inspiradas en las **neuronas y sinapsis** del cerebro.
+- Tienen tres tipos de capas: **entrada**, **oculta** y **salida**.
+- **Pesos** y **sesgos** son las perillas ajustables que controlan el aprendizaje.
+- El aprendizaje sigue un ciclo: **paso hacia adelante → error → propagación hacia atrás → actualización**.
+- **El aprendizaje profundo** utiliza muchas capas ocultas para aprender patrones complejos.
+
+En la próxima lección, nos centraremos en el **proceso de entrenamiento**: cómo se enseña realmente a una red neuronal a volverse más inteligente con el tiempo.

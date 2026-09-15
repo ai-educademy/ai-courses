@@ -1,0 +1,224 @@
+---
+title: "Sobreajuste y desajuste: por qué fallan los modelos de aprendizaje automático"
+description: "Comprenda los dos modos de falla más comunes del aprendizaje automático (sobreajuste y desajuste) con ejemplos claros y cómo solucionarlos."
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Sobreajuste y desajuste: por qué fallan los modelos de aprendizaje automático
+
+Ha entrenado su primer modelo de aprendizaje automático. Funciona de manera brillante con tus datos de entrenamiento: ¡98% de precisión! Lo pruebas con datos nuevos y se desmorona: 61% de precisión. ¿Qué salió mal?
+
+Es casi seguro que su modelo tiene **sobreajuste**. Este es uno de los dos modos de falla más comunes en el aprendizaje automático, y comprenderlo (junto con su opuesto, el **desajuste**) es esencial para construir modelos que realmente funcionen en el mundo real.
+
+## 📐 La compensación entre sesgo y varianza
+
+Antes de profundizar en los ejemplos, es útil comprender el marco teórico detrás de estos conceptos: el **compromiso sesgo-varianza**.
+
+Todo modelo comete errores de predicción. Esos errores se pueden descomponer en tres partes:
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**Sesgo** es el error resultante de suposiciones erróneas en el modelo. Un modelo de alto sesgo es demasiado simple: sistemáticamente omite el verdadero patrón de los datos.
+
+**Varianza** es el error de la sensibilidad a pequeñas fluctuaciones en los datos de entrenamiento. Un modelo de alta varianza es demasiado complejo: memoriza los datos de entrenamiento, incluido su ruido, en lugar de aprender el patrón subyacente.
+
+**Ruido irreducible** es la aleatoriedad natural de los datos que ningún modelo puede eliminar.
+
+La compensación: reducir el sesgo tiende a aumentar la varianza y viceversa. Su trabajo como profesional del aprendizaje automático es encontrar el punto óptimo.
+
+## 📈 Inadecuación: Demasiado sencillo de aprender
+
+**El ajuste insuficiente** ocurre cuando su modelo es demasiado simple para capturar el patrón real en los datos. Tiene un rendimiento deficiente *tanto* con datos de entrenamiento como con datos nuevos.
+
+### Un ejemplo visual
+
+Imagine que tiene datos que muestran los precios de la vivienda según el tamaño. La verdadera relación es más o menos una curva suave: los precios aumentan con el tamaño, pero con cierto estancamiento en el extremo superior.
+
+Si ajustas una línea recta horizontal a estos datos:
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+El modelo ignora la relación real entre el tamaño de la casa y el precio. No importa si le muestra datos de entrenamiento o datos nuevos: de cualquier manera está mal.
+
+### Signos de desadaptación
+- Alto error de entrenamiento Y alto error de prueba
+- Las predicciones del modelo se agrupan alrededor de una media independientemente de la entrada.
+- Las curvas de aprendizaje muestran que tanto el error de entrenamiento como el de validación son altos y están muy juntos
+
+### Causas del desajuste
+- El modelo es demasiado simple para la complejidad de los datos (por ejemplo, modelo lineal para datos no lineales).
+- Muy pocas épocas de entrenamiento (el modelo no ha tenido tiempo de aprender)
+- Regularización demasiado agresiva (ver más abajo)
+- Faltan características importantes en la entrada.
+
+## 📉 Sobreajuste: demasiado complejo, memorizar ruido
+
+El **sobreajuste** ocurre cuando su modelo aprende los datos de entrenamiento *demasiado bien* (incluido su ruido y variación aleatoria) y no logra generalizar a nuevos ejemplos.
+
+### Un ejemplo visual
+
+Usando un polinomio de 15 grados para ajustar los mismos datos del precio de la vivienda:
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+El polinomio se ha retorcido en nudos para pasar por cada punto de entrenamiento, incluidos los ruidosos valores atípicos. Ha memorizado el conjunto de entrenamiento en lugar de aprender el patrón subyacente. Con datos invisibles, es inútil.
+
+<FunFact>Un modelo que memoriza perfectamente todos sus datos de entrenamiento a veces se denomina "el peor modelo del mundo": tiene una precisión de entrenamiento del 100 % pero no puede generalizar en absoluto, lo que lo hace completamente inútil para su propósito real.</FunFact>
+
+### Signos de sobreajuste
+- Error de entrenamiento muy bajo, pero error de prueba mucho mayor (una gran **brecha de generalización**)
+- El rendimiento del modelo se degrada significativamente con cualquier dato nuevo.
+- El modelo es sorprendentemente sensible a pequeños cambios en la entrada.
+
+## 🔀 Capacitación / Validación / Prueba dividida
+
+Una herramienta fundamental para detectar el sobreajuste es dividir los datos en tres conjuntos:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **Conjunto de entrenamiento**: de qué aprende el modelo
+- **Conjunto de validación**: lo que se utiliza para ajustar los hiperparámetros y detectar el sobreajuste *durante el desarrollo*
+- **Conjunto de prueba**: la evaluación final retenida; tócala solo una vez, al final
+
+El conjunto de validación es su sistema de alerta temprana. Si la precisión del entrenamiento sigue mejorando pero la precisión de la validación se estabiliza o disminuye, estás sobreajustando.
+
+<ThinkAboutIt>¿Por qué es importante mantener el equipo de prueba completamente separado y usarlo solo una vez? ¿Qué podría salir mal si evaluara repetidamente el conjunto de prueba y realizara ajustes en función de él?</ThinkAboutIt>
+
+## 🛡️ Soluciones para el sobreajuste
+
+### 1. Regularización
+
+La regularización añade una penalización a la función de pérdida que disuade al modelo de aprender patrones demasiado complejos.
+
+**Regularización L2 (Ridge)** penaliza pesos grandes:
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**Regularización L1 (Lazo)** puede llevar algunos pesos hasta cero, realizando la selección de características:
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Abandono (redes neuronales)
+
+Durante el entrenamiento, "abandona" aleatoriamente (se pone a cero) una proporción de neuronas:
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+Esto evita que las neuronas se coadapten y obliga a la red a aprender representaciones distribuidas más sólidas.
+
+### 3. Parada anticipada
+
+Monitoree la pérdida de validación durante el entrenamiento y deténgase cuando comience a aumentar:
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. Más datos de entrenamiento
+
+Más datos hacen que al modelo le resulte más difícil memorizar el ruido: simplemente hay demasiados para ajustarlos exactamente. Cuando la recopilación de datos es costosa, el **aumento de datos** (crear copias modificadas de ejemplos existentes) puede ayudar.
+
+### 5. Arquitectura más simple
+
+A veces, la solución correcta es simplemente elegir un modelo menos complejo para el problema.
+
+## 🔄 Validación cruzada
+
+Con conjuntos de datos pequeños, una única división tren/val puede ser engañosa debido a la aleatoriedad. **La validación cruzada de K veces** proporciona una estimación más confiable:
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+Los datos se dividen en 5 pliegues; el modelo entrena en 4 y valida en 1, rotando cada vez. La puntuación final es el promedio de los 5, mucho más confiable que una sola división.
+
+<Quiz question="Un modelo logra una precisión del 99 % en los datos de entrenamiento, pero solo del 62 % en los datos de prueba. ¿Qué indica esto?" options="El modelo no es adecuado: es demasiado simple|El modelo está perfectamente calibrado.|El modelo está sobreajustado: ha memorizado los datos de entrenamiento en lugar de generalizar|El conjunto de datos de prueba debe estar roto." answer="2" explanation="Una gran brecha entre la precisión del entrenamiento (99%) y la precisión de las pruebas (62%) es la firma clásica del sobreajuste. El modelo ha memorizado los datos de entrenamiento, incluido su ruido, y no logra generalizar a nuevos ejemplos." />
+
+## Conclusiones clave
+
+- **Subadaptación** (sesgo alto): el modelo es demasiado simple; tiene un rendimiento deficiente *tanto* con datos de entrenamiento como de prueba; solucionelo usando un modelo más complejo o agregando funciones
+- **Sobreajuste** (alta varianza): el modelo es demasiado complejo; funciona muy bien con datos de entrenamiento, pero deficiente con datos de prueba; se soluciona regularizando, agregando datos o simplificando el modelo.
+- La **compensación entre sesgo y varianza** es la tensión fundamental: reducir uno tiende a aumentar el otro; tu objetivo es encontrar el punto óptimo
+- Siempre divida los datos en conjuntos **entrenamiento/validación/prueba**: el conjunto de prueba solo debe tocarse una vez, al final.
+- **Correcciones clave para el sobreajuste**: regularización L1/L2, abandono, detención anticipada, más datos, arquitectura más simple
+- **La validación cruzada** proporciona una estimación de rendimiento más confiable cuando los datos son limitados, al promediar los resultados en múltiples divisiones de tren/validación.

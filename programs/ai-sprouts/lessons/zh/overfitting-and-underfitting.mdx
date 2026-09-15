@@ -1,0 +1,224 @@
+---
+title: "过度拟合和欠拟合：机器学习模型为何失败"
+description: "通过清晰的示例以及如何修复它们，了解两种最常见的机器学习故障模式（过度拟合和欠拟合）。"
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# 过度拟合和欠拟合：机器学习模型为何失败
+
+您已经训练了第一个机器学习模型。它在您的训练数据上表现出色 — 准确率高达 98%！你用新数据测试它，它崩溃了：准确率 61%。出了什么问题？
+
+几乎可以肯定，您的模型存在**过拟合**。这是机器学习中两种最常见的故障模式之一，理解它以及它的相反的**欠拟合**对于构建在现实世界中实际工作的模型至关重要。
+
+## 📐 偏差-方差权衡
+
+在深入示例之前，了解这些概念背后的理论框架会有所帮助：**偏差-方差权衡**。
+
+每个模型都会出现预测错误。这些错误可以分解为三个部分：
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**偏差**是模型中错误假设造成的误差。高偏差模型太简单了——它系统性地错过了数据中的真实模式。
+
+**方差**是对训练数据小波动的敏感性产生的误差。高方差模型太复杂——它记住训练数据，包括其噪声，而不是学习底层模式。
+
+**不可减少的噪声**是数据中的自然随机性，任何模型都无法消除。
+
+权衡：减少偏差往往会增加方差，反之亦然。作为机器学习从业者，你的工作就是找到最佳点。
+
+## 📈 欠拟合：太简单了，难以学习
+
+当您的模型太简单而无法捕获数据中的真实模式时，就会出现**欠拟合**。它在训练数据和新数据上都表现不佳。
+
+### 一个视觉示例
+
+想象一下，您有根据面积显示房价的数据。真正的关系大致是一条平缓的曲线——价格随着规模的大小而上升，但在顶端会趋于稳定。
+
+如果您将此数据拟合为一条水平直线：
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+该模型忽略了房屋面积和价格之间的实际关系。无论你向它显示训练数据还是新数据，这并不重要——无论哪种方式都是错误的。
+
+### 欠拟合的迹象
+- 高训练误差和高测试误差
+- 无论输入如何，模型预测都会围绕平均值聚集
+- 学习曲线显示训练和验证误差都很高并且接近
+
+### 欠拟合的原因
+- 模型对于数据的复杂性来说过于简单（例如，非线性数据的线性模型）
+- 训练次数太少（模型没有时间学习）
+- 正则化过于激进（见下文）
+- 输入中缺少重要功能
+
+## 📉 过度拟合：太复杂，记忆噪音
+
+当您的模型“太好”学习训练数据（包括其噪声和随机变化）并且无法推广到新示例时，就会发生**过度拟合**。
+
+### 一个视觉示例
+
+使用 15 次多项式拟合相同的房价数据：
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+多项式将自己扭曲成结以通过每个训练点 - 包括嘈杂的异常值。它记住了训练集，而不是学习底层模式。对于看不见的数据，它是没有用的。
+
+<FunFact>完美记住所有训练数据的模型有时被称为“世界上最糟糕的模型”——它具有 100% 的训练准确率，但根本无法泛化，使其完全无法实现其实际目的。</FunFact>
+
+### 过度拟合的迹象
+- 训练误差非常低，但测试误差却高得多（较大的**泛化差距**）
+- 模型性能在任何新数据上都会显着下降
+- 该模型对输入的微小变化非常敏感
+
+## 🔀 训练/验证/测试拆分
+
+检测过度拟合的基本工具是将数据分为三组：
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **训练集**：模型从中学习的内容
+- **验证集**：*在开发过程中*用于调整超参数和检测过度拟合的内容
+- **测试集**：最终的、保留的评估 - 在最后仅触摸一次
+
+验证集是您的预警系统。如果训练准确性不断提高，但验证准确性停滞不前或下降，则表明您过度拟合。
+
+<ThinkAboutIt>为什么将测试集完全分开并且只使用一次很重要？如果反复对测试集进行评估并据此进行调整，会出现什么问题？</ThinkAboutIt>
+
+## 🛡️ 修复过度拟合
+
+### 1.正则化
+
+正则化对损失函数增加了惩罚，阻止模型学习过于复杂的模式。
+
+**L2 正则化（岭）** 惩罚大权重：
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**L1 正则化（Lasso）** 可以将一些权重一直驱动到零，执行特征选择：
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Dropout（神经网络）
+
+在训练期间，随机“丢弃”（设置为零）一定比例的神经元：
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+这可以防止神经元共同适应并迫使网络学习更稳健的分布式表示。
+
+### 3. 提前停止
+
+在训练期间监控验证损失并在其开始增加时停止：
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4.更多训练数据
+
+数据越多，模型就越难记住噪声——数据太多，无法准确拟合。当数据收集成本高昂时，**数据扩充**（创建现有示例的修改副本）可以提供帮助。
+
+### 5.更简单的架构
+
+有时，正确的解决方法就是为问题选择一个不太复杂的模型。
+
+## 🔄 交叉验证
+
+对于小型数据集，由于随机性，单个训练/验证分割可能会产生误导。 **K 折交叉验证** 给出了更可靠的估计：
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+数据被分成5份；该模型在 4 上进行训练并在 1 上进行验证，每次都会轮换。最终分数是所有 5 个分数的平均值——比单一分数可靠得多。
+
+<Quiz question="模型在训练数据上的准确率达到 99%，但在测试数据上的准确率仅为 62%。这说明什么？" options="该模型欠拟合——太简单了|该模型已完美校准|该模型过度拟合——它记住了训练数据而不是概括|测试数据集必须被破坏" answer="2" explanation="训练准确率 (99%) 和测试准确率 (62%) 之间的巨大差距是过度拟合的典型特征。该模型已经记住了训练数据，包括其噪声，并且无法推广到新的示例。" />
+
+## 要点
+
+- **欠拟合**（高偏差）：模型太简单；它在训练和测试数据上的表现都很差——通过使用更复杂的模型或添加功能来修复
+- **过度拟合**（高方差）：模型过于复杂；它在训练数据上表现很好，但在测试数据上表现不佳——通过正则化、添加数据或简化模型来修复
+- **偏差-方差权衡**是根本的张力：减少一个往往会增加另一个；你的目标是找到最佳点
+- 始终将数据分成**训练/验证/测试**集 - 测试集只能在最后被触及一次
+- **过度拟合的关键修复**：L1/L2 正则化、dropout、早期停止、更多数据、更简单的架构
+- **交叉验证**在数据有限时通过对多个训练/验证分割的结果进行平均来提供更可靠的性能估计

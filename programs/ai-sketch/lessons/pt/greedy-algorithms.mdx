@@ -1,0 +1,133 @@
+---
+title: "Algoritmos gananciosos – quando escolhas locais levam a soluções globais"
+description: "Aprenda quando fazer a escolha localmente ideal em cada etapa realmente produz o resultado globalmente ideal e quando isso não acontece."
+order: 9
+difficulty: "intermediate"
+duration: 17
+icon: "🏃"
+published: true
+machineTranslated: true
+---
+## O que torna um algoritmo ganancioso?
+
+Um algoritmo ganancioso constrói uma solução **um passo de cada vez**, sempre escolhendo a opção que parece melhor **agora** - sem reconsiderar escolhas anteriores. Sem retrocesso, sem olhar para frente.
+
+Funciona quando duas propriedades são válidas:
+1. **Propriedade de escolha gananciosa** - uma escolha localmente ótima leva a uma solução globalmente ótima.
+2. **Subestrutura ótima** - o problema restante após cada escolha é uma instância menor do mesmo problema.
+
+## Seleção de atividades - o exemplo clássico
+
+Dado um conjunto de atividades com horários de início e término, selecione o **número máximo** de atividades não sobrepostas.
+
+**Estratégia gananciosa:** classifique por horário de término, sempre escolha a atividade que termina mais cedo.
+
+```python
+def max_activities(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count, end = 0, 0
+    for s, e in intervals:
+        if s >= end:
+            count += 1
+            end = e
+    return count
+```
+
+Por que isso funciona? Escolher a atividade que termina mais cedo deixa mais espaço para atividades futuras. Nenhuma outra escolha pode fazer melhor.
+
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Linha do tempo mostrando a seleção de atividades por horário de término mais próximo" caption="A seleção pelo horário de término mais próximo maximiza o número de atividades não sobrepostas." />
+
+## Codificação Huffman - Conceito
+
+Crie um código binário ideal sem prefixo mesclando repetidamente os **dois símbolos de frequência mais baixa**. Isso é ganancioso: a cada passo, junte o par mais barato. O resultado é uma árvore onde símbolos frequentes recebem códigos curtos.
+
+<FunFact>A codificação Huffman é usada na compactação JPEG, MP3 e ZIP. David Huffman inventou-o quando era estudante em 1952 - era um trabalho de casa!</FunFact>
+
+## Jogo de salto
+
+Dado um array onde `nums[i]` é o comprimento máximo do salto do índice `i`, determine se você pode alcançar o último índice.
+
+**Abordagem gananciosa:** rastreie o índice mais distante acessível até o momento. Digitalize da esquerda para a direita - se você ficar para trás, retorne falso.
+
+```python
+def can_jump(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i > farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+```
+
+<Quiz question="No Jump Game, o que representa a variável gananciosa 'mais distante'?" options="A posição atual|O número de saltos dados|O índice máximo acessível a partir de qualquer posição visitada|O comprimento do salto mais longo" answer="2" explanation="'mais distante' rastreia o índice mais à direita acessível a partir de qualquer posição visitada até agora. Se o seu índice atual exceder esse valor, você ficará preso." />
+
+## Posto de gasolina
+
+Percorra uma rota circular com postos de gasolina. Na estação `i` você ganha `gas[i]` de combustível e gasta `cost[i]` para chegar à próxima estação. Encontre a estação inicial que permite completar o circuito ou retorne −1.
+
+**Insight ganancioso:** se o gás total ≥ custo total, existe uma solução. Acompanhe um excedente corrente; sempre que cair abaixo de zero, a resposta deve começar **após** esse ponto.
+
+## Agendador de tarefas
+
+Agende tarefas com um tempo de espera de `n` entre tarefas idênticas. **Ganancioso:** escolha sempre a tarefa restante mais frequente. A resposta depende da frequência máxima e de quantas tarefas a compartilham.
+
+```
+Tasks: A A A B B C, cooldown = 2
+Schedule: A B C A B _ A
+Total = 7
+```
+
+<ThinkAboutIt>No agendador de tarefas, por que escolher a tarefa mais frequente primeiro minimiza os slots ociosos? O que daria errado se você escolhesse primeiro o menos frequente?</ThinkAboutIt>
+
+## Mochila Fracionária vs Mochila 0/1
+
+**Mochila fracionária:** você pode levar frações de itens. Ganancioso funciona - classifique por valor por peso, escolha primeiro a melhor proporção.
+
+**0/1 mochila:** os itens são tudo ou nada. Ganancioso ** falha ** aqui porque pular um item pesado, mas valioso, pode ser pior do que pegar dois itens mais leves. Isso requer programação dinâmica.
+
+```
+Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
+Capacity: 4
+
+Greedy (best ratio first): takes item 1 (w=3, v=4) → 1 remaining → can't fit rest → value = 4
+Optimal: takes items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fails!
+```
+
+<Quiz question="Por que a abordagem gananciosa falha no problema da mochila 0/1?" options="Os itens não podem ser divididos, então o item com melhor proporção pode desperdiçar capacidade|Os itens não estão classificados|Existem muitos itens|Algoritmos gananciosos nunca funcionam para problemas de mochila" answer="0" explanation="Quando você precisa pegar itens inteiros, escolher primeiro a melhor proporção pode deixar capacidade não utilizada que itens menores poderiam ter preenchido de forma mais lucrativa." />
+
+## Quando o ganancioso funciona?
+
+✅ **Funciona** quando você pode provar a propriedade da escolha gananciosa:
+- Programação de intervalo, codificação Huffman, árvores geradoras mínimas, algoritmo de Dijkstra, troca de moedas com denominações padrão
+
+❌ **Falha** quando os ótimos locais não se compõem nos ótimos globais:
+- Mochila 0/1, caminho mais longo em gráficos gerais, caixeiro viajante
+
+## Provando correção gananciosa - argumento de troca
+
+A técnica padrão: assuma uma solução ótima que **não** use a escolha gananciosa. Mostre que você pode **trocar** uma de suas escolhas pela escolha gananciosa sem piorar a solução. Isso prova que ganancioso é pelo menos tão bom.
+
+<Quiz question="Para que é usado o 'argumento de troca'?" options="Trocando dois elementos em um array|Provar um algoritmo ganancioso produz uma solução ótima|Convertendo recursão em iteração|Otimizando a complexidade do tempo" answer="1" explanation="O argumento da troca prova a correção ao mostrar que qualquer solução ótima pode ser transformada para corresponder à solução gananciosa sem perda de qualidade." />
+
+## Programação gananciosa vs dinâmica
+
+| Aspecto | Ganancioso | Programação Dinâmica |
+|--------|--------|---------------------|
+| Escolhas | Uma melhor escolha por etapa | Explore todos os subproblemas |
+| Revisita o passado? | Nunca | Sim - armazena subresultados |
+| Velocidade | Geralmente mais rápido | Depende do espaço de estados |
+| Correção | Somente se for provável | Sempre (se formulado corretamente) |
+
+Em caso de dúvida, comece ganancioso - se não conseguir provar que funciona, mude para DP.
+
+<FunFact>O algoritmo de caminho mais curto de Dijkstra é ganancioso – ele sempre processa o nó não visitado mais próximo. Funciona porque os pesos das arestas não são negativos, garantindo que a escolha gananciosa seja segura.</FunFact>
+
+<ThinkAboutIt>Você recebe denominações de moedas [1, 3, 4] e precisa fazer troco por 6. A abordagem gananciosa escolhe 4+1+1=3 moedas, mas o ideal é 3+3=2 moedas. E essas denominações quebram a propriedade da escolha gananciosa?</ThinkAboutIt>
+
+---
+
+## 📚 Leitura adicional
+
+- [NeetCode - Playlist gananciosa](https://neetcode.io/roadmap) - problemas gananciosos selecionados com explicações
+- [Manual de entrevista técnica - Ganancioso](https://www.techinterviewhandbook.org/algorithms/greedy/) - quando usar padrões gananciosos e comuns
+- [Algoritmos CP - Algoritmos gananciosos](https://cp-algorithms.com/) - teoria e provas mais profundas

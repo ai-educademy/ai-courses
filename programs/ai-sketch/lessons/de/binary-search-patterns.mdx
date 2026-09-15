@@ -1,0 +1,144 @@
+---
+title: "Binäre Suchmuster – Jenseits sortierter Arrays"
+description: "Lernen Sie die Denkweise der binären Suche kennen: Suchräume, binäre Suche nach Antworten und Muster, die in Dutzenden von Interviewproblemen auftauchen."
+order: 7
+difficulty: "intermediate"
+duration: 17
+icon: "🔍"
+published: true
+machineTranslated: true
+---
+## Klassische binäre Suche – Ein kurzer Überblick
+
+Die binäre Suche halbiert den Suchraum bei jedem Schritt. In einem sortierten Array mit n Elementen wird in **O(log n)** Zeit ein Ziel gefunden.
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+Ganz einfach – aber die wahre Stärke der binären Suche geht weit über sortierte Arrays hinaus.
+
+## Das Search Space-Konzept
+
+Die binäre Suche funktioniert immer dann, wenn in einem Bereich eine **monotone Bedingung** vorliegt. Das „Array“ muss nicht einmal existieren – Sie benötigen lediglich einen Bereich `[lo, hi]` und eine Funktion, die an einer Grenze von `False` auf `True` (oder umgekehrt) wechselt.
+
+```
+Search space:  [lo .................. hi]
+Condition:      F  F  F  F  T  T  T  T
+                          ^-- answer
+```
+
+<FunFact>Die binäre Suche wurde erstmals im Jahr 1946 veröffentlicht, aber die erste fehlerfreie Version wurde erst 1962 geschrieben – 16 Jahre mit Off-by-One-Fehlern!</FunFact>
+
+## Binäre Suche nach Antwort
+
+Anstatt ein Array zu durchsuchen, durchsuchen Sie den **Antwortbereich**. Fragen Sie: „Kann ich Ergebnis X erreichen?“ Wenn ja, versuchen Sie es mit einer kleineren Größe. Wenn nicht, versuchen Sie es größer.
+
+### Beispiel: Koko isst Bananen
+
+Koko hat `n` Haufen Bananen und `h` Stunden. Finden Sie die **minimale Fressgeschwindigkeit**, damit sie rechtzeitig fertig ist.
+
+```python
+def min_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid      # speed works, try slower
+        else:
+            lo = mid + 1  # too slow, go faster
+    return lo
+```
+
+Der Antwortraum ist `[1, max(piles)]` und die Bedingung ist monoton – höhere Geschwindigkeit bedeutet immer weniger Stunden.
+
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="Binäre Suche, die den Antwortraum für minimale Essgeschwindigkeit einschränkt" caption="Binäre Suche nach Antwort: Den möglichen Geschwindigkeitsbereich bei jeder Iteration eingrenzen." />
+
+## Gedrehtes sortiertes Array
+
+Ein sortiertes Array, das an einem Drehpunkt gedreht wurde: `[4, 5, 6, 7, 0, 1, 2]`. Eine Hälfte ist immer sortiert. Vergleichen Sie `mid` mit `lo`, um zu entscheiden, welche Hälfte und prüfen Sie dann, ob das Ziel in die sortierte Hälfte fällt.
+
+```
+[4, 5, 6, 7, 0, 1, 2]
+ L        M        R
+Left half [4..7] is sorted.
+Target 1 not in [4..7] → search right.
+```
+
+<Quiz question="Welche Hälfte wird in einem gedrehten sortierten Array [3,4,5,1,2] sortiert, wenn mid=2 (Wert 5)?" options="Rechte Hälfte [1,2]|Linke Hälfte [3,4,5]|Keine Hälfte|Beide Hälften" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, also wird die linke Hälfte [3,4,5] sortiert. Wir prüfen, ob das Ziel in diesem Bereich liegt. Wenn nicht, suchen wir richtig." />
+
+## Erstes und letztes Vorkommen
+
+Um das **erste** Vorkommen zu finden, halten Sie nicht an, wenn Sie das Ziel erreichen, sondern stellen Sie `hi = mid` ein und suchen Sie weiter nach links. Für den **letzten** stellen Sie `lo = mid + 1` ein und suchen nach rechts.
+
+Dieses Suchpaar liefert Ihnen auch die **Anzahl** eines Ziels: `last - first + 1`.
+
+## Peak-Element
+
+Ein Element, das größer als beide Nachbarn ist. Selbst in einem unsortierten Array funktioniert die binäre Suche: Bei `nums[mid] < nums[mid + 1]` liegt der Peak rechts; sonst ist es links. O(log n).
+
+<ThinkAboutIt>Warum funktioniert die Peak-Suche mit der binären Suche, obwohl das Array nicht sortiert ist? Welche Eigenschaft ersetzt hier die sortierte Reihenfolge?</ThinkAboutIt>
+
+## Suche in einer 2D-Matrix
+
+Wenn Zeilen sortiert sind und das erste Element jeder Zeile größer als das letzte der vorherigen ist, behandeln Sie die Matrix als ein einzelnes sortiertes Array von `m × n` Elementen. Ordnen Sie den Index `k` der Zeile `k // n` und der Spalte `k % n` zu.
+
+## Quadratwurzel ohne Bibliothek
+
+Finden Sie die größte ganze Zahl `x` mit `x * x ≤ n`. Suchraum: `[0, n]`. Klassische binäre Suche nach Antwort.
+
+```python
+def sqrt(n):
+    lo, hi = 0, n
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid <= n:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return hi
+```
+
+## Das Muster „Minimiere das Maximum“.
+
+Bei Problemen wie „Split Array größte Summe“ oder „Kapazität zum Versenden von Paketen innerhalb von D Tagen“ müssen Sie **den schlimmsten Fall minimieren**. Die Antwort ist monoton: Wenn die Kapazität C funktioniert, funktioniert auch C+1. Binäre Suche auf C.
+
+<Quiz question="Wie groß ist der Suchraum für die binäre Suche bei „Kapazität zum Versenden von Paketen in D Tagen”?" options="[0, Gesamtgewicht]|[maximales Einzelgewicht, Gesamtgewicht]|[1, Anzahl der Pakete]|[D, Gesamtgewicht]" answer="1" explanation="Die minimal mögliche Kapazität ist das schwerste Einzelpaket (ansonsten kann es nicht versendet werden). Das Maximum ist das Gesamtgewicht (Versand alles an einem Tag)." />
+
+## Die universelle Vorlage
+
+```python
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if condition(mid):
+        hi = mid        # mid works, try smaller
+    else:
+        lo = mid + 1    # mid fails, need larger
+return lo
+```
+
+Passen Sie `hi = mid` gegenüber `lo = mid` an, je nachdem, ob Sie das **erste Wahre** oder das **letzte Wahre** suchen.
+
+<Quiz question="Wie groß ist die zeitliche Komplexität der binären Suche auf einem Antwortraum der Größe S mit einer O(n)-Machbarkeitsprüfung?" options="An)|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="Sie führen O(log S)-Iterationen der binären Suche durch, wobei jede eine O(n)-Prüfung durchführt und insgesamt O(n log S) ergibt." />
+
+<ThinkAboutIt>Was sollte Ihnen sofort in den Sinn kommen, wenn Sie in einer Problemstellung den Ausdruck „minimal mögliches Maximum“ oder „maximal mögliches Minimum“ sehen?</ThinkAboutIt>
+
+---
+
+## 📚 Weiterführende Literatur
+
+- [NeetCode – Wiedergabeliste für binäre Suche](https://neetcode.io/roadmap) – kuratierte Probleme von leicht bis schwer
+- [Tech Interview Handbook – Binäre Suche](https://www.techinterviewhandbook.org/algorithms/binary-search/) – Muster, Tipps und Fallstricke
+- [LeetCode Binary Search-Studienplan](https://leetcode.com/studyplan/binary-search/) – progressiver Aufgabensatz

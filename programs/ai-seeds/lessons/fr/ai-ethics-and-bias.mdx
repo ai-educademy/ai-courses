@@ -1,0 +1,134 @@
+---
+title: "Éthique et biais de l’IA : quand les machines se trompent"
+description: "Comprendre les préjugés dans les systèmes d’IA et pourquoi l’IA éthique est importante"
+order: 12
+difficulty: "beginner"
+duration: 10
+icon: "⚖️"
+published: true
+machineTranslated: true
+---
+# Éthique et biais de l'IA : quand les machines se trompent ⚖️
+
+Les systèmes d'IA prennent des décisions qui affectent la vie des gens. Qui obtient un prêt. Qui obtient un entretien d'embauche. Si une analyse médicale semble suspecte. Si le visage de quelqu'un correspond à une base de données criminelle.
+
+Ce ne sont pas des possibilités abstraites. Cela se produit en ce moment même – et ils se trompent parfois gravement.
+
+---
+
+## 🤔 Qu'est-ce que le biais de l'IA ?
+
+Le biais de l’IA se produit lorsqu’un système d’IA produit des résultats systématiquement injustes envers certains groupes de personnes.
+
+Le mot important est **systématiquement**. Nous ne parlons pas d’erreurs aléatoires – nous parlons de modèles d’erreurs qui affectent de manière disproportionnée les femmes, les personnes de couleur, les personnes de certaines régions ou d’autres groupes.
+
+Et voici la vérité inconfortable : **Les systèmes d'IA apprennent de nous leurs préjugés**.
+
+<FunFact>Une étude de 2019 a révélé qu’un algorithme de soins de santé largement utilisé aux États-Unis était biaisé à l’encontre des patients noirs, en leur attribuant des scores de risque inférieurs à ceux des patients blancs tout aussi malades, ce qui signifiait qu’ils recevaient moins de soins médicaux. L'algorithme n'avait pas été entraîné directement sur la race ; il a utilisé le coût des soins de santé comme indicateur indirect, ce qui reflétait les inégalités existantes en matière d’accès aux soins de santé.
+</FunFact>
+
+---
+
+## 📚 D'où viennent les biais ?
+
+Les biais dans l'IA commencent presque toujours par les **données d'entraînement**. Voici comment cela s'infiltre :
+
+### Biais historique – Le passé figé dans les données
+
+Si une IA est formée sur les décisions d’embauche historiques et que ces décisions ont historiquement favorisé les hommes pour les rôles techniques, l’IA apprend à reproduire ce modèle. Il ne comprend pas la discrimination – il constate simplement que « les candidats masculins ont tendance à être embauchés » et agit en conséquence.
+
+Amazon a construit un algorithme de recrutement qui déclasse les CV des femmes. Il avait été formé sur 10 ans d’embauches réussies – une période où le recrutement dans le secteur technologique était fortement dominé par les hommes. L’algorithme a été discrètement abandonné lorsque le biais a été découvert.
+
+### Biais de représentation : qui manque dans les données ?
+
+Si vos données de formation n'incluent pas d'exemples diversifiés, l'IA fonctionne mal sur les groupes sous-représentés.
+
+La technologie de reconnaissance faciale en fournit un exemple frappant. Plusieurs systèmes largement utilisés ont été testés et se sont avérés :
+- Identifiez les visages masculins blancs avec une précision supérieure à 99 %
+- Identifiez les visages féminins à la peau plus foncée avec des taux d'erreur pouvant atteindre 34 %
+
+La raison ? Les ensembles de données de formation étaient fortement orientés vers les visages à la peau plus claire. Les systèmes n'ont pas été testés sur diverses populations avant leur déploiement.
+
+### Biais de mesure – Ce que vous mesurez détermine ce que vous obtenez
+
+Si vous mesurez le succès de manière biaisée, votre IA apprend à optimiser les résultats biaisés. Utiliser « l’obtention d’un diplôme d’une grande université » comme indicateur de l’intelligence désavantage les personnes qui n’ont jamais eu l’occasion de fréquenter les meilleures universités – non pas en raison de leur intelligence, mais en raison de leur milieu socio-économique.
+
+---
+
+## 🌍 Conséquences du monde réel
+
+Ce n'est pas académique. Les préjugés de l’IA causent de réels dommages :
+
+**Justice pénale** — COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) était un outil utilisé par les tribunaux américains pour prédire la probabilité de récidive. Une enquête menée en 2016 par ProPublica a révélé que les accusés noirs étaient qualifiés de « à haut risque », soit près de deux fois plus que les accusés blancs, même en tenant compte des antécédents criminels.
+
+**Soins de santé** — L'algorithme de soins de santé mentionné ci-dessus a dirigé moins de soins préventifs vers les patients noirs qui étaient aussi malades que les patients blancs recevant plus de ressources.
+
+**Prêts** — Plusieurs études ont révélé que les outils de prêt algorithmiques autorisent les prêts aux candidats blancs à des taux plus élevés que ceux des candidats noirs ou hispaniques tout aussi solvables.
+
+**Emploi** — Il a été constaté que les outils de sélection de CV par l'IA pénalisent des mots tels que « femme » (comme dans « club d'échecs pour femmes ») ou filtrent les diplômés des universités historiquement noires.
+
+<ThinkAboutIt>Si un algorithme prend des milliers de décisions par jour, un petit pourcentage d’erreur se traduit par un nombre énorme de personnes réelles affectées. Un taux d'erreur de 5 % sur un système traitant 10 000 demandes de prêt signifie que 500 personnes obtiennent chaque jour un résultat qu'elles ne méritent pas. L'échelle change-t-elle votre vision de ce qu'est un taux d'erreur « acceptable » ?
+</ThinkAboutIt>
+
+---
+
+## 🔬Pourquoi est-ce difficile à résoudre ?
+
+Vous pensez peut-être : « Ne pouvons-nous pas simplement vérifier les préjugés et les supprimer ? » Si seulement c'était aussi simple.
+
+**Le problème du proxy** : les systèmes d'IA peuvent effectuer une discrimination sans utiliser directement les caractéristiques protégées. Le code postal est en corrélation avec la race en raison de la ségrégation historique. Les habitudes d'achat sont corrélées aux revenus. Les modèles de voix sont en corrélation avec l'accent et la région. Vous pouvez supprimer la « race » des données, mais l'algorithme peut toujours apprendre à discriminer.
+
+**Compromis entre les mesures d'équité** : Il existe mathématiquement différentes manières de définir « équitable ». Un système qui a des taux d’erreur égaux entre les groupes produira des résultats globaux différents d’un système qui donne des taux positifs égaux. Satisfaire simultanément à toutes les définitions est souvent mathématiquement impossible.
+
+**Boucles de rétroaction** : si une IA décide qui sera surveillé de plus près, ces communautés connaîtront davantage de crimes enregistrés, ce qui entraînera la prochaine IA à les surveiller encore plus durement – un cycle qui s'auto-renforce.
+
+---
+
+## 🌟 Pourquoi la diversité dans les équipes d'IA est importante
+
+L'un des moyens les plus efficaces de détecter les préjugés avant qu'ils ne causent des dommages est de faire appel à des **équipes diversifiées** pour créer des systèmes d'IA.
+
+Les équipes homogènes ont des angles morts. Lorsque toutes les personnes présentes dans une pièce partagent des parcours, des expériences de vie et des hypothèses similaires, elles sont moins susceptibles de se demander : « Mais comment cela affecterait-il quelqu'un qui ne nous ressemble pas ?
+
+Une équipe diversifiée est plus susceptible de :
+- Remarquez quand les données d'entraînement manquent des groupes importants
+- Se demander si une mesure de résultat est juste pour tout le monde
+- Plaider pour les tests sur les populations sous-représentées
+- Anticiper les conséquences inattendues
+
+<FunFact>Une étude de McKinsey a révélé que les entreprises dotées d'équipes de direction diversifiées sont 36 % plus susceptibles de surperformer en termes de rentabilité – et dans les entreprises de produits d'IA en particulier, les équipes diversifiées sont plus à même de créer des produits qui fonctionnent pour divers utilisateurs.
+</FunFact>
+
+---
+
+## 🛡️ Construire une IA plus éthique
+
+La communauté de recherche en IA travaille activement sur des solutions :
+
+**Audit algorithmique** – Tester systématiquement les systèmes d'IA dans différents groupes démographiques avant et après le déploiement pour détecter les disparités.
+
+**Ensembles de données diversifiés et représentatifs** — Créer délibérément des ensembles de données de formation qui incluent des groupes sous-représentés et documenter qui est et n'est pas inclus.
+
+**Outils d'explicabilité** — Techniques qui aident les humains à comprendre pourquoi une IA a pris une décision spécifique, facilitant ainsi la détection de schémas injustes.
+
+**Réglementation et responsabilité** — La loi de l'UE sur l'IA et des législations similaires créent des exigences légales pour que certains systèmes d'IA à haut risque soient audités pour détecter tout biais.
+
+**Conception participative** — Impliquer les communautés qui seront les plus affectées par un système d'IA dans sa conception et ses tests.
+
+---
+
+## 🎯 Ce que vous pouvez faire
+
+Vous n'avez pas besoin d'être un ingénieur en machine learning pour contribuer à une IA éthique :
+
+- **Posez des questions** lorsque des systèmes d'IA sont déployés dans le cadre de décisions à enjeux élevés affectant les personnes
+- **Exigez la transparence** — qui a formé cela ? Sur quelles données ? A-t-il été testé pour détecter les biais ?
+- **Soutenir la réglementation** qui exige la responsabilité des systèmes d'IA
+- **Défendre la diversité** dans les équipes technologiques
+- **Restez curieux** : le domaine évolue rapidement et des citoyens informés font pression pour de meilleures normes.
+
+L'IA est un outil. Comme tous les outils, il peut être bien ou mal utilisé. La question de savoir si elle est utilisée de manière éthique n’est pas une question technique, c’est une question humaine.
+
+<Quiz question="Qu’est-ce que le « biais de représentation » dans les données d’entraînement de l’IA ?" options={["Quand l’IA est trop lente pour représenter tous les utilisateurs", "Lorsque certains groupes sont sous-représentés dans les données de formation, ce qui entraîne de mauvaises performances du modèle pour ces groupes", "Quand l’IA représente tous les groupes de manière égale", "Lorsque les données d'entraînement sont stockées dans un mauvais format"]} correct={1} explanation="Un biais de représentation se produit lorsque certains groupes démographiques apparaissent beaucoup moins fréquemment que d’autres dans les données de formation. L’IA apprend principalement des groupes dominants, ce qui entraîne une moindre précision et des résultats injustes pour les populations sous-représentées – comme le montrent les systèmes de reconnaissance faciale qui fonctionnent mal sur les visages à la peau plus foncée." />
+
+<Quiz question="Pourquoi la suppression de la « race » des données d’entraînement d’une IA ne parvient-elle pas à éliminer les préjugés raciaux ?" options={["Parce que les systèmes d'IA se souviennent toujours des données supprimées", "Parce que la race détermine l'intelligence", "Parce que d'autres variables comme le code postal ou les habitudes d'achat peuvent servir de proxy pour la race", "Parce que les préjugés raciaux ne proviennent que de l’algorithme, pas des données"]} correct={2} explanation="En raison de la ségrégation historique et des inégalités systémiques, de nombreuses variables apparemment neutres (code postal, école fréquentée, coût des soins de santé) sont fortement corrélées à la race. Une IA entraînée sur ces variables proxy peut effectivement discriminer selon la race sans jamais voir la race dans les données – c'est ce qu'on appelle le problème du proxy." />

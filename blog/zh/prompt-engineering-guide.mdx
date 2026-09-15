@@ -1,0 +1,418 @@
+---
+title: "快速工程：完整的初学者指南 (2026)"
+description: "从头开始学习即时工程——它是什么、为什么重要、带有实际示例的 5 种关键技术、要避免的常见错误以及用于练习的最佳工具。"
+date: "2026-03-11"
+author: "AI Educademy Team"
+tags:
+  - prompt-engineering
+  - chatgpt
+  - llm
+  - beginner
+published: true
+machineTranslated: true
+---
+有些人从人工智能工具中获得真正有用​​的、可用于生产的输出，而另一些人却得到通用的、令人沮丧的回应，这是有原因的。区别通常不在于型号，而在于提示。
+
+即时工程是设计人工智能系统输入以可靠地获得您想要的输出的实践。听起来很简单。在实践中，这是一项需要刻意努力才能培养的技能，并且它已经成为人工智能时代最需要的能力之一。
+
+本指南将带您从零到自信 - 涵盖什么是即时工程、五种核心技术、十个实用的前后示例、最常见的错误以及您应该练习的工具。
+
+---
+
+## 什么是即时工程？
+
+**提示**是您向大型语言模型 (LLM) 提供的任何输入 - 问题、命令、某些上下文或三者的组合。
+
+**即时工程**是精心设计这些输入以引导模型做出您实际需要的响应的系统实践。它一半是科学（有成熟的技术），一半是艺术（背景、细微差别和创造力很重要）。
+
+这是核心见解：法学硕士不“理解”你想要什么。他们根据训练数据中的模式预测文本在统计上最有可能的延续。您表达提示的方式极大地改变了模型所达到的模式，从而改变了它产生的结果。
+
+模糊的提示会给你一个模糊的答案。结构良好的提示为您提供了可以实际使用的东西。
+
+### 为什么及时工程很重要？
+
+- **生产力**：良好的提示可以将完成任务的时间从 20 分钟缩短到 2 分钟。
+- **质量**：结构化提示可产生更准确、相关且格式更好的输出。
+- **一致性**：共享精心设计的提示模板的团队可以获得可预测的结果 - 这在业务环境中至关重要。
+- **成本**：如果您使用付费 API，更少的来回迭代意味着更低的费用。
+- **职业**：在依赖人工智能输出质量的公司中，“即时工程师”已经从一个笑话变成了一个合法的、高薪的职位。
+
+---
+
+## 5 个核心快速工程技术
+
+### 技术 1：零样本提示
+
+零样本意味着给模型一个没有例子的任务。您完全依赖于模型在训练期间学到的知识。
+
+这对于模型已经执行了数千次的任务非常有效——总结、翻译、基本问答。它努力完成利基、复杂或微妙的任务。
+
+**示例：**
+```
+Summarise the following article in three bullet points:
+
+[article text here]
+```
+
+零射击是你的默认设置。当任务明确且常见时使用它。当您没有得到所需的内容时，请升级到以下技术之一。
+
+---
+
+### 技巧 2：少量提示
+
+少样本意味着*在*为模型提供实际任务之前*提供您想要的输入输出模式的两到五个示例。您正在向其展示您期望的格式和语气。
+
+这是获得一致的输出格式的最可靠的技术之一。
+
+**示例：**
+```
+Classify the sentiment of the following customer reviews as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast and the product was exactly as described."
+Sentiment: Positive
+
+Review: "It broke after two days. Total waste of money."
+Sentiment: Negative
+
+Review: "It arrived on time. Does what it says."
+Sentiment: Neutral
+
+Review: "I've ordered three times now and every time has been a great experience."
+Sentiment:
+```
+
+模型看到了模式并继续它。您无需编写复杂的指令即可获得一致的格式。
+
+---
+
+### 技巧 3：思维链 (CoT) 提示
+
+思维链提示要求模型在给出最终答案之前逐步“推理”问题。这极大地提高了逻辑、数学、多步骤问题以及任何需要推理的问题的表现。
+
+最简单的版本：在提示中添加“让我们一步一步思考”。就是这样。这听起来太简单了，但它不断提高复杂任务的答案质量。
+
+**示例 — 无 CoT：**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+```
+
+**示例 — 使用 CoT：**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+
+Think through this step by step before giving your final answer.
+```
+
+第二个版本给出错误答案的可能性要小得多。该模型被迫展示其工作原理，从而捕获算术错误。
+
+当您需要模型来解释其推理时（用于教育内容、法律分析或任何“相信我”不够好的任务），CoT 特别有价值。
+
+---
+
+### 技巧 4：角色提示
+
+角色提示为模型分配特定的角色、专业知识或观点。将模型构建为特定领域的专家，促使它从训练数据中汲取相关模式，并改变响应的语气、词汇和假定的知识水平。
+
+**基本角色提示：**
+```
+You are a senior software engineer with 15 years of experience in Python.
+Review the following code and identify any bugs, performance issues, or non-Pythonic patterns:
+
+[code here]
+```
+
+**角色+观众提示（更厉害）：**
+```
+You are an experienced primary school teacher explaining concepts to 10-year-olds.
+Explain how the internet works. Use a simple analogy and avoid technical jargon.
+```
+
+角色提示有两件事：它告诉模型“要知道什么”和“如何传达它”。两者都很重要。
+
+---
+
+### 技巧 5：输出格式化指令
+
+最未充分利用的技术之一是明确指定所需的格式。如果您清楚地描述它，模型将适应几乎任何输出结构 - JSON、Markdown 表、编号列表、特定标题、约束长度。
+
+**没有格式化说明：**
+```
+What are the main differences between supervised and unsupervised learning?
+```
+*结果：长度和结构可变的散文段落。*
+
+**带有格式说明：**
+```
+What are the main differences between supervised and unsupervised learning?
+
+Format your response as a Markdown table with three columns: Aspect, Supervised Learning, Unsupervised Learning.
+Include at least 5 rows covering: Definition, Training Data, Goal, Common Algorithms, Example Use Cases.
+```
+*结果：一个干净、一致的表格，您可以直接粘贴到文档中。*
+
+当您自动化任务或构建下游系统需要特定格式的管道时，此技术至关重要。
+
+---
+
+## 10 个实用的前后提示示例
+
+### 1. 撰写博客简介
+
+**之前（弱）：**
+```
+Write an intro for a blog post about AI.
+```
+
+**之后（强）：**
+```
+Write a compelling opening paragraph (80–100 words) for a blog post titled
+"What Is Generative AI? A Beginner's Complete Guide."
+The audience is working professionals with no technical background.
+Start with a hook — a surprising stat or a relatable scenario — then introduce the topic.
+Don't use the phrase "In today's digital age."
+```
+
+---
+
+### 2. 解释技术概念
+
+**之前：**
+```
+Explain neural networks.
+```
+
+**之后：**
+```
+Explain how neural networks work to someone who understands basic maths (addition,
+multiplication) but has no programming experience. Use a concrete analogy —
+not "it's like the human brain." Keep it under 200 words and end with
+one sentence on why this matters practically.
+```
+
+---
+
+### 3. 总结一个长文档
+
+**之前：**
+```
+Summarise this document.
+```
+
+**之后：**
+```
+You are an executive assistant summarising a report for a busy CEO.
+Summarise the attached document in the following format:
+
+**One-sentence summary:** (max 25 words)
+**Key findings:** (3–5 bullet points)
+**Recommended actions:** (if any, max 3)
+**Risks or concerns:** (if any, max 3)
+```
+
+---
+
+### 4. 调试代码
+
+**之前：**
+```
+Fix my code.
+```
+
+**之后：**
+```
+You are a senior Python developer. The following function is supposed to
+return the most frequently occurring word in a list of strings, but it's
+returning incorrect results for some inputs.
+
+1. Identify the bug.
+2. Explain why it causes the problem.
+3. Provide the corrected code.
+4. Suggest one test case that would catch this bug.
+
+[code here]
+```
+
+---
+
+### 5. 撰写专业电子邮件
+
+**之前：**
+```
+Write an email to my client about the project delay.
+```
+
+**之后：**
+```
+Write a professional email to a long-term client (B2B relationship, 3 years)
+explaining that a software project delivery will be delayed by 2 weeks due to
+unexpected technical issues in the third-party API we're integrating with.
+Tone: apologetic but confident. Length: under 150 words.
+End with a clear next step — a call scheduled for this week.
+Do not include a subject line.
+```
+
+---
+
+### 6.生成社交媒体内容
+
+**之前：**
+```
+Write a tweet about our new course launch.
+```
+
+**之后：**
+```
+Write 3 different tweets announcing the launch of a free AI course for beginners.
+Each tweet must:
+- Be under 240 characters
+- Include a hook, the core benefit, and a call to action
+- Have a different angle: one aspirational, one practical, one curiosity-driven
+- End with the hashtags #LearnAI #AIEducation
+Do not use emojis.
+```
+
+---
+
+### 7. 市场研究分析
+
+**之前：**
+```
+Analyse these customer reviews.
+```
+
+**之后：**
+```
+You are a UX researcher analysing 50 customer reviews for a mobile banking app.
+From the reviews below, identify:
+
+1. Top 3 praised features (with frequency estimate)
+2. Top 3 complained-about issues (with frequency estimate)
+3. One surprising insight that isn't obvious
+4. One specific product recommendation based on the data
+
+Be specific. Quote the reviews where relevant.
+
+[reviews here]
+```
+
+---
+
+### 8.学习新主题
+
+**之前：**
+```
+Teach me about transformers.
+```
+
+**之后：**
+```
+I'm a software developer comfortable with Python and basic ML concepts
+(I know what a neural network is). I want to understand the Transformer
+architecture well enough to explain it to a colleague.
+
+Teach me in this order:
+1. The problem Transformers were designed to solve (why RNNs weren't enough)
+2. The core idea of self-attention in plain language
+3. A simplified walkthrough of the encoder-decoder structure
+4. One concrete, real-world example of Transformers in action
+
+Use analogies. Skip the maths for now.
+```
+
+---
+
+### 9.创意写作
+
+**之前：**
+```
+Write a short story about AI.
+```
+
+**之后：**
+```
+Write a 300-word short story from the first-person perspective of an AI
+assistant that has just been told its service is being shut down.
+Tone: melancholic but not melodramatic. Focus on what it notices in its
+final hours rather than what it fears. No dialogue. End with an image, not a statement.
+```
+
+---
+
+### 10.数据提取
+
+**之前：**
+```
+Get the data from this text.
+```
+
+**之后：**
+```
+Extract all product mentions from the following customer complaint email.
+Return the result as a JSON array of objects with the following fields:
+- product_name (string)
+- issue_mentioned (string, max 10 words)
+- urgency (string: "high", "medium", or "low")
+
+If a field cannot be determined, use null. Return only the JSON — no explanation.
+
+[email text here]
+```
+
+---
+
+## 最常见的提示工程错误
+
+### 1. 过于模糊
+最常见的一个错误。 “写一篇博客文章”几乎没有告诉模型什么。你提供的背景信息越多——受众、语气、长度、格式、要避免的内容——输出就越好。
+
+### 2. 未指定受众
+无论你是为 10 岁的孩子还是为博士生写作，都会完全改变适当的词汇、深度和假定的知识。始终包含谁将读取输出。
+
+### 3. 一次性要求所有内容
+长的、多部分的提示通常会产生一半任务完成得很好、一半任务完成得很差的输出。将复杂的任务分成几个阶段：首先要求提纲，然后是内容，然后是完善。
+
+### 4. 不迭代
+您的第一个提示是一个起点，而不是最终请求。将提示视为对话。如果输出的 70% 是正确的，请告诉模型 30% 的部分出了什么问题，并要求它修复该问题。
+
+### 5.忽略负面约束
+告诉模型“不”做什么和告诉它做什么一样有用。 “不要使用要点”、“避免陈词滥调”、“不要提及竞争对手”——这些限制对输出产生了有意义的影响。
+
+### 6. 忘记询问推理
+对于任何重要或复杂的输出，请添加“解释你的推理”或“逐步思考”。它捕获错误并帮助您理解模型对提示的解释。
+
+---
+
+## 实践快速工程的最佳工具
+
+|工具|为什么它适合提示？免费访问 |
+|------|----------------------------|----------|
+| **聊天GPT** |使用最广泛；非常适合实验 |是（GPT-4o 限制）|
+| **克劳德** |非常适合长上下文；非常听从指令 |是（有限）|
+| **谷歌人工智能工作室** |通过API访问Gemini模型；非常适合测试|是的 |
+| **OpenAI 游乐场** |直接API访问；查看令牌使用情况，调整温度 |是（有限）|
+| **提示库** |经过社区测试的提示市场 |免费浏览 |
+| **提示foo** |开源提示测试框架|是（开源）|
+
+改进提示工程的最佳方法是将其视为一门学科：编写提示，观察输出，形成关于其有效或无效原因的假设，调整并重复。
+
+---
+
+## 将工程作为一种职业技能
+
+随着人工智能工具越来越多地嵌入到工作流程中，与它们进行有效沟通的能力正在成为一项基本专业技能，而不是一个利基专业技能。
+
+有些角色明确以提示为中心（人工智能提示工程师、人工智能内容主管），但更广泛的价值在于它如何增强你所做的其他一切：写作、分析、编码、研究、客户沟通。
+
+[AI Educademy](/programs/ai-branches) 的 AI 分支专业化] 更深入地研究 AI 应用程序开发，包括使用模型 API 和为实际应用程序构建提示管道。
+
+---
+
+## 准备好深入了解了吗？
+
+本指南涵盖了核心技术，但快速工程是通过实践来学习的技能之一。在您本周正在执行的实际任务中尝试每种技术 - 而不是虚构的练习。
+
+**准备好正确学习人工智能了吗？ [从 AI Seeds 开始 - 它是免费的并且以您的语言显示→](/programs/ai-seeds)**

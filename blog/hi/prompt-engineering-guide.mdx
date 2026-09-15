@@ -1,0 +1,418 @@
+---
+title: "प्रॉम्प्ट इंजीनियरिंग: द कम्प्लीट बिगिनर्स गाइड (2026)"
+description: "शुरू से ही त्वरित इंजीनियरिंग सीखें - यह क्या है, यह क्यों मायने रखती है, व्यावहारिक उदाहरणों के साथ 5 प्रमुख तकनीकें, बचने के लिए सामान्य गलतियाँ, और अभ्यास करने के लिए सर्वोत्तम उपकरण।"
+date: "2026-03-11"
+author: "AI Educademy Team"
+tags:
+  - prompt-engineering
+  - chatgpt
+  - llm
+  - beginner
+published: true
+machineTranslated: true
+---
+यही कारण है कि कुछ लोगों को एआई टूल से वास्तव में उपयोगी, उत्पादन-तैयार आउटपुट मिलता है जबकि अन्य को सामान्य, निराशाजनक प्रतिक्रियाएं मिलती हैं। अंतर आमतौर पर मॉडल का नहीं है - यह संकेत का है।
+
+प्रॉम्प्ट इंजीनियरिंग आपके इच्छित आउटपुट को विश्वसनीय रूप से प्राप्त करने के लिए एआई सिस्टम में इनपुट डिजाइन करने का अभ्यास है। यह सरल लगता है. व्यवहार में, यह एक ऐसा कौशल है जिसे विकसित करने के लिए जानबूझकर प्रयास करना पड़ता है, और यह पहले से ही एआई युग में सबसे अधिक मांग वाली दक्षताओं में से एक बन रहा है।
+
+यह मार्गदर्शिका आपको शून्य से आत्मविश्वास की ओर ले जाएगी - इसमें त्वरित इंजीनियरिंग क्या है, पांच मुख्य तकनीकें, पहले/बाद के दस व्यावहारिक उदाहरण, सबसे आम गलतियाँ और वे उपकरण शामिल हैं जिनके साथ आपको अभ्यास करना चाहिए।
+
+---
+
+## प्रॉम्प्ट इंजीनियरिंग क्या है?
+
+**संकेत** वह इनपुट है जो आप किसी बड़े भाषा मॉडल (एलएलएम) को देते हैं - एक प्रश्न, एक आदेश, कुछ संदर्भ, या तीनों का संयोजन।
+
+**प्रॉम्प्ट इंजीनियरिंग** मॉडल को उस प्रतिक्रिया की ओर ले जाने के लिए उन इनपुट को तैयार करने का व्यवस्थित अभ्यास है जिसकी आपको वास्तव में आवश्यकता है। इसका भाग विज्ञान है (इसमें अच्छी तरह से स्थापित तकनीकें हैं) और भाग कला है (संदर्भ, बारीकियाँ और रचनात्मकता बहुत मायने रखती हैं)।
+
+यहां मुख्य अंतर्दृष्टि है: एलएलएम यह नहीं समझते कि आप क्या चाहते हैं। वे अपने प्रशिक्षण डेटा के पैटर्न के आधार पर आपके पाठ की सांख्यिकीय रूप से सबसे संभावित निरंतरता की भविष्यवाणी करते हैं। जिस तरह से आप अपने प्रॉम्प्ट को वाक्यांशित करते हैं वह नाटकीय रूप से बदलता है कि मॉडल किस पैटर्न तक पहुंचता है - और इसलिए यह क्या उत्पन्न करता है।
+
+एक अस्पष्ट संकेत आपको अस्पष्ट उत्तर देता है। एक अच्छी तरह से संरचित प्रॉम्प्ट आपको कुछ ऐसा देता है जिसका आप वास्तव में उपयोग कर सकते हैं।
+
+### प्रॉम्प्ट इंजीनियरिंग क्यों मायने रखती है?
+
+- **उत्पादकता**: एक अच्छा संकेत किसी कार्य को पूरा करने में लगने वाले समय को 20 मिनट से घटाकर 2 मिनट कर सकता है।
+- **गुणवत्ता**: संरचित संकेत अधिक सटीक, प्रासंगिक और बेहतर स्वरूपित आउटपुट उत्पन्न करते हैं।
+- **संगति**: जो टीमें अच्छी तरह से तैयार किए गए शीघ्र टेम्पलेट साझा करती हैं उन्हें पूर्वानुमानित परिणाम मिलते हैं - जो व्यावसायिक संदर्भों में आवश्यक है।
+- **लागत**: यदि आप सशुल्क एपीआई का उपयोग कर रहे हैं, तो कम आगे-पीछे पुनरावृत्तियों का मतलब कम बिल है।
+- **करियर**: "प्रॉम्प्ट इंजीनियर" एक मजाक से हटकर उन कंपनियों में एक वैध, अच्छी तनख्वाह वाली नौकरी के शीर्षक में बदल गया है जो एआई आउटपुट गुणवत्ता पर निर्भर हैं।
+
+---
+
+## 5 कोर प्रॉम्प्ट इंजीनियरिंग तकनीकें
+
+### तकनीक 1: जीरो-शॉट प्रॉम्प्टिंग
+
+जीरो-शॉट का अर्थ है मॉडल को बिना किसी उदाहरण के एक कार्य देना। आप पूरी तरह से इस बात पर निर्भर हैं कि मॉडल ने प्रशिक्षण के दौरान क्या सीखा।
+
+यह उन कार्यों के लिए अच्छा काम करता है जिन्हें मॉडल ने हजारों बार देखा है - सारांश, अनुवाद, बुनियादी प्रश्नोत्तर। यह विशिष्ट, जटिल या सूक्ष्म कार्यों के लिए संघर्ष करता है।
+
+**उदाहरण:**
+```
+Summarise the following article in three bullet points:
+
+[article text here]
+```
+
+जीरो-शॉट आपका डिफ़ॉल्ट है. जब कार्य स्पष्ट और सामान्य हो तो इसका उपयोग करें। जब आपको वह नहीं मिल रहा हो जो आपको चाहिए तो नीचे दी गई तकनीकों में से किसी एक को अपग्रेड करें।
+
+---
+
+### तकनीक 2: फ्यू-शॉट प्रॉम्प्टिंग
+
+फ्यू-शॉट का अर्थ है मॉडल को अपना वास्तविक कार्य देने से पहले *आप जो इनपुट-आउटपुट पैटर्न चाहते हैं उसके दो से पांच उदाहरण प्रदान करना*। आप इसे वह प्रारूप और टोन दिखा रहे हैं जिसकी आप अपेक्षा करते हैं।
+
+लगातार आउटपुट फ़ॉर्मेटिंग प्राप्त करने के लिए यह सबसे विश्वसनीय तकनीकों में से एक है।
+
+**उदाहरण:**
+```
+Classify the sentiment of the following customer reviews as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast and the product was exactly as described."
+Sentiment: Positive
+
+Review: "It broke after two days. Total waste of money."
+Sentiment: Negative
+
+Review: "It arrived on time. Does what it says."
+Sentiment: Neutral
+
+Review: "I've ordered three times now and every time has been a great experience."
+Sentiment:
+```
+
+मॉडल पैटर्न को देखता है और उसे जारी रखता है। आपको जटिल निर्देश लिखे बिना लगातार फ़ॉर्मेटिंग मिलती है।
+
+---
+
+### तकनीक 3: चेन-ऑफ़-थॉट (सीओटी) संकेत देना
+
+चेन-ऑफ़-थॉट प्रॉम्प्टिंग मॉडल से अंतिम उत्तर देने से पहले चरण दर चरण किसी समस्या का *तर्क* करने के लिए कहता है। यह तर्क, गणित, बहु-चरणीय समस्याओं और तर्क की आवश्यकता वाली किसी भी चीज़ पर प्रदर्शन में नाटकीय रूप से सुधार करता है।
+
+सबसे सरल संस्करण: अपने संकेत में "आइए चरण दर चरण सोचें" जोड़ें। इतना ही। यह लगभग बहुत सरल लगता है, लेकिन यह जटिल कार्यों पर उत्तर की गुणवत्ता में लगातार सुधार करता है।
+
+**उदाहरण - सीओटी के बिना:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+```
+
+**उदाहरण - सीओटी के साथ:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+
+Think through this step by step before giving your final answer.
+```
+
+दूसरे संस्करण में आपको गलत उत्तर देने की संभावना बहुत कम है। मॉडल को अपनी कार्यप्रणाली दिखाने के लिए मजबूर किया जाता है, जो अंकगणितीय त्रुटियों को पकड़ता है।
+
+सीओटी विशेष रूप से तब मूल्यवान है जब आपको अपने तर्क को समझाने के लिए मॉडल की आवश्यकता होती है - शैक्षिक सामग्री, कानूनी विश्लेषण, या किसी भी कार्य के लिए जहां "मुझ पर विश्वास करें" पर्याप्त नहीं है।
+
+---
+
+### तकनीक 4: भूमिका प्रोत्साहन
+
+भूमिका प्रोत्साहन मॉडल को एक विशिष्ट व्यक्तित्व, विशेषज्ञता या परिप्रेक्ष्य प्रदान करता है। किसी विशेष डोमेन में एक विशेषज्ञ के रूप में मॉडल को तैयार करना उसे अपने प्रशिक्षण डेटा से प्रासंगिक पैटर्न पर आकर्षित करने के लिए प्रेरित करता है - और प्रतिक्रिया के स्वर, शब्दावली और अनुमानित ज्ञान स्तर को बदलता है।
+
+**मूल भूमिका संकेत:**
+```
+You are a senior software engineer with 15 years of experience in Python.
+Review the following code and identify any bugs, performance issues, or non-Pythonic patterns:
+
+[code here]
+```
+
+**भूमिका + श्रोता संकेत (और भी अधिक शक्तिशाली):**
+```
+You are an experienced primary school teacher explaining concepts to 10-year-olds.
+Explain how the internet works. Use a simple analogy and avoid technical jargon.
+```
+
+रोल प्रॉम्प्ट दो काम करता है: यह मॉडल को बताता है *क्या जानना है* और *इसे कैसे संप्रेषित करना है*। दोनों मायने रखते हैं.
+
+---
+
+### तकनीक 5: आउटपुट फ़ॉर्मेटिंग निर्देश
+
+सबसे कम उपयोग की जाने वाली तकनीकों में से एक स्पष्ट रूप से आपके इच्छित प्रारूप को निर्दिष्ट करना है। यदि आप इसका स्पष्ट रूप से वर्णन करते हैं तो मॉडल लगभग किसी भी आउटपुट संरचना के अनुकूल हो जाएंगे - JSON, मार्कडाउन टेबल, क्रमांकित सूचियां, विशिष्ट शीर्षक, सीमित लंबाई।
+
+**फ़ॉर्मेटिंग निर्देशों के बिना:**
+```
+What are the main differences between supervised and unsupervised learning?
+```
+*परिणाम: परिवर्तनशील लंबाई और संरचना का एक गद्य अनुच्छेद।*
+
+**फ़ॉर्मेटिंग निर्देशों के साथ:**
+```
+What are the main differences between supervised and unsupervised learning?
+
+Format your response as a Markdown table with three columns: Aspect, Supervised Learning, Unsupervised Learning.
+Include at least 5 rows covering: Definition, Training Data, Goal, Common Algorithms, Example Use Cases.
+```
+*परिणाम: एक साफ़, सुसंगत तालिका जिसे आप सीधे दस्तावेज़ में चिपका सकते हैं।*
+
+यह तकनीक तब आवश्यक है जब आप कार्यों को स्वचालित कर रहे हों या पाइपलाइन बना रहे हों जहां डाउनस्ट्रीम सिस्टम एक विशिष्ट प्रारूप की अपेक्षा करते हैं।
+
+---
+
+## संकेत से पहले/बाद में 10 व्यावहारिक उदाहरण
+
+### 1. ब्लॉग परिचय लिखना
+
+**पहले (कमजोर):**
+```
+Write an intro for a blog post about AI.
+```
+
+**बाद में (मजबूत):**
+```
+Write a compelling opening paragraph (80–100 words) for a blog post titled
+"What Is Generative AI? A Beginner's Complete Guide."
+The audience is working professionals with no technical background.
+Start with a hook — a surprising stat or a relatable scenario — then introduce the topic.
+Don't use the phrase "In today's digital age."
+```
+
+---
+
+### 2. एक तकनीकी अवधारणा को समझाना
+
+**पहले:**
+```
+Explain neural networks.
+```
+
+**बाद:**
+```
+Explain how neural networks work to someone who understands basic maths (addition,
+multiplication) but has no programming experience. Use a concrete analogy —
+not "it's like the human brain." Keep it under 200 words and end with
+one sentence on why this matters practically.
+```
+
+---
+
+### 3. एक लंबे दस्तावेज़ का सारांश
+
+**पहले:**
+```
+Summarise this document.
+```
+
+**बाद:**
+```
+You are an executive assistant summarising a report for a busy CEO.
+Summarise the attached document in the following format:
+
+**One-sentence summary:** (max 25 words)
+**Key findings:** (3–5 bullet points)
+**Recommended actions:** (if any, max 3)
+**Risks or concerns:** (if any, max 3)
+```
+
+---
+
+### 4. डिबगिंग कोड
+
+**पहले:**
+```
+Fix my code.
+```
+
+**बाद:**
+```
+You are a senior Python developer. The following function is supposed to
+return the most frequently occurring word in a list of strings, but it's
+returning incorrect results for some inputs.
+
+1. Identify the bug.
+2. Explain why it causes the problem.
+3. Provide the corrected code.
+4. Suggest one test case that would catch this bug.
+
+[code here]
+```
+
+---
+
+### 5. एक प्रोफेशनल ईमेल लिखना
+
+**पहले:**
+```
+Write an email to my client about the project delay.
+```
+
+**बाद:**
+```
+Write a professional email to a long-term client (B2B relationship, 3 years)
+explaining that a software project delivery will be delayed by 2 weeks due to
+unexpected technical issues in the third-party API we're integrating with.
+Tone: apologetic but confident. Length: under 150 words.
+End with a clear next step — a call scheduled for this week.
+Do not include a subject line.
+```
+
+---
+
+### 6. सोशल मीडिया सामग्री तैयार करना
+
+**पहले:**
+```
+Write a tweet about our new course launch.
+```
+
+**बाद:**
+```
+Write 3 different tweets announcing the launch of a free AI course for beginners.
+Each tweet must:
+- Be under 240 characters
+- Include a hook, the core benefit, and a call to action
+- Have a different angle: one aspirational, one practical, one curiosity-driven
+- End with the hashtags #LearnAI #AIEducation
+Do not use emojis.
+```
+
+---
+
+### 7. बाजार अनुसंधान विश्लेषण
+
+**पहले:**
+```
+Analyse these customer reviews.
+```
+
+**बाद:**
+```
+You are a UX researcher analysing 50 customer reviews for a mobile banking app.
+From the reviews below, identify:
+
+1. Top 3 praised features (with frequency estimate)
+2. Top 3 complained-about issues (with frequency estimate)
+3. One surprising insight that isn't obvious
+4. One specific product recommendation based on the data
+
+Be specific. Quote the reviews where relevant.
+
+[reviews here]
+```
+
+---
+
+### 8. कोई नया विषय सीखना
+
+**पहले:**
+```
+Teach me about transformers.
+```
+
+**बाद:**
+```
+I'm a software developer comfortable with Python and basic ML concepts
+(I know what a neural network is). I want to understand the Transformer
+architecture well enough to explain it to a colleague.
+
+Teach me in this order:
+1. The problem Transformers were designed to solve (why RNNs weren't enough)
+2. The core idea of self-attention in plain language
+3. A simplified walkthrough of the encoder-decoder structure
+4. One concrete, real-world example of Transformers in action
+
+Use analogies. Skip the maths for now.
+```
+
+---
+
+### 9. रचनात्मक लेखन
+
+**पहले:**
+```
+Write a short story about AI.
+```
+
+**बाद:**
+```
+Write a 300-word short story from the first-person perspective of an AI
+assistant that has just been told its service is being shut down.
+Tone: melancholic but not melodramatic. Focus on what it notices in its
+final hours rather than what it fears. No dialogue. End with an image, not a statement.
+```
+
+---
+
+### 10. डेटा निष्कर्षण
+
+**पहले:**
+```
+Get the data from this text.
+```
+
+**बाद:**
+```
+Extract all product mentions from the following customer complaint email.
+Return the result as a JSON array of objects with the following fields:
+- product_name (string)
+- issue_mentioned (string, max 10 words)
+- urgency (string: "high", "medium", or "low")
+
+If a field cannot be determined, use null. Return only the JSON — no explanation.
+
+[email text here]
+```
+
+---
+
+## सबसे आम प्रॉम्प्ट इंजीनियरिंग गलतियाँ
+
+### 1. बहुत अस्पष्ट होना
+सबसे आम गलती. "एक ब्लॉग पोस्ट लिखें" मॉडल को लगभग कुछ भी नहीं बताता है। आप जितना अधिक संदर्भ देंगे - श्रोता, स्वर, लंबाई, प्रारूप, क्या टालना है - उतना ही बेहतर आउटपुट होगा।
+
+### 2. दर्शकों को निर्दिष्ट नहीं करना
+चाहे आप 10-वर्षीय या पीएचडी छात्र के लिए लिख रहे हों, उचित शब्दावली, गहराई और अनुमानित ज्ञान को पूरी तरह से बदल देता है। हमेशा यह शामिल करें कि आउटपुट कौन पढ़ेगा।
+
+### 3. हर चीज़ एक ही बार में मांगना
+लंबे, बहु-भागीय संकेत अक्सर ऐसे आउटपुट उत्पन्न करते हैं जो आधे कार्यों को अच्छी तरह से करते हैं और आधे को खराब तरीके से करते हैं। जटिल कार्यों को चरणों में तोड़ें: पहले एक रूपरेखा पूछें, फिर सामग्री, फिर पॉलिश।
+
+### 4. पुनरावृत्त नहीं करना
+आपका पहला संकेत एक प्रारंभिक बिंदु है, अंतिम अनुरोध नहीं। संकेत को बातचीत की तरह मानें। यदि आउटपुट 70% सही है, तो मॉडल को बताएं कि 30% में क्या खराबी है और उसे ठीक करने के लिए कहें।
+
+### 5. नकारात्मक बाधाओं को नजरअंदाज करना
+मॉडल को यह बताना कि क्या *नहीं* करना है, उतना ही उपयोगी है जितना यह बताना कि क्या करना है। "बुलेट पॉइंट का उपयोग न करें," "क्लिच से बचें," "प्रतिस्पर्धियों का उल्लेख न करें" - ये बाधाएं सार्थक रूप से आउटपुट को आकार देती हैं।
+
+### 6. तर्क पूछना भूल जाना
+किसी भी महत्वपूर्ण या जटिल आउटपुट के लिए, "अपना तर्क स्पष्ट करें" या "चरण दर चरण सोचें" जोड़ें। यह त्रुटियों को पकड़ता है और आपके प्रॉम्प्ट की मॉडल की व्याख्या को समझने में आपकी सहायता करता है।
+
+---
+
+## प्रॉम्प्ट इंजीनियरिंग का अभ्यास करने के लिए सर्वोत्तम उपकरण
+
+| उपकरण | यह संकेत देने के लिए अच्छा क्यों है | नि:शुल्क प्रवेश |
+|------|--------------------------------|----------------|
+| **चैटजीपीटी** | सर्वाधिक व्यापक रूप से उपयोग किया जाने वाला; प्रयोग के लिए बढ़िया | हाँ (GPT-4o सीमित) |
+| **क्लाउड** | लंबे संदर्भ के लिए उत्कृष्ट; बहुत निर्देश-पालन | हाँ (सीमित) |
+| **गूगल एआई स्टूडियो** | एपीआई के माध्यम से जेमिनी मॉडल तक पहुंच; परीक्षण के लिए बढ़िया | हाँ |
+| **ओपनएआई खेल का मैदान** | सीधी एपीआई पहुंच; टोकन उपयोग देखें, तापमान समायोजित करें | हाँ (सीमित) |
+| **प्रॉम्प्टबेस** | समुदाय-परीक्षणित संकेतों का बाज़ार | निःशुल्क ब्राउज़ करें |
+| **प्रॉम्प्टफू** | ओपन-सोर्स प्रॉम्प्ट टेस्टिंग फ्रेमवर्क | हाँ (ओपन-सोर्स) |
+
+प्रॉम्प्ट इंजीनियरिंग में सुधार करने का सबसे अच्छा तरीका इसे एक अनुशासन के रूप में मानना ​​है: एक प्रॉम्प्ट लिखें, आउटपुट का निरीक्षण करें, इस बारे में एक परिकल्पना बनाएं कि इसने काम क्यों किया या नहीं किया, समायोजित करें और दोहराएं।
+
+---
+
+## इंजीनियरिंग को एक कैरियर कौशल के रूप में बढ़ावा देना
+
+जैसे-जैसे एआई उपकरण वर्कफ़्लो में अधिक अंतर्निहित होते जा रहे हैं, उनके साथ प्रभावी ढंग से संवाद करने की क्षमता एक आधारभूत पेशेवर कौशल बनती जा रही है - कोई विशिष्ट विशेषज्ञता नहीं।
+
+कुछ भूमिकाएँ स्पष्ट रूप से शीघ्र-केंद्रित होती हैं (एआई प्रॉम्प्ट इंजीनियर, एआई कंटेंट लीड), लेकिन व्यापक मूल्य यह है कि यह आपके बाकी सभी कार्यों को कैसे बढ़ाती है: लेखन, विश्लेषण, कोडिंग, अनुसंधान, ग्राहक संचार।
+
+एआई एजुकेशन अकादमी पर [एआई शाखाओं की विशेषज्ञता](/programs/ai-branches) एआई अनुप्रयोग विकास में गहराई तक जाती है, जिसमें मॉडल एपीआई के साथ काम करना और वास्तविक दुनिया के अनुप्रयोगों के लिए शीघ्र पाइपलाइन बनाना शामिल है।
+
+---
+
+## गहराई तक जाने के लिए तैयार हैं?
+
+यह मार्गदर्शिका मुख्य तकनीकों को शामिल करती है, लेकिन प्रॉम्प्ट इंजीनियरिंग उन कौशलों में से एक है जहां सीखने से होता है। प्रत्येक तकनीक को उस वास्तविक कार्य पर आज़माएँ जिस पर आप इस सप्ताह काम कर रहे हैं - कोई बना-बनाया अभ्यास नहीं।
+
+**एआई को ठीक से सीखने के लिए तैयार हैं? [एआई सीड्स से शुरुआत करें - यह मुफ़्त है और आपकी भाषा में है →](/programs/ai-seeds)**

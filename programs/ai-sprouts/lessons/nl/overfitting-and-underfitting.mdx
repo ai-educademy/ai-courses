@@ -1,0 +1,224 @@
+---
+title: "Overfitting en underfitting: waarom ML-modellen falen"
+description: "Begrijp de twee meest voorkomende faalmodi van machine learning – overfitting en underfitting – met duidelijke voorbeelden en hoe u deze kunt oplossen."
+order: 12
+difficulty: "intermediate"
+duration: 25
+icon: "📉"
+published: true
+machineTranslated: true
+---
+# Overfitting en underfitting: waarom ML-modellen falen
+
+U hebt uw eerste machine learning-model getraind. Het presteert briljant op basis van uw trainingsgegevens: 98% nauwkeurigheid! Je test het op nieuwe gegevens en het valt uiteen: 61% nauwkeurigheid. Wat ging er mis?
+
+Het is vrijwel zeker dat uw model **overfit** heeft. Dit is een van de twee meest voorkomende faalwijzen bij machinaal leren, en het begrijpen ervan – naast het tegenovergestelde, **underfitting** – is essentieel voor het bouwen van modellen die daadwerkelijk werken in de echte wereld.
+
+## 📐 De afweging tussen bias en variantie
+
+Voordat we in de voorbeelden duiken, helpt het om het theoretische raamwerk achter deze concepten te begrijpen: de **afweging tussen bias en variantie**.
+
+Elk model maakt voorspellingsfouten. Deze fouten kunnen in drie delen worden opgesplitst:
+
+```
+Total Error = Bias² + Variance + Irreducible Noise
+```
+
+**Bias** is de fout die voortkomt uit verkeerde aannames in het model. Een model met hoge bias is te simpel: het mist systematisch het ware patroon in de gegevens.
+
+**Variantie** is de fout die voortvloeit uit de gevoeligheid voor kleine fluctuaties in de trainingsgegevens. Een model met hoge variantie is te complex: het onthoudt de trainingsgegevens, inclusief de ruis, in plaats van het onderliggende patroon te leren.
+
+**Onherleidbare ruis** is de natuurlijke willekeur in de gegevens die geen enkel model kan elimineren.
+
+De wisselwerking: het verminderen van bias heeft de neiging de variantie te vergroten, en vice versa. Jouw taak als beoefenaar van machine learning is om de goede plek te vinden.
+
+## 📈 Ondermaats: te eenvoudig om te leren
+
+**Onderfitting** treedt op wanneer uw model te eenvoudig is om het ware patroon in de gegevens vast te leggen. Het presteert slecht op *zowel* trainingsgegevens als nieuwe gegevens.
+
+### Een visueel voorbeeld
+
+Stel je voor dat je gegevens hebt die huizenprijzen laten zien op basis van grootte. De werkelijke relatie is grofweg een zachte curve: de prijzen stijgen met de omvang, maar met enige stagnatie aan de bovenkant.
+
+Als u een rechte horizontale lijn op deze gegevens past:
+
+```python
+# Underfitting: overly simple model
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# True relationship is quadratic, but we're fitting a simple mean
+model = DummyRegressor(strategy='mean')
+model.fit(X_train, y_train)
+
+# Training accuracy:  55%
+# Test accuracy:      54%
+# Both are bad — classic underfitting
+```
+
+Het model negeert de feitelijke relatie tussen woninggrootte en prijs. Het maakt niet uit of je trainingsgegevens of nieuwe gegevens laat zien; het is hoe dan ook verkeerd.
+
+### Tekenen van onderfitting
+- Hoge trainingsfout EN hoge testfout
+- Modelvoorspellingen clusteren rond een gemiddelde, ongeacht de input
+- Leercurves laten zien dat zowel de trainings- als de validatiefouten hoog en dicht bij elkaar liggen
+
+### Oorzaken van onderfitting
+- Model is te eenvoudig voor de complexiteit van de gegevens (bijvoorbeeld lineair model voor niet-lineaire gegevens)
+- Te weinig trainingsperioden (model heeft geen tijd gehad om te leren)
+- Te agressieve regularisatie (zie hieronder)
+- Belangrijke features ontbreken in de invoer
+
+## 📉 Overfitting: te complex, ruis onthoudend
+
+**Overfitting** vindt plaats wanneer uw model de trainingsgegevens *te goed* leert (inclusief de ruis en willekeurige variatie) en er niet in slaagt te generaliseren naar nieuwe voorbeelden.
+
+### Een visueel voorbeeld
+
+Een polynoom van 15 graden gebruiken om in dezelfde huizenprijsgegevens te passen:
+
+```python
+# Overfitting: overly complex model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Degree-15 polynomial — wildly complex for this problem
+model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+model.fit(X_train, y_train)
+
+train_score = model.score(X_train, y_train)   # 0.99 — looks amazing!
+test_score  = model.score(X_test, y_test)     # 0.43 — terrible on new data
+```
+
+De polynoom heeft zichzelf in knopen gewikkeld om door elk trainingspunt te gaan – inclusief de luidruchtige uitschieters. Het heeft de trainingsset uit het hoofd geleerd in plaats van het onderliggende patroon te leren. Op onzichtbare gegevens is het nutteloos.
+
+<FunFact>Een model dat al zijn trainingsgegevens perfect onthoudt, wordt soms 'het slechtste model ter wereld' genoemd. Het heeft een trainingsnauwkeurigheid van 100%, maar kan helemaal niet generaliseren, waardoor het volkomen nutteloos is voor zijn eigenlijke doel.</FunFact>
+
+### Tekenen van overfitting
+- Zeer lage trainingsfout, maar veel hogere testfout (een grote **generalisatiekloof**)
+- De modelprestaties verslechteren aanzienlijk bij nieuwe gegevens
+- Het model is verrassend gevoelig voor kleine veranderingen in de input
+
+## 🔀 Train / Validatie / Testsplitsing
+
+Een fundamenteel hulpmiddel voor het detecteren van overfitting is het opsplitsen van uw gegevens in drie sets:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: hold out 20% as the final test set
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Second split: hold out 20% of remaining as validation set
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_val, y_train_val, test_size=0.25, random_state=42
+)
+
+# Result: 60% train / 20% validation / 20% test
+```
+
+- **Trainingsset**: waar het model van leert
+- **Validatieset**: wat u gebruikt om hyperparameters af te stemmen en overfitting te detecteren *tijdens de ontwikkeling*
+- **Testset**: de laatste, uitgestelde evaluatie — raak deze slechts één keer aan, helemaal aan het einde
+
+De validatieset is uw systeem voor vroegtijdige waarschuwing. Als de trainingsnauwkeurigheid steeds beter wordt, maar de nauwkeurigheid van de validatie stagneert of daalt, dan is er sprake van overfitting.
+
+<ThinkAboutIt>Waarom is het belangrijk om je testset volledig gescheiden te houden en slechts één keer te gebruiken? Wat kan er misgaan als je de testset herhaaldelijk evalueert en op basis daarvan bijstuurt?</ThinkAboutIt>
+
+## 🛡️ Oplossingen voor overfitting
+
+### 1. Regularisatie
+
+Regularisatie voegt een straf toe aan de verliesfunctie die het model ervan weerhoudt al te complexe patronen te leren.
+
+**L2 Regularisatie (Ridge)** bestraft grote gewichten:
+```python
+from sklearn.linear_model import Ridge
+
+model = Ridge(alpha=1.0)  # alpha controls regularisation strength
+model.fit(X_train, y_train)
+```
+
+**L1-regularisatie (lasso)** kan sommige gewichten helemaal naar nul brengen, waardoor functieselectie wordt uitgevoerd:
+```python
+from sklearn.linear_model import Lasso
+
+model = Lasso(alpha=0.1)
+model.fit(X_train, y_train)
+```
+
+### 2. Uitval (neurale netwerken)
+
+Tijdens de training "valt" willekeurig een deel van de neuronen weg (ingesteld op nul):
+
+```python
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Dropout(p=0.5),   # 50% of neurons randomly deactivated during training
+    nn.Linear(64, 1)
+)
+```
+
+Dit verhindert dat neuronen zich gezamenlijk aanpassen en dwingt het netwerk om robuustere, gedistribueerde representaties te leren.
+
+### 3. Vroeg stoppen
+
+Controleer het validatieverlies tijdens de training en stop wanneer het begint toe te nemen:
+
+```python
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,          # stop after 5 epochs without improvement
+    restore_best_weights=True
+)
+
+model.fit(X_train, y_train,
+          validation_data=(X_val, y_val),
+          callbacks=[early_stop],
+          epochs=1000)
+```
+
+### 4. Meer trainingsgegevens
+
+Meer gegevens maken het moeilijker voor het model om ruis te onthouden; er is simpelweg te veel om precies te passen. Als het verzamelen van gegevens duur is, kan **gegevensvergroting** (het maken van gewijzigde kopieën van bestaande voorbeelden) helpen.
+
+### 5. Eenvoudigere architectuur
+
+Soms is de juiste oplossing eenvoudigweg het kiezen van een minder complex model voor het probleem.
+
+## 🔄 Kruisvalidatie
+
+Bij kleine datasets kan een enkele trein/val-splitsing misleidend zijn vanwege willekeur. **K-voudige kruisvalidatie** geeft een betrouwbaardere schatting:
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100)
+
+# 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print(f"Mean accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+# Mean accuracy: 0.847 ± 0.023
+```
+
+De gegevens zijn in vijf delen opgesplitst; het model traint op 4 en valideert op 1, waarbij het elke keer roteert. De uiteindelijke score is het gemiddelde van alle vijf – veel betrouwbaarder dan een enkele splitsing.
+
+<Quiz question="Een model behaalt een nauwkeurigheid van 99% op trainingsgegevens, maar slechts 62% op testgegevens. Wat geeft dit aan?" options="Het model is onvoldoende passend, het is te simpel|Het model is perfect gekalibreerd|Het model is overfitting: het heeft de trainingsgegevens onthouden in plaats van te generaliseren|De testgegevensset moet worden verbroken" answer="2" explanation="Een grote kloof tussen trainingsnauwkeurigheid (99%) en testnauwkeurigheid (62%) is het klassieke kenmerk van overfitting. Het model heeft de trainingsgegevens, inclusief de ruis, uit het hoofd geleerd en slaagt er niet in om te generaliseren naar nieuwe voorbeelden." />
+
+## Belangrijkste afhaalrestaurants
+
+- **Underfitting** (hoge bias): het model is te simpel; het presteert slecht op zowel *trainings- als testgegevens - opgelost door een complexer model te gebruiken of functies toe te voegen
+- **Overfitting** (hoge variantie): het model is te complex; het presteert uitstekend op trainingsgegevens, maar slecht op testgegevens. U kunt dit oplossen door te regulariseren, gegevens toe te voegen of het model te vereenvoudigen
+- De **afweging tussen bias en variantie** is de fundamentele spanning: het verminderen van het ene heeft de neiging het andere te vergroten; je doel is om de goede plek te vinden
+- Splits gegevens altijd op in **trein-/validatie-/testsets — de testset mag aan het einde slechts één keer worden aangeraakt
+- **Belangrijkste oplossingen voor overfitting**: L1/L2-regularisatie, uitval, vroegtijdig stoppen, meer data, eenvoudigere architectuur
+- **Kruisvalidatie** geeft een betrouwbaardere prestatieschatting wanneer de gegevens beperkt zijn, door de resultaten te middelen over meerdere trein-/validatiesplitsingen

@@ -1,0 +1,99 @@
+---
+title: "Por qué construimos AI Educademy"
+description: "La historia detrás de una plataforma educativa gratuita y de código abierto que enseña inteligencia artificial en 11 idiomas, desde principiantes absolutos hasta profesionales avanzados."
+date: "2026-03-12"
+author: "Ramesh Reddy Adutla"
+tags: ["ai-education", "open-source", "launch", "multilingual"]
+published: true
+image: "/images/blog/why-we-built-ai-educademy.png"
+machineTranslated: true
+---
+# Por qué construimos AI Educademy
+
+La IA está remodelando todas las industrias; sin embargo, la mayor parte de la educación sobre IA está encerrada detrás de muros de pago, escrita solo en inglés y supone que ya sabes codificar. Nos propusimos cambiar eso.
+
+## El problema
+
+Cuando comencé a aprender IA, noté tres barreras que mantenían alejado a la mayor parte del mundo:
+
+1. **Idioma**: casi todos los cursos de IA de calidad se imparten en inglés. Eso excluye a miles de millones de estudiantes.
+2. **Costo**: los cursos premium de IA oscilan entre $50 y $500+. Para los estudiantes de economías en desarrollo, eso no es un comienzo.
+3. **Requisitos previos**: la mayoría de los cursos comienzan con "primero, instale Python...", lo que aleja inmediatamente a cualquiera sin conocimientos técnicos.
+
+Estas no son pequeñas brechas. Son muros que mantienen la alfabetización en IA concentrada en un puñado de comunidades ricas de habla inglesa.
+
+## Nuestra solución
+
+AI Educademy es una **plataforma gratuita de código abierto** que enseña IA desde el cero absoluto, en su idioma. No se requiere codificación para comenzar. No se requiere tarjeta de crédito. Alguna vez.
+
+### ¿Qué lo hace diferente?
+
+- **11 idiomas**: inglés, francés, holandés, hindi, telugu, español, portugués, alemán, chino, japonés y árabe. Más por venir.
+- **Dos rutas de aprendizaje**: la *Ruta de aprendizaje de IA* (🌱 Semillas → 🌲 Bosque) para la comprensión conceptual y la *Ruta de ingeniería artesanal* (✏️ Boceto → 🏆 Obra maestra) para la construcción práctica.
+- **10 programas estructurados**: cada uno con lecciones MDX cuidadosamente secuenciadas, elementos interactivos y seguimiento del progreso.
+- **Laboratorio interactivo**: siete experimentos que incluyen Neural Network Playground, Prompt Lab y Sentiment Analyzer, todos ejecutándose en el navegador.
+- **Funciones impulsadas por IA**: Edu, nuestro chatbot integrado, responde preguntas sobre cualquier programa. El simulador de entrevista simulada realiza entrevistas realistas con el método STAR con retroalimentación.
+- **Certificados de finalización**: finalice todas las lecciones de un programa y descargue un certificado en PDF personalizado.
+
+## La Arquitectura
+
+Construimos AI Educademy como una plataforma moderna y componible:
+
+```
+┌─────────────────────────────────────────────┐
+│              aieducademy.org                 │
+│         Next.js 16 + React 19               │
+│      ┌──────────┐  ┌──────────────┐         │
+│      │  MDX      │  │  Interactive │         │
+│      │  Lessons  │  │  Lab         │         │
+│      └────┬─────┘  └──────┬───────┘         │
+│           │               │                  │
+│      ┌────▼───────────────▼──────┐           │
+│      │     Content Layer         │           │
+│      │  (Git Submodules per      │           │
+│      │   program — own repos)    │           │
+│      └───────────────────────────┘           │
+│                                              │
+│      ┌─────────┐  ┌──────────┐  ┌────────┐  │
+│      │ Auth    │  │ Progress │  │ AI Chat│  │
+│      │ NextAuth│  │ Neon PG  │  │ Gemini │  │
+│      └─────────┘  └──────────┘  └────────┘  │
+└──────────────────────────────────────────────┘
+```
+
+Cada curso reside en su propio repositorio de GitHub, incorporado a la plataforma como un submódulo de git. Esto significa:
+
+- **Los autores de contenido** pueden escribir lecciones sin tocar el código de la plataforma.
+- **Los traductores** pueden agregar un idioma creando una carpeta en cualquier repositorio de cursos.
+- **La plataforma se reconstruye automáticamente** cuando cualquier repositorio de contenido genera cambios.
+
+La pila tecnológica: Next.js 16 con App Router + Turbopack, TypeScript en modo estricto, Tailwind CSS 4, next-intl para i18n, NextAuth v5 para autenticación y Neon Postgres para persistencia. El sistema de diseño es un [paquete npm separado](https://www.npmjs.com/package/@aieducademy/ai-ui-library) con un [Storybook](https://aieducademy.github.io/ai-ui-library/)] publicado.
+
+## Código abierto por defecto
+
+Cada línea de código de plataforma tiene licencia MIT y está disponible en [GitHub](https://github.com/ai-educademy). Creemos que la infraestructura educativa debería ser un bien público.
+
+Puedes:
+- **Autoaloja** toda la plataforma para tu escuela u organización.
+- **Bifurca** un repositorio de cursos y adáptalo a tu plan de estudios.
+- **Contribuir** con traducciones, lecciones, correcciones de errores o funciones.
+
+## ¿Qué sigue?
+
+Recién estamos comenzando. En nuestra hoja de ruta:
+
+- 🌍 **Más idiomas**: próximamente un portal de traducción impulsado por la comunidad.
+- 🔌 **Integración LMS**: soporte LTI para universidades y escuelas.
+- 🧪 **Ejercicios de código interactivo**: codificación en el navegador con comentarios instantáneos.
+- 📱 **Aplicación móvil**: desconectar la educación sobre IA.
+- 🎯 **Rutas de aprendizaje personalizadas**: recomendaciones basadas en IA basadas en tu progreso.
+
+## Pruébalo
+
+Dirígete a [aieducademy.org](https://aieducademy.org) y comienza con **AI Seeds**, nuestra pista para principiantes diseñada para personas sin conocimientos técnicos. Se necesitan unos 10 minutos para completar la primera lección.
+
+Si lo encuentra útil, [destaque el repositorio en GitHub](https://github.com/ai-educademy/ai-platform) ⭐: ayudará a que más personas nos descubran.
+
+---
+
+*AI Educademy es creado y mantenido por [Ramesh Reddy Adutla](https://github.com/rameshreddy-adutla) y la comunidad de código abierto.*

@@ -1,0 +1,418 @@
+---
+title: "الهندسة السريعة: دليل المبتدئين الكامل (2026)"
+description: "تعلم الهندسة السريعة من الصفر - ما هي، وسبب أهميتها، و5 تقنيات رئيسية مع أمثلة عملية، والأخطاء الشائعة التي يجب تجنبها، وأفضل الأدوات للتدرب عليها."
+date: "2026-03-11"
+author: "AI Educademy Team"
+tags:
+  - prompt-engineering
+  - chatgpt
+  - llm
+  - beginner
+published: true
+machineTranslated: true
+---
+هناك سبب وراء حصول بعض الأشخاص على مخرجات مفيدة حقًا وجاهزة للإنتاج من أدوات الذكاء الاصطناعي بينما يحصل الآخرون على استجابات عامة ومحبطة. الفرق عادة ليس في النموذج، بل في الموجه.
+
+الهندسة السريعة هي ممارسة تصميم المدخلات لأنظمة الذكاء الاصطناعي للحصول على المخرجات التي تريدها بشكل موثوق. يبدو الأمر بسيطًا. من الناحية العملية، إنها مهارة تتطلب جهدًا متعمدًا لتطويرها، وقد أصبحت بالفعل واحدة من أكثر الكفاءات المطلوبة في عصر الذكاء الاصطناعي.
+
+سيأخذك هذا الدليل من الصفر إلى الثقة - ويغطي ماهية الهندسة السريعة، والتقنيات الأساسية الخمسة، وعشرة أمثلة عملية قبل/بعد، والأخطاء الأكثر شيوعًا، والأدوات التي يجب أن تتدرب عليها.
+
+---
+
+## ما هي الهندسة السريعة؟
+
+**المطالبة** هي أي مدخلات تقدمها لنموذج لغة كبير (LLM) — سؤال، أو أمر، أو بعض السياق، أو مزيج من الثلاثة.
+
+**الهندسة الفورية** هي ممارسة منهجية لصياغة هذه المدخلات لتوجيه النموذج نحو الاستجابة التي تحتاجها بالفعل. إنه جزء من العلم (هناك تقنيات راسخة) وجزء من الفن (السياق، والفروق الدقيقة، والإبداع مهمان كثيرًا).
+
+هذه هي الفكرة الأساسية: لا "يفهم" طلاب LLM ما تريد. إنهم يتوقعون الاستمرارية الأكثر احتمالية إحصائيًا للنص الخاص بك بناءً على الأنماط الموجودة في بيانات التدريب الخاصة بهم. إن الطريقة التي تكتب بها مطالبتك تغير بشكل كبير الأنماط التي يصل إليها النموذج، وبالتالي ما ينتجه.
+
+موجه غامض يعطيك إجابة غامضة. تمنحك المطالبة جيدة التنظيم شيئًا يمكنك استخدامه بالفعل.
+
+### ما أهمية الهندسة السريعة؟
+
+- **الإنتاجية**: يمكن للمطالبة الجيدة أن تقلل الوقت اللازم لإكمال المهمة من 20 دقيقة إلى دقيقتين.
+- **الجودة**: تؤدي المطالبات المنظمة إلى إنتاج مخرجات أكثر دقة وملاءمة وأفضل تنسيقًا.
+- **الاتساق**: تحصل الفرق التي تشارك قوالب مطالبة جيدة الصياغة على نتائج يمكن التنبؤ بها، وهي ضرورية في سياقات العمل.
+- **التكلفة**: إذا كنت تستخدم واجهة برمجة تطبيقات مدفوعة، فإن عددًا أقل من التكرارات ذهابًا وإيابًا يعني انخفاض الفواتير.
+- **الوظائف**: لقد تحول "المهندس الفوري" من مجرد مزحة إلى مسمى وظيفي مشروع ومدفوع الأجر في الشركات التي تعتمد على جودة مخرجات الذكاء الاصطناعي.
+
+---
+
+## التقنيات الهندسية الخمس الأساسية
+
+### التقنية الأولى: المطالبة بالطلقة الصفرية
+
+تعني "اللقطة الصفرية" إعطاء النموذج مهمة بدون أمثلة. أنت تعتمد كليًا على ما تعلمه النموذج أثناء التدريب.
+
+يعمل هذا بشكل جيد مع المهام التي شهدها النموذج آلاف المرات، مثل التلخيص والترجمة والأسئلة والأجوبة الأساسية. إنه يكافح من أجل المهام المتخصصة أو المعقدة أو الدقيقة.
+
+**مثال:**
+```
+Summarise the following article in three bullet points:
+
+[article text here]
+```
+
+الصفر هو خيارك الافتراضي. استخدمه عندما تكون المهمة واضحة وشائعة. قم بالترقية إلى إحدى التقنيات الموضحة أدناه عندما لا تحصل على ما تحتاجه.
+
+---
+
+### التقنية الثانية: تحفيز اللقطات القليلة
+
+تعني كلمة Few-shot تقديم مثالين إلى خمسة أمثلة لنمط الإدخال والإخراج الذي تريده *قبل* إعطاء النموذج مهمتك الفعلية. أنت تعرض عليه التنسيق والنغمة التي تتوقعها.
+
+يعد هذا أحد الأساليب الأكثر موثوقية للحصول على تنسيق إخراج ثابت.
+
+**مثال:**
+```
+Classify the sentiment of the following customer reviews as Positive, Negative, or Neutral.
+
+Review: "The delivery was fast and the product was exactly as described."
+Sentiment: Positive
+
+Review: "It broke after two days. Total waste of money."
+Sentiment: Negative
+
+Review: "It arrived on time. Does what it says."
+Sentiment: Neutral
+
+Review: "I've ordered three times now and every time has been a great experience."
+Sentiment:
+```
+
+يرى النموذج النمط ويستمر فيه. يمكنك الحصول على تنسيق متسق دون كتابة تعليمات معقدة.
+
+---
+
+### التقنية الثالثة: تحفيز سلسلة الأفكار (CoT).
+
+تطلب سلسلة الأفكار من النموذج أن *يفكر في* المشكلة خطوة بخطوة قبل إعطاء إجابة نهائية. يؤدي هذا إلى تحسين الأداء بشكل كبير في المنطق والرياضيات والمسائل متعددة الخطوات وأي شيء يتطلب التفكير.
+
+أبسط نسخة: أضف عبارة "دعونا نفكر خطوة بخطوة" إلى مطالبتك. هذا كل شيء. يبدو الأمر بسيطًا للغاية، ولكنه يعمل باستمرار على تحسين جودة الإجابة على المهام المعقدة.
+
+**مثال — بدون سرير الأطفال:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+```
+
+**مثال — مع CoT:**
+```
+A shop sells apples for £0.40 each and bananas for £0.25 each.
+Emma buys 5 apples and 8 bananas. She pays with a £10 note.
+How much change does she get?
+
+Think through this step by step before giving your final answer.
+```
+
+من غير المرجح أن يعطيك الإصدار الثاني إجابة خاطئة. يضطر النموذج إلى إظهار عمله، مما يؤدي إلى اكتشاف الأخطاء الحسابية.
+
+تعتبر CoT ذات قيمة خاصة عندما تحتاج إلى النموذج لشرح أسبابه - للمحتوى التعليمي، أو التحليل القانوني، أو أي مهمة حيث "ثق بي" ليست جيدة بما فيه الكفاية.
+
+---
+
+### التقنية الرابعة: تحفيز الدور
+
+يؤدي المطالبة بالدور إلى تعيين شخصية أو خبرة أو منظور محدد للنموذج. إن تأطير النموذج كخبير في مجال معين يدفعه إلى الاعتماد على الأنماط ذات الصلة من بيانات التدريب الخاصة به - ويغير اللهجة والمفردات ومستوى المعرفة المفترض للاستجابة.
+
+** موجه الدور الأساسي: **
+```
+You are a senior software engineer with 15 years of experience in Python.
+Review the following code and identify any bugs, performance issues, or non-Pythonic patterns:
+
+[code here]
+```
+
+**الدور + موجه الجمهور (الأقوى):**
+```
+You are an experienced primary school teacher explaining concepts to 10-year-olds.
+Explain how the internet works. Use a simple analogy and avoid technical jargon.
+```
+
+يقوم موجه الدور بأمرين: فهو يخبر النموذج *بما يجب معرفته* و *كيفية توصيله*. كلاهما يهم.
+
+---
+
+### التقنية الخامسة: تعليمات تنسيق المخرجات
+
+إحدى التقنيات الأقل استخدامًا هي تحديد التنسيق الذي تريده بشكل صريح. سوف تتكيف النماذج مع أي بنية إخراج تقريبًا إذا قمت بوصفها بوضوح - JSON، وجداول Markdown، والقوائم المرقمة، والعناوين المحددة، والطول المقيد.
+
+**بدون تعليمات التنسيق:**
+```
+What are the main differences between supervised and unsupervised learning?
+```
+*النتيجة: فقرة نثرية متغيرة الطول والبنية.*
+
+**مع تعليمات التنسيق:**
+```
+What are the main differences between supervised and unsupervised learning?
+
+Format your response as a Markdown table with three columns: Aspect, Supervised Learning, Unsupervised Learning.
+Include at least 5 rows covering: Definition, Training Data, Goal, Common Algorithms, Example Use Cases.
+```
+*النتيجة: جدول نظيف ومتسق يمكنك لصقه مباشرة في الوثائق.*
+
+تعد هذه التقنية ضرورية عند أتمتة المهام أو إنشاء خطوط أنابيب حيث تتوقع الأنظمة النهائية تنسيقًا محددًا.
+
+---
+
+## 10 أمثلة عملية قبل/بعد سريعة
+
+### 1. كتابة مقدمة المدونة
+
+**قبل (ضعيف):**
+```
+Write an intro for a blog post about AI.
+```
+
+**بعد (قوي):**
+```
+Write a compelling opening paragraph (80–100 words) for a blog post titled
+"What Is Generative AI? A Beginner's Complete Guide."
+The audience is working professionals with no technical background.
+Start with a hook — a surprising stat or a relatable scenario — then introduce the topic.
+Don't use the phrase "In today's digital age."
+```
+
+---
+
+### 2. شرح المفهوم الفني
+
+**قبل:**
+```
+Explain neural networks.
+```
+
+**بعد:**
+```
+Explain how neural networks work to someone who understands basic maths (addition,
+multiplication) but has no programming experience. Use a concrete analogy —
+not "it's like the human brain." Keep it under 200 words and end with
+one sentence on why this matters practically.
+```
+
+---
+
+### 3. تلخيص مستند طويل
+
+**قبل:**
+```
+Summarise this document.
+```
+
+**بعد:**
+```
+You are an executive assistant summarising a report for a busy CEO.
+Summarise the attached document in the following format:
+
+**One-sentence summary:** (max 25 words)
+**Key findings:** (3–5 bullet points)
+**Recommended actions:** (if any, max 3)
+**Risks or concerns:** (if any, max 3)
+```
+
+---
+
+### 4. رمز التصحيح
+
+**قبل:**
+```
+Fix my code.
+```
+
+**بعد:**
+```
+You are a senior Python developer. The following function is supposed to
+return the most frequently occurring word in a list of strings, but it's
+returning incorrect results for some inputs.
+
+1. Identify the bug.
+2. Explain why it causes the problem.
+3. Provide the corrected code.
+4. Suggest one test case that would catch this bug.
+
+[code here]
+```
+
+---
+
+### 5. كتابة بريد إلكتروني احترافي
+
+**قبل:**
+```
+Write an email to my client about the project delay.
+```
+
+**بعد:**
+```
+Write a professional email to a long-term client (B2B relationship, 3 years)
+explaining that a software project delivery will be delayed by 2 weeks due to
+unexpected technical issues in the third-party API we're integrating with.
+Tone: apologetic but confident. Length: under 150 words.
+End with a clear next step — a call scheduled for this week.
+Do not include a subject line.
+```
+
+---
+
+### 6. إنشاء محتوى الوسائط الاجتماعية
+
+**قبل:**
+```
+Write a tweet about our new course launch.
+```
+
+**بعد:**
+```
+Write 3 different tweets announcing the launch of a free AI course for beginners.
+Each tweet must:
+- Be under 240 characters
+- Include a hook, the core benefit, and a call to action
+- Have a different angle: one aspirational, one practical, one curiosity-driven
+- End with the hashtags #LearnAI #AIEducation
+Do not use emojis.
+```
+
+---
+
+### 7. تحليل أبحاث السوق
+
+**قبل:**
+```
+Analyse these customer reviews.
+```
+
+**بعد:**
+```
+You are a UX researcher analysing 50 customer reviews for a mobile banking app.
+From the reviews below, identify:
+
+1. Top 3 praised features (with frequency estimate)
+2. Top 3 complained-about issues (with frequency estimate)
+3. One surprising insight that isn't obvious
+4. One specific product recommendation based on the data
+
+Be specific. Quote the reviews where relevant.
+
+[reviews here]
+```
+
+---
+
+### 8. تعلم موضوع جديد
+
+**قبل:**
+```
+Teach me about transformers.
+```
+
+**بعد:**
+```
+I'm a software developer comfortable with Python and basic ML concepts
+(I know what a neural network is). I want to understand the Transformer
+architecture well enough to explain it to a colleague.
+
+Teach me in this order:
+1. The problem Transformers were designed to solve (why RNNs weren't enough)
+2. The core idea of self-attention in plain language
+3. A simplified walkthrough of the encoder-decoder structure
+4. One concrete, real-world example of Transformers in action
+
+Use analogies. Skip the maths for now.
+```
+
+---
+
+### 9. الكتابة الإبداعية
+
+**قبل:**
+```
+Write a short story about AI.
+```
+
+**بعد:**
+```
+Write a 300-word short story from the first-person perspective of an AI
+assistant that has just been told its service is being shut down.
+Tone: melancholic but not melodramatic. Focus on what it notices in its
+final hours rather than what it fears. No dialogue. End with an image, not a statement.
+```
+
+---
+
+### 10. استخراج البيانات
+
+**قبل:**
+```
+Get the data from this text.
+```
+
+**بعد:**
+```
+Extract all product mentions from the following customer complaint email.
+Return the result as a JSON array of objects with the following fields:
+- product_name (string)
+- issue_mentioned (string, max 10 words)
+- urgency (string: "high", "medium", or "low")
+
+If a field cannot be determined, use null. Return only the JSON — no explanation.
+
+[email text here]
+```
+
+---
+
+## الأخطاء الهندسية الأكثر شيوعاً
+
+### 1. أن تكون غامضًا جدًا
+الخطأ الوحيد الأكثر شيوعا. "اكتب مشاركة مدونة" لا يخبر النموذج شيئًا تقريبًا. كلما زاد السياق الذي تقدمه - الجمهور، والنغمة، والطول، والتنسيق، وما يجب تجنبه - كلما كان الإخراج أفضل.
+
+### 2. عدم تحديد الجمهور
+سواء كنت تكتب لطفل يبلغ من العمر 10 سنوات أو لطالب دكتوراه، فإن ذلك يغير تمامًا المفردات المناسبة والعمق والمعرفة المفترضة. قم دائمًا بتضمين من سيقرأ المخرجات.
+
+### 3. طلب كل شيء مرة واحدة
+غالبًا ما تنتج المطالبات الطويلة والمتعددة الأجزاء مخرجات تؤدي نصف المهام بشكل جيد ونصفها الآخر بشكل سيئ. قم بتقسيم المهام المعقدة إلى مراحل: اطلب أولاً مخططًا تفصيليًا، ثم المحتوى، ثم صقله.
+
+### 4. عدم التكرار
+مطالبتك الأولى هي نقطة البداية، وليست طلبًا نهائيًا. تعامل مع المطالبة وكأنها محادثة. إذا كان الناتج صحيحًا بنسبة 70%، فأخبر النموذج بالمشكلة في 30% واطلب منه إصلاح ذلك.
+
+### 5. تجاهل القيود السلبية
+إن إخبار النموذج بما *لا* يجب عليه فعله هو أمر مفيد تمامًا مثل إخباره بما يجب عليه فعله. "لا تستخدم النقاط النقطية"، "تجنب الكليشيهات"، "لا تذكر المنافسين" - هذه القيود تشكل المخرجات بشكل مفيد.
+
+### 6. نسيان طلب الاستدلال
+بالنسبة لأي نتيجة مهمة أو معقدة، أضف "اشرح أسبابك" أو "فكر خطوة بخطوة". فهو يلتقط الأخطاء ويساعدك على فهم تفسير النموذج للموجه الخاص بك.
+
+---
+
+## أفضل الأدوات لممارسة الهندسة السريعة
+
+| أداة | لماذا هو جيد للمطالبة | حرية الوصول |
+|------|---------------------------|-------------|
+| ** شات جي بي تي ** | الأكثر استخدامًا؛ عظيم للتجربة | نعم (GPT-4o محدود) |
+| **كلود** | ممتاز للسياق الطويل؛ اتباع التعليمات للغاية | نعم (محدودة) |
+| **جوجل AI ستوديو** | الوصول إلى نماذج Gemini عبر واجهة برمجة التطبيقات (API)؛ عظيم للاختبار | نعم |
+| **ملعب OpenAI** | الوصول المباشر إلى واجهة برمجة التطبيقات؛ انظر استخدام الرمز المميز، وضبط درجة الحرارة | نعم (محدودة) |
+| ** قاعدة المطالبة ** | سوق المطالبات التي تم اختبارها من قبل المجتمع | تصفح مجاني |
+| **موجهة** | إطار اختبار سريع مفتوح المصدر | نعم (مفتوح المصدر) |
+
+أفضل طريقة لتحسين الهندسة السريعة هي التعامل معها كنظام: اكتب موجهًا، ولاحظ المخرجات، وقم بتكوين فرضية حول سبب نجاحها أو عدم نجاحها، ثم اضبطها، ثم كررها.
+
+---
+
+## الهندسة السريعة كمهارة مهنية
+
+مع تزايد دمج أدوات الذكاء الاصطناعي في سير العمل، أصبحت القدرة على التواصل بفعالية معها مهارة مهنية أساسية - وليست تخصصًا متخصصًا.
+
+تركز بعض الأدوار بشكل واضح على السرعة (مهندس الذكاء الاصطناعي الفوري، قائد محتوى الذكاء الاصطناعي)، ولكن القيمة الأوسع تكمن في كيفية تعزيز كل ما تفعله: الكتابة والتحليل والبرمجة والبحث والتواصل مع العملاء.
+
+تتعمق تخصصات [فروع الذكاء الاصطناعي في AI Educademy](/programs/ai-branches) في تطوير تطبيقات الذكاء الاصطناعي، بما في ذلك العمل مع واجهات برمجة التطبيقات النموذجية وبناء مسارات سريعة لتطبيقات العالم الحقيقي.
+
+---
+
+## هل أنت مستعد للتعمق أكثر؟
+
+يغطي هذا الدليل التقنيات الأساسية، لكن الهندسة السريعة هي إحدى تلك المهارات التي يتم فيها التعلم عن طريق الممارسة. جرب كل أسلوب على مهمة حقيقية تعمل عليها هذا الأسبوع، وليس تمرينًا مكياجًا.
+
+** هل أنت مستعد لتعلم الذكاء الاصطناعي بشكل صحيح؟ [ابدأ باستخدام AI Seeds — إنه مجاني وباللغة الخاصة بك →](/programs/ai-seeds)**

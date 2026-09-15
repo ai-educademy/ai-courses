@@ -1,0 +1,226 @@
+---
+title: "Überwachtes vs. unüberwachtes Lernen: Erklärung der wichtigsten Unterschiede"
+description: "Ein klarer Vergleich von überwachtem und unüberwachtem maschinellem Lernen – wann die einzelnen Ansätze zu verwenden sind, mit Beispielen und Algorithmen aus der Praxis."
+order: 14
+difficulty: "intermediate"
+duration: 25
+icon: "🔀"
+published: true
+machineTranslated: true
+---
+# Überwachtes vs. unüberwachtes Lernen: Die wichtigsten Unterschiede erklärt
+
+Wenn Sie anfangen, maschinelles Lernen zu erlernen, ist einer der ersten Weggabelungen: Welche Art von Lernen betreiben Sie? Die Antwort verändert alles – die Algorithmen, die Ihnen zur Verfügung stehen, die Daten, die Sie benötigen, und was Sie von Ihrem Modell erwarten können.
+
+Die beiden grundlegenden Kategorien sind **überwachtes Lernen** und **unüberwachtes Lernen**. Den Unterschied zu verstehen, ist nicht nur eine akademische Angelegenheit – es ist die erste Entscheidung, die Sie treffen, wenn Sie sich einem neuen ML-Problem nähern.
+
+## 🏷️ Die Kernunterscheidung: Etiketten
+
+Der grundlegendste Unterschied zwischen überwachtem und unüberwachtem Lernen besteht darin, **ob Ihre Trainingsdaten Labels enthalten**.
+
+**Gekennzeichnete Daten** bedeuten, dass jedes Beispiel in Ihrem Datensatz die „richtige Antwort“ enthält – das Ergebnis, das das Modell vorhersagen oder klassifizieren soll:
+
+```
+# Labelled dataset (supervised)
+email_text                          | label
+------------------------------------|-------
+"Congratulations! You've won £1000" | spam
+"Meeting rescheduled to Thursday"   | not_spam
+"URGENT: Your account is suspended" | spam
+```
+
+**Unbeschriftete Daten** bedeuten, dass Sie über die Eingaben, aber keine vordefinierten Antworten verfügen – nur die Rohbeobachtungen:
+
+```
+# Unlabelled dataset (unsupervised)
+customer_id | age | annual_spend | frequency | location
+------------|-----|--------------|-----------|----------
+C001        | 34  | £2,400       | 12/year   | London
+C002        | 52  | £18,000      | 52/year   | Manchester
+C003        | 28  | £650         | 3/year    | London
+```
+
+Die Erstellung beschrifteter Daten ist teuer und zeitaufwändig – es erfordert, dass Menschen Beispiele manuell mit Anmerkungen versehen. Unbeschriftete Daten sind reichlich vorhanden (die meisten Daten auf der Welt haben keine Beschriftungen). Diese praktische Einschränkung bestimmt, welcher Ansatz für ein bestimmtes Problem möglich ist.
+
+## ✅ Überwachtes Lernen
+
+Beim überwachten Lernen lernt das Modell eine Zuordnung von Eingaben zu Ausgaben, indem es beschriftete Beispiele untersucht. Der „Supervisor“ sind die gekennzeichneten Daten selbst – jedes Trainingsbeispiel teilt dem Modell mit, wie die korrekte Ausgabe aussehen soll.
+
+### Klassifizierung
+
+Wenn es sich bei der Ausgabe um eine **diskrete Kategorie** handelt, handelt es sich um ein Klassifizierungsproblem.
+
+**Beispiele:**
+- Handelt es sich bei dieser E-Mail um Spam oder nicht um Spam?
+- Enthält dieses Bild eine Katze oder einen Hund?
+- Kommt dieser Kreditantragsteller in Zahlungsverzug? (Ja/Nein)
+- Welche Ziffer (0–9) stellt diese handschriftliche Zahl dar?
+
+**Gemeinsame Algorithmen:**
+- Logistische Regression
+- Entscheidungsbäume und Zufallswälder
+- Support Vector Machines (SVM)
+- Neuronale Netze
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+classifier = RandomForestClassifier(n_estimators=100)
+classifier.fit(X_train, y_train)
+
+accuracy = classifier.score(X_test, y_test)
+print(f"Test accuracy: {accuracy:.2%}")
+```
+
+### Regression
+
+Wenn die Ausgabe eine **kontinuierliche Zahl** ist, handelt es sich um ein Regressionsproblem.
+
+**Beispiele:**
+- Wofür wird dieses Haus verkauft?
+- Wie hoch wird dieser Aktienkurs morgen sein?
+- Wie viele Einheiten werden wir nächsten Monat verkaufen?
+- Wie hoch wird der Blutdruck eines Patienten in sechs Monaten sein?
+
+**Gemeinsame Algorithmen:**
+- Lineare Regression
+- Ridge/Lasso-Regression
+- Gradient Boosting (XGBoost, LightGBM)
+- Neuronale Netze
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+# predictions = [245000, 182000, 412000, ...]  (house prices in £)
+```
+
+<FunFact>Gradient Boosting-Modelle (XGBoost, LightGBM, CatBoost) haben mehr Kaggle-Wettbewerbe für maschinelles Lernen gewonnen als jede andere Algorithmuskategorie. Sie bleiben die erste Wahl für strukturierte/tabellenförmige Daten in der Industrie.</FunFact>
+
+## 🔍Unüberwachtes Lernen
+
+Beim unbeaufsichtigten Lernen untersucht das Modell die Datenstruktur **ohne jegliche Beschriftung**. Anstatt eine Zuordnung zu einer bekannten Ausgabe zu erlernen, entdeckt es selbst verborgene Muster, Gruppierungen oder Darstellungen.
+
+### Clustering
+
+Cluster-Algorithmen gruppieren ähnliche Datenpunkte, ohne dass ihnen mitgeteilt wird, wie die Gruppen aussehen sollen.
+
+**Beispiele:**
+- Kunden nach Kaufverhalten segmentieren (ohne vordefinierte Segmente)
+- Gruppieren Sie Dokumente nach Themen
+- Identifizieren Sie Communities in einem sozialen Netzwerk
+- Anomalien erkennen (Punkte, die zu keinem Cluster gehören)
+
+**Gemeinsame Algorithmen:**
+- K-Means-Clustering
+- DBSCAN (dichtebasiert, verarbeitet unregelmäßige Formen)
+- Hierarchisches Clustering
+
+```python
+from sklearn.cluster import KMeans
+
+# We don't know how many customer segments exist — let's try 4
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(customer_data_scaled)
+
+# Each customer now has a cluster label (0, 1, 2, or 3)
+df['segment'] = kmeans.labels_
+
+# Analyse what each segment looks like
+print(df.groupby('segment')[['age', 'annual_spend', 'frequency']].mean())
+```
+
+### Dimensionsreduktion
+
+Komprimieren Sie hochdimensionale Daten in weniger Dimensionen und bewahren Sie dabei so viel Struktur wie möglich. Wird zur Visualisierung, Vorverarbeitung und Entfernung redundanter Informationen verwendet.
+
+**Gemeinsame Algorithmen:**
+- PCA (Hauptkomponentenanalyse) – lineare Komprimierung
+- t-SNE – nichtlinear, hervorragend zur Visualisierung geeignet
+- UMAP – schnell, bewahrt sowohl die lokale als auch die globale Struktur
+- Autoencoder – auf neuronalen Netzwerken basierende Komprimierung
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reduce 50-dimensional data to 2D for visualisation
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X_scaled)
+
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=cluster_labels, cmap='tab10')
+plt.title('Customer segments visualised in 2D')
+plt.show()
+```
+
+<ThinkAboutIt>Ein Einzelhändler verfügt über Transaktionsdaten von 10 Millionen Kunden, aber über keine vordefinierten Kundensegmente. Warum wäre unüberwachtes Clustering hier sinnvoll? Welche Geschäftsentscheidungen könnten die entdeckten Segmente beeinflussen?</ThinkAboutIt>
+
+## 🔄 Jenseits des Binären: Andere Lernparadigmen
+
+Die Unterscheidung überwacht/unüberwacht ist grundlegend, aber die ML-Landschaft ist umfangreicher als nur diese beiden Kategorien.
+
+### Halbüberwachtes Lernen
+
+Verwendet eine **kleine Menge beschrifteter Daten** kombiniert mit einer **großen Menge unbeschrifteter Daten**. Das ist sehr praktisch, da die Kennzeichnung teuer ist.
+
+**Beispiel**: Sie haben 1.000 beschriftete medizinische Scans und 100.000 unbeschriftete. Durch halbüberwachtes Lernen können Sie von den unbeschrifteten Daten profitieren und die Leistung über das hinaus steigern, was die 1.000 Bezeichnungen allein erreichen könnten.
+
+### Selbstüberwachtes Lernen
+
+Ein Sonderfall, bei dem die **Beschriftungen automatisch aus den Daten selbst generiert werden**. Auf diese Weise werden moderne große Sprachmodelle vorab trainiert.
+
+**Beispiel**: Nehmen Sie einen Satz, verstecken Sie einige Wörter und trainieren Sie das Modell, um die fehlenden Wörter vorherzusagen. Die „Bezeichnungen“ (die richtigen Wörter) sind frei – sie stammen direkt aus dem Text selbst. So wurde BERT ausgebildet.
+
+```
+Input:  "The cat sat on the [MASK]."
+Target: "mat"
+```
+
+Selbstüberwachtes Lernen hat einen Wandel bewirkt, da es das Training anhand von Daten im Internetmaßstab ohne menschliche Anmerkungen ermöglicht.
+
+### Verstärkungslernen
+
+Ein Agent lernt, indem er **Aktionen** in einer **Umgebung** durchführt und **Belohnungen** oder **Strafen** erhält. Es gibt keine Etiketten – nur Feedbacksignale von den Ergebnissen.
+
+**Beispiele**: Schach spielen, einem Roboter das Laufen beibringen, das Kühlsystem eines Rechenzentrums optimieren. Wir behandeln dies ausführlich in einer eigenen Lektion.
+
+## 🗺️ Den richtigen Ansatz wählen
+
+Hier ist ein praktischer Entscheidungsrahmen:
+
+```
+Do you have labelled data?
+├── YES → Supervised Learning
+│         ├── Output is a category? → Classification
+│         │     (spam/not spam, dog/cat, fraud/legit)
+│         └── Output is a number?  → Regression
+│               (price, temperature, sales volume)
+└── NO  → Unsupervised Learning
+          ├── Want to find groups?      → Clustering
+          │     (customer segments, document topics)
+          ├── Want to compress data?    → Dimensionality Reduction
+          │     (visualisation, pre-processing)
+          └── Want to detect anomalies? → Anomaly Detection
+                (fraud, equipment failure)
+
+Partially labelled? → Semi-Supervised Learning
+Learning from interaction? → Reinforcement Learning
+```
+
+<Quiz question="Sie haben 50.000 Produktrezensionen ohne Sternebewertung oder Stimmungslabel. Sie möchten sie automatisch nach Themen gruppieren. Welchen Lernansatz sollten Sie nutzen?" options="Überwachte Klassifizierung – Trainieren Sie ein Modell, um Themen zu klassifizieren|Unüberwachtes Clustering – Entdecken Sie Themengruppen in den Daten|Reinforcement Learning – Lassen Sie einen Agenten Bewertungen lesen und sortieren|Regression – Vorhersage einer numerischen Themenbewertung für jede Rezension" answer="1" explanation="Ohne Labels ist überwachtes Lernen nicht möglich. Durch unbeaufsichtigtes Clustering (z. B. K-Means oder Themenmodellierung mit LDA) können natürliche Gruppierungen im Rezensionstext ohne vordefinierte Kategorien entdeckt werden." />
+
+## Wichtige Erkenntnisse
+
+- **Überwachtes Lernen** erfordert gekennzeichnete Daten; Das Modell lernt eine Zuordnung von Eingaben zu bekannten Ausgaben – wird für die Klassifizierung (diskrete Ausgabe) und Regression (kontinuierliche Ausgabe) verwendet.
+- **Unüberwachtes Lernen** funktioniert mit unbeschrifteten Daten; Das Modell entdeckt verborgene Strukturen – wird für Clustering, Dimensionsreduzierung und Anomalieerkennung verwendet
+– Die Wahl zwischen überwacht und unbeaufsichtigt hängt in erster Linie davon ab, **ob Sie Daten gekennzeichnet haben** und welche Frage Sie beantworten möchten
+- **Halbüberwachtes Lernen** schließt diese Lücke, indem eine kleine Menge gekennzeichneter Daten neben großen Mengen unbeschrifteter Daten verwendet wird
+- **Selbstüberwachtes Lernen** generiert eigene Labels aus den Daten – es ist die Technik hinter modernen LLMs wie BERT und GPT
+- **Reinforcement Learning** unterscheidet sich von beiden: Ein Agent lernt aus Belohnungssignalen durch Interaktion mit einer Umgebung, ohne Labels
+- Verwenden Sie den Entscheidungsrahmen: beschriftet + Kategorieausgabe → Klassifizierung; beschriftet + kontinuierliche Ausgabe → Regression; unbeschriftet + Gruppen finden → Clustering
