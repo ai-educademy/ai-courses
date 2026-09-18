@@ -13,7 +13,6 @@ permissions:
   issues: read
   actions: read
   checks: read
-  copilot-requests: write
 engine:
   id: copilot
   copilot-sdk: true
