@@ -13,10 +13,8 @@ permissions:
   issues: read
   actions: read
   checks: read
-  copilot-requests: write
 engine:
   id: copilot
-  copilot-sdk: true
 timeout-minutes: 25
 strict: true
 network:
