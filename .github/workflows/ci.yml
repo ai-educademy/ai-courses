@@ -1,0 +1,101 @@
+name: CI
+
+# Plain, dependency-light content validation. This is deliberately NOT a gh-aw
+# agentic workflow: it is a deterministic gate that the fleet-manager auto-merge
+# can trust. Auto-merge is only as safe as the checks behind it, so this runs on
+# every PR and must stay green before anything merges.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate JSON, frontmatter, links and the free-preview invariant
+        shell: bash
+        run: |
+          set -uo pipefail
+          fail=0
+          note() { echo "::error::$1"; fail=1; }
+
+          echo "== 1. JSON files parse =="
+          for f in programs.json tracks.json $(find programs -name program.json); do
+            if ! python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null; then
+              note "Invalid JSON: $f"
+            fi
+          done
+
+          echo "== 2. Every lesson MDX has a frontmatter block with required fields =="
+          req="title description order difficulty duration icon published"
+          while IFS= read -r f; do
+            first=$(head -1 "$f")
+            if [ "$first" != "---" ]; then
+              note "Missing frontmatter fence: $f"; continue
+            fi
+            fm=$(awk 'NR==1{next} /^---[[:space:]]*$/{exit} {print}' "$f")
+            for k in $req; do
+              if ! grep -qE "^${k}:" <<<"$fm"; then
+                note "Missing frontmatter field '$k': $f"
+              fi
+            done
+          done < <(find programs -path '*/lessons/*' -name '*.mdx')
+
+          echo "== 3. Blog posts have required frontmatter =="
+          breq="title description date author published"
+          while IFS= read -r f; do
+            fm=$(awk 'NR==1{next} /^---[[:space:]]*$/{exit} {print}' "$f")
+            for k in $breq; do
+              if ! grep -qE "^${k}:" <<<"$fm"; then
+                note "Missing blog frontmatter field '$k': $f"
+              fi
+            done
+          done < <(find blog -name '*.mdx')
+
+          echo "== 4. Relative markdown links and image srcs resolve =="
+          while IFS= read -r f; do
+            dir=$(dirname "$f")
+            grep -oE '\]\(([^)]+)\)' "$f" | sed -E 's/^\]\(//; s/\)$//' | while IFS= read -r link; do
+              case "$link" in
+                http*|\#*|mailto:*|/*) continue ;;
+              esac
+              target="${link%%#*}"
+              [ -z "$target" ] && continue
+              if [ ! -e "$dir/$target" ]; then
+                note "Broken relative link '$link' in $f"
+              fi
+            done
+          done < <(find programs blog -name '*.mdx')
+
+          echo "== 5. Exactly one order:1 per programme per locale =="
+          for pdir in programs/*/; do
+            [ -d "${pdir}lessons" ] || continue
+            for ldir in "${pdir}lessons"/*/; do
+              [ -d "$ldir" ] || continue
+              ones=$(grep -rlE '^order:[[:space:]]*1[[:space:]]*$' "$ldir" 2>/dev/null | wc -l | tr -d ' ')
+              total=$(find "$ldir" -name '*.mdx' | wc -l | tr -d ' ')
+              [ "$total" -eq 0 ] && continue
+              if [ "$ones" != "1" ]; then
+                note "Programme locale '$ldir' has $ones lessons with order:1 (expected exactly 1)"
+              fi
+            done
+          done
+
+          if [ "$fail" -ne 0 ]; then
+            echo "Content validation FAILED."
+            exit 1
+          fi
+          echo "Content validation passed."
