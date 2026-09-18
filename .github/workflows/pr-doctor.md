@@ -14,7 +14,8 @@ permissions:
   actions: read
   checks: read
 engine:
-  id: copilot
+  id: gemini
+  model: gemini-3.6-flash
 timeout-minutes: 25
 strict: true
 network:
