@@ -1,0 +1,187 @@
+name: Fleet Manager
+
+# WHY THIS IS PLAIN YAML AND NOT A GH-AW AGENT (read before editing):
+#
+# Merge authority is deliberately deterministic and NOT a language model.
+# gh-aw agents open PRs and issues; they must never be the thing that decides to
+# merge. A model can be prompt-injected, can hallucinate a passing check, or can
+# be talked into merging something it should not. This file, by contrast, does
+# exactly what its code says and nothing more. It is the trust boundary of the
+# whole fleet: agents propose, deterministic YAML disposes.
+#
+# Safety rules enforced below (all must hold to auto-merge):
+#   - Kill switch: repo variable FLEET_AUTOMERGE == "off" stands the whole thing
+#     down.
+#   - Author allowlist: only bot authors (github-actions, dependabot). NEVER a
+#     human's PR. Humans get reviewed the normal way.
+#   - Skip drafts, and skip labels do-not-merge / wip / needs-human.
+#   - Skip reviews in CHANGES_REQUESTED, skip anything not cleanly MERGEABLE.
+#   - NEVER auto-merge a PR touching .github/workflows/. An agent must not be
+#     able to edit its own guardrails through auto-merge. Such PRs are labelled
+#     needs-human.
+#   - NEVER auto-merge a PR that changes programs.json or tracks.json, or that
+#     adds/removes an `order: 1` line in a lesson. That directly changes which
+#     lesson is given away free, so it needs a human. Labelled needs-human.
+#   - Require at least one check, zero failing, zero pending. These repos had no
+#     CI before the fleet, so a real content check (ci.yml) MUST have run and
+#     passed. We never merge with no checks at all; we comment instead.
+#   - Cap of 5 merges per run. Concurrency guard. Squash merge.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+  check_suite:
+    types: [completed]
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+concurrency:
+  group: fleet-manager-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate and merge eligible fleet PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const MAX_MERGES = 5;
+            const BOT_AUTHORS = new Set([
+              'github-actions[bot]', 'app/github-actions',
+              'dependabot[bot]', 'app/dependabot',
+            ]);
+            const BLOCK_LABELS = new Set(['do-not-merge', 'wip', 'needs-human']);
+
+            // Kill switch.
+            const killVar = process.env.FLEET_AUTOMERGE || '';
+            if (killVar.toLowerCase() === 'off') {
+              core.notice('FLEET_AUTOMERGE is off. Standing down.');
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+
+            async function addNeedsHuman(pr, reason) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner, repo, issue_number: pr.number, labels: ['needs-human'],
+                });
+              } catch (e) { core.warning(`label failed on #${pr.number}: ${e.message}`); }
+              core.notice(`#${pr.number} needs a human: ${reason}`);
+            }
+
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: 'open', per_page: 100,
+            });
+
+            let merged = 0;
+            for (const prLite of prs) {
+              if (merged >= MAX_MERGES) { core.notice('Merge cap reached.'); break; }
+
+              const author = prLite.user && prLite.user.login
+                ? (prLite.user.type === 'Bot' ? `${prLite.user.login}[bot]` : prLite.user.login)
+                : '';
+              const rawLogin = prLite.user ? prLite.user.login : '';
+              const isBot = BOT_AUTHORS.has(author) || BOT_AUTHORS.has(rawLogin) ||
+                            BOT_AUTHORS.has(`${rawLogin}[bot]`);
+              if (!isBot) { continue; } // Never a human's PR.
+
+              if (prLite.draft) { continue; }
+
+              const labels = (prLite.labels || []).map(l => (l.name || '').toLowerCase());
+              if (labels.some(l => BLOCK_LABELS.has(l))) { continue; }
+
+              // Full PR for mergeable state.
+              const { data: pr } = await github.rest.pulls.get({
+                owner, repo, pull_number: prLite.number,
+              });
+
+              if (pr.mergeable_state === 'draft') { continue; }
+              if (pr.mergeable === false) { continue; }
+              if (pr.mergeable_state && !['clean', 'has_hooks', 'unstable'].includes(pr.mergeable_state)) {
+                // blocked/dirty/behind/unknown: leave it.
+                if (pr.mergeable_state === 'unknown') { core.notice(`#${pr.number} mergeable unknown, skipping this run.`); }
+                continue;
+              }
+
+              // Changed files: guardrail paths and free-preview safety.
+              const files = await github.paginate(github.rest.pulls.listFiles, {
+                owner, repo, pull_number: pr.number, per_page: 100,
+              });
+
+              const touchesWorkflows = files.some(f => f.filename.startsWith('.github/workflows/'));
+              if (touchesWorkflows) {
+                await addNeedsHuman(pr, 'modifies .github/workflows/');
+                continue;
+              }
+
+              const touchesManifests = files.some(f =>
+                f.filename === 'programs.json' || f.filename === 'tracks.json');
+              const touchesFreePreview = files.some(f =>
+                f.filename.endsWith('.mdx') && /(^|\n)[-+]\s*order:\s*1\s*(\n|$)/.test(f.patch || ''));
+              if (touchesManifests || touchesFreePreview) {
+                await addNeedsHuman(pr, 'may change which lesson is free (programs.json/tracks.json or order:1)');
+                continue;
+              }
+
+              // Reviews: skip if any changes requested.
+              const reviews = await github.paginate(github.rest.pulls.listReviews, {
+                owner, repo, pull_number: pr.number, per_page: 100,
+              });
+              const latestByUser = new Map();
+              for (const r of reviews) {
+                if (!r.user) continue;
+                latestByUser.set(r.user.login, r.state);
+              }
+              if ([...latestByUser.values()].includes('CHANGES_REQUESTED')) { continue; }
+
+              // Checks: require at least one, zero failing, zero pending.
+              const { data: checks } = await github.rest.checks.listForRef({
+                owner, repo, ref: pr.head.sha, per_page: 100,
+              });
+              const runs = checks.check_runs || [];
+              // Ignore this fleet-manager's own run if it surfaces as a check.
+              const relevant = runs.filter(r => r.name !== 'Fleet Manager');
+
+              if (relevant.length === 0) {
+                // No CI at all. Never silently merge.
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: pr.number,
+                  body: 'Fleet Manager: not merging because no CI checks have run on this commit. ' +
+                        'These repos rely on the `CI` content-validation workflow (ci.yml) as the merge gate. ' +
+                        'Once it has run and passed, this PR becomes eligible.',
+                });
+                continue;
+              }
+
+              const pending = relevant.filter(r => r.status !== 'completed');
+              const failing = relevant.filter(r =>
+                r.status === 'completed' &&
+                !['success', 'neutral', 'skipped'].includes(r.conclusion));
+              if (pending.length > 0) { continue; }
+              if (failing.length > 0) { continue; }
+
+              // Passed every gate. Squash merge.
+              try {
+                await github.rest.pulls.merge({
+                  owner, repo, pull_number: pr.number, merge_method: 'squash',
+                });
+                merged++;
+                core.notice(`Merged #${pr.number} (${pr.title}).`);
+              } catch (e) {
+                core.warning(`Merge failed on #${pr.number}: ${e.message}`);
+              }
+            }
+
+            core.notice(`Fleet Manager finished. Merged ${merged} PR(s).`);
+        env:
+          FLEET_AUTOMERGE: ${{ vars.FLEET_AUTOMERGE }}
