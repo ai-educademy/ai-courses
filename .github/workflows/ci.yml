@@ -28,7 +28,20 @@ jobs:
       - name: Validate JSON, frontmatter, links and the free-preview invariant
         shell: bash
         run: |
-          set -uo pipefail
+          # This validation must COLLECT and report EVERY violation, then exit
+          # non-zero at the end. It must not abort on the first grep that matches
+          # nothing: grep exits 1 on a legitimate no-match, and the runner wraps
+          # this in `bash -e -o pipefail`, so an unguarded grep would kill the
+          # whole run before it validated anything (that is exactly how this
+          # check was crashing rather than validating). So we deliberately turn
+          # errexit and pipefail OFF here and control flow ourselves, and we
+          # drive every while-loop from a process substitution (`done < <(...)`)
+          # so a `fail=1` set inside the loop survives. A loop on the right-hand
+          # side of a pipe runs in a subshell and silently discards `fail`, which
+          # previously let genuinely broken links pass the build.
+          set -u
+          set +e
+          set +o pipefail
           fail=0
           note() { echo "::error::$1"; fail=1; }
 
@@ -66,9 +79,15 @@ jobs:
           done < <(find blog -name '*.mdx')
 
           echo "== 4. Relative markdown links and image srcs resolve =="
+          # Extract link/image targets with awk in a single pass so we can skip
+          # fenced code blocks and inline code spans. Pseudocode like
+          # `hashFunctions[i](item)` is NOT a markdown link, and matching it was
+          # a false positive. awk feeds the while via process substitution so
+          # `note`/`fail` run in the current shell, not a discarded subshell.
           while IFS= read -r f; do
             dir=$(dirname "$f")
-            grep -oE '\]\(([^)]+)\)' "$f" | sed -E 's/^\]\(//; s/\)$//' | while IFS= read -r link; do
+            while IFS= read -r link; do
+              [ -z "$link" ] && continue
               case "$link" in
                 http*|\#*|mailto:*|/*) continue ;;
               esac
@@ -77,7 +96,20 @@ jobs:
               if [ ! -e "$dir/$target" ]; then
                 note "Broken relative link '$link' in $f"
               fi
-            done
+            done < <(awk '
+              /^```/ || /^~~~/ { incode = !incode; next }
+              incode { next }
+              {
+                line = $0
+                gsub(/`[^`]*`/, "", line)
+                while (match(line, /\]\([^)]+\)/)) {
+                  seg = substr(line, RSTART, RLENGTH)
+                  sub(/^\]\(/, "", seg); sub(/\)$/, "", seg)
+                  print seg
+                  line = substr(line, RSTART + RLENGTH)
+                }
+              }
+            ' "$f")
           done < <(find programs blog -name '*.mdx')
 
           echo "== 5. Exactly one order:1 per programme per locale =="
@@ -85,7 +117,7 @@ jobs:
             [ -d "${pdir}lessons" ] || continue
             for ldir in "${pdir}lessons"/*/; do
               [ -d "$ldir" ] || continue
-              ones=$(grep -rlE '^order:[[:space:]]*1[[:space:]]*$' "$ldir" 2>/dev/null | wc -l | tr -d ' ')
+              ones=$( { grep -rlE '^order:[[:space:]]*1[[:space:]]*$' "$ldir" 2>/dev/null || true; } | wc -l | tr -d ' ')
               total=$(find "$ldir" -name '*.mdx' | wc -l | tr -d ' ')
               [ "$total" -eq 0 ] && continue
               if [ "$ones" != "1" ]; then
