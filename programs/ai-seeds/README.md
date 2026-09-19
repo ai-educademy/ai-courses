@@ -1,92 +1,56 @@
-<div align="center">
+# 🌱 AI Seeds
 
-# 🌱 AI Seeds - Level 1: Absolute Beginners
+AI literacy for the real world
 
-### The first step in your AI journey at [AI Educademy](https://aieducademy.org)
+Part of [AI Educademy](https://aieducademy.org).
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Languages](https://img.shields.io/badge/languages-5-orange.svg)](#-content-structure)
+[Start learning](https://aieducademy.org/programs/ai-seeds) | [Platform repo](https://github.com/ai-educademy/ai-platform) | [UI library](https://github.com/ai-educademy/ai-ui-library)
 
-**No coding. No maths. No prior experience needed.**
+## Overview
 
-[🚀 Start Learning](https://aieducademy.org/programs/ai-seeds) · [🌍 Translate](#-help-translate) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+Build a clear mental model of modern AI, from training data and neural networks to generative tools, limitations, safety, and the choices people make around them.
 
----
+This public repo contains the free first lesson and supporting public content for this programme.
 
-</div>
+## Programme facts
 
-## 📋 What is This?
+| Field | Value |
+|-------|-------|
+| Track | Understanding AI |
+| Level | 1 |
+| Lessons | 10 |
+| Estimated study time | 4 hours |
+| Audience | Curious beginners, leaders, students, and career changers |
+| Prerequisites | None. Just curiosity and a willingness to question the hype. |
 
-This repo contains the **lesson content** for AI Seeds - the first level of AI Educademy. It's a content-only package consumed by the [`ai-platform`](https://github.com/ai-educademy/ai-platform) app shell via git submodules.
+## Topics
 
-> **Looking for the live site?** Visit [aieducademy.org](https://aieducademy.org)
-> **Looking for the app code?** See [ai-platform](https://github.com/ai-educademy/ai-platform)
-> **Looking for UI components?** See [ai-ui-library](https://github.com/ai-educademy/ai-ui-library)
+- AI in everyday products
+- Data, models, and predictions
+- Generative AI and multimodal tools
+- Reliability, bias, and safety
+- Human judgement in an AI world
 
-## 📚 Lessons
+## Outcomes
 
-| # | Lesson | Duration | Languages |
-|---|--------|----------|-----------|
-| 1 | What is Artificial Intelligence? | 10 min | 🇬🇧 🇫🇷 🇳🇱 🇮🇳 🇮🇳 |
-| 2 | How Machines Learn | 12 min | ��🇧 |
-| 3 | Your First AI Model | 15 min | 🇬🇧 |
+- Explain how modern AI systems learn and generate outputs
+- Choose AI tools with clear expectations and boundaries
+- Spot common reliability, bias, privacy, and safety risks
+- Complete a guided AI experiment and reflect on its limits
 
-## 📁 Content Structure
+## Content structure
 
-```
-program.json                   # Program metadata
+```text
+program.json
 lessons/
-├── en/                        # English lessons (MDX)
-│   ├── what-is-ai.mdx
-│   ├── how-machines-learn.mdx
-│   └── your-first-ai-model.mdx
-├── fr/                        # French
-├── hi/                        # Hindi
-├── nl/                        # Dutch
-└── te/                        # Telugu
+└── <locale>/
+    └── <lesson>.mdx
 ```
 
-## ✍️ Writing Lessons
+## Contributing
 
-Each lesson is an MDX file with frontmatter:
+Focused corrections, translation improvements, clearer examples, and accessibility fixes are welcome. Keep PRs small and avoid publishing paid lesson content outside the private repo.
 
-```mdx
----
-title: "What is Artificial Intelligence?"
-description: "Discover what AI really means - no jargon."
-order: 1
-duration: "10 min"
-difficulty: "beginner"
-image: "/images/lessons/what-is-ai.svg"
----
+## Licence
 
-# What is Artificial Intelligence?
-
-Your lesson content here...
-```
-
-## 🌍 Help Translate
-
-We'd love translations! Each lesson lives in a locale folder (`en/`, `fr/`, etc.):
-
-1. Pick a lesson from `lessons/en/`
-2. Create the same file under your locale folder (e.g., `es/what-is-ai.mdx`)
-3. Translate the content, keeping the frontmatter keys in English
-4. Submit a PR
-
-## 🏗️ Part of AI Educademy
-
-| Repo | Description |
-|------|-------------|
-| [`ai-platform`](https://github.com/ai-educademy/ai-platform) | 🌐 Main Next.js app shell |
-| [`ai-ui-library`](https://github.com/ai-educademy/ai-ui-library) | 🎨 Shared design system ([npm](https://www.npmjs.com/package/@ai-educademy/ai-ui-library)) |
-| **`ai-seeds`** | 🌱 **Level 1: Absolute beginners** ← you are here |
-| `ai-sprouts` | 🌿 Level 2: Foundations (coming soon) |
-| `ai-branches` | 🌳 Level 3: Applied AI (coming soon) |
-| `ai-canopy` | 🏕️ Level 4: Advanced (coming soon) |
-| `ai-forest` | 🌲 Level 5: Expert (coming soon) |
-
-## 📄 License
-
-MIT © [AI Educademy](https://github.com/ai-educademy)
+Public lesson content is licensed under CC BY-SA 4.0 unless a file states otherwise.

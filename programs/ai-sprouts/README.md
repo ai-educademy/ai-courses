@@ -1,70 +1,56 @@
-<div align="center">
+# 🌿 AI Sprouts
 
-# 🌿 AI Sprouts - Level 2: Foundations
+The foundations behind intelligent systems
 
-### Build Your AI Foundations at [AI Educademy](https://aieducademy.org)
+Part of [AI Educademy](https://aieducademy.org).
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md)
-[![Status](https://img.shields.io/badge/status-coming_soon-yellow)]()
+[Start learning](https://aieducademy.org/programs/ai-sprouts) | [Platform repo](https://github.com/ai-educademy/ai-platform) | [UI library](https://github.com/ai-educademy/ai-ui-library)
 
-After planting your first seeds of AI knowledge in [AI Seeds](https://github.com/ai-educademy/ai-seeds), it's time to grow! AI Sprouts covers the building blocks: data, algorithms, neural networks, and responsible AI.
+## Overview
 
-[🚀 AI Educademy](https://aieducademy.org) · [🌱 Level 1: AI Seeds](https://github.com/ai-educademy/ai-seeds) · [📦 Platform Repo](https://github.com/ai-educademy/ai-platform)
+Understand the building blocks behind modern AI: datasets, features, embeddings, neural networks, transformers, evaluation, and the practical trade-offs that shape model behaviour.
 
----
+This public repo contains the free first lesson and supporting public content for this programme.
 
-</div>
+## Programme facts
 
-## 📋 About
+| Field | Value |
+|-------|-------|
+| Track | Understanding AI |
+| Level | 2 |
+| Lessons | 10 |
+| Estimated study time | 8 hours |
+| Audience | Learners ready to move from AI literacy into technical understanding |
+| Prerequisites | AI Seeds or equivalent practical AI awareness |
 
-AI Sprouts is **Level 2** of the AI Educademy learning path. This is a content-only repo consumed by [`ai-platform`](https://github.com/ai-educademy/ai-platform) via git submodules.
+## Topics
 
-## 📁 Structure
+- Datasets and data quality
+- Training, loss, and optimisation
+- Embeddings and vector search
+- Neural networks and transformers
+- Evaluation and responsible use
 
-```
-program.json              # Program metadata (name, level, description, icon)
+## Outcomes
+
+- Trace the path from data to model output
+- Explain embeddings, tokenisation, and transformer intuition
+- Select useful evaluation metrics for an AI task
+- Diagnose overfitting, bias, and data-quality failures
+
+## Content structure
+
+```text
+program.json
 lessons/
-├── en/                   # English lessons (MDX)
-├── fr/                   # French
-├── nl/                   # Dutch
-├── hi/                   # Hindi
-└── te/                   # Telugu
+└── <locale>/
+    └── <lesson>.mdx
 ```
 
-## 🚧 Status
+## Contributing
 
-**Coming Soon** - Lessons are being written. Want to help? See [Contributing](#-contributing).
+Focused corrections, translation improvements, clearer examples, and accessibility fixes are welcome. Keep PRs small and avoid publishing paid lesson content outside the private repo.
 
-## 🌱 Learning Path
+## Licence
 
-| Level | Program | Status |
-|-------|---------|--------|
-| 1 | [🌱 AI Seeds](https://github.com/ai-educademy/ai-seeds) | ✅ Live |
-| 2 | **🌿 AI Sprouts** ← you are here | 🚧 Coming soon |
-| 3 | 🌳 AI Branches | 📋 Planned |
-| 4 | 🏕️ AI Canopy | 📋 Planned |
-| 5 | 🌲 AI Forest | 📋 Planned |
-
-## 🤝 Contributing
-
-We welcome contributions! Each lesson is an MDX file with frontmatter:
-
-```mdx
----
-title: "Your Lesson Title"
-description: "A short description"
-order: 1
-difficulty: "beginner"
-duration: 10
-icon: "📊"
----
-
-Your lesson content in Markdown...
-```
-
-See the [Contributing Guide](https://github.com/ai-educademy/ai-seeds/blob/main/CONTRIBUTING.md) for full details.
-
-## 📄 License
-
-[MIT](LICENSE) © [AI Educademy](https://github.com/ai-educademy)
+Public lesson content is licensed under CC BY-SA 4.0 unless a file states otherwise.
