@@ -4,7 +4,7 @@ name: PR Doctor
 description: Takes an eligible open PR to merge-ready by fixing validation failures and resolving review comments, pushing to the PR branch.
 on:
   schedule:
-    - cron: "daily"
+    - cron: "weekly on sunday"
   workflow_dispatch:
 max-daily-ai-credits: 8000
 permissions:
@@ -15,7 +15,7 @@ permissions:
   checks: read
 engine:
   id: gemini
-  model: gemini-3.6-flash
+  model: gemini-3.1-flash-lite-preview
 timeout-minutes: 25
 strict: true
 network:

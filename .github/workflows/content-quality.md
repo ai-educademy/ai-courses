@@ -4,7 +4,7 @@ name: Content Quality
 description: Validates MDX integrity, frontmatter schema, programme manifests and the free-preview invariant across the public course catalogue.
 on:
   schedule:
-    - cron: "daily"
+    - cron: "weekly on friday"
   workflow_dispatch:
 max-daily-ai-credits: 6000
 permissions:
