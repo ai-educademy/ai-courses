@@ -1,49 +1,60 @@
-# 📚 AI Free Courses
+# AI Educademy Public Courses
 
-**Free, open-source AI education for everyone** - from absolute beginners to advanced practitioners.
+Public course and blog content for [AI Educademy](https://aieducademy.org), the multilingual AI and software engineering learning platform.
 
-Part of [AI Educademy](https://aieducademy.org), a multilingual platform making AI education accessible worldwide.
+This repo contains public lesson content for the currently open programmes plus the public blog. The product model is freemium: the first lesson of every programme is free on the platform, and full programme access is delivered through AI Educademy Pro at £3.99/month, £29.99/year, or £49.99 lifetime.
 
-## 🎓 Programs
+## What is included
 
-| # | Program | Level | Lessons | Description |
-|---|---------|-------|---------|-------------|
-| 1 | [AI Seeds](programs/ai-seeds/) | 🌱 Beginner | 3 | Your first steps into AI - what it is, where it's used, and how it thinks |
-| 2 | [AI Sprouts](programs/ai-sprouts/) | 🌿 Beginner | 3 | How machines learn from data - training, patterns, and predictions |
-| 3 | [AI Branches](programs/ai-branches/) | 🌳 Intermediate | 3 | Deep learning, neural networks, and how AI processes language and images |
-| 4 | [AI Sketch](programs/ai-sketch/) | ✏️ Intermediate | 3 | Hands-on prompt engineering and working with AI tools effectively |
-| 5 | [AI Chisel](programs/ai-chisel/) | 🔨 Intermediate | 3 | Building and fine-tuning your own AI models |
-| 6 | [AI Canopy](programs/ai-canopy/) | 🌲 Advanced | 3 | AI ethics, bias, fairness, and responsible development |
-| 7 | [AI Forest](programs/ai-forest/) | 🏔️ Advanced | 3 | Large-scale AI systems, distributed computing, and production deployment |
-| 8 | [AI Craft](programs/ai-craft/) | ⚒️ Advanced | 3 | Advanced NLP, computer vision, and multimodal AI architectures |
-| 9 | [AI Polish](programs/ai-polish/) | 💎 Expert | 3 | Optimisation, evaluation, and production-grade AI engineering |
-| 10 | [AI Masterpiece](programs/ai-masterpiece/) | 🏆 Expert | 3 | Capstone - build and deploy a complete AI project from scratch |
+| Programme | Track | Level | Lessons | Status |
+|-----------|-------|-------|---------|--------|
+| [AI Seeds](programs/ai-seeds/) | Understanding AI | 1 | 10 | Active |
+| [AI Sprouts](programs/ai-sprouts/) | Understanding AI | 2 | 10 | Active |
+| [AI Sketch](programs/ai-sketch/) | Craft and Engineering | 1 | 10 | Active |
+| [Interview Launchpad](programs/ai-launchpad/) | Career Ready | 1 | 10 | Active |
 
-## 🌍 Languages
+The private `ai-courses-pro` repo contains subscriber lessons for the paid programmes.
 
-Courses are available in English, French, Dutch, Hindi, and Telugu - with more coming.
+## Languages
 
-## 🤝 Contributing
+Lessons are served through the platform in 11 languages: English, French, Dutch, Hindi, Telugu, Spanish, Portuguese, German, Chinese, Japanese, and Arabic. Some translations are machine assisted and need native speaker review.
 
-**No coding skills required!** We welcome contributions from:
+## Content structure
 
-- 📝 **Writers** - improve explanations, fix typos, add examples
-- 🌐 **Translators** - help make courses available in more languages
-- 🧠 **AI practitioners** - review technical accuracy, suggest improvements
-- 🎓 **Educators** - propose new lessons, improve learning flow
+```text
+blog/
+├── en/
+├── fr/
+└── ...
+programs/
+├── ai-seeds/
+│   ├── program.json
+│   └── lessons/
+└── ...
+```
 
-### How to contribute
+Each lesson is MDX with frontmatter. Keep frontmatter keys in English, even when the lesson body is translated.
 
-1. Fork this repo
-2. Edit or add content in `programs/<program-name>/lessons/`
-3. Submit a pull request
+## How to contribute
 
-Each lesson is a Markdown file with frontmatter metadata. See any existing lesson for the format.
+No coding skills are required for content contributions.
 
-## 📄 License
+1. Fork the repo.
+2. Edit or add content under `programs/<programme>/lessons/` or `blog/<locale>/`.
+3. Keep examples accurate and learner friendly.
+4. Open a pull request against `main`.
 
-Content is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) - free to share and adapt with attribution.
+Helpful contributions include corrections, clearer explanations, translation reviews, accessibility improvements in diagrams, and practical examples.
 
----
+## Related repos
 
-⭐ **Star this repo** to support free AI education for everyone!
+| Repo | Purpose |
+|------|---------|
+| [`ai-platform`](https://github.com/ai-educademy/ai-platform) | Production Next.js app for [aieducademy.org](https://aieducademy.org) |
+| [`ai-ui-library`](https://github.com/ai-educademy/ai-ui-library) | Shared React components and design tokens |
+| `ai-courses-pro` | Private Pro lesson content |
+| [`ai-educademy/.github`](https://github.com/ai-educademy/.github) | Organisation profile and automation docs |
+
+## Licence
+
+Public course content is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Pro content is not part of this repository.

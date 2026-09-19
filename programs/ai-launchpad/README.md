@@ -1,13 +1,56 @@
 # 🚀 Interview Launchpad
 
-Master the fundamentals of technical interview preparation. Learn how to research companies, decode job descriptions, build your preparation timeline, and develop the mindset that turns nervousness into confidence.
+Navigate the AI engineering job market
 
-## Lessons
+Part of [AI Educademy](https://aieducademy.org).
 
-1. Understanding the Interview Landscape
-2. Decoding Job Descriptions
-3. Building Your Preparation Timeline
-4. Company Research Strategies
-5. Career Transitions to AI
-6. The Growth Mindset for Interviews
-7. Your Interview Toolkit
+[Start learning](https://aieducademy.org/programs/ai-launchpad) | [Platform repo](https://github.com/ai-educademy/ai-platform) | [UI library](https://github.com/ai-educademy/ai-ui-library)
+
+## Overview
+
+Build a focused search strategy for AI-era roles: understand role families, read job descriptions, map your evidence, and prepare a realistic learning and application plan.
+
+This public repo contains the free first lesson and supporting public content for this programme.
+
+## Programme facts
+
+| Field | Value |
+|-------|-------|
+| Track | Career Ready |
+| Level | 1 |
+| Lessons | 7 |
+| Estimated study time | 6 hours |
+| Audience | People starting or redirecting an AI-focused career |
+| Prerequisites | None |
+
+## Topics
+
+- AI role families and expectations
+- Job-description signal extraction
+- Skills-gap mapping
+- Evidence-led applications
+- A sustainable preparation plan
+
+## Outcomes
+
+- Choose target roles based on evidence and strengths
+- Turn job descriptions into a practical study plan
+- Build a credible project and application portfolio
+- Track progress without chasing every new tool
+
+## Content structure
+
+```text
+program.json
+lessons/
+└── <locale>/
+    └── <lesson>.mdx
+```
+
+## Contributing
+
+Focused corrections, translation improvements, clearer examples, and accessibility fixes are welcome. Keep PRs small and avoid publishing paid lesson content outside the private repo.
+
+## Licence
+
+Public lesson content is licensed under CC BY-SA 4.0 unless a file states otherwise.
