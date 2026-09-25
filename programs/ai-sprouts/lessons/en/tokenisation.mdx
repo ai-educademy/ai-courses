@@ -68,11 +68,11 @@ Used by BERT and related models. Similar to BPE, but instead of merging the most
 
 ### SentencePiece
 
-Treats the input as a raw byte stream - no pre-tokenisation by spaces. This is crucial for languages like Japanese and Chinese that do not use spaces between words. GPT-4 and LLaMA use SentencePiece-style approaches.
+Treats the input as a raw byte stream - no pre-tokenisation by spaces. This is crucial for languages like Japanese and Chinese that do not use spaces between words. Many GPT and Llama-family models use SentencePiece-style or byte-level approaches.
 
-## How GPT-4 Tokenises Text
+## How GPT-Style Models Tokenise Text
 
-GPT-4 uses a BPE variant called **cl100k_base** with roughly 100,000 tokens in its vocabulary. Some surprising behaviours:
+OpenAI GPT-style models use BPE variants with large token vocabularies. Some surprising behaviours:
 
 - "Hello world" → 2 tokens (`Hello`, ` world` - note the space is attached).
 - "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` - it splits rare words).
@@ -102,18 +102,18 @@ Tokenisers trained primarily on English text are **biased**. The same sentence i
 
 ## Token Counting and Cost Implications
 
-Every API call to GPT-4, Claude, or Gemini is billed per token. Understanding tokenisation helps you:
+Every API call to a frontier model such as GPT-6 Astra, Claude Opus 5.5, or Gemini 2.5 is billed per token. Understanding tokenisation helps you:
 
 - **Estimate costs** before running large jobs.
 - **Optimise prompts** - shorter prompts with the same meaning save money.
-- **Respect context windows** - GPT-4 Turbo accepts 128k tokens; exceeding this truncates your input silently.
+- **Respect context windows** - current frontier models support anything from hundreds of thousands to over a million tokens, but exceeding the selected model's limit still truncates or rejects your input.
 
 A rough rule of thumb for English: **1 token ≈ ¾ of a word**, or about 4 characters.
 
 <Quiz question="Approximately how many tokens is a 1,000-word English essay?" options="500 tokens|750 tokens|1,333 tokens|3,000 tokens" answer="2" explanation="The commonly cited approximation is 1 token per ¾ word for English, so 1,000 words ÷ 0.75 ≈ 1,333 tokens. The closest answer here is 1,333 tokens." />
 
 <FunFact>
-OpenAI's open-source `tiktoken` library lets you tokenise text locally with the exact same algorithm GPT-4 uses. Try it on your own writing to see how many tokens your messages really cost.
+OpenAI's open-source `tiktoken` library lets you tokenise text locally with the same family of algorithms used by OpenAI GPT models. Try it on your own writing to see how many tokens your messages really cost.
 </FunFact>
 
 <ThinkAboutIt>
