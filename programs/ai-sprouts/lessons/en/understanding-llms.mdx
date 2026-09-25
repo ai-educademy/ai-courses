@@ -35,7 +35,7 @@ Why not just use words? Because tokenisation handles:
 When you type a message to an LLM, it's immediately converted to a sequence of token IDs — numbers in a vocabulary of typically 30,000 to 100,000 tokens.
 
 <FunFact>
-GPT-4 has a vocabulary of around 100,000 tokens. The entire English language has roughly 170,000 words in common use, but an LLM's token vocabulary also covers many languages, code syntax, emoji, and specialised terminology simultaneously.
+Frontier LLMs use token vocabularies that commonly run to around 100,000 tokens or more. The entire English language has roughly 170,000 words in common use, but an LLM's token vocabulary also covers many languages, code syntax, emoji, and specialised terminology simultaneously.
 </FunFact>
 
 ---
@@ -121,18 +121,18 @@ This is why conversations with LLMs can go wrong if they get very long: eventual
 
 LLMs are trained on truly staggering quantities of text:
 - **GPT-3** was trained on ~300 billion tokens — roughly 570GB of text
-- **GPT-4** training details are secret, but estimates suggest trillions of tokens
-- **Llama 3** was trained on over 15 trillion tokens of text
+- **Frontier closed models** usually keep training details secret, but estimates suggest trillions of tokens
+- **Llama 4 Scout** was trained on about 40 trillion tokens of multimodal data
 
 The training data comes from web crawls (Common Crawl), books, Wikipedia, code repositories, academic papers, and much more — essentially a significant fraction of the written text on the internet.
 
-Training compute costs are enormous: GPT-3's training cost an estimated $4.6 million in compute alone. GPT-4 is thought to have cost over $100 million.
+Training compute costs are enormous: GPT-3's training cost an estimated $4.6 million in compute alone. Current frontier model training can cost hundreds of millions when data, GPUs, energy, and engineering are included.
 
 ### Emergent Abilities: The Surprise
 
 Something strange happens as models get larger: they develop **emergent abilities** — capabilities that weren't explicitly trained, didn't appear in smaller models, and seem to appear suddenly at scale.
 
-GPT-2 (2019) could barely write coherent paragraphs. GPT-3 (2020) could write essays, solve logic puzzles, and translate languages it had barely seen. GPT-4 can pass medical and legal exams.
+GPT-2 (2019) could barely write coherent paragraphs. GPT-3 (2020) could write essays, solve logic puzzles, and translate languages it had barely seen. Later frontier models can pass difficult medical, legal, and coding benchmarks.
 
 These weren't explicitly programmed. They emerged from scale.
 
