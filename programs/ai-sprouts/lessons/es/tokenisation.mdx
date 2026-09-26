@@ -66,11 +66,11 @@ Utilizado por BERT y modelos relacionados. Similar a BPE, pero en lugar de fusio
 
 ### Frase
 
-Trata la entrada como un flujo de bytes sin procesar, sin tokenización previa por espacios. Esto es crucial para idiomas como el japonés y el chino que no utilizan espacios entre palabras. GPT-4 y LLaMA utilizan enfoques estilo SentencePiece.
+Trata la entrada como un flujo de bytes sin procesar, sin tokenización previa por espacios. Esto es crucial para idiomas como el japonés y el chino que no utilizan espacios entre palabras. Muchos modelos de las familias GPT y Llama usan enfoques de estilo SentencePiece o de nivel de bytes.
 
-## Cómo tokeniza GPT-4 el texto
+## Cómo tokenizan el texto los modelos de estilo GPT
 
-GPT-4 utiliza una variante de BPE llamada **cl100k_base** con aproximadamente 100.000 tokens en su vocabulario. Algunos comportamientos sorprendentes:
+Los modelos de estilo GPT de OpenAI usan variantes de BPE con vocabularios de tokens grandes. Algunos comportamientos sorprendentes:
 
 - "Hola mundo" → 2 fichas (`Hello`, ` world` - tenga en cuenta que el espacio está adjunto).
 - "indivisibilidad" → 4 fichas (`ind`, `iv`, `isibility` - divide palabras raras).
@@ -100,17 +100,17 @@ Los tokenizadores entrenados principalmente en texto en inglés son **sesgados**
 
 ## Recuento de tokens e implicaciones de costos
 
-Cada llamada API a GPT-4, Claude o Gemini se factura por token. Comprender la tokenización le ayudará a:
+Cada llamada API a un modelo de frontera como GPT-6 Astra, Claude Opus 5.5 o Gemini 2.5 se factura por token. Comprender la tokenización le ayudará a:
 
 - **Estimar costos** antes de ejecutar trabajos grandes.
 - **Optimizar mensajes**: mensajes más cortos con el mismo significado ahorran dinero.
-- **Respetar ventanas de contexto** - GPT-4 Turbo acepta 128k tokens; exceder esto truncará su entrada silenciosamente.
+- **Respetar ventanas de contexto** - los modelos de frontera actuales admiten desde cientos de miles hasta más de un millón de tokens, pero exceder el límite del modelo seleccionado aún trunca o rechaza su entrada.
 
 Una regla general aproximada para inglés: **1 ficha ≈ ¾ de palabra**, o aproximadamente 4 caracteres.
 
 <Quiz question="¿Aproximadamente cuántas fichas tiene un ensayo en inglés de 1000 palabras?" options="500 fichas|750 fichas|1.333 fichas|3.000 fichas" answer="2" explanation="La aproximación comúnmente citada es 1 token por ¾ palabra para inglés, por lo que 1000 palabras ÷ 0,75 ≈ 1333 tokens. La respuesta más cercana aquí es 1333 fichas." />
 
-<FunFact>La biblioteca `tiktoken` de código abierto de OpenAI le permite tokenizar texto localmente con exactamente el mismo algoritmo que usa GPT-4. Pruébelo usted mismo para ver cuántos tokens cuestan realmente sus mensajes.
+<FunFact>La biblioteca `tiktoken` de código abierto de OpenAI le permite tokenizar texto localmente con la misma familia de algoritmos que usan los modelos GPT de OpenAI. Pruébelo usted mismo para ver cuántos tokens cuestan realmente sus mensajes.
 </FunFact>
 
 <ThinkAboutIt>Si estuviera creando un modelo de lenguaje para un idioma de bajos recursos como el galés, ¿cómo abordaría la tokenización para garantizar una codificación justa y eficiente?
