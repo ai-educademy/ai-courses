@@ -1,6 +1,6 @@
 ---
-title: "Trees మరియు Graphs - AI సంబంధాలను ఎలా Map చేస్తుంది"
-description: "AI నిర్ణయాలు మరియు recommendations కి శక్తినిచ్చే hierarchical మరియు interconnected data ను trees మరియు graphs ఎలా represent చేస్తాయో చూడండి."
+title: "ట్రీలు మరియు గ్రాఫ్‌లు - AI సంబంధాలను ఎలా మ్యాప్ చేస్తుంది"
+description: "AI నిర్ణయాలు మరియు సిఫార్సులు కి శక్తినిచ్చే hierarchical మరియు పరస్పరం అనుసంధానమైన డేటాను ట్రీలు మరియు గ్రాఫ్‌లు ఎలా ప్రాతినిధ్యం వహిస్తాయో చూడండి."
 order: 5
 difficulty: "intermediate"
 duration: 18
@@ -8,15 +8,15 @@ icon: "🌳"
 published: true
 ---
 
-## సంబంధాలున్న Data
+## సంబంధాలున్న డేటా
 
-ఇప్పటివరకు data ను lines లో చూశాం - arrays, linked lists, stacks, queues అన్నీ items ను sequence లో arrange చేస్తాయి. కానీ నిజ ప్రపంచం linear కాదు. Family trees శాఖలుగా విస్తరిస్తాయి. Social networks webs ఏర్పరుస్తాయి. Road maps interconnected routes create చేస్తాయి.
+ఇప్పటివరకు డేటాను వరుసలు లో చూశాం - అర్రేలు, లింక్డ్ లిస్ట్‌లు, స్టాక్‌లు, క్యూలు అన్నీ అంశాలను క్రమం లో అమర్చుతాయి. కానీ నిజ ప్రపంచం రేఖీయ కాదు. కుటుంబ ట్రీలు శాఖలుగా విస్తరిస్తాయి. సామాజిక నెట్‌వర్క్‌లు వలలు ఏర్పరుస్తాయి. రోడ్డు మ్యాప్‌లు పరస్పరం అనుసంధానమైన మార్గాలు సృష్టిస్తాయి.
 
-**Trees** మరియు **graphs** ఈ సంబంధాలను capture చేస్తాయి - AI యొక్క అత్యంత శక్తివంతమైన techniques కి వీటే హృదయం.
+**ట్రీలు** మరియు **గ్రాఫ్‌లు** ఈ సంబంధాలను పట్టుకుంటాయి - AI యొక్క అత్యంత శక్తివంతమైన పద్ధతులు కి వీటే హృదయం.
 
-## Trees - Hierarchical Data
+## ట్రీలు - Hierarchical డేటా
 
-**Tree** లో ప్రతి item (**node**) child nodes కలిగి ఉండవచ్చు, hierarchy ఏర్పరుస్తూ. పై భాగంలో **root** అనే special node, children లేని nodes ను **leaves** అంటారు.
+**ట్రీ** లో ప్రతి అంశం (**నోడ్**) చైల్డ్ నోడ్‌లు కలిగి ఉండవచ్చు, పదవీక్రమం ఏర్పరుస్తూ. పై భాగంలో **రూట్** అనే special నోడ్, చైల్డ్‌లు లేని నోడ్‌లను **ఆకులు** అంటారు.
 
 ```
          CEO
@@ -26,18 +26,18 @@ published: true
    Dev1  Dev2   Accountant
 ```
 
-<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="Root node నుండి మూడు levels లో child nodes కి branch అవుతున్న tree structure, interconnected nodes ఉన్న graph పక్కన" caption="Trees root నుండి కిందకి flow అవుతాయి; graphs nodes ను ఏ direction లోనైనా connect చేస్తాయి." />
+<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="రూట్ నోడ్ నుండి మూడు స్థాయిలు లో చైల్డ్ నోడ్‌లు కి శాఖ అవుతున్న ట్రీ నిర్మాణం, పరస్పరం అనుసంధానమైన నోడ్‌లు ఉన్న గ్రాఫ్ పక్కన" caption="ట్రీలు రూట్ నుండి కిందకి flow అవుతాయి; గ్రాఫ్‌లు నోడ్‌లను ఏ దిశ లోనైనా కలుపుతాయి." />
 
-### Trees ఎక్కడైనా ఉన్నాయి
+### ట్రీలు ఎక్కడైనా ఉన్నాయి
 
-- **File systems**: Folders లో subfolders, వాటిలో files - tree.
-- **HTML/DOM**: ప్రతి web page nested elements tree.
-- **Organisation charts**: Managers కి reports, వారికి వారి reports.
-- **JSON data**: JSON nested structure ప్రాథమికంగా tree.
+- **File సిస్టమ్‌లు**: ఫోల్డర్లు లో ఉపఫోల్డర్లు, వాటిలో ఫైళ్లు - ట్రీ.
+- **HTML/DOM**: ప్రతి వెబ్ పేజీ nested ఎలిమెంట్‌లు ట్రీ.
+- **సంస్థ చార్టులు**: మేనేజర్లు కి రిపోర్టులు, వారికి వారి రిపోర్టులు.
+- **JSON డేటా**: JSON nested నిర్మాణం ప్రాథమికంగా ట్రీ.
 
-### Binary Trees
+### Binary ట్రీలు
 
-**Binary tree** ప్రతి node ని గరిష్టంగా రెండు children కి restrict చేస్తుంది - left child మరియు right child. ఈ సరళ constraint శక్తివంతమైన algorithms enable చేస్తుంది.
+**Binary ట్రీ** ప్రతి నోడ్ ని గరిష్టంగా రెండు చైల్డ్‌లు కి పరిమితం చేస్తుంది - ఎడమ చైల్డ్ మరియు కుడి చైల్డ్. ఈ సరళ నియమం శక్తివంతమైన అల్గారిథమ్‌లు సాధ్యం చేస్తుంది.
 
 ```
         8
@@ -47,11 +47,11 @@ published: true
     1   6    14
 ```
 
-### Binary Search Trees (BSTs)
+### బైనరీ సెర్చ్ ట్రీలు (BSTs)
 
-**Binary search tree** ఒక rule add చేస్తుంది: ప్రతి node కి, left subtree లో అన్ని values చిన్నవి, right subtree లో అన్ని values పెద్దవి.
+**బైనరీ సెర్చ్ ట్రీ** ఒక నియమం జోడిస్తుంది: ప్రతి నోడ్‌కు, ఎడమ సబ్‌ట్రీ లో అన్ని విలువలు చిన్నవిగా ఉంటాయి, సరైన సబ్‌ట్రీ లో అన్ని విలువలు పెద్దవిగా ఉంటాయి.
 
-ఇది searching వేగవంతం చేస్తుంది - ప్రతి node వద్ద, left కి వెళ్ళాలో right కి వెళ్ళాలో తెలుస్తుంది:
+ఇది వెతకడం వేగవంతం చేస్తుంది - ప్రతి నోడ్ వద్ద, ఎడమకు వెళ్ళాలో కుడికి వెళ్ళాలో తెలుస్తుంది:
 
 ```
 Find 6 in the BST above:
@@ -60,16 +60,16 @@ Find 6 in the BST above:
   At 6 → Found it!
 ```
 
-**Time complexity**: balanced tree కి O(log n) - sorted array పై binary search అదే logarithmic magic.
+**సమయ సంక్లిష్టత**: సమతుల్య ట్రీ కి O(లాగ్ n) - సార్టెడ్ అర్రే పై బైనరీ సెర్చ్ అదే లాగారిథమిక్ మాయ.
 
-<Quiz question="10,00,000 nodes ఉన్న balanced binary search tree లో value కనుగొనడానికి సుమారు ఎన్ని comparisons అవసరం?" options="10,00,000|5,00,000|సుమారు 20|సుమారు 100" answer="2" explanation="Balanced BST depth log₂(1,000,000) ≈ 20. ప్రతి level కి ఒక comparison, కాబట్టి ఏ value నైనా కనుగొనడానికి సుమారు 20 steps - sorted array పై binary search తో identical." />
+<Quiz question="10,00,000 నోడ్‌లు ఉన్న సమతుల్య బైనరీ సెర్చ్ ట్రీ లో విలువ కనుగొనడానికి సుమారు ఎన్ని పోలికలు అవసరం?" options="10,00,000|5,00,000|సుమారు 20|సుమారు 100" answer="2" explanation="సమతుల్య BST లోతు లాగ్₂(1,000,000) ≈ 20. ప్రతి స్థాయికి ఒక పోలిక, కాబట్టి ఏ విలువ నైనా కనుగొనడానికి సుమారు 20 దశలు - సార్టెడ్ అర్రే పై బైనరీ సెర్చ్ తో ఒకేలా." />
 
-## Graphs - అంతా Connected
+## గ్రాఫ్‌లు - అంతా Connected
 
-**Graph** hierarchy constraint తీసివేసి trees ను generalize చేస్తుంది. **Nodes** (vertices) మరియు **edges** (nodes మధ్య connections) తో ఉంటుంది. Edges:
+**గ్రాఫ్** పదవీక్రమం నియమం తీసివేసి ట్రీలను సాధారణీకరిస్తుంది. **నోడ్‌లు** (వెర్టెక్స్‌లు) మరియు **ఎడ్జ్‌లు** (నోడ్‌లు మధ్య కనెక్షన్‌లు) తో ఉంటుంది. ఎడ్జ్‌లు:
 
-- **Directed** (one-way: A → B) లేదా **undirected** (two-way: A ↔ B)
-- **Weighted** (ప్రతి edge కి cost/distance) లేదా **unweighted**
+- **దిశాబద్ధ** (ఒకదిశ: A → B) లేదా **దిశలేని** (రెండుదిశల: A ↔ B)
+- **బరువున్న** (ప్రతి ఎడ్జ్‌కు ఖర్చు/దూరం) లేదా **బరువులేని**
 
 ```
 Social network (undirected):
@@ -81,22 +81,22 @@ Road map (weighted, directed):
   London →(2h)→ Birmingham →(1.5h)→ Manchester
 ```
 
-### Graphs ఎక్కడైనా ఉన్నాయి
+### గ్రాఫ్‌లు ఎక్కడైనా ఉన్నాయి
 
-- **Social networks**: People nodes; friendships edges.
-- **Internet**: Web pages nodes; hyperlinks edges.
-- **Road maps**: Intersections nodes; roads weighted edges.
-- **Recommendation systems**: Users మరియు products nodes; interactions edges.
+- **సామాజిక నెట్‌వర్క్‌లు**: వ్యక్తులు నోడ్‌లు; స్నేహాలు ఎడ్జ్‌లు.
+- **ఇంటర్నెట్**: వెబ్ పేజీలు నోడ్‌లు; హైపర్‌లింక్‌లు ఎడ్జ్‌లు.
+- **రోడ్డు మ్యాప్‌లు**: కూడళ్లు నోడ్‌లు; రోడ్లు బరువున్న ఎడ్జ్‌లు.
+- **సిఫార్సు సిస్టమ్‌లు**: వినియోగదారులు మరియు ఉత్పత్తులు నోడ్‌లు; interactions ఎడ్జ్‌లు.
 
 <FunFact>
-Facebook social graph లో 3 billion nodes (users) మరియు వందల billions edges (friendships) ఉన్నాయి. Graph algorithms News Feed, friend suggestions, మరియు ad targeting నిర్ణయిస్తాయి - ఇప్పటివరకు నిర్మించిన అతిపెద్ద graphs లో ఒకటిపై run అవుతాయి.
+Facebook సామాజిక గ్రాఫ్ లో 3 billion నోడ్‌లు (వినియోగదారులు) మరియు వందల బిలియన్ల ఎడ్జ్‌లు (స్నేహాలు) ఉన్నాయి. గ్రాఫ్ అల్గారిథమ్‌లు News Feed, స్నేహితుల సూచనలు, మరియు ad లక్ష్యీకరణ నిర్ణయిస్తాయి - ఇప్పటివరకు నిర్మించిన అతిపెద్ద గ్రాఫ్‌లు లో ఒకటిపై రన్ అవుతాయి.
 </FunFact>
 
-## AI Trees ఎలా వాడుతుంది
+## AI ట్రీలు ఎలా వాడుతుంది
 
-### Decision Trees
+### డెసిషన్ ట్రీలు
 
-అత్యంత interpretable AI models లో ఒకటి **decision tree**. Data classify చేయడానికి yes/no ప్రశ్నల series అడుగుతుంది:
+అత్యంత అర్థం చేసుకోగలిగే AI మోడళ్లు లో ఒకటి **డెసిషన్ ట్రీ**. డేటా వర్గీకరించడానికి చేయడానికి అవును/కాదు ప్రశ్నల వరుస అడుగుతుంది:
 
 ```
 Is temperature > 30°C?
@@ -108,21 +108,21 @@ Is temperature > 30°C?
     └── No: "Play tennis"
 ```
 
-Decision trees popular ఎందుకంటే మానవులు చదివి అర్థం చేసుకోగలరు - healthcare, finance, legal AI లో explainability ముఖ్యమైన చోట crucial.
+డెసిషన్ ట్రీలు ప్రాచుర్యం పొందాయి ఎందుకంటే మానవులు చదివి అర్థం చేసుకోగలరు - ఆరోగ్య సంరక్షణ, ఆర్థిక రంగం, చట్టపరమైన AI లో వివరణీయత ముఖ్యమైన చోట అత్యంత ముఖ్యం.
 
 <ThinkAboutIt>
-Hospital AI తో patient risk predict చేస్తుంది. Regulators AI తన decisions explain చేయమని require చేస్తారు. Neural network slightly more accurate అయినా decision tree ఎందుకు prefer చేయవచ్చు?
+ఆసుపత్రి AI తో రోగి రిస్క్ అంచనా వేస్తుంది. నియంత్రకులు AI తన నిర్ణయాలు వివరించమని కోరుతారు. న్యూరల్ నెట్‌వర్క్ కొద్దిగా మరింత ఖచ్చితమైన అయినా డెసిషన్ ట్రీ ఎందుకు ఇష్టపడవచ్చు?
 </ThinkAboutIt>
 
-### Random Forests
+### యాదృచ్ఛిక Forests
 
-**Random forest** వందల decision trees build చేస్తుంది, ప్రతిదాన్ని data subset పై train చేసి, తర్వాత vote తీసుకుంటుంది. ఈ ensemble approach ఒకే tree కంటే accurate మరియు robust.
+**యాదృచ్ఛిక ఫారెస్ట్** వందల డెసిషన్ ట్రీలు నిర్మిస్తుంది, ప్రతిదాన్ని డేటా ఉపసమితి పై శిక్షణ ఇచ్చి, తర్వాత ఓటు తీసుకుంటుంది. ఈ ఎన్సెంబుల్ విధానం ఒకే ట్రీ కంటే ఖచ్చితమైన మరియు దృఢమైన.
 
-## AI Graphs ఎలా వాడుతుంది
+## AI గ్రాఫ్‌లు ఎలా వాడుతుంది
 
-### Knowledge Graphs
+### Knowledge గ్రాఫ్‌లు
 
-**Knowledge graph** entities మధ్య relationships గా facts store చేస్తుంది:
+**Knowledge గ్రాఫ్** entities మధ్య సంబంధాలు గా నిజాలు నిల్వ చేస్తుంది:
 
 ```
 (London) --[capital_of]--> (United Kingdom)
@@ -130,19 +130,19 @@ Hospital AI తో patient risk predict చేస్తుంది. Regulators 
 (Big Ben) --[located_in]--> (London)
 ```
 
-Google Knowledge Graph search results లో information panels power చేస్తుంది.
+Google Knowledge గ్రాఫ్ సెర్చ్ ఫలితాలు లో సమాచారం ప్యానెల్‌లు శక్తి చేస్తుంది.
 
-### Recommendation Graphs
+### సిఫార్సు గ్రాఫ్‌లు
 
-Netflix, Spotify, Amazon users మరియు items ను graph గా model చేస్తాయి. Users A మరియు B items X, Y like చేసి, user A item Z కూడా like చేస్తే, graph Z ని user B కి suggest చేస్తుంది - **collaborative filtering**.
+Netflix, Spotify, Amazon వినియోగదారులు మరియు అంశాలను గ్రాఫ్ గా మోడల్ చేస్తాయి. వినియోగదారులు A మరియు B అంశాలు X, Y like చేసి, వినియోగదారు A అంశం Z కూడా like చేస్తే, గ్రాఫ్ Z ని వినియోగదారు B కి సూచిస్తుంది - **collaborative filtering**.
 
-<Quiz question="Social networks model చేయడానికి simple lists కంటే graphs ఎందుకు మెరుగు?" options="Graphs తక్కువ memory వాడతాయి|Graphs people మధ్య complex many-to-many relationships represent చేయగలవు|Graphs ఎల్లప్పుడూ search చేయడానికి faster|Graphs data ను automatically sort చేస్తాయి" answer="1" explanation="Social networks లో complex many-to-many relationships ఉంటాయి - ఒక person కి వందల friends, వారికి వారి connections. Graphs ఈ interconnected relationships ను naturally model చేస్తాయి." />
+<Quiz question="సామాజిక నెట్‌వర్క్‌లు మోడల్ చేయడానికి సరళమైన లిస్ట్‌లు కంటే గ్రాఫ్‌లు ఎందుకు మెరుగు?" options="గ్రాఫ్‌లు తక్కువ మెమరీ వాడతాయి|గ్రాఫ్‌లు వ్యక్తులు మధ్య సంక్లిష్ట అనేక-నుండి-అనేక సంబంధాలు ప్రాతినిధ్యం వహించగలవు|గ్రాఫ్‌లు ఎల్లప్పుడూ సెర్చ్ చేయడానికి వేగంగా|గ్రాఫ్‌లు డేటాను స్వయంచాలకంగా సార్ట్ చేస్తాయి" answer="1" explanation="సామాజిక నెట్‌వర్క్‌లు లో సంక్లిష్ట అనేక-నుండి-అనేక సంబంధాలు ఉంటాయి - ఒక person కి వందల friends, వారికి వారి కనెక్షన్‌లు. గ్రాఫ్‌లు ఈ పరస్పరం అనుసంధానమైన సంబంధాలను సహజంగా మోడల్ చేస్తాయి." />
 
-## Traversal - Trees మరియు Graphs గుండా నడవడం
+## ట్రావర్సల్ - ట్రీలు మరియు గ్రాఫ్‌లు గుండా నడవడం
 
-### Depth-First Search (DFS)
+### డెప్త్-ఫస్ట్ సెర్చ్ (DFS)
 
-DFS ఒక path వెంట సాధ్యమైనంత దూరం explore చేసి, తర్వాత backtrack చేస్తుంది. Maze లో ఎల్లప్పుడూ ఎడమ turn తీసుకోవడం లాగా - dead end వచ్చే వరకు, తర్వాత వెనక్కి.
+DFS ఒక పాత్ వెంట సాధ్యమైనంత దూరం అన్వేషించి, తర్వాత బ్యాక్‌ట్రాక్ చేస్తుంది. మేజ్ లో ఎల్లప్పుడూ ఎడమ turn తీసుకోవడం లాగా - dead end వచ్చే వరకు, తర్వాత వెనక్కి.
 
 ```
         A
@@ -154,11 +154,11 @@ DFS ఒక path వెంట సాధ్యమైనంత దూరం explore
 DFS order: A → B → D → E → C → F
 ```
 
-DFS **stack** వాడుతుంది (recursion ద్వారా naturally, లేదా explicitly).
+DFS **స్టాక్** వాడుతుంది (రికర్షన్ ద్వారా సహజంగా, లేదా explicitly).
 
-### Breadth-First Search (BFS)
+### బ్రెడ్‌త్-ఫస్ట్ సెర్చ్ (BFS)
 
-BFS ప్రస్తుత depth లో అన్ని neighbours explore చేసి, తర్వాత deeper కి వెళ్తుంది. నీటిలో రాయి వేసినప్పుడు ripples ఎలా బయటికి spread అవుతాయో అలాగే.
+BFS ప్రస్తుత లోతు లో అన్ని పొరుగు నోడ్‌లు అన్వేషించి, తర్వాత deeper కి వెళ్తుంది. నీటిలో రాయి వేసినప్పుడు ripples ఎలా బయటికి spread అవుతాయో అలాగే.
 
 ```
         A
@@ -170,25 +170,25 @@ BFS ప్రస్తుత depth లో అన్ని neighbours explore చ
 BFS order: A → B → C → D → E → F
 ```
 
-BFS **queue** వాడుతుంది. Shortest path, social network analysis, web crawling కి ideal.
+BFS **క్యూ** వాడుతుంది. చిన్నదైన పాత్, సామాజిక నెట్‌వర్క్ analysis, వెబ్ crawling కి ideal.
 
 <Callout>
-గమనించారా - గత lesson నుండి stacks మరియు queues tree మరియు graph traversal కి ఎలా connect అవుతాయో? DFS stack వాడుతుంది; BFS queue వాడుతుంది. Data structures ఒకదానిపై ఒకటి build అవుతాయి.
+గమనించారా - గత lesson నుండి స్టాక్‌లు మరియు క్యూలు ట్రీ మరియు గ్రాఫ్ ట్రావర్సల్ కి ఎలా కలపండి అవుతాయో? DFS స్టాక్ వాడుతుంది; BFS క్యూ వాడుతుంది. డేటా నిర్మాణాలు ఒకదానిపై ఒకటి నిర్మిస్తుంది అవుతాయి.
 </Callout>
 
-<Quiz question="అన్ని roads ఒకే పొడవు ఉన్న map లో రెండు cities మధ్య shortest route కనుగొనాలి. ఏ traversal వాడాలి?" options="Depth-first search - deeper paths ముందు explore చేస్తుంది|Breadth-first search - unweighted graphs లో shortest path కనుగొంటుంది|Binary search - sorted data పై పని చేస్తుంది|Random search - paths randomly try చేస్తుంది" answer="1" explanation="BFS nodes ను level by level explore చేస్తుంది, destination మొదటిసారి reach అయినప్పుడు shortest path guarantee (edges సంఖ్య ప్రకారం). DFS longer path ముందు కనుగొనవచ్చు." />
+<Quiz question="అన్ని రోడ్లు ఒకే పొడవు ఉన్న మ్యాప్ లో రెండు cities మధ్య చిన్నదైన route కనుగొనాలి. ఏ ట్రావర్సల్ వాడాలి?" options="డెప్త్-ఫస్ట్ సెర్చ్ - deeper పాత్‌లు ముందు అన్వేషించు చేస్తుంది|బ్రెడ్‌త్-ఫస్ట్ సెర్చ్ - బరువులేని గ్రాఫ్‌లు లో చిన్నదైన పాత్ కనుగొంటుంది|బైనరీ సెర్చ్ - సార్టెడ్ డేటా పై పని చేస్తుంది|యాదృచ్ఛిక సెర్చ్ - పాత్‌లు randomly ప్రయత్నిస్తుంది" answer="1" explanation="BFS నోడ్‌లను స్థాయి by స్థాయి అన్వేషించు చేస్తుంది, destination మొదటిసారి reach అయినప్పుడు చిన్నదైన పాత్ హామీ (ఎడ్జ్‌లు సంఖ్య ప్రకారం). DFS longer పాత్ ముందు కనుగొనవచ్చు." />
 
 <ThinkAboutIt>
-Social media platforms "degrees of separation" measure చేస్తాయి - ఇద్దరిని connect చేసే friend-of-friend hops ఎన్ని. తక్కువ hops efficiently కనుగొనడానికి ఏ traversal algorithm వాడాలి?
+సోషల్ మీడియా platforms "degrees of separation" measure చేస్తాయి - ఇద్దరిని కలపండి చేసే స్నేహితుల-of-స్నేహితుల hops ఎన్ని. తక్కువ hops సమర్థంగా కనుగొనడానికి ఏ ట్రావర్సల్ అల్గారిథమ్ వాడాలి?
 </ThinkAboutIt>
 
 <FunFact>
-Google PageRank algorithm - Google ను dominant చేసిన original breakthrough - web ను graph గా model చేస్తుంది. ప్రతి web page node, ప్రతి hyperlink directed edge, page importance ఎన్ని important pages link చేస్తాయో ద్వారా నిర్ణయమవుతుంది.
+Google PageRank అల్గారిథమ్ - Google ను dominant చేసిన original breakthrough - వెబ్ ను గ్రాఫ్ గా మోడల్ చేస్తుంది. ప్రతి వెబ్ పేజీ నోడ్, ప్రతి hyperlink దిశాబద్ధ ఎడ్జ్, పేజీ importance ఎన్ని ముఖ్యమైన పేజీలు link చేస్తాయో ద్వారా నిర్ణయమవుతుంది.
 </FunFact>
 
 ## ముఖ్య అంశాలు
 
-- **Trees** hierarchical data model చేస్తాయి - file systems, HTML, AI decision trees అన్నీ tree structures.
-- **Binary search trees** sorted hierarchy maintain చేసి O(log n) lookups enable చేస్తాయి.
-- **Graphs** interconnected data model చేస్తాయి - social networks, knowledge bases, recommendation engines.
-- **DFS** (stack-based) deep కి వెళ్తుంది; **BFS** (queue-based) wide కి - రెండూ PageRank మరియు recommendations లాంటి core AI algorithms power చేస్తాయి.
+- **ట్రీలు** hierarchical డేటా మోడల్ చేస్తాయి - file సిస్టమ్‌లు, HTML, AI డెసిషన్ ట్రీలు అన్నీ ట్రీ నిర్మాణాలు.
+- **బైనరీ సెర్చ్ ట్రీలు** సార్టెడ్ పదవీక్రమం maintain చేసి O(లాగ్ n) లుకప్‌లు సాధ్యం చేస్తాయి.
+- **గ్రాఫ్‌లు** పరస్పరం అనుసంధానమైన డేటా మోడల్ చేస్తాయి - సామాజిక నెట్‌వర్క్‌లు, knowledge bases, సిఫార్సు engines.
+- **DFS** (స్టాక్-ఆధారిత) deep కి వెళ్తుంది; **BFS** (క్యూ-ఆధారిత) wide కి - రెండూ PageRank మరియు సిఫార్సులు లాంటి మూల AI అల్గారిథమ్‌లు శక్తి చేస్తాయి.
