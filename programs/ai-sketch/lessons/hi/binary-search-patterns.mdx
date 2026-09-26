@@ -1,6 +1,6 @@
 ---
-title: "Binary Search Patterns - Sorted Arrays से आगे"
-description: "Binary search की सोच समझिए: search spaces, binary search on answer, और वो patterns जो दर्जनों interview problems में दिखते हैं।"
+title: "बाइनरी सर्च पैटर्न - क्रमबद्ध ऐरे से आगे"
+description: "बाइनरी खोज की सोच समझिए: खोज खाली जगहें, बाइनरी सर्च on उत्तर, और वो पैटर्न जो दर्जनों interview समस्याएँ में दिखते हैं।"
 order: 7
 difficulty: "intermediate"
 duration: 17
@@ -8,9 +8,9 @@ icon: "🔍"
 published: true
 ---
 
-## Classic Binary Search - Quick Review
+## क्लासिक बाइनरी सर्च - Quick समीक्षा
 
-Binary search हर step में search space आधा कर देता है। Sorted array में n elements में से target **O(log n)** time में मिल जाता है।
+बाइनरी खोज हर कदम में खोज जगह आधा कर देता है। क्रमबद्ध ऐरे में n एलिमेंट में से लक्ष्य **O(log n)** समय में मिल जाता है।
 
 ```python
 def binary_search(nums, target):
@@ -26,11 +26,11 @@ def binary_search(nums, target):
     return -1
 ```
 
-Simple - लेकिन binary search की असली ताकत sorted arrays से काफ़ी आगे है।
+सरल - लेकिन बाइनरी सर्च की असली ताकत क्रमबद्ध ऐरे से काफ़ी आगे है।
 
-## Search Space का Concept
+## खोज Space का अवधारणा
 
-Binary search तब काम करता है जब किसी range पर **monotonic condition** हो। "Array" का होना ज़रूरी नहीं - बस एक range `[lo, hi]` चाहिए और एक function जो किसी boundary पर `False` से `True` में बदले।
+बाइनरी खोज तब काम करता है जब किसी रेंज पर **मोनोटोनिक शर्त** हो। "ऐरे" का होना ज़रूरी नहीं - बस एक रेंज `[lo, hi]` चाहिए और एक फ़ंक्शन जो किसी boundary पर `False` से `True` में बदले।
 
 ```
 Search space:  [lo .................. hi]
@@ -38,15 +38,15 @@ Condition:      F  F  F  F  T  T  T  T
                           ^-- answer
 ```
 
-<FunFact>Binary search पहली बार 1946 में publish हुआ, लेकिन पहला bug-free version 1962 में लिखा गया - 16 साल off-by-one errors के!</FunFact>
+<FunFact>बाइनरी खोज पहली बार 1946 में प्रकाशित हुआ, लेकिन पहला bug-मुक्त संस्करण 1962 में लिखा गया - 16 साल off-by-एक errors के!</FunFact>
 
-## Binary Search on Answer
+## बाइनरी सर्च on उत्तर
 
-Array में ढूँढने की जगह **answer space** में search करो। सवाल पूछो: "क्या मैं result X हासिल कर सकता हूँ?" हाँ तो छोटा try करो; नहीं तो बड़ा।
+ऐरे में ढूँढने की जगह **उत्तर जगह** में खोज करो। सवाल पूछो: "क्या मैं नतीजा X हासिल कर सकता हूँ?" हाँ तो छोटा आज़माता है करो; नहीं तो बड़ा।
 
-### Example: Koko Eating Bananas
+### उदाहरण: Koko Eating Bananas
 
-Koko के पास `n` piles of bananas हैं और `h` hours। **Minimum eating speed** ढूँढो जिससे वो time पर खत्म कर सके।
+Koko के पास `n` piles of bananas हैं और `h` घंटे। **न्यूनतम खाना गति** ढूँढो जिससे वो समय पर खत्म कर सके।
 
 ```python
 def min_speed(piles, h):
@@ -61,13 +61,13 @@ def min_speed(piles, h):
     return lo
 ```
 
-Answer space `[1, max(piles)]` है और condition monotonic है - ज़्यादा speed = कम hours।
+उत्तर जगह `[1, max(piles)]` है और शर्त मोनोटोनिक है - ज़्यादा गति = कम घंटे।
 
-<Illustration src="/images/lessons/binary-search-patterns.svg" alt="Binary search minimum eating speed के लिए answer space को narrow कर रहा है" caption="Binary search on answer: हर iteration में feasible speed range सिकुड़ती जाती है।" />
+<Illustration src="/images/lessons/binary-search-patterns.svg" alt="बाइनरी खोज न्यूनतम खाना गति के लिए उत्तर जगह को narrow कर रहा है" caption="बाइनरी खोज on उत्तर: हर दोहराव में feasible गति रेंज सिकुड़ती जाती है।" />
 
-## Rotated Sorted Array
+## Rotated क्रमबद्ध ऐरे
 
-एक sorted array किसी pivot पर rotate हुआ: `[4, 5, 6, 7, 0, 1, 2]`। एक half हमेशा sorted रहता है। `mid` को `lo` से compare करके decide करो कौन सा half sorted है, फिर check करो target उस sorted half में है या नहीं।
+एक क्रमबद्ध ऐरे किसी pivot पर घुमाना हुआ: `[4, 5, 6, 7, 0, 1, 2]`। एक आधा हमेशा क्रमबद्ध रहता है। `mid` को `lo` से तुलना करके decide करो कौन सा आधा क्रमबद्ध है, फिर जाँच करो लक्ष्य उस क्रमबद्ध आधा में है या नहीं।
 
 ```
 [4, 5, 6, 7, 0, 1, 2]
@@ -76,27 +76,27 @@ Left half [4..7] sorted है।
 Target 1 [4..7] में नहीं → right में search करो।
 ```
 
-<Quiz question="Rotated sorted array [3,4,5,1,2] में जब mid=2 (value 5) हो, तो कौन सा half sorted है?" options="Right half [1,2]|Left half [3,4,5]|कोई half नहीं|दोनों halves" answer="1" explanation="nums[lo]=3 ≤ nums[mid]=5, तो left half [3,4,5] sorted है। Check करो target उस range में है या नहीं; नहीं तो right में search करो।" />
+<Quiz question="Rotated क्रमबद्ध ऐरे [3,4,5,1,2] में जब मध्य=2 (मान 5) हो, तो कौन सा आधा क्रमबद्ध है?" options="Right आधा [1,2]|बायाँ आधा [3,4,5]|कोई आधा नहीं|दोनों आधे" answer="1" explanation="nums[lo]=3 ≤ nums[मध्य]=5, तो बायाँ आधा [3,4,5] क्रमबद्ध है। Check करो लक्ष्य उस रेंज में है या नहीं; नहीं तो दायाँ में खोज करो।" />
 
-## First और Last Occurrence
+## पहला और आख़िरी Occurrence
 
-**First** occurrence ढूँढने के लिए, target मिलने पर रुको मत - `hi = mid` करो और left में search जारी रखो। **Last** के लिए `lo = mid + 1` करो और right में search करो।
+**पहला** occurrence ढूँढने के लिए, लक्ष्य मिलने पर रुको मत - `hi = mid` करो और बायाँ में खोज जारी रखो। **आख़िरी** के लिए `lo = mid + 1` करो और दायाँ में खोज करो।
 
-इन दो searches से target का **count** भी मिलता है: `last - first + 1`।
+इन दो खोजें से लक्ष्य का **गिनना** भी मिलता है: `last - first + 1`।
 
 ## Peak Element
 
-वो element जो दोनों neighbours से बड़ा हो। Unsorted array में भी binary search काम करता है: अगर `nums[mid] < nums[mid + 1]`, तो peak right में है; वरना left में। O(log n)।
+वो एलिमेंट जो दोनों पड़ोसी से बड़ा हो। अक्रमबद्ध ऐरे में भी बाइनरी सर्च काम करता है: अगर `nums[mid] < nums[mid + 1]`, तो peak दायाँ में है; वरना बायाँ में। O(log n)।
 
-<ThinkAboutIt>Peak-finding binary search से क्यों काम करती है जबकि array sorted नहीं है? Sorted order की जगह कौन सी property काम कर रही है?</ThinkAboutIt>
+<ThinkAboutIt>Peak-finding बाइनरी सर्च से क्यों काम करती है जबकि ऐरे क्रमबद्ध नहीं है? क्रमबद्ध क्रम की जगह कौन सी गुण काम कर रही है?</ThinkAboutIt>
 
-## Search in a 2D Matrix
+## खोज in a 2D मैट्रिक्स
 
-अगर rows sorted हैं और हर row का पहला element पिछली row के last से बड़ा है, तो matrix को `m × n` elements की एक sorted array मानो। Index `k` को row `k // n`, column `k % n` में map करो।
+अगर rows क्रमबद्ध हैं और हर पंक्ति का पहला एलिमेंट पिछली पंक्ति के आख़िरी से बड़ा है, तो मैट्रिक्स को `m × n` एलिमेंट की एक क्रमबद्ध ऐरे मानो। इंडेक्स `k` को पंक्ति `k // n`, कॉलम `k % n` में मैप करो।
 
-## बिना Library के Square Root
+## बिना Library के Square रूट
 
-सबसे बड़ा integer `x` ढूँढो जहाँ `x * x ≤ n`। Search space: `[0, n]`। Classic binary search on answer।
+सबसे बड़ा integer `x` ढूँढो जहाँ `x * x ≤ n`। खोज जगह: `[0, n]`। क्लासिक बाइनरी सर्च on उत्तर।
 
 ```python
 def sqrt(n):
@@ -110,11 +110,11 @@ def sqrt(n):
     return hi
 ```
 
-## "Minimise the Maximum" Pattern
+## "Minimise the अधिकतम" पैटर्न
 
-"Split array largest sum" या "capacity to ship packages within D days" जैसे problems worst case **minimise** करने कहते हैं। Answer monotonic है: अगर capacity C काम करती है, तो C+1 भी करेगी। C पर binary search करो।
+"Split ऐरे largest योग" या "क्षमता to भेजना पैकेज within D days" जैसे समस्याएँ सबसे खराब स्थिति **minimise** करने कहते हैं। उत्तर मोनोटोनिक है: अगर क्षमता C काम करती है, तो C+1 भी करेगी। C पर बाइनरी सर्च करो।
 
-<Quiz question="'Capacity to Ship Packages in D Days' में binary search का search space क्या होगा?" options="[0, total weight]|[max single weight, total weight]|[1, number of packages]|[D, total weight]" answer="1" explanation="Minimum possible capacity सबसे भारा single package है (वरना उसे ship नहीं कर सकते)। Maximum total weight है (एक दिन में सब ship करो)।" />
+<Quiz question="'Capacity to Ship Packages in D Days' में binary search का search space क्या होगा?" options="[0, कुल भार]|[अधिकतम एकल भार, कुल भार]|[1, संख्या of पैकेज]|[D, कुल भार]" answer="1" explanation="न्यूनतम संभव क्षमता सबसे भारा एकल package है (वरना उसे भेजना नहीं कर सकते)। अधिकतम कुल भार है (एक दिन में सब भेजना करो)।" />
 
 ## Universal Template
 
@@ -129,16 +129,16 @@ while lo < hi:
 return lo
 ```
 
-`hi = mid` vs `lo = mid` adjust करो - **first True** ढूँढ रहे हो या **last True**।
+`hi = mid` vs `lo = mid` समायोजित करो - **पहले सही** ढूँढ रहे हो या **आख़िरी सही**।
 
-<Quiz question="Size S के answer space पर binary search जिसमें O(n) feasibility check हो - time complexity क्या है?" options="O(n)|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="O(log S) iterations की binary search, हर iteration में O(n) check - कुल O(n log S)।" />
+<Quiz question="आकार S के उत्तर जगह पर बाइनरी सर्च जिसमें O(n) feasibility जाँच हो - समय जटिलता क्या है?" options="O(n)|O(log S)|O(n log S)|O(n × S)" answer="2" explanation="O(log S) iterations की बाइनरी सर्च, हर दोहराव में O(n) जाँच - कुल O(n log S)।" />
 
-<ThinkAboutIt>जब problem statement में "minimum possible maximum" या "maximum possible minimum" दिखे, तो दिमाग में सबसे पहले क्या आना चाहिए?</ThinkAboutIt>
+<ThinkAboutIt>जब समस्या कथन में "न्यूनतम संभव अधिकतम" या "अधिकतम संभव न्यूनतम" दिखे, तो दिमाग में सबसे पहले क्या आना चाहिए?</ThinkAboutIt>
 
 ---
 
 ## 📚 और पढ़ें
 
-- [NeetCode - Binary Search playlist](https://neetcode.io/roadmap) - easy से hard तक curated problems
-- [Tech Interview Handbook - Binary Search](https://www.techinterviewhandbook.org/algorithms/binary-search/) - patterns, tips और pitfalls
-- [LeetCode Binary Search study plan](https://leetcode.com/studyplan/binary-search/) - progressive problem set
+- [NeetCode - बाइनरी सर्च प्लेलिस्ट](https://neetcode.io/roadmap) - easy से hard तक चुने हुए समस्याएँ
+- [Tech Interview Handbook - बाइनरी सर्च](https://www.techinterviewhandbook.org/algorithms/binary-search/) - पैटर्न, सुझाव और खतरे
+- [LeetCode बाइनरी सर्च अध्ययन योजना](https://leetcode.com/studyplan/binary-search/) - क्रमिक समस्या सेट

@@ -1,6 +1,6 @@
 ---
-title: "Greedy Algorithms - जब Local Choice Global Solution दे दे"
-description: "जानिए कब हर step पर locally optimal choice लेने से globally optimal result मिलता है, और कब नहीं।"
+title: "ग्रीडी एल्गोरिदम - जब Local चयन Global Solution दे दे"
+description: "जानिए कब हर कदम पर स्थानीय रूप से सर्वोत्तम चयन लेने से वैश्विक रूप से सर्वोत्तम नतीजा मिलता है, और कब नहीं।"
 order: 9
 difficulty: "intermediate"
 duration: 17
@@ -8,19 +8,19 @@ icon: "🏃"
 published: true
 ---
 
-## Greedy Algorithm क्या होता है?
+## ग्रीडी Algorithm क्या होता है?
 
-Greedy algorithm solution **एक step** एक बार बनाता है, हमेशा वो option चुनता है जो **अभी** सबसे अच्छा लगे - बिना पुराने decisions पर दोबारा सोचे। न backtracking, न आगे देखना।
+ग्रीडी एल्गोरिदम समाधान **एक कदम** एक बार बनाता है, हमेशा वो option चुनता है जो **अभी** सबसे अच्छा लगे - बिना पुराने फ़ैसले पर दोबारा सोचे। न बैकट्रैकिंग, न आगे देखना।
 
 यह तब काम करता है जब दो properties हों:
-1. **Greedy choice property** - locally optimal choice globally optimal solution तक ले जाए।
-2. **Optimal substructure** - हर choice के बाद बचा problem उसी problem का छोटा version हो।
+1. **ग्रीडी चयन गुण** - स्थानीय रूप से सर्वोत्तम चयन वैश्विक रूप से सर्वोत्तम समाधान तक ले जाए।
+2. **Optimal substructure** - हर चयन के बाद बचा समस्या उसी समस्या का छोटा संस्करण हो।
 
-## Activity Selection - Classic Example
+## Activity Selection - क्लासिक उदाहरण
 
-Activities दी हैं जिनके start और end times हैं। **Maximum** non-overlapping activities चुनो।
+Activities दी हैं जिनके start और अंत times हैं। **अधिकतम** बिना ओवरलैप गतिविधियाँ चुनो।
 
-**Greedy strategy:** end time से sort करो, हमेशा सबसे पहले खत्म होने वाली activity चुनो।
+**ग्रीडी रणनीति:** अंत समय से सॉर्ट करो, हमेशा सबसे पहले खत्म होने वाली गतिविधि चुनो।
 
 ```python
 def max_activities(intervals):
@@ -33,21 +33,21 @@ def max_activities(intervals):
     return count
 ```
 
-यह क्यों काम करता है? सबसे पहले खत्म होने वाली activity चुनने से बाकी activities के लिए सबसे ज़्यादा जगह बचती है।
+यह क्यों काम करता है? सबसे पहले खत्म होने वाली गतिविधि चुनने से बाकी गतिविधियाँ के लिए सबसे ज़्यादा जगह बचती है।
 
-<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Timeline पर earliest end time से activity selection दिखा रहा है" caption="Earliest end time से select करने पर non-overlapping activities की संख्या maximum होती है।" />
+<Illustration src="/images/lessons/greedy-algorithms.svg" alt="Timeline पर सबसे पहले अंत समय से गतिविधि selection दिखा रहा है" caption="Earliest अंत समय से select करने पर बिना ओवरलैप गतिविधियाँ की संख्या अधिकतम होती है।" />
 
-## Huffman Coding - Concept
+## Huffman Coding - अवधारणा
 
-Optimal prefix-free binary code बनाने के लिए बार-बार **दो सबसे कम frequency** वाले symbols merge करो। यह greedy है: हर step पर सबसे सस्ती pair merge करो। Result एक tree है जहाँ frequent symbols को short codes मिलते हैं।
+Optimal prefix-मुक्त बाइनरी कोड बनाने के लिए बार-बार **दो सबसे कम आवृत्ति** वाले चिह्न मर्ज करो। यह ग्रीडी है: हर कदम पर सबसे सस्ती जोड़ी मर्ज करो। Result एक ट्री है जहाँ बार-बार चिह्न को छोटे codes मिलते हैं।
 
-<FunFact>Huffman coding JPEG, MP3, और ZIP compression में इस्तेमाल होती है। David Huffman ने इसे 1952 में एक student के रूप में invent किया - यह एक homework assignment था!</FunFact>
+<FunFact>Huffman कोडिंग JPEG, MP3, और ZIP compression में इस्तेमाल होती है। David Huffman ने इसे 1952 में एक विद्यार्थी के रूप में ईजाद किया - यह एक homework assignment था!</FunFact>
 
-## Jump Game
+## Jump गेम
 
-Array दिया है जहाँ `nums[i]` index `i` से maximum jump length है। बताओ last index तक पहुँच सकते हो या नहीं।
+ऐरे दिया है जहाँ `nums[i]` इंडेक्स `i` से अधिकतम जंप लंबाई है। बताओ आख़िरी इंडेक्स तक पहुँच सकते हो या नहीं।
 
-**Greedy approach:** अब तक पहुँचने योग्य farthest index track करो। Left से right scan करो - अगर कभी पीछे रह गए, return false।
+**ग्रीडी तरीका:** अब तक पहुँचने योग्य सबसे दूर इंडेक्स ट्रैक करो। बायाँ से दायाँ स्कैन करो - अगर कभी पीछे रह गए, लौटाएँ गलत।
 
 ```python
 def can_jump(nums):
@@ -59,17 +59,17 @@ def can_jump(nums):
     return True
 ```
 
-<Quiz question="Jump Game में greedy variable 'farthest' क्या represent करता है?" options="Current position|Jumps की संख्या|किसी भी visited position से पहुँचने योग्य maximum index|सबसे लंबी jump की length" answer="2" explanation="'farthest' अब तक visit की गई किसी भी position से reachable rightmost index track करता है। अगर current index इससे आगे निकल जाए, तो आप फँस गए।" />
+<Quiz question="Jump Game में greedy variable 'farthest' क्या represent करता है?" options="Current स्थिति|Jumps की संख्या|किसी भी देखे गए स्थिति से पहुँचने योग्य अधिकतम इंडेक्स|सबसे लंबी जंप की लंबाई" answer="2" explanation="'farthest' अब तक visit की गई किसी भी position से reachable rightmost index track करता है। अगर current index इससे आगे निकल जाए, तो आप फँस गए।" />
 
-## Gas Station
+## Gas स्टेशन
 
-Circular route पर gas stations हैं। Station `i` पर `gas[i]` fuel मिलता है और अगले station तक `cost[i]` खर्च होता है। वो starting station ढूँढो जिससे पूरा circuit complete हो, या −1 return करो।
+Circular रूट पर गैस stations हैं। स्टेशन `i` पर `gas[i]` fuel मिलता है और अगले स्टेशन तक `cost[i]` खर्च होता है। वो शुरुआती स्टेशन ढूँढो जिससे पूरा circuit पूर्ण हो, या −1 लौटाएँ करो।
 
-**Greedy insight:** अगर total gas ≥ total cost, तो solution ज़रूर है। Running surplus track करो; जब भी यह negative हो, answer उसके **बाद** से शुरू होगा।
+**ग्रीडी insight:** अगर कुल गैस ≥ कुल लागत, तो समाधान ज़रूर है। Running surplus ट्रैक करो; जब भी यह नकारात्मक हो, उत्तर उसके **बाद** से शुरू होगा।
 
-## Task Scheduler
+## काम Scheduler
 
-Tasks schedule करने हैं जिनमें identical tasks के बीच `n` cooldown हो। **Greedy:** हमेशा सबसे frequent remaining task चुनो।
+Tasks schedule करने हैं जिनमें identical काम के बीच `n` cooldown हो। **ग्रीडी:** हमेशा सबसे बार-बार बाकी काम चुनो।
 
 ```
 Tasks: A A A B B C, cooldown = 2
@@ -77,13 +77,13 @@ Schedule: A B C A B _ A
 Total = 7
 ```
 
-<ThinkAboutIt>Task scheduler में सबसे frequent task पहले चुनने से idle slots कम क्यों होते हैं? अगर सबसे कम frequent पहले चुनें तो क्या गलत होगा?</ThinkAboutIt>
+<ThinkAboutIt>काम scheduler में सबसे बार-बार काम पहले चुनने से idle slots कम क्यों होते हैं? अगर सबसे कम बार-बार पहले चुनें तो क्या गलत होगा?</ThinkAboutIt>
 
-## Fractional Knapsack vs 0/1 Knapsack
+## Fractional नैपसैक vs 0/1 नैपसैक
 
-**Fractional knapsack:** items के टुकड़े ले सकते हो। Greedy काम करता है - value-per-weight से sort करो, best ratio पहले लो।
+**Fractional नैपसैक:** आइटम के टुकड़े ले सकते हो। ग्रीडी काम करता है - मान-per-भार से सॉर्ट करो, सर्वश्रेष्ठ अनुपात पहले लो।
 
-**0/1 knapsack:** item पूरा लो या छोड़ो। Greedy यहाँ **fail** करता है क्योंकि भारी-but-valuable item छोड़ना दो हल्के items लेने से बुरा हो सकता है। इसके लिए dynamic programming चाहिए।
+**0/1 नैपसैक:** आइटम पूरा लो या छोड़ो। ग्रीडी यहाँ **असफल** करता है क्योंकि भारी-but-valuable आइटम छोड़ना दो हल्के आइटम लेने से बुरा हो सकता है। इसके लिए डायनैमिक प्रोग्रामिंग चाहिए।
 
 ```
 Items: (weight=3, value=4), (weight=2, value=3), (weight=2, value=3)
@@ -93,41 +93,41 @@ Greedy (best ratio first): item 1 (w=3, v=4) → 1 बचा → बाकी fi
 Optimal: items 2+3 (w=4, v=6) → value = 6 ✗ Greedy fail!
 ```
 
-<Quiz question="0/1 knapsack में greedy approach fail क्यों करता है?" options="Items split नहीं हो सकते, तो best ratio item capacity waste कर सकता है|Items sorted नहीं हैं|बहुत ज़्यादा items हैं|Greedy algorithms knapsack में कभी काम नहीं करते" answer="0" explanation="जब पूरे items लेने हों, best ratio पहले चुनने से बची capacity में छोटे items फिट हो सकते थे जो ज़्यादा profitable होते।" />
+<Quiz question="0/1 नैपसैक में ग्रीडी तरीका असफल क्यों करता है?" options="आइटम split नहीं हो सकते, तो सर्वश्रेष्ठ अनुपात आइटम क्षमता waste कर सकता है|आइटम क्रमबद्ध नहीं हैं|बहुत ज़्यादा आइटम हैं|ग्रीडी एल्गोरिदम नैपसैक में कभी काम नहीं करते" answer="0" explanation="जब पूरे आइटम लेने हों, सर्वश्रेष्ठ अनुपात पहले चुनने से बची क्षमता में छोटे आइटम फिट हो सकते थे जो ज़्यादा profitable होते।" />
 
-## Greedy कब काम करता है?
+## ग्रीडी कब काम करता है?
 
-✅ **काम करता है** जब greedy choice property prove हो सके:
-- Interval scheduling, Huffman coding, minimum spanning trees, Dijkstra's algorithm
+✅ **काम करता है** जब ग्रीडी चयन गुण सिद्ध हो सके:
+- Interval शेड्यूलिंग, Huffman कोडिंग, न्यूनतम spanning ट्री, Dijkstra's एल्गोरिदम
 
-❌ **Fail** जब local optima global optima न बनाएँ:
-- 0/1 knapsack, longest path, travelling salesman
+❌ **Fail** जब local ऑप्टिमा global ऑप्टिमा न बनाएँ:
+- 0/1 नैपसैक, longest रास्ता, travelling salesman
 
-## Greedy Correctness - Exchange Argument
+## ग्रीडी शुद्धता - Exchange Argument
 
-Standard technique: मान लो एक optimal solution है जो greedy choice **नहीं** इस्तेमाल करता। दिखाओ कि उसकी एक choice को greedy choice से **exchange** करने पर solution बुरा नहीं होता। इससे साबित होता है greedy कम से कम उतना ही अच्छा है।
+Standard technique: मान लो एक सर्वोत्तम समाधान है जो ग्रीडी चयन **नहीं** इस्तेमाल करता। दिखाओ कि उसकी एक चयन को ग्रीडी चयन से **exchange** करने पर समाधान बुरा नहीं होता। इससे साबित होता है ग्रीडी कम से कम उतना ही अच्छा है।
 
-<Quiz question="'Exchange argument' किसलिए इस्तेमाल होता है?" options="Array में दो elements swap करना|Greedy algorithm optimal solution देता है यह prove करना|Recursion को iteration में बदलना|Time complexity optimise करना" answer="1" explanation="Exchange argument correctness prove करता है - दिखाता है कि कोई भी optimal solution greedy solution से match करने के लिए transform हो सकता है बिना quality loss के।" />
+<Quiz question="'Exchange argument' किसलिए इस्तेमाल होता है?" options="ऐरे में दो एलिमेंट स्वैप करना|ग्रीडी एल्गोरिदम सर्वोत्तम समाधान देता है यह सिद्ध करना|रिकर्शन को दोहराव में बदलना|समय जटिलता अनुकूलित करना" answer="1" explanation="Exchange तर्क correctness सिद्ध करता है - दिखाता है कि कोई भी सर्वोत्तम समाधान ग्रीडी समाधान से मिलान करने के लिए बदलना हो सकता है बिना quality loss के।" />
 
-## Greedy vs Dynamic Programming
+## ग्रीडी vs डायनैमिक प्रोग्रामिंग
 
-| पहलू | Greedy | Dynamic Programming |
+| पहलू | ग्रीडी | डायनैमिक प्रोग्रामिंग |
 |-------|--------|---------------------|
-| Choices | हर step पर एक best choice | सभी sub-problems explore करो |
-| Past revisit? | कभी नहीं | हाँ - sub-results store करता है |
-| Speed | आमतौर पर तेज़ | State space पर निर्भर |
-| Correctness | सिर्फ अगर prove हो | हमेशा (सही formulation पर) |
+| चयन | हर कदम पर एक सर्वश्रेष्ठ चयन | सभी उप-समस्याएँ समझते हैं करो |
+| Past revisit? | कभी नहीं | हाँ - उप-नतीजे संग्रहीत करता है |
+| Speed | आमतौर पर तेज़ | State जगह पर निर्भर |
+| शुद्धता | सिर्फ अगर सिद्ध हो | हमेशा (सही formulation पर) |
 
-Doubt हो तो greedy से शुरू करो - prove नहीं कर पाए तो DP पर switch करो।
+Doubt हो तो ग्रीडी से शुरू करो - सिद्ध नहीं कर पाए तो DP पर switch करो।
 
-<FunFact>Dijkstra's shortest-path algorithm greedy है - हमेशा closest unvisited node process करता है। यह काम करता है क्योंकि edge weights non-negative हैं, जो greedy choice को safe बनाता है।</FunFact>
+<FunFact>Dijkstra's सबसे छोटा-रास्ता एल्गोरिदम ग्रीडी है - हमेशा closest unvisited node प्रोसेस करता है। यह काम करता है क्योंकि एज weights non-नकारात्मक हैं, जो ग्रीडी चयन को safe बनाता है।</FunFact>
 
-<ThinkAboutIt>Coin denominations [1, 3, 4] हैं और 6 के लिए change बनाना है। Greedy 4+1+1=3 coins चुनता है, लेकिन optimal 3+3=2 coins है। इन denominations में greedy choice property क्यों टूटती है?</ThinkAboutIt>
+<ThinkAboutIt>Coin मूल्यवर्ग [1, 3, 4] हैं और 6 के लिए change बनाना है। ग्रीडी 4+1+1=3 सिक्के चुनता है, लेकिन सर्वोत्तम 3+3=2 सिक्के है। इन मूल्यवर्ग में ग्रीडी चयन गुण क्यों टूटती है?</ThinkAboutIt>
 
 ---
 
 ## 📚 और पढ़ें
 
-- [NeetCode - Greedy playlist](https://neetcode.io/roadmap) - curated greedy problems with explanations
-- [Tech Interview Handbook - Greedy](https://www.techinterviewhandbook.org/algorithms/greedy/) - कब greedy इस्तेमाल करें और common patterns
-- [CP-Algorithms - Greedy algorithms](https://cp-algorithms.com/) - गहरी theory और proofs
+- [NeetCode - ग्रीडी प्लेलिस्ट](https://neetcode.io/roadmap) - चुने हुए ग्रीडी समस्याएँ साथ व्याख्याएँ
+- [Tech Interview Handbook - ग्रीडी](https://www.techinterviewhandbook.org/algorithms/greedy/) - कब ग्रीडी इस्तेमाल करें और आम पैटर्न
+- [CP-Algorithms - ग्रीडी एल्गोरिदम](https://cp-algorithms.com/) - गहरी सिद्धांत और proofs
