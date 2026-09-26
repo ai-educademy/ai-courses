@@ -9,6 +9,7 @@
    dependent vowel sign, or a consonant followed by the independent vowel A.
    These are the fingerprints of letter-by-letter transliteration of English
    ("Claude ोपुस" for Opus), which reads as gibberish to native speakers.
+   Added te lines are also checked for word-substitution artefacts.
    Only added lines are checked so older content can be repaired separately
    without blocking unrelated PRs.
 
@@ -26,6 +27,14 @@ HI = '\u093E-\u094C'
 MALFORMED = {
     'te': re.compile('\u0C4D[' + TE + ']|(?:^|[\\s(\\-"])[' + TE + '\u0C4D]|[\u0C15-\u0C39]\u0C05'),
     'hi': re.compile('\u094D[' + HI + ']|(?:^|[\\s(\\-"])[' + HI + '\u094D]|[\u0915-\u0939]\u0905'),
+}
+# Word-substitution artefacts from machine translation: an English suffix
+# glued to a Telugu word ("వివరణs"), or a verb followed by a redundant form
+# of చేయు ("నిర్వహించు చేస్తుంది", "వాడండి చేస్తుంది").
+SUBSTITUTION = {
+    'te': re.compile('[\u0C00-\u0C7F\u200c]+(?:s|es|ed|ing)\\b'
+                     '|[\u0C00-\u0C7F]+\u0C3F\u0C02\u0C1A\u0C41 (?:చేయ|చేస|చేశ|చేసి|చేద్దాం|చేయండి)'
+                     '|[\u0C00-\u0C7F]+ండి (?:అయిన|చేస|చేయ|చేశ|చేసి|చేద్దాం)'),
 }
 errors = []
 
@@ -69,6 +78,10 @@ if base:
             if m:
                 s = max(0, m.start() - 20)
                 errors.append(f'{current}: malformed {loc} script near {line[s:m.end() + 20]!r}')
+            m = SUBSTITUTION.get(loc) and SUBSTITUTION[loc].search(line)
+            if m:
+                s = max(0, m.start() - 20)
+                errors.append(f'{current}: word-substitution artefact in {loc} near {line[s:m.end() + 20]!r}')
 
 for e in errors:
     print(f'::error::{e}')
