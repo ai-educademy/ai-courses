@@ -50,7 +50,7 @@ smallest = heapq.heappop(h)  # returns 1
 
 这两个操作的运行时间都是 O(log n)**，因为树的高度是 log n。
 
-<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="显示在最小堆上插入冒泡向上和提取筛选向下的图" caption="向上插入气泡； extract-min 向下筛选。" />
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="显示在最小堆上插入冒泡向上和提取筛选向下的图" caption="插入时向上冒泡；提取最小值时向下筛选。" />
 
 ## Heapify - 在 O(n) 中构建堆
 
@@ -92,7 +92,7 @@ Upper half (min-heap): [4, 5, 6]  ← min = 4
 Median = (3 + 4) / 2 = 3.5
 ```
 
-<Quiz question="在双堆中位数方法中，新元素首先去哪里？" options="始终是最小堆|始终是最大堆|哪个堆较小|首先与 max-heap root 比较，然后重新平衡" answer="3" explanation="首先推入最大堆（下半部分），然后根据需要将其根移动到最小堆，并重新平衡大小。这保证了堆属性得到维护。" />
+<Quiz question="在双堆中位数方法中，新元素首先去哪里？" options="始终是最小堆|始终是最大堆|哪个堆较小|先与最大堆根节点比较，然后重新平衡" answer="3" explanation="首先推入最大堆（下半部分），然后根据需要将其根移动到最小堆，并重新平衡大小。这保证了堆属性得到维护。" />
 
 ## 调度问题
 

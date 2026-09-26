@@ -50,7 +50,7 @@ smallest = heapq.heappop(h)  # returns 1
 
 木の高さは log n であるため、両方の操作は **O(log n)** で実行されます。
 
-<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="最小ヒープでの挿入バブルアップと抽出シフトダウンを示す図" caption="泡を上に挿入します。 extract-min はふるいにかけられます。" />
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="最小ヒープでの挿入バブルアップと抽出シフトダウンを示す図" caption="挿入時は上へ浮上し、最小値の取り出しでは下へふるい落とします。" />
 
 ## Heapify - O(n) でヒープを構築する
 
@@ -76,7 +76,7 @@ def top_k(nums, k):
 
 
 
-<Quiz question="You need the 5 largest scores from 1 million entries.ヒープのタイプとサイズは何ですか?" options="|サイズ 5 の最小ヒープ|サイズ 5 の最大ヒープ|" answer="1" explanation="" />
+<Quiz question="100万件のエントリから最大のスコアを5件取り出す必要があります。どの種類とサイズのヒープを使いますか?" options="|サイズ 5 の最小ヒープ|サイズ 5 の最大ヒープ|" answer="1" explanation="" />
 
 
 

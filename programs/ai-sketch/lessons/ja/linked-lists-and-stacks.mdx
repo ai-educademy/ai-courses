@@ -112,14 +112,14 @@ Dequeue     → [C]     (removed "B")
 
 <Quiz question="AI API は 1 秒あたり 10,000 リクエストを受信します。リクエストが到着順に処理されることを保証する構造はどれですか?" options="スタック - 最新のリクエストを最初に処理します|ハッシュ マップ - 各リクエストを ID で検索します|キュー - 最初のリクエストが入力され、最初のリクエストが出力されます|配列 - すべてのリクエストを保存し、ランダムに処理します" answer="2" explanation="" />
 
-<Callout>**優先キュー**もあり、アイテムは到着順ではなく優先順位に基づいてデキューされます。 AI systems use priority queues to process urgent tasks first - for example, a self-driving car might prioritise obstacle detection over route planning.
+<Callout>**優先キュー**もあり、アイテムは到着順ではなく優先順位に基づいてデキューされます。 AIシステムは優先キューを使って緊急度の高いタスクを先に処理します。たとえば自動運転車なら、経路計画より障害物検知を優先することがあります。
 </Callout>
 
 ## AI の実際の使用: シーケンス処理とメモリ管理
 
 ### シーケンス処理
 
-言語モデルはテキストをシーケンスとして処理します。 Under the hood, frameworks like PyTorch and TensorFlow use linked-list-like structures to build **computation graphs** - chains of operations where each step points to the next.
+言語モデルはテキストをシーケンスとして処理します。 内部では、PyTorchやTensorFlowのようなフレームワークがリンクリストに似た構造を使って**計算グラフ**を構築します。これは各ステップが次のステップを指す演算の連鎖です。
 
 ### ML フレームワークのメモリ管理
 
@@ -139,4 +139,4 @@ Dequeue     → [C]     (removed "B")
 - **スタック** (LIFO) は、アンドゥ システム、バックトラッキング、および深さ優先トラバーサルを強化します。
 - **キュー** (FIFO) は、タスクのスケジューリング、BFS、リクエスト処理における公正な順序付けを保証します。
 - これらの構造は、多くの場合、AI フレームワークの舞台裏で動作し、メモリを管理し、シーケンスを処理します。
-- Choosing between arrays and linked structures depends on your access patterns - random access favours arrays, dynamic modification favours linked lists.
+- 配列とリンク構造のどちらを選ぶかはアクセスパターンによって決まります。ランダムアクセスには配列が向き、動的な変更にはリンクリストが向きます。
