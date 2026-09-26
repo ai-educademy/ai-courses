@@ -70,3 +70,16 @@ Use `find`, `ls`, `grep` and `git log` to build the real picture per programme.
 - Never edit `.github/workflows/`.
 - Never rewrite Arabic (or any) content to "fix" RTL. Describe the problem in an issue.
 - Never claim a locale is complete without having listed the files you checked.
+
+## Mandatory final step
+
+Your run is only recorded if you finish with a safe-output call. Ending with a plain-text summary counts as a failed run.
+
+- If you found something actionable, use the matching safe output (for example `create_issue` or `create_pull_request`).
+- If there is nothing to report, run exactly this shell command, with your one-line summary as the message:
+
+```bash
+safeoutputs noop '{"message":"<one-line summary of what you checked and found>"}'
+```
+
+Do not stop until one of these calls has succeeded.
