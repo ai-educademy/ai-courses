@@ -1,6 +1,6 @@
 ---
-title: "Trees और Graphs Visualised - AI Relationships कैसे Map करता है"
-description: "देखिए trees और graphs कैसे hierarchical और interconnected data represent करते हैं जो AI decision-making और recommendations power करता है।"
+title: "ट्री और ग्राफ़ दृश्य रूप - AI संबंध कैसे Map करता है"
+description: "देखिए ट्री और ग्राफ़ कैसे क्रमबद्ध और आपस में जुड़े डेटा दिखाते करते हैं जो AI फ़ैसला-making और सिफ़ारिशें ताकत करता है।"
 order: 5
 difficulty: "intermediate"
 duration: 18
@@ -8,15 +8,15 @@ icon: "🌳"
 published: true
 ---
 
-## Data With Relationships
+## डेटा With संबंध
 
-अब तक हमने data lines में देखा - arrays, linked lists, stacks, queues सब items sequence में रखते हैं। लेकिन real world linear नहीं है। Family trees branch out करती हैं। Social networks webs बनाते हैं। Road maps interconnected routes create करते हैं।
+अब तक हमने डेटा lines में देखा - ऐरे, लिंक्ड लिस्ट, स्टैक, क्यू सब आइटम क्रम में रखते हैं। लेकिन वास्तविक दुनिया रेखीय नहीं है। Family ट्री शाखा out करती हैं। सोशल नेटवर्क webs बनाते हैं। Road मैप आपस में जुड़े routes बनाना करते हैं।
 
-**Trees** और **graphs** ये relationships capture करते हैं, और AI की सबसे powerful techniques के दिल में यही हैं।
+**ट्री** और **ग्राफ़** ये संबंध कैप्चर करते हैं, और AI की सबसे शक्तिशाली तकनीकें के दिल में यही हैं।
 
-## Trees - Hierarchical Data
+## ट्री - Hierarchical डेटा
 
-**Tree** एक structure है जहाँ हर item (**node**) के child nodes हो सकते हैं, hierarchy बनाते हुए। सबसे ऊपर एक **root** node होता है, और बिना children वाले nodes **leaves** कहलाते हैं।
+**Tree** एक संरचना है जहाँ हर आइटम (**node**) के चाइल्ड नोड हो सकते हैं, क्रमबद्धता बनाते हुए। सबसे ऊपर एक **रूट** node होता है, और बिना चिल्ड्रन वाले नोड **leaves** कहलाते हैं।
 
 ```
          CEO
@@ -26,13 +26,13 @@ published: true
    Dev1  Dev2   Accountant
 ```
 
-<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="Root node से child nodes में branch होता tree structure, बगल में interconnected nodes वाला graph" caption="Trees root से नीचे flow करते हैं; graphs nodes को किसी भी direction में connect करते हैं।" />
+<Illustration src="/images/lessons/trees-and-graphs-visualised.svg" alt="रूट node से चाइल्ड नोड में शाखा होता ट्री संरचना, बगल में आपस में जुड़े नोड वाला ग्राफ़" caption="ट्री रूट से नीचे flow करते हैं; ग्राफ़ नोड को किसी भी दिशा में connect करते हैं।" />
 
-Trees हर जगह हैं: file systems, HTML/DOM, org charts, JSON data - सब trees हैं।
+ट्री हर जगह हैं: फ़ाइल सिस्टम, HTML/DOM, org charts, JSON डेटा - सब ट्री हैं।
 
-### Binary Trees
+### बाइनरी ट्री
 
-**Binary tree** हर node को maximum दो children तक restrict करता है - left और right। Simple constraint, powerful algorithms।
+**बाइनरी ट्री** हर node को अधिकतम दो चिल्ड्रन तक restrict करता है - बायाँ और दायाँ। सरल बाधा, शक्तिशाली एल्गोरिदम।
 
 ```
         8
@@ -42,11 +42,11 @@ Trees हर जगह हैं: file systems, HTML/DOM, org charts, JSON data 
     1   6    14
 ```
 
-### Binary Search Trees (BSTs)
+### बाइनरी सर्च ट्री (BSTs)
 
-**BST** एक rule जोड़ता है: हर node के लिए left subtree के सब values छोटी, right subtree की सब बड़ी।
+**BST** एक नियम जोड़ता है: हर node के लिए बायाँ सबट्री के सब मान छोटी, दायाँ सबट्री की सब बड़ी।
 
-Search fast बनता है - हर node पर पता चलता है left जाना है या right:
+खोज तेज़ बनता है - हर node पर पता चलता है बायाँ जाना है या दायाँ:
 
 ```
 ऊपर के BST में 6 ढूँढो:
@@ -55,16 +55,16 @@ Search fast बनता है - हर node पर पता चलता ह�
   6 पर → मिल गया!
 ```
 
-**Time complexity**: Balanced tree पर O(log n) - sorted array पर binary search जैसा ही logarithmic magic।
+**समय जटिलता**: संतुलित ट्री पर O(log n) - क्रमबद्ध ऐरे पर बाइनरी सर्च जैसा ही logarithmic magic।
 
-<Quiz question="10 लाख nodes वाले balanced BST में value ढूँढने के लिए लगभग कितनी comparisons चाहिए?" options="10,00,000|5,00,000|लगभग 20|लगभग 100" answer="2" explanation="Balanced BST की depth log₂(1,000,000) ≈ 20 है। हर level पर एक comparison, तो कोई भी value ~20 steps में मिलती है।" />
+<Quiz question="10 लाख नोड वाले balanced BST में मान ढूँढने के लिए लगभग कितनी तुलनाएँ चाहिए?" options="10,00,000|5,00,000|लगभग 20|लगभग 100" answer="2" explanation="संतुलित BST की गहराई log₂(1,000,000) ≈ 20 है। हर स्तर पर एक comparison, तो कोई भी मान ~20 कदम में मिलती है।" />
 
-## Graphs - Everything Connected
+## ग्राफ़ - Everything जुड़ा
 
-**Graph** trees को generalise करता है hierarchy constraint हटाकर। इसमें **nodes** (vertices) और **edges** (connections) होते हैं। Edges हो सकते हैं:
+**ग्राफ़** ट्री को generalise करता है क्रमबद्धता बाधा हटाकर। इसमें **नोड** (vertices) और **एज** (connections) होते हैं। Edges हो सकते हैं:
 
-- **Directed** (one-way: A → B) या **undirected** (two-way: A ↔ B)
-- **Weighted** (हर edge का cost/distance) या **unweighted**
+- **Directed** (एक-way: A → B) या **undirected** (two-way: A ↔ B)
+- **Weighted** (हर एज का लागत/दूरी) या **बिना भार**
 
 ```
 Social network (undirected):
@@ -76,17 +76,17 @@ Road map (weighted, directed):
   London →(2h)→ Birmingham →(1.5h)→ Manchester
 ```
 
-Graphs हर जगह हैं: social networks (लोग nodes, friendships edges), internet (pages nodes, links edges), road maps, recommendation systems।
+ग्राफ़ हर जगह हैं: सोशल नेटवर्क (लोग नोड, दोस्ती एज), इंटरनेट (पेज नोड, links एज), road मैप, सिफ़ारिश सिस्टम।
 
 <FunFact>
-Facebook के social graph में 3 billion+ nodes (users) और सैकड़ों अरब edges (friendships) हैं। Graph algorithms आपका News Feed, friend suggestions, और ad targeting तय करते हैं।
+Facebook के सोशल ग्राफ़ में 3 अरब+ नोड (यूज़र) और सैकड़ों अरब एज (दोस्ती) हैं। ग्राफ़ एल्गोरिदम आपका News Feed, friend सुझाव, और ad targeting तय करते हैं।
 </FunFact>
 
-## AI Trees कैसे इस्तेमाल करता है
+## AI ट्री कैसे इस्तेमाल करता है
 
-### Decision Trees
+### डिसीजन ट्री
 
-सबसे interpretable AI models में से एक **decision tree** है। Yes/no questions की series पूछकर data classify करता है:
+सबसे interpretable AI मॉडल में से एक **फ़ैसला ट्री** है। Yes/no questions की series पूछकर डेटा classify करता है:
 
 ```
 Is temperature > 30°C?
@@ -98,21 +98,21 @@ Is temperature > 30°C?
     └── No: "Play tennis"
 ```
 
-Decision trees इसलिए popular हैं क्योंकि इंसान इन्हें पढ़ और समझ सकते हैं - healthcare, finance, और legal AI में explainability crucial है।
+फ़ैसला ट्री इसलिए popular हैं क्योंकि इंसान इन्हें पढ़ और समझ सकते हैं - healthcare, finance, और कानूनी AI में explainability crucial है।
 
 <ThinkAboutIt>
-Hospital AI patient risk predict करता है। Regulators चाहते हैं AI अपने decisions explain करे। Decision tree deep neural network से क्यों prefer हो, भले ही neural network थोड़ा ज़्यादा accurate हो?
+Hospital AI patient risk अनुमान करता है। Regulators चाहते हैं AI अपने फ़ैसले explain करे। फ़ैसला ट्री गहरा न्यूरल नेटवर्क से क्यों तरजीह हो, भले ही न्यूरल नेटवर्क थोड़ा ज़्यादा सटीक हो?
 </ThinkAboutIt>
 
-### Random Forests
+### रैंडम Forests
 
-**Random forest** सैकड़ों decision trees बनाता है, हर एक data के अलग subset पर trained, फिर vote लेता है। यह ensemble approach single tree से ज़्यादा accurate और robust है।
+**रैंडम forest** सैकड़ों फ़ैसला ट्री बनाता है, हर एक डेटा के अलग सबसेट पर trained, फिर vote लेता है। यह ensemble तरीका एकल ट्री से ज़्यादा सटीक और robust है।
 
-## AI Graphs कैसे इस्तेमाल करता है
+## AI ग्राफ़ कैसे इस्तेमाल करता है
 
-### Knowledge Graphs
+### Knowledge ग्राफ़
 
-**Knowledge graph** entities के बीच facts as relationships store करता है:
+**Knowledge ग्राफ़** entities के बीच तथ्य as संबंध संग्रहीत करता है:
 
 ```
 (London) --[capital_of]--> (United Kingdom)
@@ -120,41 +120,41 @@ Hospital AI patient risk predict करता है। Regulators चाहत�
 (Big Ben) --[located_in]--> (London)
 ```
 
-Google का Knowledge Graph search results में वो information panels power करता है।
+Google का Knowledge ग्राफ़ खोज नतीजे में वो जानकारी panels ताकत करता है।
 
-### Recommendation Graphs
+### Recommendation ग्राफ़
 
-Netflix, Spotify, Amazon users और items को graph में model करते हैं। Users A और B दोनों ने items X, Y पसंद किए, A ने Z भी पसंद किया, तो graph B को Z suggest करता है - **collaborative filtering**।
+Netflix, Spotify, Amazon यूज़र और आइटम को ग्राफ़ में मॉडल करते हैं। Users A और B दोनों ने आइटम X, Y पसंद किए, A ने Z भी पसंद किया, तो ग्राफ़ B को Z सुझाव करता है - **collaborative छाँटना**।
 
-<Quiz question="Social networks model करने में graphs simple lists से बेहतर क्यों हैं?" options="Graphs कम memory इस्तेमाल करते हैं|Graphs complex many-to-many relationships represent कर सकते हैं|Graphs search में हमेशा faster हैं|Graphs automatically data sort करते हैं" answer="1" explanation="Social networks में complex many-to-many relationships हैं। Graphs naturally इन interconnected relationships model करते हैं; lists नहीं कर सकतीं।" />
+<Quiz question="सोशल नेटवर्क मॉडल करने में ग्राफ़ सरल लिस्ट से बेहतर क्यों हैं?" options="ग्राफ़ कम मेमोरी इस्तेमाल करते हैं|ग्राफ़ जटिल कई-से-कई संबंध दिखाते कर सकते हैं|ग्राफ़ खोज में हमेशा तेज़ हैं|ग्राफ़ अपने-आप डेटा सॉर्ट करते हैं" answer="1" explanation="सोशल नेटवर्क में जटिल कई-से-कई संबंध हैं। ग्राफ़ स्वाभाविक रूप से इन आपस में जुड़े संबंध मॉडल करते हैं; लिस्ट नहीं कर सकतीं।" />
 
-## Traversal - Trees और Graphs में चलना
+## ट्रैवर्सल - ट्री और ग्राफ़ में चलना
 
-### Depth-First Search (DFS)
+### Depth-पहला खोज (DFS)
 
-DFS एक path पर जितना हो सके आगे जाता है, फिर backtrack करता है। DFS **stack** इस्तेमाल करता है। Order: A → B → D → E → C → F।
+DFS एक रास्ता पर जितना हो सके आगे जाता है, फिर बैकट्रैक करता है। DFS **स्टैक** इस्तेमाल करता है। Order: A → B → D → E → C → F।
 
-### Breadth-First Search (BFS)
+### Breadth-पहला खोज (BFS)
 
-BFS current depth के सब neighbours पहले explore करता है, फिर deeper। तालाब में ripples जैसा। BFS **queue** इस्तेमाल करता है। Order: A → B → C → D → E → F।
+BFS मौजूदा गहराई के सब पड़ोसी पहले समझते हैं करता है, फिर गहरा। तालाब में ripples जैसा। BFS **क्यू** इस्तेमाल करता है। Order: A → B → C → D → E → F।
 
 <Callout>
-ध्यान दो कैसे पिछले lesson के stacks और queues tree/graph traversal से जुड़ते हैं? DFS stack इस्तेमाल करता है; BFS queue। Data structures एक-दूसरे पर build करते हैं।
+ध्यान दो कैसे पिछले पाठ के स्टैक और क्यू ट्री/ग्राफ़ ट्रैवर्सल से जुड़ते हैं? DFS स्टैक इस्तेमाल करता है; BFS क्यू। डेटा संरचनाएँ एक-दूसरे पर build करते हैं।
 </Callout>
 
-<Quiz question="दो cities के बीच shortest route चाहिए जहाँ सब roads same length की हैं। कौन सा traversal?" options="DFS - deeper paths पहले explore करता है|BFS - unweighted graphs में shortest path ढूँढता है|Binary search - sorted data पर काम करता है|Random search - randomly paths try करता है" answer="1" explanation="BFS level by level explore करता है, guarantee करता है कि destination पर पहली बार पहुँचने पर shortest path (edges की संख्या में) मिला है।" />
+<Quiz question="दो cities के बीच सबसे छोटा रूट चाहिए जहाँ सब roads एक-सा लंबाई की हैं। कौन सा ट्रैवर्सल?" options="DFS - गहरा रास्ते पहले समझते हैं करता है|BFS - बिना भार ग्राफ़ में सबसे छोटा रास्ता ढूँढता है|बाइनरी खोज - क्रमबद्ध डेटा पर काम करता है|रैंडम खोज - randomly रास्ते आज़माता है करता है" answer="1" explanation="BFS स्तर by स्तर समझते हैं करता है, गारंटी करता है कि destination पर पहली बार पहुँचने पर सबसे छोटा रास्ता (एज की संख्या में) मिला है।" />
 
 <ThinkAboutIt>
-Social media "degrees of separation" measure करता है - दो लोगों के बीच कितने friend-of-friend hops। कौन सा traversal algorithm efficiently minimum hops ढूँढेगा?
+सोशल मीडिया "degrees of separation" मापना करता है - दो लोगों के बीच कितने friend-of-friend हॉप। कौन सा ट्रैवर्सल एल्गोरिदम कुशलता से न्यूनतम हॉप ढूँढेगा?
 </ThinkAboutIt>
 
 <FunFact>
-Google का PageRank algorithm - जिसने Google को dominant बनाया - web को graph model करता है। हर page node, हर hyperlink directed edge, और page की importance इस पर depend करती है कितने important pages link करते हैं। Essentially graph पर random walk।
+Google का PageRank एल्गोरिदम - जिसने Google को dominant बनाया - वेब को ग्राफ़ मॉडल करता है। हर पेज node, हर hyperlink directed एज, और पेज की importance इस पर निर्भर करती है कितने महत्वपूर्ण पेज link करते हैं। Essentially ग्राफ़ पर रैंडम चलना।
 </FunFact>
 
 ## मुख्य बातें
 
-- **Trees** hierarchical data model करते हैं - file systems, HTML, और AI decision trees सब tree structures इस्तेमाल करते हैं।
-- **BSTs** sorted hierarchy maintain करके O(log n) lookups enable करते हैं।
-- **Graphs** interconnected data model करते हैं - social networks, knowledge bases, recommendation engines।
-- **DFS** (stack) deep जाता है; **BFS** (queue) wide जाता है - दोनों PageRank और recommendations जैसे core AI algorithms power करते हैं।
+- **ट्री** क्रमबद्ध डेटा मॉडल करते हैं - फ़ाइल सिस्टम, HTML, और AI फ़ैसला ट्री सब ट्री संरचनाएँ इस्तेमाल करते हैं।
+- **BSTs** क्रमबद्ध क्रमबद्धता बनाए रखना करके O(log n) लुकअप enable करते हैं।
+- **ग्राफ़** आपस में जुड़े डेटा मॉडल करते हैं - सोशल नेटवर्क, knowledge bases, सिफ़ारिश इंजन।
+- **DFS** (स्टैक) गहरा जाता है; **BFS** (क्यू) wide जाता है - दोनों PageRank और सिफ़ारिशें जैसे core AI एल्गोरिदम ताकत करते हैं।

@@ -1,6 +1,6 @@
 ---
-title: "Heaps और Priority Queues - Interviews का Swiss Army Knife"
-description: "Heaps, priority queue abstraction, और classic patterns जैसे top-K problems और sorted lists merge करना - सब सीखो।"
+title: "हीप और प्रायोरिटी क्यू - Interviews का हर काम का औज़ार"
+description: "हीप, प्रायोरिटी क्यू अमूर्तन, और क्लासिक पैटर्न जैसे शीर्ष-K समस्याएँ और क्रमबद्ध लिस्ट मर्ज करना - सब सीखो।"
 order: 6
 difficulty: "intermediate"
 duration: 18
@@ -8,9 +8,9 @@ icon: "⛰️"
 published: true
 ---
 
-## Heap क्या है?
+## हीप क्या है?
 
-**Heap** एक complete binary tree है जहाँ हर parent **heap property** satisfy करता है - या तो हमेशा छोटा (min-heap) या हमेशा बड़ा (max-heap) अपने children से। "Complete" का मतलब हर level भरा है, सिवाय शायद last level के जो left से right भरता है।
+**हीप** एक पूर्ण बाइनरी ट्री है जहाँ हर parent **हीप गुण** पूरा करता है - या तो हमेशा छोटा (मिन-हीप) या हमेशा बड़ा (मैक्स-हीप) अपने चिल्ड्रन से। "Complete" का मतलब हर स्तर भरा है, सिवाय शायद आख़िरी स्तर के जो बायाँ से दायाँ भरता है।
 
 ```
        1            Min-heap
@@ -20,21 +20,21 @@ published: true
    7   4
 ```
 
-Complete होने की वजह से इसे **flat array** में store करते हैं - pointers की ज़रूरत नहीं। Index `i` के लिए: left child = `2i + 1`, right child = `2i + 2`, parent = `(i - 1) // 2`।
+Complete होने की वजह से इसे **सपाट ऐरे** में संग्रहीत करते हैं - पॉइंटर की ज़रूरत नहीं। इंडेक्स `i` के लिए: बायाँ चाइल्ड = `2i + 1`, दायाँ चाइल्ड = `2i + 2`, parent = `(i - 1) // 2`।
 
-## Min-Heap vs Max-Heap
+## मिन-हीप vs मैक्स-हीप
 
-| Property | Min-Heap | Max-Heap |
+| गुण | मिन-हीप | मैक्स-हीप |
 |----------|----------|----------|
-| Root | सबसे छोटा element | सबसे बड़ा element |
-| Parent ≤ Children? | ✅ हाँ | ❌ नहीं (≥) |
-| Extract देता है | Minimum | Maximum |
+| रूट | सबसे छोटा एलिमेंट | सबसे बड़ा एलिमेंट |
+| पैरेंट ≤ चिल्ड्रन? | ✅ हाँ | ❌ नहीं (≥) |
+| निकालना देता है | न्यूनतम | अधिकतम |
 
-Python का `heapq` default में **min-heap** है। Max-heap के लिए insert पर values negate करो और extract पर वापस negate करो।
+Python का `heapq` डिफ़ॉल्ट में **मिन-हीप** है। मैक्स-हीप के लिए जोड़ना पर मान निगेट करो और निकालना पर वापस निगेट करो।
 
-## Insert और Extract - Step by Step
+## जोड़ना और निकालना - Step by Step
 
-**Insert** - end पर push करो, फिर **bubble up** (parent से swap करो जब तक छोटा हो):
+**जोड़ना** - अंत पर पुश करो, फिर **बबल up** (parent से स्वैप करो जब तक छोटा हो):
 
 ```python
 import heapq
@@ -42,31 +42,31 @@ h = [1, 3, 5, 7]
 heapq.heappush(h, 2)  # h becomes [1, 2, 5, 7, 3]
 ```
 
-**Extract min** - root को last element से swap करो, last pop करो, फिर **sift down** (smaller child से swap):
+**निकालना न्यूनतम** - रूट को आख़िरी एलिमेंट से स्वैप करो, आख़िरी पॉप करो, फिर **सिफ़्ट नीचे** (छोटे चाइल्ड से स्वैप):
 
 ```python
 smallest = heapq.heappop(h)  # returns 1
 ```
 
-दोनों operations **O(log n)** में चलते हैं क्योंकि tree की height log n है।
+दोनों क्रियाएँ **O(log n)** में चलते हैं क्योंकि ट्री की ऊँचाई log n है।
 
-<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="Min-heap पर insert bubble-up और extract sift-down दिखाने वाला diagram" caption="Insert bubble up करता है; extract-min sift down करता है।" />
+<Illustration src="/images/lessons/heaps-and-priority-queues.svg" alt="मिन-हीप पर जोड़ना बबल-up और निकालना सिफ़्ट-नीचे दिखाने वाला चित्र" caption="जोड़ना बबल up करता है; निकालना-न्यूनतम सिफ़्ट नीचे करता है।" />
 
-## Heapify - O(n) में Heap बनाओ
+## Heapify - O(n) में हीप बनाओ
 
-`heapq.heapify(arr)` एक list को **in-place** O(n) में heap बना देता है, O(n log n) नहीं। यह bottom-up काम करता है, हर non-leaf node को sift down करता है।
+`heapq.heapify(arr)` एक लिस्ट को **जगह पर** O(n) में हीप बना देता है, O(n log n) नहीं। यह नीचे-up काम करता है, हर गैर-पत्ती node को सिफ़्ट नीचे करता है।
 
-<FunFact>Heap बनाना O(n) है, O(n log n) नहीं। ज़्यादातर nodes bottom के पास हैं और बमुश्किल sift down करने पड़ते हैं - maths linear time पर settle करता है।</FunFact>
+<FunFact>हीप बनाना O(n) है, O(n log n) नहीं। ज़्यादातर नोड नीचे के पास हैं और बमुश्किल सिफ़्ट नीचे करने पड़ते हैं - गणित रेखीय समय पर बैठता करता है।</FunFact>
 
-## Priority Queue Abstraction
+## प्रायोरिटी क्यू Abstraction
 
-**Priority queue** हमेशा highest-priority item पहले access करने देता है। Heaps इसका best implementation हैं क्योंकि insert और extract दोनों O(log n) हैं। जब भी "अब तक का best item दो" चाहिए, priority queue इस्तेमाल करो।
+**Priority क्यू** हमेशा सबसे ऊँची प्राथमिकता आइटम पहले पहुँच करने देता है। हीप इसका सर्वश्रेष्ठ क्रियान्वयन हैं क्योंकि जोड़ना और निकालना दोनों O(log n) हैं। जब भी "अब तक का सर्वश्रेष्ठ आइटम दो" चाहिए, प्रायोरिटी क्यू इस्तेमाल करो।
 
-## Pattern: Top-K Problems
+## पैटर्न: टॉप-K समस्याएँ
 
-> "Unsorted array में K largest elements ढूँढो।"
+> "अक्रमबद्ध ऐरे में K largest एलिमेंट ढूँढो।"
 
-**Size K का min-heap** रखो। हर element push करो; अगर heap K से बड़ा हो जाए, smallest pop करो। जो बचे वो K largest हैं।
+**आकार K का मिन-हीप** रखो। हर एलिमेंट पुश करो; अगर हीप K से बड़ा हो जाए, सबसे छोटी पॉप करो। जो बचे वो K largest हैं।
 
 ```python
 import heapq
@@ -74,17 +74,17 @@ def top_k(nums, k):
     return heapq.nlargest(k, nums)
 ```
 
-Time: **O(n log k)** - जब k ≪ n हो तो sorting से काफ़ी बेहतर।
+समय: **O(n log k)** - जब k ≪ n हो तो सॉर्टिंग से काफ़ी बेहतर।
 
-<Quiz question="10 लाख entries में से 5 सबसे बड़े scores चाहिए। कौन सा heap type और size?" options="Max-heap of size 10,00,000|Min-heap of size 5|Max-heap of size 5|Min-heap of size 10,00,000" answer="1" explanation="Size 5 का min-heap अब तक के 5 सबसे बड़े रखता है। Root (5 में सबसे छोटा) gatekeeper है - कोई भी छोटा element reject हो जाता है।" />
+<Quiz question="10 लाख एंट्री में से 5 सबसे बड़े स्कोर चाहिए। कौन सा हीप टाइप और आकार?" options="मैक्स-हीप of आकार 10,00,000|मिन-हीप of आकार 5|मैक्स-हीप of आकार 5|मिन-हीप of आकार 10,00,000" answer="1" explanation="आकार 5 का मिन-हीप अब तक के 5 सबसे बड़े रखता है। रूट (5 में सबसे छोटा) द्वारपाल है - कोई भी छोटा एलिमेंट रद्द हो जाता है।" />
 
-## Pattern: Merge K Sorted Lists
+## पैटर्न: मर्ज K क्रमबद्ध लिस्ट
 
-हर list का head min-heap में push करो। Smallest pop करो, फिर उसी list का next element push करो। जब तक सब lists खत्म न हो जाएँ। Time: **O(N log K)** जहाँ N total elements हैं।
+हर लिस्ट का हेड मिन-हीप में पुश करो। सबसे छोटा पॉप करो, फिर उसी लिस्ट का अगला एलिमेंट पुश करो। जब तक सब लिस्ट खत्म न हो जाएँ। समय: **O(N log K)** जहाँ N कुल एलिमेंट हैं।
 
-## Pattern: Median from Data Stream
+## पैटर्न: माध्यिका from डेटा Stream
 
-दो heaps maintain करो: lower half के लिए **max-heap** और upper half के लिए **min-heap**। Sizes में maximum 1 का difference रखो। Median हमेशा एक या दोनों roots पर होता है।
+दो हीप बनाए रखना करो: निचला आधा के लिए **मैक्स-हीप** और ऊपरी आधा के लिए **मिन-हीप**। आकार में अधिकतम 1 का अंतर रखो। माध्यिका हमेशा एक या दोनों रूट पर होता है।
 
 ```
 Lower half (max-heap): [1, 2, 3]  ← max = 3
@@ -92,41 +92,41 @@ Upper half (min-heap): [4, 5, 6]  ← min = 4
 Median = (3 + 4) / 2 = 3.5
 ```
 
-<Quiz question="Two-heap median approach में नया element पहले कहाँ जाता है?" options="हमेशा min-heap|हमेशा max-heap|जो heap छोटा हो|Max-heap root से compare करो, फिर rebalance" answer="3" explanation="पहले max-heap (lower half) में push करो, फिर ज़रूरत हो तो root min-heap में move करो, और sizes rebalance करो।" />
+<Quiz question="दो-हीप माध्यिका तरीका में नया एलिमेंट पहले कहाँ जाता है?" options="हमेशा मिन-हीप|हमेशा मैक्स-हीप|जो हीप छोटा हो|मैक्स-हीप रूट से तुलना करो, फिर rebalance" answer="3" explanation="पहले मैक्स-हीप (निचला आधा) में पुश करो, फिर ज़रूरत हो तो रूट मिन-हीप में चलना करो, और आकार rebalance करो।" />
 
-## Scheduling Problems
+## Scheduling समस्याएँ
 
-Heaps scheduling में कमाल करते हैं: meeting rooms (earliest end-time track करो), task scheduling with cooldowns, या CPU job queues। मूल बात: heap efficiently track करता है "अगला क्या खत्म होगा।"
+हीप शेड्यूलिंग में कमाल करते हैं: मीटिंग कमरे (सबसे पहले अंत-समय ट्रैक करो), काम शेड्यूलिंग साथ कूलडाउन, या CPU जॉब क्यू। मूल बात: हीप कुशलता से ट्रैक करता है "अगला क्या खत्म होगा।"
 
-<ThinkAboutIt>अगर minimum और maximum दोनों efficiently चाहिए, तो एक heap काफ़ी नहीं। कौन सा data structure combination इस्तेमाल करोगे?</ThinkAboutIt>
+<ThinkAboutIt>अगर न्यूनतम और अधिकतम दोनों कुशलता से चाहिए, तो एक हीप काफ़ी नहीं। कौन सा डेटा संरचना संयोजन इस्तेमाल करोगे?</ThinkAboutIt>
 
-## Heap vs Sorted Array vs BST
+## हीप vs क्रमबद्ध ऐरे vs BST
 
-| ज़रूरत | Best choice | क्यों |
+| ज़रूरत | सबसे अच्छा चयन | क्यों |
 |--------|-------------|-------|
-| बार-बार min/max extract | Heap | O(log n) insert + extract |
-| Static data, एक बार sort | Sorted array | O(n log n) एक बार, O(1) access |
-| Range queries + order stats | Balanced BST | O(log n) हर चीज़ के लिए |
-| Stream से Top-K | Size K का Heap | O(n log k) total |
+| बार-बार न्यूनतम/अधिकतम निकालना | हीप | O(log n) जोड़ना + निकालना |
+| स्थिर डेटा, एक बार सॉर्ट | क्रमबद्ध ऐरे | O(n log n) एक बार, O(1) पहुँच |
+| रेंज क्वेरी + क्रम आँकड़े | संतुलित BST | O(log n) हर चीज़ के लिए |
+| Stream से टॉप-K | आकार K का हीप | O(n log k) कुल |
 
-<Quiz question="Min-heap में कौन सा operation O(1) है?" options="Minimum ढूँढना|Minimum delete करना|Maximum ढूँढना|Median ढूँढना" answer="0" explanation="Minimum root (index 0) पर बैठता है, तो peek O(1) है। Delete करना O(log n) है क्योंकि sift down करना पड़ता है।" />
+<Quiz question="मिन-हीप में कौन सा क्रिया O(1) है?" options="न्यूनतम ढूँढना|न्यूनतम मिटाना करना|अधिकतम ढूँढना|माध्यिका ढूँढना" answer="0" explanation="न्यूनतम रूट (इंडेक्स 0) पर बैठता है, तो देखना O(1) है। मिटाना करना O(log n) है क्योंकि सिफ़्ट नीचे करना पड़ता है।" />
 
-## Complexity Cheat Sheet
+## जटिलता चीट शीट
 
-| Operation | Time |
+| क्रिया | समय |
 |-----------|------|
-| Insert | O(log n) |
-| Extract min/max | O(log n) |
-| Peek min/max | O(1) |
+| जोड़ना | O(log n) |
+| निकालना न्यूनतम/अधिकतम | O(log n) |
+| देखना न्यूनतम/अधिकतम | O(1) |
 | Heapify | O(n) |
-| n items से Top-K | O(n log k) |
+| n आइटम से टॉप-K | O(n log k) |
 
-<ThinkAboutIt>Heap array में store होने के बावजूद binary search क्यों नहीं कर सकते? सोचो heap property actually कौन सा sorted order guarantee करती है।</ThinkAboutIt>
+<ThinkAboutIt>हीप ऐरे में संग्रहीत होने के बावजूद बाइनरी सर्च क्यों नहीं कर सकते? सोचो हीप गुण असल में कौन सा क्रमबद्ध क्रम गारंटी करती है।</ThinkAboutIt>
 
 ---
 
 ## 📚 और पढ़ें
 
-- [NeetCode - Heap / Priority Queue](https://neetcode.io/roadmap) - visual problem roadmap
-- [Tech Interview Handbook - Heap](https://www.techinterviewhandbook.org/algorithms/heap/) - concise patterns और tips
-- [Python heapq docs](https://docs.python.org/3/library/heapq.html) - official module reference
+- [NeetCode - हीप / प्रायोरिटी क्यू](https://neetcode.io/roadmap) - दृश्य समस्या रोडमैप
+- [Tech Interview Handbook - हीप](https://www.techinterviewhandbook.org/algorithms/heap/) - संक्षिप्त पैटर्न और सुझाव
+- [Python heapq दस्तावेज़](https://docs.python.org/3/library/heapq.html) - आधिकारिक मॉड्यूल संदर्भ
