@@ -88,7 +88,7 @@ print(f"Test accuracy: {accuracy:.2%}")
 **सामान्य एल्गोरिदम:**
 - रेखीय प्रतिगमन
 - रिज / लासो रिग्रेशन
-- ग्रेडिएंट बूस्टिंग (XGBoost, लिगहटगबम)
+- ग्रेडिएंट बूस्टिंग (XGBoost, LightGBM)
 - तंत्रिका नेटवर्क
 
 ```python
@@ -101,7 +101,7 @@ predictions = model.predict(X_test)
 # predictions = [245000, 182000, 412000, ...]  (house prices in £)
 ```
 
-<FunFact>ग्रेडिएंट बूस्टिंग मॉडल (XGBoost, लिगहटगबम, कअटबूसट) ने किसी भी अन्य एल्गोरिदम श्रेणी की तुलना में अधिक कागल मशीन लर्निंग प्रतियोगिताएं जीती हैं। वे उद्योग में संरचित/सारणीबद्ध डेटा के लिए पसंदीदा विकल्प बने हुए हैं।</FunFact>
+<FunFact>ग्रेडिएंट बूस्टिंग मॉडल (XGBoost, LightGBM, CatBoost) ने किसी भी अन्य एल्गोरिदम श्रेणी की तुलना में अधिक कागल मशीन लर्निंग प्रतियोगिताएं जीती हैं। वे उद्योग में संरचित/सारणीबद्ध डेटा के लिए पसंदीदा विकल्प बने हुए हैं।</FunFact>
 
 ## 🔍 बिना पर्यवेक्षण के सीखना
 
@@ -200,7 +200,7 @@ Do you have labelled data?
 │         ├── Output is a category? → Classification
 │         │     (spam/not spam, dog/cat, fraud/legit)
 │         └── Output is a number?  → Regression
-│               (price, तापमान, sales volume)
+│               (price, temperature, sales volume)
 └── NO  → Unsupervised Learning
           ├── Want to find groups?      → Clustering
           │     (customer segments, document topics)
