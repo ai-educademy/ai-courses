@@ -13,9 +13,10 @@ permissions:
   issues: read
 # Free-tier budget: one run may use at most 60 model requests.
 max-turns: 60
+max-turn-cache-misses: 60
 engine:
   id: gemini
-  model: gemini-3.1-flash-lite-preview
+  model: gemini-3.5-flash-lite
   version: "0.39.1"
 timeout-minutes: 25
 strict: true
@@ -25,7 +26,7 @@ tools:
   cli-proxy: true
   edit:
   cache-memory: true
-  bash: ["git *", "cat", "ls", "grep", "head", "tail", "find", "wc"]
+  bash: ["safeoutputs *", "git *", "cat", "ls", "grep", "head", "tail", "find", "wc"]
   github:
     mode: gh-proxy
     toolsets: [repos, issues, pull_requests]
