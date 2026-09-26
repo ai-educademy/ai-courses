@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Validate JSON, frontmatter, links and the free-preview invariant
         shell: bash
@@ -131,3 +133,16 @@ jobs:
             exit 1
           fi
           echo "Content validation passed."
+
+      - name: Locale integrity (frontmatter parity, no transliterated gibberish)
+        shell: bash
+        env:
+          BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
+        run: |
+          # On workflow_dispatch or a new branch there is no usable base, so only
+          # the frontmatter parity check runs.
+          if [ -n "${BASE_REF}" ] && git rev-parse -q --verify "${BASE_REF}^{commit}" >/dev/null; then
+            python3 scripts/check-locale-integrity.py "${BASE_REF}"
+          else
+            python3 scripts/check-locale-integrity.py
+          fi
