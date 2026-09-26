@@ -1,6 +1,6 @@
 ---
 title: "ऐरे और हैश मैप - AI डेटा कैसे स्टोर और एक्सेस करता है"
-description: "जानिए कैसे ऐरे और हैश मैप AI सिस्टम में फ़ीचर vectors से लेकर embedding लुकअप तक सब कुछ पावर करते हैं।"
+description: "जानिए कैसे arrays और hash maps AI systems में feature vectors से लेकर embedding lookup तक सब कुछ चलाते हैं।"
 order: 1
 difficulty: "intermediate"
 duration: 15
@@ -53,7 +53,7 @@ word_counts = {
 }
 ```
 
-"AI" का गिनना चाहिए? हैश मैप एक **hash फ़ंक्शन** से कुंजी को internally इंडेक्स में बदलता है। नतीजा? औसतन **O(1)** लुकअप - ऐरे जैसा, बस संख्याएँ की जगह नाम से।
+"AI" की गिनती चाहिए? hash map एक **hash function** से key को अंदर ही अंदर index में बदलता है। नतीजा? औसतन **O(1)** lookup - array जैसा, बस संख्या की जगह नाम से।
 
 <FunFact>
 Python की dictionaries हैश मैप हैं। जब ChatGPT प्रशिक्षण के दौरान शब्द आवृत्तियाँ गिनता है, तो hash-मैप जैसी संरचनाएँ से पूरे इंटरनेट के टेक्स्ट में अरबों शब्दों को ट्रैक करता है।
@@ -63,7 +63,7 @@ Python की dictionaries हैश मैप हैं। जब ChatGPT प�
 
 - **Vocabulary mapping**: "brilliant" जैसे शब्द को टोकन ID 8921 में बदलना।
 - **Frequency counting**: Dataset में हर शब्द कितनी बार आया? हैश मैप एक ही पास में जवाब दे देता है।
-- **Caching**: अगर AI ने इनपुट X के लिए अनुमान पहले ही गणना कर लिया है, तो उसे स्टोर कर लो - दोबारा गणना नहीं करना पड़ेगा।
+- Caching: अगर AI ने input X के लिए prediction पहले ही निकाल ली है, तो उसे store कर लो - दोबारा गणना नहीं करनी पड़ेगी।
 
 ## समय Complexity - सरल भाषा में
 
@@ -77,7 +77,7 @@ Python की dictionaries हैश मैप हैं। जब ChatGPT प�
 
 **O(1)** का मतलब "साइज़ कितना भी हो, तुरंत" और **O(n)** का मतलब "डेटा बड़ा तो धीमा।"
 
-<Quiz question="आपके पास 100,000 यूज़र profiles हैं और username से यूज़र ढूँढना है। कौन सा संरचना सबसे तेज़ होगा?" options="Alphabetically क्रमबद्ध ऐरे|हैश मैप जिसमें usernames keys हैं|Plain अक्रमबद्ध ऐरे|कोई फ़र्क नहीं - सब बराबर हैं" answer="1" explanation="हैश मैप कुंजी से O(1) average लुकअप देता है, जो username जैसे unique identifier से ढूँढने के लिए ideal है।" />
+<Quiz question="आपके पास 100,000 user profiles हैं और username से user ढूँढना है। कौन सी संरचना सबसे तेज़ होगी?" options="वर्णक्रम में sorted array|hash map जिसमें usernames keys हैं|साधारण unsorted array|कोई फ़र्क नहीं - सब बराबर हैं" answer="1" explanation="hash map key से औसतन O(1) lookup देता है, इसलिए username जैसे unique identifier से item ढूँढने के लिए यह ठीक रहता है।" />
 
 ## आम पैटर्न: Frequency गिनती
 
@@ -109,12 +109,12 @@ for each number in array:
 
 एक पास, O(n) समय। हैश मैप याद रखता है कि पहले क्या-क्या देखा है।
 
-<Quiz question="दो-योग में हैश मैप वाला तरीका हर जोड़ी जाँच करने से तेज़ क्यों है?" options="Hash maps कम memory इस्तेमाल करते हैं|Hash maps 'यह number पहले देखा?' O(1) में check कर लेते हैं|Hash maps data automatically sort करते हैं|Hash maps सिर्फ छोटे arrays पर काम करते हैं" answer="1" explanation="हैश मैप में हर लुकअप O(1) है, तो हर जोड़ी तुलना करने (O(n²)) की जगह एक पास में O(1) लुकअप - कुल O(n) समय।" />
+<Quiz question="two-sum में hash map वाला तरीका हर जोड़ी जाँचने से तेज़ क्यों है?" options="Hash maps कम memory इस्तेमाल करते हैं|Hash maps 'क्या यह number पहले देखा है?' O(1) में जाँच लेते हैं|Hash maps data को अपने-आप sort करते हैं|Hash maps सिर्फ छोटे arrays पर काम करते हैं" answer="1" explanation="hash map में हर lookup औसतन O(1) है, इसलिए हर जोड़ी की तुलना करने (O(n²)) के बजाय एक pass में O(1) lookup होते हैं - कुल O(n) समय।" />
 
 ## कब कौन सा चुनें
 
 - **ऐरे** जब क्रम मायने रखे, स्थिति से पहुँच करना हो, या सब कुछ sequentially प्रोसेस करना हो (जैसे तस्वीर के pixels)।
-- **हैश मैप** जब कुंजी से तेज़ लुकअप चाहिए, occurrences गिनने हों, या कुछ मौजूद करता है ये जल्दी जाँच करना हो।
+- **hash map** तब इस्तेमाल करें जब key से तेज़ lookup चाहिए, occurrences गिनने हों, या जल्दी जाँचना हो कि कोई चीज़ मौजूद है या नहीं।
 
 <ThinkAboutIt>
 एक सिफ़ारिश इंजन को सुझाव करने से पहले जाँच करना है कि यूज़र ने film पहले देखी है या नहीं। Watch इतिहास ऐरे में रखोगे या हैश मैप में? क्या समझौते हो सकते हैं?
@@ -125,6 +125,6 @@ for each number in array:
 ## मुख्य बातें
 
 - **ऐरे** इंडेक्स से O(1) पहुँच देते हैं और संख्यात्मक AI (तस्वीरें, embeddings, tensors) की रीढ़ हैं।
-- **हैश मैप** कुंजी से O(1) पहुँच देते हैं और लुकअप, counting, caching के लिए ज़रूरी हैं।
+- **hash maps** key से O(1) पहुँच देते हैं और lookup, counting, caching के लिए ज़रूरी हैं।
 - सही संरचना चुनना O(n²) एल्गोरिदम को O(n) बना सकता है - लाखों डेटा बिंदु पर यह बहुत बड़ा फ़र्क है।
-- असल में ज़्यादातर AI पाइपलाइन दोनों इस्तेमाल करते हैं: संख्यात्मक गणना के लिए ऐरे, metadata लुकअप के लिए हैश मैप।
+- असल में ज़्यादातर AI pipelines दोनों इस्तेमाल करती हैं: संख्यात्मक गणना के लिए arrays, metadata lookup के लिए hash maps।
