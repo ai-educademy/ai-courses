@@ -66,11 +66,11 @@ Wird von BERT und verwandten Modellen verwendet. Ähnlich wie BPE, aber anstatt 
 
 ### SatzStück
 
-Behandelt die Eingabe als Rohbyte-Stream – keine Vor-Tokenisierung durch Leerzeichen. Dies ist von entscheidender Bedeutung für Sprachen wie Japanisch und Chinesisch, die keine Leerzeichen zwischen Wörtern verwenden. GPT-4 und LLaMA verwenden Ansätze im SentencePiece-Stil.
+Behandelt die Eingabe als Rohbyte-Stream - keine Vor-Tokenisierung durch Leerzeichen. Dies ist von entscheidender Bedeutung für Sprachen wie Japanisch und Chinesisch, die keine Leerzeichen zwischen Wörtern verwenden. Viele GPT- und Llama-Familienmodelle verwenden SentencePiece-ähnliche oder Byte-Level-Ansätze.
 
-## Wie GPT-4 Text tokenisiert
+## Wie GPT-Style-Modelle Text tokenisieren
 
-GPT-4 verwendet eine BPE-Variante namens **cl100k_base** mit etwa 100.000 Token im Vokabular. Einige überraschende Verhaltensweisen:
+OpenAI GPT-Style-Modelle verwenden BPE-Varianten mit großen Token-Vokabularen. Einige überraschende Verhaltensweisen:
 
 - „Hallo Welt“ → 2 Token (`Hello`, ` world` – beachten Sie, dass das Leerzeichen angehängt ist).
 - „Unteilbarkeit“ → 4 Token (`ind`, `iv`, `isibility` – es spaltet seltene Wörter).
@@ -100,17 +100,17 @@ Tokenisierer, die hauptsächlich auf englischen Texten geschult sind, sind **vor
 
 ## Token-Zählung und Kostenauswirkungen
 
-Jeder API-Aufruf an GPT-4, Claude oder Gemini wird pro Token abgerechnet. Das Verständnis der Tokenisierung hilft Ihnen:
+Jeder API-Aufruf an ein Frontier-Modell wie GPT-6 Astra, Claude Opus 5.5 oder Gemini 2.5 wird pro Token abgerechnet. Das Verständnis der Tokenisierung hilft Ihnen:
 
 - **Schätzen Sie die Kosten**, bevor Sie große Aufträge ausführen.
 - **Eingabeaufforderungen optimieren** – kürzere Eingabeaufforderungen mit gleicher Bedeutung sparen Geld.
-- **Kontextfenster beachten** - GPT-4 Turbo akzeptiert 128.000 Token; Wenn Sie diesen Wert überschreiten, wird Ihre Eingabe stillschweigend abgeschnitten.
+- **Kontextfenster beachten** - aktuelle Frontier-Modelle unterstützen von Hunderttausenden bis zu über einer Million Token, aber wenn Sie das Limit des ausgewählten Modells überschreiten, wird Ihre Eingabe weiterhin abgeschnitten oder abgelehnt.
 
 Eine grobe Faustregel für Englisch: **1 Token ≈ ¾ eines Wortes** oder etwa 4 Zeichen.
 
 <Quiz question="Wie viele Token kostet ein englischer Aufsatz mit 1.000 Wörtern ungefähr?" options="500 Token|750 Token|1.333 Token|3.000 Token" answer="2" explanation="Die häufig zitierte Näherung ist 1 Token pro ¾ Wort für Englisch, also 1.000 Wörter ÷ 0,75 ≈ 1.333 Token. Die am nächsten kommende Antwort ist hier 1.333 Token." />
 
-<FunFact>Mit der Open-Source-Bibliothek `tiktoken` von OpenAI können Sie Text lokal mit genau demselben Algorithmus tokenisieren, den GPT-4 verwendet. Probieren Sie es selbst aus, um zu sehen, wie viele Token Ihre Nachrichten wirklich kosten.
+<FunFact>Mit der Open-Source-Bibliothek `tiktoken` von OpenAI können Sie Text lokal mit derselben Algorithmusfamilie tokenisieren, die von OpenAI GPT-Modellen verwendet wird. Probieren Sie es selbst aus, um zu sehen, wie viele Token Ihre Nachrichten wirklich kosten.
 </FunFact>
 
 <ThinkAboutIt>Wenn Sie ein Sprachmodell für eine ressourcenarme Sprache wie Walisisch erstellen würden, wie würden Sie die Tokenisierung angehen, um eine faire und effiziente Kodierung sicherzustellen?

@@ -34,7 +34,7 @@ Una regla general aproximada: **1 token ≈ 0,75 palabras** en inglés.
 
 Cuando escribe un mensaje en un LLM, se convierte inmediatamente en una secuencia de ID de tokens: números en un vocabulario de normalmente entre 30.000 y 100.000 tokens.
 
-<FunFact>GPT-4 tiene un vocabulario de alrededor de 100.000 tokens. Todo el idioma inglés tiene aproximadamente 170.000 palabras de uso común, pero el vocabulario simbólico de un LLM también cubre muchos idiomas, sintaxis de código, emoji y terminología especializada simultáneamente.
+<FunFact>Los LLM de frontera usan vocabularios de tokens que comúnmente llegan a alrededor de 100.000 tokens o más. Todo el idioma inglés tiene aproximadamente 170.000 palabras de uso común, pero el vocabulario simbólico de un LLM también cubre muchos idiomas, sintaxis de código, emoji y terminología especializada simultáneamente.
 </FunFact>
 
 ---
@@ -119,18 +119,18 @@ Esta es la razón por la que las conversaciones con los LLM pueden salir mal si 
 
 Los LLM están capacitados en cantidades de texto realmente asombrosas:
 - **GPT-3** se entrenó con ~300 mil millones de tokens, aproximadamente 570 GB de texto
-- Los detalles del entrenamiento **GPT-4** son secretos, pero las estimaciones sugieren billones de tokens
-- **Llama 3** fue entrenado con más de 15 billones de tokens de texto
+- Los **modelos cerrados de frontera** suelen mantener en secreto los detalles del entrenamiento, pero las estimaciones sugieren billones de tokens
+- **Llama 4 Scout** fue entrenado con alrededor de 40 billones de tokens de datos multimodales
 
 Los datos de entrenamiento provienen de rastreos web (Common Crawl), libros, Wikipedia, repositorios de códigos, artículos académicos y mucho más, esencialmente una fracción significativa del texto escrito en Internet.
 
-Los costos de computación de capacitación son enormes: la capacitación de GPT-3 costó aproximadamente 4,6 millones de dólares solo en computación. Se cree que GPT-4 costó más de 100 millones de dólares.
+Los costos de computación de entrenamiento son enormes: el entrenamiento de GPT-3 costó aproximadamente 4,6 millones de dólares solo en computación. Entrenar modelos de frontera actuales puede costar cientos de millones cuando se incluyen datos, GPU, energía e ingeniería.
 
 ### Habilidades emergentes: la sorpresa
 
 Algo extraño sucede a medida que los modelos se hacen más grandes: desarrollan **habilidades emergentes**: capacidades que no fueron entrenadas explícitamente, no aparecieron en modelos más pequeños y parecen aparecer repentinamente a escala.
 
-GPT-2 (2019) apenas podía escribir párrafos coherentes. GPT-3 (2020) podía escribir ensayos, resolver acertijos de lógica y traducir idiomas que apenas había visto. GPT-4 puede aprobar exámenes médicos y legales.
+GPT-2 (2019) apenas podía escribir párrafos coherentes. GPT-3 (2020) podía escribir ensayos, resolver acertijos de lógica y traducir idiomas que apenas había visto. Los modelos de frontera posteriores pueden superar benchmarks médicos, legales y de programación difíciles.
 
 Estos no fueron programados explícitamente. Salieron de escala.
 

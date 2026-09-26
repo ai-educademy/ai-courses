@@ -34,7 +34,7 @@ Pourquoi ne pas simplement utiliser des mots ? Parce que la tokenisation gère 
 
 Lorsque vous saisissez un message dans un LLM, il est immédiatement converti en une séquence d'ID de jeton, c'est-à-dire des nombres dans un vocabulaire comprenant généralement 30 000 à 100 000 jetons.
 
-<FunFact>GPT-4 possède un vocabulaire d'environ 100 000 jetons. La langue anglaise dans son ensemble compte environ 170 000 mots d'usage courant, mais le vocabulaire symbolique d'un LLM couvre également simultanément de nombreuses langues, la syntaxe du code, les emoji et la terminologie spécialisée.
+<FunFact>Les LLM de pointe utilisent des vocabulaires de tokens qui atteignent couramment environ 100 000 tokens ou plus. La langue anglaise dans son ensemble compte environ 170 000 mots d’usage courant, mais le vocabulaire de tokens d’un LLM couvre aussi simultanément de nombreuses langues, la syntaxe du code, les emoji et la terminologie spécialisée.
 </FunFact>
 
 ---
@@ -119,18 +119,18 @@ C'est pourquoi les conversations avec les LLM peuvent mal tourner si elles devie
 
 Les LLM sont formés sur des quantités de texte vraiment stupéfiantes :
 - **GPT-3** a été formé sur environ 300 milliards de jetons, soit environ 570 Go de texte.
-- Les détails de la formation **GPT-4** sont secrets, mais les estimations suggèrent des milliards de jetons
-- **Llama 3** a été formé sur plus de 15 000 milliards de jetons de texte
+- Les **modèles fermés de pointe** gardent généralement leurs détails d’entraînement secrets, mais les estimations suggèrent des milliers de milliards de tokens
+- **Llama 4 Scout** a été entraîné sur environ 40 000 milliards de tokens de données multimodales
 
 Les données de formation proviennent d'explorations Web (Common Crawl), de livres, de Wikipédia, de référentiels de codes, d'articles universitaires et bien plus encore – essentiellement une fraction importante du texte écrit sur Internet.
 
-Les coûts de calcul de la formation sont énormes : la formation de GPT-3 a coûté environ 4,6 millions de dollars rien qu'en calcul. On estime que GPT-4 a coûté plus de 100 millions de dollars.
+Les coûts de calcul de l’entraînement sont énormes : l’entraînement de GPT-3 a coûté environ 4,6 millions de dollars rien qu’en calcul. L’entraînement des modèles de pointe actuels peut coûter des centaines de millions lorsque les données, les GPU, l’énergie et l’ingénierie sont inclus.
 
 ### Capacités émergentes : la surprise
 
 Quelque chose d'étrange se produit à mesure que les modèles grandissent : ils développent des **capacités émergentes** – des capacités qui n'ont pas été explicitement entraînées, qui n'apparaissent pas dans des modèles plus petits et qui semblent apparaître soudainement à grande échelle.
 
-GPT-2 (2019) pouvait à peine écrire des paragraphes cohérents. GPT-3 (2020) pouvait rédiger des essais, résoudre des énigmes logiques et traduire des langues qu'il avait à peine vues. GPT-4 peut réussir les examens médicaux et juridiques.
+GPT-2 (2019) pouvait à peine écrire des paragraphes cohérents. GPT-3 (2020) pouvait rédiger des essais, résoudre des énigmes logiques et traduire des langues qu’il avait à peine vues. Les modèles de pointe ultérieurs peuvent réussir des benchmarks médicaux, juridiques et de codage difficiles.
 
 Ceux-ci n’étaient pas explicitement programmés. Ils sont sortis de l'échelle.
 

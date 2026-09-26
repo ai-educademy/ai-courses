@@ -68,11 +68,11 @@ Gebruikt door BERT en verwante modellen. Vergelijkbaar met BPE, maar in plaats v
 
 ### SentencePiece
 
-Behandelt de invoer als een ruwe bytestroom - geen pre-tokenisatie door spaties. Dit is cruciaal voor talen zoals Japans en Chinees die geen spaties tussen woorden gebruiken. GPT-4 en LLaMA gebruiken SentencePiece-achtige benaderingen.
+Behandelt de invoer als een ruwe bytestroom - geen pre-tokenisatie door spaties. Dit is cruciaal voor talen zoals Japans en Chinees die geen spaties tussen woorden gebruiken. Veel GPT- en Llama-familiemodellen gebruiken SentencePiece-achtige of byte-level benaderingen.
 
-## Hoe GPT-4 Tekst Tokeniseert
+## Hoe GPT-Style Modellen Tekst Tokeniseren
 
-GPT-4 gebruikt een BPE-variant genaamd **cl100k_base** met ruwweg 100.000 tokens in zijn vocabulaire. Enkele verrassende gedragingen:
+OpenAI GPT-style modellen gebruiken BPE-varianten met grote tokenvocabularia. Enkele verrassende gedragingen:
 
 - "Hello world" → 2 tokens (`Hello`, ` world` - let op: de spatie is bijgevoegd).
 - "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` - het splitst zeldzame woorden).
@@ -102,18 +102,18 @@ Tokenizers die voornamelijk op Engelse tekst zijn getraind, zijn **bevooroordeel
 
 ## Tokens Tellen en Kostenimplicaties
 
-Elke API-aanroep naar GPT-4, Claude of Gemini wordt per token gefactureerd. Het begrijpen van tokenisatie helpt je om:
+Elke API-aanroep naar een frontier-model zoals GPT-6 Astra, Claude Opus 5.5 of Gemini 2.5 wordt per token gefactureerd. Het begrijpen van tokenisatie helpt je om:
 
 - **Kosten in te schatten** voordat je grote taken uitvoert.
 - **Prompts te optimaliseren** - kortere prompts met dezelfde betekenis besparen geld.
-- **Contextvensters te respecteren** - GPT-4 Turbo accepteert 128k tokens; overschrijding hiervan kapt je invoer stilzwijgend af.
+- **Contextvensters te respecteren** - huidige frontier-modellen ondersteunen alles van honderdduizenden tot meer dan een miljoen tokens, maar overschrijding van de limiet van het gekozen model kapt je invoer nog steeds af of weigert die.
 
 Een vuistregel voor Engels: **1 token ≈ ¾ woord**, oftewel ongeveer 4 tekens.
 
 <Quiz question="Hoeveel tokens is een Engels essay van 1.000 woorden bij benadering?" options="500 tokens|750 tokens|1.333 tokens|3.000 tokens" answer="2" explanation="De veelgebruikte benadering is 1 token per ¾ woord voor Engels, dus 1.000 woorden ÷ 0,75 ≈ 1.333 tokens. Het dichtstbijzijnde antwoord hier is 1.333 tokens." />
 
 <FunFact>
-OpenAI's open-source `tiktoken`-bibliotheek laat je tekst lokaal tokeniseren met exact hetzelfde algoritme dat GPT-4 gebruikt. Probeer het op je eigen teksten om te zien hoeveel tokens je berichten echt kosten.
+OpenAI's open-source `tiktoken`-bibliotheek laat je tekst lokaal tokeniseren met dezelfde familie algoritmen die door OpenAI GPT-modellen wordt gebruikt. Probeer het op je eigen teksten om te zien hoeveel tokens je berichten echt kosten.
 </FunFact>
 
 <ThinkAboutIt>

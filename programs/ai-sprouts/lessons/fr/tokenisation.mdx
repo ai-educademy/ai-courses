@@ -68,11 +68,11 @@ Utilisé par BERT et les modèles apparentés. Similaire à BPE, mais au lieu de
 
 ### SentencePiece
 
-Traite l'entrée comme un flux brut d'octets - sans pré-tokenisation par les espaces. C'est crucial pour les langues comme le japonais et le chinois qui n'utilisent pas d'espaces entre les mots. GPT-4 et LLaMA utilisent des approches de type SentencePiece.
+Traite l’entrée comme un flux brut d’octets - sans pré-tokenisation par les espaces. C’est crucial pour les langues comme le japonais et le chinois qui n’utilisent pas d’espaces entre les mots. De nombreux modèles des familles GPT et Llama utilisent des approches de type SentencePiece ou au niveau des octets.
 
-## Comment GPT-4 tokenise le texte
+## Comment les modèles de style GPT tokenisent le texte
 
-GPT-4 utilise une variante de BPE appelée **cl100k_base** avec environ 100 000 tokens dans son vocabulaire. Quelques comportements surprenants :
+Les modèles de style GPT d’OpenAI utilisent des variantes de BPE avec de grands vocabulaires de tokens. Quelques comportements surprenants :
 
 - "Hello world" → 2 tokens (`Hello`, ` world` - notez que l'espace est attaché).
 - "indivisibility" → 4 tokens (`ind`, `iv`, `isibility` - il découpe les mots rares).
@@ -102,18 +102,18 @@ Les tokeniseurs entraînés principalement sur du texte anglais sont **biaisés*
 
 ## Comptage de tokens et implications de coût
 
-Chaque appel API à GPT-4, Claude ou Gemini est facturé au token. Comprendre la tokenisation vous aide à :
+Chaque appel API à un modèle de pointe comme GPT-6 Astra, Claude Opus 5.5 ou Gemini 2.5 est facturé au token. Comprendre la tokenisation vous aide à :
 
 - **Estimer les coûts** avant de lancer de gros travaux.
 - **Optimiser les prompts** - des prompts plus courts avec le même sens économisent de l'argent.
-- **Respecter les fenêtres de contexte** - GPT-4 Turbo accepte 128k tokens ; dépasser cette limite tronque votre entrée silencieusement.
+- **Respecter les fenêtres de contexte** - les modèles de pointe actuels prennent en charge de quelques centaines de milliers à plus d’un million de tokens, mais dépasser la limite du modèle choisi tronque ou rejette toujours votre entrée.
 
 Une règle approximative pour l'anglais : **1 token ≈ ¾ d'un mot**, soit environ 4 caractères.
 
 <Quiz question="Approximativement, combien de tokens représente un essai de 1 000 mots en anglais ?" options="500 tokens|750 tokens|1 333 tokens|3 000 tokens" answer="2" explanation="L'approximation communément citée est de 1 token pour ¾ de mot en anglais, donc 1 000 mots ÷ 0,75 ≈ 1 333 tokens. La réponse la plus proche ici est 1 333 tokens." />
 
 <FunFact>
-La bibliothèque open source `tiktoken` d'OpenAI vous permet de tokeniser du texte localement avec exactement le même algorithme que celui utilisé par GPT-4. Essayez-la sur vos propres écrits pour voir combien de tokens vos messages coûtent réellement.
+La bibliothèque open source `tiktoken` d’OpenAI vous permet de tokeniser du texte localement avec la même famille d’algorithmes que celle utilisée par les modèles GPT d’OpenAI. Essayez-la sur vos propres écrits pour voir combien de tokens vos messages coûtent réellement.
 </FunFact>
 
 <ThinkAboutIt>
