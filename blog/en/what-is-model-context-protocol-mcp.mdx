@@ -1,0 +1,77 @@
+---
+title: "What Is MCP? The Model Context Protocol, Explained Simply"
+description: "MCP, the Model Context Protocol, is the open standard that lets AI models plug into your tools and data the way USB-C lets any device plug into any port. Here's what it is, why it matters, and how it powers the agentic AI everyone's talking about."
+date: "2026-09-18"
+author: "AI Educademy"
+tags:
+  - mcp
+  - model-context-protocol
+  - agentic-ai
+  - tools
+  - integrations
+published: true
+---
+
+If you've read anything about AI agents in 2026, you've seen four letters everywhere: **MCP**. It's in product launches, GitHub integrations, and job descriptions. And yet most explanations dive straight into JSON-RPC and server implementations without answering the basic question.
+
+So here it is, plainly: **MCP, the Model Context Protocol, is an open standard for connecting AI models to the tools and data they need to do useful work.** Think of it as a universal adapter between "the AI" and "everything the AI wants to touch".
+
+---
+
+## The problem MCP solves
+
+An AI model on its own is a brain in a jar. It can reason and write text, but it can't read your files, query your database, check your calendar, or open a pull request. To do anything real, it needs to connect to external tools.
+
+Before MCP, every one of those connections was **bespoke**. If you wanted your AI to talk to GitHub, you wrote a custom GitHub integration. To talk to a database, another custom integration. To talk to Slack, another. Every tool, every model, every app reinvented the same plumbing in a slightly different way. It was the messy world of proprietary chargers before USB-C: every device with its own cable.
+
+MCP is the USB-C moment. Define your tool once, as an **MCP server**, and *any* AI application that speaks MCP (the **MCP client**) can use it. One standard, spoken by both sides.
+
+---
+
+## How it works, without the jargon
+
+There are just two roles to understand:
+
+- An **MCP server** exposes some capability: a set of tools (actions the AI can take, like "create issue" or "run query"), resources (data the AI can read, like files or records), and prompts (reusable templates). If you run software, you can wrap it in an MCP server.
+- An **MCP client** lives inside the AI application (an assistant, an IDE, an agent). It discovers what a server offers and lets the model call those tools in a consistent way.
+
+When the model decides it needs to, say, look up a customer, it doesn't need a hardcoded integration. It asks the MCP client, which calls the right MCP server, gets the result, and hands it back. The model just sees a standard menu of tools it can use, wherever those tools happen to live.
+
+The standard is **open**, introduced by Anthropic and then adopted broadly across the industry, which is exactly why it caught on. An open protocol that everyone implements is worth far more than a dozen competing private ones.
+
+---
+
+## Why it matters so much for agents
+
+MCP and [agentic AI](/blog/agentic-ai-workflows-and-github) grew up together, and they need each other.
+
+An agent's whole value comes from the actions it can take. The more tools it can safely reach, the more it can do. Before MCP, giving an agent a new capability meant custom engineering every time. With MCP, capabilities become **plug-and-play**: point the agent at an MCP server and it instantly gains those tools. That's what turned agents from impressive demos into things you can actually extend.
+
+GitHub, for example, ships an MCP server, so an agent can read code, search issues, and manage pull requests through one standard interface rather than a hand-rolled integration. The same pattern is spreading to databases, design tools, monitoring systems, and internal company software.
+
+---
+
+## The part people skip: MCP and security
+
+Here's the caveat that matters. MCP makes it easy to give an AI access to powerful tools, and *easy access to powerful tools is exactly what a security review exists to scrutinise.*
+
+An MCP server can expose real actions with real consequences: writing to a database, sending messages, spending money. So the sensible rules are the same ones that apply to any powerful integration:
+
+- **Least privilege.** Give an agent the narrowest set of MCP tools it needs, not everything.
+- **Trust the server.** Only connect MCP servers you trust, the same way you'd vet any dependency. A malicious server is a malicious tool in your AI's hands.
+- **Human approval for consequential actions.** Reading data is one thing. Writing, sending, or spending should pass through a human or a hard guardrail.
+- **Watch for prompt injection.** If an agent reads untrusted content through one tool, that content can try to hijack what the agent does with another. Treat tool output as untrusted input.
+
+MCP is a genuine step forward, but it concentrates power, and power always deserves guardrails.
+
+---
+
+## Why you should understand it
+
+MCP is quickly becoming part of the basic literacy of building with AI, the way "REST API" became a phrase every developer knows. You don't need to memorise the spec, but you should understand the shape of it:
+
+1. **It's how AI reaches the real world.** Tools and data flow to models through this standard.
+2. **It's why agents are suddenly extensible.** New capability equals a new MCP server, not a new custom build.
+3. **It's a security surface.** Every tool you connect is power you've granted.
+
+Get comfortable with that mental model, "models plus a standard set of tools they can safely pick up", and a huge amount of the 2026 AI landscape suddenly makes sense. It's the quiet infrastructure underneath the flashy demos, and understanding the infrastructure is what separates people who *use* AI from people who *build* with it. That's the kind of foundation our programs are designed to give you.

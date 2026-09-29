@@ -1,0 +1,102 @@
+---
+title: "What Is Jev? Inside TypeSafe AI's 'System One' Models and Why They Matter"
+description: "Jev is a new kind of AI model from TypeSafe AI that doesn't chat, it decides. It's up to 200x faster than a frontier LLM, can't hallucinate, and returns typed, calibrated answers. Here's what System One models are and why they could reshape how software uses AI."
+date: "2026-09-29"
+author: "AI Educademy"
+tags:
+  - jev
+  - typesafe-ai
+  - system-one
+  - agentic-ai
+  - automation
+published: true
+---
+
+For four years the question that has quietly nagged at the AI industry is this: models have been superhuman at chat since 2023, so **where is all the automation?** Chatbots got astonishing. The software running underneath your bank, your logistics, your inbox mostly did not.
+
+On 28 September 2026, a lab called [TypeSafe AI](https://typesafe.ai) put forward an unusual answer. They released **Jev**, the first of what they call **System One models**: a new class of frontier model built not to talk, but to *decide*. And the numbers they published are the kind that make you read them twice.
+
+This article explains what Jev actually is, why "System One" is a genuinely different idea rather than marketing, and what it means for anyone learning to build with AI.
+
+---
+
+## System One vs System Two: a borrowed metaphor that fits
+
+The name is a nod to Daniel Kahneman's *Thinking, Fast and Slow*. Kahneman split human cognition into two modes:
+
+- **System 2** is slow, deliberate, effortful. It's what you use to work through a proof or write an essay.
+- **System 1** is fast, automatic, intuitive. It's what fires when you catch a ball or read the mood of a room.
+
+Today's large language models are, in this framing, pure **System 2**. They reason step by step, generate text one token at a time, and are wonderful when a human is in the loop reading the output. But that same design makes them slow, expensive, and occasionally prone to going off the rails, which is a problem the moment you try to bury one deep inside automated software.
+
+TypeSafe's bet is that a huge amount of real-world automation doesn't need an essay. It needs a fast, reliable, confident **decision**: classify this ticket, score this risk, route this order, extract these fields, branch this way or that. That is System 1 work, and Jev is built for it.
+
+---
+
+## What Jev actually does
+
+The cleanest way TypeSafe describes it: think of Jev as **a frontier-intelligence function call.**
+
+> Unstructured state in, typed probabilistic decisions out.
+
+Concretely, that means a few things that are quite different from an LLM:
+
+### 1. It returns typed values, not strings
+
+An LLM emits text. To use that text in software you have to parse it, validate it, and pray it matched the shape you expected. Jev's possible outputs and their structure are **defined in advance**. It returns a type-safe structured value that slots directly into your code. TypeSafe make a striking claim here: the model **never makes type errors**, and because schema matching is guaranteed, it **cannot hallucinate** a field that doesn't exist. That isn't a benchmark, it's a mathematical property of the design.
+
+### 2. Every answer comes with a calibrated confidence
+
+Ask an LLM how sure it is and it will happily give you an overconfident, inconsistent number. Jev is trained with a method TypeSafe calls **Reinforcement Learning for Calibrated Decisions (RLCD)**, optimised so that higher confidence genuinely means higher accuracy. If a system can do a task correctly 95% of the time *but knows which 5% to flag*, you can finally automate it and escalate only the uncertain cases. Calibration is what turns "impressive demo" into "shippable system".
+
+### 3. It samples in parallel, so it's absurdly fast
+
+LLMs generate autoregressively, one token conditioned on the last. Jev produces all of its outputs in a single parallel query. The result:
+
+- **End-to-end latency of 70ms to 500ms**, versus 3 to 329 seconds for frontier LLMs on comparable tasks. That's roughly **40x to 200x faster**.
+- Input priced at **$0.042 per million tokens**, with output described as "free (too cheap to meter)".
+- On TypeSafe's published workflow evaluations, headline figures of **193.6x faster and 444.6x cheaper** than a frontier reference.
+
+The trade is deliberate and honest: Jev **gives up string generation entirely.** It will not write you a poem, a chatbot reply, or a block of code. It reports similar intelligence to leading LLMs *on System One shaped tasks* and nothing outside them.
+
+---
+
+## Where this fits (and where it doesn't)
+
+It helps to be precise, because the hype around any launch outruns reality. Jev is not a ChatGPT competitor. It's a different tool for a different job.
+
+**Great fits for a System One model like Jev:**
+
+- **AI-powered workflows / "smart if-statements".** Classify, route, score, extract or branch where hand-written rules are too brittle. The surrounding code constrains the model, making the whole system reliable.
+- **Map-reduce over big data.** Turning large volumes of messy text into features and signals cheaply enough to actually run at scale.
+- **Real-time applications.** At 100ms you can put intelligence in the hot path of a user interface without wrecking the experience.
+- **Guardrails and judging.** Scoring, verifying, and detecting jailbreaks in the prompts, reasoning traces and outputs of *other* models.
+
+**Still the job of a System Two LLM:**
+
+- Anything that produces open-ended language: chat, copilots, coding agents, long-form writing.
+- Verifiable, iterative problem solving like maths proofs or kernel optimisation, where a model generates and tests until something passes.
+
+The interesting near future is not "one wins", it's **the two working together**: a fast System One model making thousands of cheap, calibrated micro-decisions inside a pipeline, with a slower System Two model reserved for the handful of moments that genuinely need language or open reasoning.
+
+---
+
+## The people behind it, and a healthy dose of scepticism
+
+Jev comes from TypeSafe AI, founded by **Diogo Almeida**, who worked at OpenAI on the instruction-following research that fed into ChatGPT. The lab spent two years in stealth before this launch.
+
+Extraordinary claims deserve scrutiny, and to their credit TypeSafe invite it. Some claims are easy to check yourself (speed and price per call are transparent, and "no type errors" would fall to a single counter-example). Others carry honest caveats: their workflow evals use the average of two leading models as the "correct" reference, which biases the comparison, and the test workflows were built by their own team. Pricing this low may not be fully sustainable yet. None of that makes the core idea wrong. It just means the sensible stance is *interested, and watching the receipts.*
+
+---
+
+## What this means for you as a learner
+
+If you're studying AI to build things, System One models are a signal about where the field is heading, and it's a direction worth understanding now.
+
+1. **Structured output is a core skill.** The industry is moving from "prompt a model and hope" towards "define a schema and get a typed answer". Learning to think in terms of decisions, schemas and confidence will age far better than learning prompt tricks.
+2. **Calibration and evaluation matter more than vibes.** The reason Jev is a big deal is not raw IQ, it's that it *knows when it doesn't know*. Get comfortable measuring accuracy and confidence, not just admiring demos.
+3. **Composition is the new architecture.** The winning systems will orchestrate fast decision models, slow reasoning models, and ordinary code together. That's an engineering discipline, and it's exactly what we teach.
+
+You can explore Jev in early access at [typesafe.ai](https://typesafe.ai), and read the original announcement, ["Introducing System One Models & Jev"](https://typesafe.ai/blog/introducing-system-one-models-and-jev). Whether or not Jev specifically becomes the standard, the shift it represents (from AI that talks to AI that reliably decides) is one of the most important stories in the field right now.
+
+Want to build the intuition behind all of this, from what a model actually is to how you wire one into real software? That's what our programs are for. Start with the fundamentals, and by the time the next "System One" lands, you'll understand exactly why it matters.
