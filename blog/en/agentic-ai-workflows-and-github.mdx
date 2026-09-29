@@ -1,0 +1,98 @@
+---
+title: "Agentic AI, Workflows, and GitHub: How Software Started Building Itself"
+description: "Agentic AI is the shift from models that answer to systems that act. This guide explains agents vs workflows, when to use each, and how GitHub, from Copilot's coding agent to Actions and MCP, has quietly become the place agentic AI does real work."
+date: "2026-09-27"
+author: "AI Educademy"
+tags:
+  - agentic-ai
+  - ai-agents
+  - workflows
+  - github
+  - automation
+published: true
+---
+
+For most of the AI boom, the interaction model was simple: you ask, the model answers, you decide what to do next. In 2026 that loop is being closed. The model doesn't just answer anymore. It plans, it acts, it checks its own work, and it tries again. That shift has a name: **agentic AI**, and nowhere is it more visible than on GitHub.
+
+This guide covers three things: what "agentic" actually means, the crucial difference between an *agent* and a *workflow*, and how GitHub turned into the natural home for AI that does real engineering work.
+
+---
+
+## What "agentic" really means
+
+An **AI agent** is a system that pursues a goal by taking actions in a loop, rather than producing a single response. The pattern underneath almost every agent is the same:
+
+1. **Perceive** the current state (a codebase, a ticket, an inbox, a dataset).
+2. **Plan** a next step towards the goal.
+3. **Act** using a tool (run a command, edit a file, call an API, query a database).
+4. **Observe** the result.
+5. **Repeat** until the goal is met or it decides to stop.
+
+The magic isn't the model. It's the **loop plus the tools.** A language model on its own can only talk. Give it the ability to run code, read the output, and try again, and it stops being a chatbot and starts being a worker.
+
+Two capabilities made this practical:
+
+- **Tool use / function calling**, so a model can reliably invoke real software instead of just describing it.
+- **Long context and memory**, so an agent can hold a whole task, a codebase, or a long history in view while it works.
+
+---
+
+## Agents vs workflows: the distinction that saves you
+
+This is the single most useful idea in the whole space, and it's where most teams go wrong.
+
+A **workflow** is a *predefined* path. You, the engineer, decide the steps in advance and let the model make the fuzzy decisions inside each one: "classify this ticket, then if it's a bug route it here, if it's billing route it there". The control flow is yours. The model just fills in the judgement calls.
+
+An **agent** is *self-directed*. You give it a goal and a set of tools, and it decides the steps itself, dynamically, based on what it observes. "Here's the failing test and the repo. Fix it." The control flow belongs to the model.
+
+The practical rule of thumb:
+
+> **Use a workflow when you can describe the steps. Use an agent when you can only describe the goal.**
+
+Workflows are cheaper, faster, and far more predictable, so most production automation should be a workflow with a model making decisions inside it, not a free-roaming agent. Agents shine when the path genuinely can't be known in advance, like debugging or open-ended research, but you pay for that freedom in cost, latency, and the need for guardrails. Reaching for an agent when a workflow would do is the most common and most expensive mistake in the field right now.
+
+A promising 2026 trend even splits the two apart: fast, cheap, structured "decision" models (see our piece on [System One models and Jev](/blog/what-is-jev-typesafe-system-one-models)) handle the thousands of small judgement calls inside a workflow, while a slower, more capable model is reserved for the moments that need real reasoning.
+
+---
+
+## Why GitHub became the home of agentic AI
+
+If agents work by taking actions with tools, they need somewhere with clear state, real tools, and a built-in way to review what they did before it goes live. That describes a software repository almost perfectly, which is why GitHub has become the centre of gravity for agentic engineering.
+
+### The Copilot coding agent
+
+GitHub Copilot began as autocomplete. It's now a genuine agent. You can **assign an issue to Copilot**, and it will spin up its own environment, explore the repository, make changes across multiple files, run the tests, and **open a pull request** for you to review. It works the way a junior engineer does: pick up a task, do the work on a branch, and put it up for review rather than pushing straight to main. That last part is the point. The pull request is the safety rail. Nothing an agent does reaches production without a human approving the diff.
+
+### GitHub Actions as the agent's hands
+
+Agents need to *do* things, and **GitHub Actions** is the execution layer they run on. It provides clean, ephemeral environments, secrets management, and a permission model, so an agent can build, test, and deploy inside sensible boundaries. The combination of "an agent that decides" and "Actions that safely execute" is what makes autonomous engineering trustworthy enough to use.
+
+### MCP: the USB-C of AI tools
+
+The other big 2026 unlock is the **Model Context Protocol (MCP)**, an open standard for connecting AI models to tools and data sources. Before MCP, every integration was bespoke. With it, an agent can speak one protocol to reach your repository, your issue tracker, your database, or your monitoring, and any tool that speaks MCP is instantly available. GitHub ships an MCP server, so an agent can query issues, read code, and manage pull requests through a single, standard interface. If agents are the workers, MCP is the standard set of tools they all know how to pick up.
+
+---
+
+## The engineering that keeps agents safe
+
+Autonomy without discipline is a liability, not a feature. The teams getting real value from agentic AI treat it as an engineering problem, not a magic trick:
+
+- **Least privilege.** An agent gets the narrowest permissions and the fewest tools that let it do the job, and no more.
+- **Human review at the boundary.** Agents propose; people approve. The pull request, the merge gate, and the deploy approval are non-negotiable.
+- **Guardrails and verification.** Automated checks, tests, and even other models that score or validate an agent's output before it counts.
+- **Observability.** Every action logged, so you can see exactly what an agent did and why.
+
+None of this is exotic. It's the same defence-in-depth thinking good engineers already apply to any powerful automation.
+
+---
+
+## What to learn if you want to build this
+
+Agentic AI rewards engineers, not just prompt writers. If you want to be genuinely good at it:
+
+1. **Master the workflow-vs-agent decision.** Knowing when *not* to use an agent is what separates people who ship reliable systems from people who ship expensive demos.
+2. **Learn tool use and MCP.** The value is in the tools an agent can reach and how safely it reaches them.
+3. **Get serious about evaluation.** You can't improve an agent you can't measure. Testing, tracing and scoring are the core skills.
+4. **Practise on real repositories.** Assign a small issue to Copilot, read the pull request it opens, and study how it planned the work. It's the fastest way to build intuition.
+
+Agentic AI isn't science fiction anymore. It's a junior colleague that opens pull requests, a workflow that routes your tickets, and a standard protocol quietly wiring it all together. The engineers who understand *how* it works, and where its limits are, will be the ones who put it to work well. That understanding is exactly what our programs are built to give you.
