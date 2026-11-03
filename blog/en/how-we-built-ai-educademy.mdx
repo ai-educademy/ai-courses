@@ -190,13 +190,15 @@ Education happens on all devices, including low-bandwidth environments. We built
 - **Reduce data usage**: Smart caching means returning users don't re-download content
 
 ```typescript
-// next.config.js includes PWA configuration
-import withPWA from 'next-pwa';
+// next.config.js includes PWA configuration using @ducanh2912/next-pwa
+import withPWA from '@ducanh2912/next-pwa';
 
-const withPWA = require('next-pwa')({
+const nextConfig = withPWA({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development'
 });
+
+export default nextConfig;
 ```
 
 Our Service Worker strategy is straightforward:
